@@ -760,7 +760,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28a03a866ff810746839fd782ef409a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  textComponent: {fileID: 5199805718470860377}
+  buttonText: {fileID: 5199805718470860377}
+  buttonText_2: {fileID: 815259265529382039}
+  buttonText_3: {fileID: 3922828527534435486}
 --- !u!1 &4464951200642786777
 GameObject:
   m_ObjectHideFlags: 0

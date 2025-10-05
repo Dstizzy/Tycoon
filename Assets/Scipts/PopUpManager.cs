@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PopUpManager : MonoBehaviour
 {
     [SerializeField] Camera cam;
-    [SerializeField] GameObject popUpPrefab;
+    [SerializeField] GameObject buttonsPreFab;
     private GameObject popUp;
 
     PlayerActions playerActions;
@@ -36,17 +36,25 @@ public class PopUpManager : MonoBehaviour
         if (hit.collider != null) {
 
             Transform buildingTransform = hit.collider.transform;
+            
+            Vector3 offset = new  Vector3(-10.0f, 0.0f, 0f);
 
-            Vector3 offset = new  Vector3(0f, 2.0f, 0f);
-
-            Vector3 fixedPopUpPosition = buildingTransform.position;
+            Vector3 fixedPopUpPosition = buildingTransform.position + offset;
 
             if (popUp == null) { 
-                popUp = Instantiate(popUpPrefab, fixedPopUpPosition, Quaternion.identity);
-
-                popUp.GetComponent<PopUp>().SetText("Test");
-            }
-            else {
+                popUp = Instantiate(buttonsPreFab, fixedPopUpPosition, Quaternion.identity);
+                switch (buildingTransform.tag) {
+                    case "Trade Hut":
+                        popUp.GetComponent<PopUp>().SetText("Trade", "Info", "Upgrade");
+                        break;
+                    case "Business":
+                        popUp.GetComponent<PopUp>().SetText("Products", "Info", "Upgrade");
+                        break;
+                    default:
+                        popUp.GetComponent<PopUp>().SetText("Test", "Test 2", "Test 3");
+                        break;
+                }
+            } else {
                 Destroy(popUp);
                 popUp = null;
             }
