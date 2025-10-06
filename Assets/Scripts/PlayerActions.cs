@@ -102,7 +102,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Click"",
+                    ""name"": ""BuildingActions"",
                     ""type"": ""Button"",
                     ""id"": ""d037bff8-ed86-4670-85cc-429cf3b7ae5a"",
                     ""expectedControlType"": """",
@@ -130,7 +130,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Click"",
+                    ""action"": ""BuildingActions"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -142,7 +142,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         // PlayerInput
         m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
         m_PlayerInput_Hover = m_PlayerInput.FindAction("Hover", throwIfNotFound: true);
-        m_PlayerInput_Click = m_PlayerInput.FindAction("Click", throwIfNotFound: true);
+        m_PlayerInput_BuildingActions = m_PlayerInput.FindAction("BuildingActions", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -224,7 +224,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerInput;
     private List<IPlayerInputActions> m_PlayerInputActionsCallbackInterfaces = new List<IPlayerInputActions>();
     private readonly InputAction m_PlayerInput_Hover;
-    private readonly InputAction m_PlayerInput_Click;
+    private readonly InputAction m_PlayerInput_BuildingActions;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerInput".
     /// </summary>
@@ -241,9 +241,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Hover => m_Wrapper.m_PlayerInput_Hover;
         /// <summary>
-        /// Provides access to the underlying input action "PlayerInput/Click".
+        /// Provides access to the underlying input action "PlayerInput/BuildingActions".
         /// </summary>
-        public InputAction @Click => m_Wrapper.m_PlayerInput_Click;
+        public InputAction @BuildingActions => m_Wrapper.m_PlayerInput_BuildingActions;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -273,9 +273,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Hover.started += instance.OnHover;
             @Hover.performed += instance.OnHover;
             @Hover.canceled += instance.OnHover;
-            @Click.started += instance.OnClick;
-            @Click.performed += instance.OnClick;
-            @Click.canceled += instance.OnClick;
+            @BuildingActions.started += instance.OnBuildingActions;
+            @BuildingActions.performed += instance.OnBuildingActions;
+            @BuildingActions.canceled += instance.OnBuildingActions;
         }
 
         /// <summary>
@@ -290,9 +290,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Hover.started -= instance.OnHover;
             @Hover.performed -= instance.OnHover;
             @Hover.canceled -= instance.OnHover;
-            @Click.started -= instance.OnClick;
-            @Click.performed -= instance.OnClick;
-            @Click.canceled -= instance.OnClick;
+            @BuildingActions.started -= instance.OnBuildingActions;
+            @BuildingActions.performed -= instance.OnBuildingActions;
+            @BuildingActions.canceled -= instance.OnBuildingActions;
         }
 
         /// <summary>
@@ -341,11 +341,11 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHover(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Click" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "BuildingActions" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnClick(InputAction.CallbackContext context);
+        void OnBuildingActions(InputAction.CallbackContext context);
     }
 }
