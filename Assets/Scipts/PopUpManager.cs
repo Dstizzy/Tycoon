@@ -12,18 +12,18 @@ public class PopUpManager : MonoBehaviour
     private void Awake() {
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.Click.performed += Click;
+        playerActions.PlayerInput.BuildingActions.performed += BuildingActions;
     }
 
     private void OnDestroy() {
         if (playerActions != null) {
-            playerActions.PlayerInput.Click.performed -= Click;
+            playerActions.PlayerInput.BuildingActions.performed -= BuildingActions;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
 
-    void Click(InputAction.CallbackContext context) {
+    private void BuildingActions(InputAction.CallbackContext context) {
      
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
 
@@ -45,13 +45,10 @@ public class PopUpManager : MonoBehaviour
                 popUp = Instantiate(buttonsPreFab, fixedPopUpPosition, Quaternion.identity);
                 switch (buildingTransform.tag) {
                     case "Trade Hut":
-                        popUp.GetComponent<PopUp>().SetText("Trade", "Info", "Upgrade");
-                        break;
-                    case "Business":
-                        popUp.GetComponent<PopUp>().SetText("Products", "Info", "Upgrade");
+                        popUp.GetComponent<ButtonsPopUp>().SetText("Trade", "Info", "Upgrade");
                         break;
                     default:
-                        popUp.GetComponent<PopUp>().SetText("Test", "Test 2", "Test 3");
+                        popUp.GetComponent<ButtonsPopUp>().SetText("Test", "Test 2", "Test 3");
                         break;
                 }
             } else {

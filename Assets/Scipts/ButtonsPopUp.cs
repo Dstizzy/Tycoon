@@ -2,7 +2,7 @@ using TMPro;
 
 using UnityEngine;
 
-public class PopUp : MonoBehaviour {
+public class ButtonsPopUp : MonoBehaviour {
     [SerializeField] private TMP_Text buttonText;
     [SerializeField] private TMP_Text buttonText_2;
     [SerializeField] private TMP_Text buttonText_3;
