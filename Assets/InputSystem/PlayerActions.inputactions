@@ -16,7 +16,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Click",
+                    "name": "BuildingActions",
                     "type": "Button",
                     "id": "d037bff8-ed86-4670-85cc-429cf3b7ae5a",
                     "expectedControlType": "",
@@ -44,7 +44,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Click",
+                    "action": "BuildingActions",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
