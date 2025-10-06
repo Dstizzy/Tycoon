@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: a54669b700fc50b45ba711e8fd8db3b6
+guid: 16c4d84869aaa7f4ea0a3868e378b681
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2742486921558298540
-    second: Gemini_Generated_Image_a3mvsaa3mvsaa3mv-removebg-preview_0
+      213: -82813229526468428
+    second: 11-removebg-preview_0
+  - first:
+      213: 6237334368358287580
+    second: 11-removebg-preview_1
+  - first:
+      213: -4432861141720542354
+    second: 11-removebg-preview_2
+  - first:
+      213: 7735804036896502075
+    second: 11-removebg-preview_3
+  - first:
+      213: -8677608216352332286
+    second: 11-removebg-preview_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +112,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_a3mvsaa3mvsaa3mv-removebg-preview_0
+      name: 11-removebg-preview_0
       rect:
         serializedVersion: 2
-        x: 83
-        y: 176
-        width: 341
-        height: 174
+        x: 196
+        y: 321
+        width: 20
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +127,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: caf03a823554f0620800000000000000
-      internalID: 2742486921558298540
+      spriteID: 4b83f577ec9c9def0800000000000000
+      internalID: -82813229526468428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 11-removebg-preview_1
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 306
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd8c45baf867f8650800000000000000
+      internalID: 6237334368358287580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 11-removebg-preview_2
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 250
+        width: 28
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e635d1527405b72c0800000000000000
+      internalID: -4432861141720542354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 11-removebg-preview_3
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 122
+        width: 183
+        height: 187
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b31bf3719c81b5b60800000000000000
+      internalID: 7735804036896502075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 11-removebg-preview_4
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 278
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 206ee4c9d41f29780800000000000000
+      internalID: -8677608216352332286
       vertices: []
       indices: 
       edges: []
@@ -135,7 +235,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_a3mvsaa3mvsaa3mv-removebg-preview_0: 2742486921558298540
+      11-removebg-preview_0: -82813229526468428
+      11-removebg-preview_1: 6237334368358287580
+      11-removebg-preview_2: -4432861141720542354
+      11-removebg-preview_3: 7735804036896502075
+      11-removebg-preview_4: -8677608216352332286
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
