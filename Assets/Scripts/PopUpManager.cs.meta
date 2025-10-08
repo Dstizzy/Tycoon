@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: edb44d2182d2ccf48806dbd075307920
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cam: {instanceID: 0}
+  - buildingButtonsPreFab: {fileID: 3820745270508402435, guid: 38d9024a289ddf6469e87c9cf766cc0a, type: 3}
+  - LabButtons: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
