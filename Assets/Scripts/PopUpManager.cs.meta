@@ -5,7 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - cam: {instanceID: 0}
-  - buttonsPreFab: {fileID: 3820745270508402435, guid: 38d9024a289ddf6469e87c9cf766cc0a, type: 3}
+  - buildingButtonsPreFab: {fileID: 3820745270508402435, guid: 38d9024a289ddf6469e87c9cf766cc0a, type: 3}
+  - LabButtons: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
