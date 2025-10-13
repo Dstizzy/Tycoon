@@ -335,8 +335,11 @@ GameObject:
   - component: {fileID: 264605918}
   - component: {fileID: 264605917}
   - component: {fileID: 264605920}
+<<<<<<< HEAD
   - component: {fileID: 264605921}
   - component: {fileID: 264605922}
+=======
+>>>>>>> origin/main
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -462,6 +465,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+<<<<<<< HEAD
 --- !u!114 &264605921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,6 +504,8 @@ MonoBehaviour:
   targetTag: 
   targetPanScript: {fileID: 264605921}
   margin: 1
+=======
+>>>>>>> origin/main
 --- !u!1 &296511044
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,7 +626,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   cam: {fileID: 264605918}
+<<<<<<< HEAD
   buttonsPreFab: {fileID: 3820745270508402435, guid: 38d9024a289ddf6469e87c9cf766cc0a, type: 3}
+=======
+  buildingButtonsPreFab:
+  - {fileID: 294294460293442742, guid: 7c753d9829e80f34381359cfd5b823b6, type: 3}
+  - {fileID: 294294460293442742, guid: 7c753d9829e80f34381359cfd5b823b6, type: 3}
+  - {fileID: 294294460293442742, guid: 7c753d9829e80f34381359cfd5b823b6, type: 3}
+>>>>>>> origin/main
 --- !u!4 &441348590
 Transform:
   m_ObjectHideFlags: 0
@@ -1237,7 +1250,11 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
+<<<<<<< HEAD
   m_SortingOrder: 10
+=======
+  m_SortingOrder: 1
+>>>>>>> origin/main
   m_Sprite: {fileID: -5099292496197868168, guid: 47b51dfb6a2033c449bfb535ee9a4889, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
