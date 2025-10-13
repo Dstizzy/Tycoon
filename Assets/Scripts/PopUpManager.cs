@@ -36,23 +36,27 @@ public class PopUpManager : MonoBehaviour {
 
         worldPos.z = 0;
 
-        if (hit.collider != null) {
-            Transform buildingTransform = hit.collider.transform;
-            Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
-            Vector3 fixedPopUpPosition = buildingTransform.position + offset;
-
-            if (popUps == null) {
+        if (popUps == null)
+        {
+            if (hit.collider != null)
+            {
+                Transform buildingTransform = hit.collider.transform;
+                Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
+                Vector3 fixedPopUpPosition = buildingTransform.position + offset;
 
                 popUps = new List<GameObject>();
 
                 float buttonSpacing = 2.0f;
 
-                foreach (GameObject button in buildingButtonsPreFab) {
-                    if (buildingTransform.tag != "Lab" || popUps.Count < 2) {
+                foreach (GameObject button in buildingButtonsPreFab)
+                {
+                    if (buildingTransform.tag != "Lab" || popUps.Count < 2)
+                    {
                         GameObject newButton = Instantiate(button, fixedPopUpPosition, Quaternion.identity);
 
-                        popUps.Add(newButton); 
-                        switch (buildingTransform.tag) {
+                        popUps.Add(newButton);
+                        switch (buildingTransform.tag)
+                        {
                             case "Trade Hut":
                                 if (popUps.Count == 1)
                                     newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Trade");
@@ -68,13 +72,14 @@ public class PopUpManager : MonoBehaviour {
                         fixedPopUpPosition.y -= buttonSpacing;
                     }
                 }
-            } else {
-                foreach (GameObject currentPopUp in popUps) {
-                    if (currentPopUp != null)
-                        Destroy(currentPopUp);
-                }
-                popUps = null;
             }
-        }
+        } else {
+             foreach (GameObject currentPopUp in popUps) {
+                 if (currentPopUp != null)
+                     Destroy(currentPopUp);
+             }
+             popUps = null;
+            }
+        
     }
 }
