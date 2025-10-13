@@ -1,0 +1,39 @@
+using Unity.VisualScripting;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Item {
+    public enum ItemType {
+        CrudeTool,
+        RefinedTool,
+        Articfatct
+    }
+
+    public static int GetItemValue(ItemType itemType) {
+        switch(itemType) {
+            case ItemType.CrudeTool: 
+                return 6;
+            case ItemType.RefinedTool: 
+                return 10;
+            case ItemType.Articfatct: 
+                return 20;
+            default:
+                return 0;
+        }
+    }
+
+    public static Sprite GetItemSprite(ItemType itemType) {
+        switch(itemType) {
+            case ItemType.CrudeTool: 
+                return ItemSprites.itemSprites.crudeTool;
+            //case ItemType.RefinedTool: 
+            //    return Resources.Load<Image>("Images/Items/RefinedTool");
+            //case ItemType.Articfatct: 
+            //    return Resources.Load<Image>("Images/Items/Artifact");
+            default:
+                return null;
+        }
+    }
+
+}

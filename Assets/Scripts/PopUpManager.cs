@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PopUpManager : MonoBehaviour {
-    [SerializeField] Camera cam;
     public GameObject[] buildingButtonsPreFab;
-    private List<GameObject> popUps;
+    [SerializeField] private Camera cam;
 
-    PlayerActions playerActions;
+    private List<GameObject> popUps;
+    private PlayerActions playerActions;
 
     private void Awake() {
         playerActions = new PlayerActions();
