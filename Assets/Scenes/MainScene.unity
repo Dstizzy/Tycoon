@@ -553,7 +553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
   crudeToolCount: 0
   container: {fileID: 460349205}
-  tradeItemTemplate: {fileID: 0}
+  tradeItemTemplate: {fileID: 1712966643}
   tradePanel: {fileID: 1024672991}
 --- !u!1 &212754112
 GameObject:
