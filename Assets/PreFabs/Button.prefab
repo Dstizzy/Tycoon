@@ -487,9 +487,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3031404996387374657, guid: 020e86b33ba223e488b34a67ddac145e, type: 3}
+      - m_Target: {fileID: 6506890804628073008, guid: 020e86b33ba223e488b34a67ddac145e, type: 3}
         m_TargetAssemblyTypeName: PopUpManager, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: spawnImage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

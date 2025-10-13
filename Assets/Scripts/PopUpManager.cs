@@ -8,6 +8,10 @@ using UnityEngine.InputSystem;
 public class PopUpManager : MonoBehaviour {
     [SerializeField] Camera cam;
     public GameObject[] buildingButtonsPreFab;
+
+    public GameObject PanelImage;
+    public Transform parentCanvasTransform;
+
     private List<GameObject> popUps;
 
     PlayerActions playerActions;
@@ -76,5 +80,18 @@ public class PopUpManager : MonoBehaviour {
                 popUps = null;
             }
         }
+    }
+
+    public void spawnImage()
+    {
+        //if(PanelImage == null || parentCanvasTransform == null)
+        //{
+        //    Debug.LogError("Panel Instatiation Failed!");
+       //     return;
+       // }
+
+        GameObject newImage = Instantiate(PanelImage, parentCanvasTransform);
+
+        Debug.Log("New image instantiated");
     }
 }
