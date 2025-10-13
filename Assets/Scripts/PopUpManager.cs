@@ -51,7 +51,7 @@ public class PopUpManager : MonoBehaviour {
                     if (buildingTransform.tag != "Lab" || popUps.Count < 2) {
                         GameObject newButton = Instantiate(button, fixedPopUpPosition, Quaternion.identity);
 
-                        popUps.Add(newButton);
+                        popUps.Add(newButton); 
                         switch (buildingTransform.tag) {
                             case "Trade Hut":
                                 if (popUps.Count == 1)
