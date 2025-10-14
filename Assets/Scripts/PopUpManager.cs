@@ -78,4 +78,9 @@ public class PopUpManager : MonoBehaviour {
             }
         }
     }
+
+    public void OnBuildingButtonClick()
+    {
+        TradeHutManager.Instance.ShowTradePanel();
+    }
 }
