@@ -85,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &393136618242705642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,9 +383,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3031404996387374657, guid: 020e86b33ba223e488b34a67ddac145e, type: 3}
+      - m_Target: {fileID: 2170183758339985472, guid: 35c71017c66aae04d8abcf143fd103c9, type: 3}
         m_TargetAssemblyTypeName: PopUpManager, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: OnBuildingButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

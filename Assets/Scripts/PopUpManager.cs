@@ -4,33 +4,30 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PopUpManager : MonoBehaviour {
-    [SerializeField] Camera cam;
     public GameObject[] buildingButtonsPreFab;
-
-    public GameObject PanelImage;
-    public Transform parentCanvasTransform;
+    [SerializeField] private Camera cam;
 
     private List<GameObject> popUps;
-
-    PlayerActions playerActions;
+    private PlayerActions playerActions;
 
     private void Awake() {
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.BuildingActions.performed += BuildingActions;
+        playerActions.PlayerInput.BuildingActions.performed += OnBuildingClick;
     }
 
     private void OnDestroy() {
         if (playerActions != null) {
-            playerActions.PlayerInput.BuildingActions.performed -= BuildingActions;
+            playerActions.PlayerInput.BuildingActions.performed -= OnBuildingClick;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
 
-    private void BuildingActions(InputAction.CallbackContext context) {
+    private void OnBuildingClick(InputAction.CallbackContext context) {
 
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
 
@@ -80,6 +77,10 @@ public class PopUpManager : MonoBehaviour {
                 popUps = null;
             }
         }
+    }
+
+    public void OnBuildingButtonClick() {
+        TradeHutManager.Instance.ShowTradePanel();
     }
 
     public void spawnImage()
