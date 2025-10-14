@@ -78,21 +78,4 @@ public class PopUpManager : MonoBehaviour {
             }
         }
     }
-
-    public void OnBuildingButtonClick() {
-        TradeHutManager.Instance.ShowTradePanel();
-    }
-
-    public void spawnImage()
-    {
-        //if(PanelImage == null || parentCanvasTransform == null)
-        //{
-        //    Debug.LogError("Panel Instatiation Failed!");
-       //     return;
-       // }
-
-        GameObject newImage = Instantiate(PanelImage, parentCanvasTransform);
-
-        Debug.Log("New image instantiated");
-    }
 }
