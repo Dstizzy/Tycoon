@@ -62,7 +62,7 @@ public class TradeHutManager : MonoBehaviour {
         tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemvalue.ToString();
         tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemName;
         tradeItemTransform.Find("ItemImage").GetComponent<Image>().sprite = itemSprite;
-        tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = itemCount.ToString();
+        tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + itemCount.ToString();
 
         Button increaseButton = tradeItemTransform.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
         Button decreaseButton = tradeItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
@@ -82,15 +82,15 @@ public class TradeHutManager : MonoBehaviour {
         switch (Item.tag) {
             case "Crude Tool":
                 crudeToolCount += 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = crudeToolCount.ToString();
+                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + crudeToolCount.ToString();
                 break;
             case "Refined Tool":
                 refinedToolCount += 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = refinedToolCount.ToString();
+                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + refinedToolCount.ToString();
                 break;
             case "Artifact":
                 artifact += 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = artifact.ToString();
+                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + artifact.ToString();
                 break;
             default:
                 Debug.Log("Unknown item tag: " + Item.tag);
@@ -101,15 +101,15 @@ public class TradeHutManager : MonoBehaviour {
         switch (Item.tag) {
             case "Crude Tool":
                 crudeToolCount -= 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = crudeToolCount.ToString();
+                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + crudeToolCount.ToString();
                 break;
             case "Refined Tool":
                 refinedToolCount -= 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = refinedToolCount.ToString();
+                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + refinedToolCount.ToString();
                 break;
             case "Artifact":
                 artifact -= 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = artifact.ToString();
+                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + artifact.ToString();
                 break;
             default:
                 Debug.Log("Unknown item tag: " + Item.tag);

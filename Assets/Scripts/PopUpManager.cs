@@ -88,7 +88,7 @@ public class PopUpManager : MonoBehaviour {
     }
 
     public void OnBuildingButtonClick() {
-        switch(buildingTransform.tag) {
+        switch (buildingTransform.tag) {
             case "Trade Hut":
                 tradeHutManager.ShowTradePanel();
                 DisablePlayerInput();
@@ -97,7 +97,7 @@ public class PopUpManager : MonoBehaviour {
     }
 
     public void DisablePlayerInput() {
-         playerActions.PlayerInput.Disable();
+        playerActions.PlayerInput.Disable();
         HoverScript.Instance.DisbaleHover();
     }
 }
