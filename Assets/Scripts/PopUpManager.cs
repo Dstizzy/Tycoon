@@ -1,33 +1,42 @@
-using NUnit.Framework;
-
 using System.Collections.Generic;
+
+using UnityEditor.Search;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class PopUpManager : MonoBehaviour {
-    public GameObject[] buildingButtonsPreFab;
+    [SerializeField] private GameObject[] buildingButtonsPreFab;
     [SerializeField] private Camera cam;
+    [SerializeField] private TradeHutManager tradeHutManager;
 
     private List<GameObject> popUps;
     private PlayerActions playerActions;
+    private Transform buildingTransform;
+
+    public static PopUpManager Instance { get; private set; }
 
     private void Awake() {
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+        } else {
+            Instance = this;
+        }
+
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.BuildingActions.performed += BuildingActions;
+        playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
     }
 
     private void OnDestroy() {
         if (playerActions != null) {
-            playerActions.PlayerInput.BuildingActions.performed -= BuildingActions;
+            playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
 
-    private void BuildingActions(InputAction.CallbackContext context) {
+    private void OnBuildingClick(InputAction.CallbackContext context) {
 
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
 
@@ -38,20 +47,19 @@ public class PopUpManager : MonoBehaviour {
         worldPos.z = 0;
 
         if (hit.collider != null) {
-            Transform buildingTransform = hit.collider.transform;
+            buildingTransform = hit.collider.transform;
             Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
             Vector3 fixedPopUpPosition = buildingTransform.position + offset;
 
             if (popUps == null) {
 
-                popUps = new List<GameObject>();
+                popUps = new();
 
                 float buttonSpacing = 2.0f;
 
                 foreach (GameObject button in buildingButtonsPreFab) {
                     if (buildingTransform.tag != "Lab" || popUps.Count < 2) {
                         GameObject newButton = Instantiate(button, fixedPopUpPosition, Quaternion.identity);
-
                         popUps.Add(newButton);
                         switch (buildingTransform.tag) {
                             case "Trade Hut":
@@ -80,6 +88,16 @@ public class PopUpManager : MonoBehaviour {
     }
 
     public void OnBuildingButtonClick() {
-        TradeHutManager.Instance.ShowTradePanel();
+        switch(buildingTransform.tag) {
+            case "Trade Hut":
+                tradeHutManager.ShowTradePanel();
+                DisablePlayerInput();
+                break;
+        }
+    }
+
+    public void DisablePlayerInput() {
+         playerActions.PlayerInput.Disable();
+        HoverScript.Instance.DisbaleHover();
     }
 }

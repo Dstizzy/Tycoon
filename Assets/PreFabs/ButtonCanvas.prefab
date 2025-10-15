@@ -383,9 +383,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2170183758339985472, guid: 35c71017c66aae04d8abcf143fd103c9, type: 3}
-        m_TargetAssemblyTypeName: PopUpManager, Assembly-CSharp
-        m_MethodName: OnBuildingButtonClick
+      - m_Target: {fileID: 4799173535455140548, guid: bff470f38a667f54ba61e94560d7af84, type: 3}
+        m_TargetAssemblyTypeName: ClickHandler, Assembly-CSharp
+        m_MethodName: OnPopUpButtonsClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

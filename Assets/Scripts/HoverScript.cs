@@ -9,8 +9,15 @@ public class HoverScript : MonoBehaviour {
     private Transform currentHoverObject;
 
     private PlayerActions playerActions;
+    public static HoverScript Instance { get; private set; }
 
     private void Awake() {
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+        } else {
+            Instance = this;
+        }
+
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
         playerActions.PlayerInput.Hover.performed += Hover;
@@ -48,6 +55,10 @@ public class HoverScript : MonoBehaviour {
         // 5. Update the state for the next frame
         // What we hit this frame becomes the 'previous' object for the next frame's comparison
         prevHoverObject = currentHoverObject;
+    }
+
+    public void DisbaleHover() {
+        playerActions.PlayerInput.Disable();
     }
 
 }
