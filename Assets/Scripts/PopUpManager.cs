@@ -47,11 +47,12 @@ public class PopUpManager : MonoBehaviour {
         worldPos.z = 0;
 
         if (hit.collider != null) {
-            buildingTransform = hit.collider.transform;
-            Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
-            Vector3 fixedPopUpPosition = buildingTransform.position + offset;
+            if (buildingTransform == null || hit.collider.transform.tag != buildingTransform.tag) {
+                buildingTransform = hit.collider.transform;
+                Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
+                Vector3 fixedPopUpPosition = buildingTransform.position + offset;
 
-            if (popUps == null) {
+
 
                 popUps = new();
 
@@ -84,6 +85,12 @@ public class PopUpManager : MonoBehaviour {
                 }
                 popUps = null;
             }
+        } else {
+            foreach (GameObject currentPopUp in popUps) {
+                if (currentPopUp != null)
+                    Destroy(currentPopUp);
+            }
+            popUps = null;
         }
     }
 

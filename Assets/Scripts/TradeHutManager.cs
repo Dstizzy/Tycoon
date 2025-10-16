@@ -2,55 +2,54 @@ using System.Collections.Generic;
 
 using TMPro;
 
-using UnityEditor.Search;
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
+
     public int crudeToolCount = 0;
     public int refinedToolCount = 0;
-    public int artifact = 0;
+    public int artifactCount = 0;
 
-    public Transform container;
-    public Transform tradeItemTemplate;
-    public Transform tradePanel;
-    public Transform infoPanel;
+    public Transform container;          // The parent object where trade items will be placed.
+    public Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
+    public Transform tradePanel;         // The main trade panel UI object.
+    public Transform infoPanel;          // An auxiliary info panel (currently unused).
 
+    const int MIN_SELL_ITEM_COUNT = 0;
+    const int MAX_SELL_ITEM_COUNT = 100;
+
+    // A list to hold references to all the instantiated trade item UI elements.
     private List<Transform> tradeItems = new();
-    //public static TradeHutManager Instance { get; private set; }
 
     private void Awake() {
-        //if (Instance != null && Instance != this) {
-        //    Destroy(gameObject);
-        //} else {
-        //    Instance = this;
-        //}
-
         if (container == null) {
             Debug.LogError("Container is not assigned in the Inspector!");
         }
 
-        if (tradeItemTemplate == null) {
-
-        } else {
+        // Hides the trade item template and the main trade panel when the game starts.
+        if (tradeItemTemplate != null) {
             tradeItemTemplate.gameObject.SetActive(false);
         }
         if (tradePanel == null) {
             Debug.LogError("Trade Panel is not assigned in the Inspector!");
-        } else
+        } else {
             tradePanel.gameObject.SetActive(false);
+        }
     }
 
     private void Start() {
+        // Creates the individual trade item entries for Crude Tools, Refined Tools, and Artifacts
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
-        CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Refined Tool", Item.GetItemValue(Item.ItemType.CrudeTool), 0.0f, "Refined Tool");
-        CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Artifact", Item.GetItemValue(Item.ItemType.CrudeTool), 1.0f, "Artifact");
+        CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
+        CreateItem(Item.GetItemSprite(Item.ItemType.Articfatct), "Artifact", Item.GetItemValue(Item.ItemType.Articfatct), 1.0f, "Artifact");
     }
 
+    // Instantiates a new trade item UI element, sets its visual data, and configures its buttons.
     private void CreateItem(Sprite itemSprite, string itemName, int itemvalue, float positionIndex, string ItemTag) {
         int itemCount = 0;
 
+        // Instantiate the template and set its position in the container.
         Transform tradeItemTransform = Instantiate(tradeItemTemplate, container);
         RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
@@ -59,14 +58,18 @@ public class TradeHutManager : MonoBehaviour {
         float tradeItemWidth = 30f;
         tradeItemRectTransform.anchoredPosition = new Vector2(tradeItemWidth * positionIndex, 0);
 
+        // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
         tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemvalue.ToString();
-        tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemName;
+        tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemName.Equals("Artifact") ? "    Artifact" : itemName;
         tradeItemTransform.Find("ItemImage").GetComponent<Image>().sprite = itemSprite;
-        tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + itemCount.ToString();
+        tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + itemCount.ToString();
 
+        // Get references to the increase and decrease buttons.
         Button increaseButton = tradeItemTransform.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
         Button decreaseButton = tradeItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
+        // Dynamically add listeners to the buttons, passing the specific item's Transform.
+        // This ensures the button click only affects its corresponding item entry.
         increaseButton.onClick.AddListener(() => OnClickIncreaseButton(tradeItemTransform));
         decreaseButton.onClick.AddListener(() => OnClickDecreaseButton(tradeItemTransform));
 
@@ -79,37 +82,54 @@ public class TradeHutManager : MonoBehaviour {
     }
 
     public void OnClickIncreaseButton(Transform Item) {
+        // Uses the item's Tag to determine which counter variable to update.
         switch (Item.tag) {
             case "Crude Tool":
-                crudeToolCount += 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + crudeToolCount.ToString();
+                // Check against the maximum selling limit before incrementing.
+                if (crudeToolCount < MAX_SELL_ITEM_COUNT) {
+                    crudeToolCount += 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolCount.ToString();
+                }
                 break;
             case "Refined Tool":
-                refinedToolCount += 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + refinedToolCount.ToString();
+                if (refinedToolCount < MAX_SELL_ITEM_COUNT) {
+                    refinedToolCount += 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolCount.ToString();
+                }
                 break;
             case "Artifact":
-                artifact += 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + artifact.ToString();
+                if (artifactCount < MAX_SELL_ITEM_COUNT) {
+                    artifactCount += 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactCount.ToString();
+                }
                 break;
             default:
                 Debug.Log("Unknown item tag: " + Item.tag);
                 break;
         }
     }
+
     public void OnClickDecreaseButton(Transform Item) {
+        // Uses the item's Tag to determine which counter variable to update.
         switch (Item.tag) {
             case "Crude Tool":
-                crudeToolCount -= 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + crudeToolCount.ToString();
+                // Check against the minimum selling limit (0) before decrementing.
+                if (crudeToolCount > MIN_SELL_ITEM_COUNT) {
+                    crudeToolCount -= 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolCount.ToString();
+                }
                 break;
             case "Refined Tool":
-                refinedToolCount -= 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + refinedToolCount.ToString();
+                if (refinedToolCount > MIN_SELL_ITEM_COUNT) {
+                    refinedToolCount -= 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolCount.ToString();
+                }
                 break;
             case "Artifact":
-                artifact -= 1;
-                Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "    " + artifact.ToString();
+                if (artifactCount > MIN_SELL_ITEM_COUNT) {
+                    artifactCount -= 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactCount.ToString();
+                }
                 break;
             default:
                 Debug.Log("Unknown item tag: " + Item.tag);
