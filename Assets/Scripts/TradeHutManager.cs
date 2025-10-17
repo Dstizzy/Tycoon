@@ -11,6 +11,8 @@ public class TradeHutManager : MonoBehaviour {
     public Transform container;
     public Transform tradeItemTemplate;
     public Transform tradePanel;
+    public Transform infoPanel;
+    public Transform upgradePanel;
 
     public static TradeHutManager Instance { get; private set; }
 
@@ -57,7 +59,26 @@ public class TradeHutManager : MonoBehaviour {
         tradeItemTransform.gameObject.SetActive(true);
     }
 
-    public void ShowTradePanel() {
-        tradePanel.gameObject.SetActive(true);
+    public void TradeHutButtonClick(int buttonId) {
+        // make sure all panels are inactive
+        tradePanel.gameObject.SetActive(false);
+        infoPanel.gameObject.SetActive(false);
+        upgradePanel.gameObject.SetActive(false);
+
+        switch (buttonId)
+        {
+            case 0:
+                tradePanel.gameObject.SetActive(true);
+                break;
+            case 1:
+                infoPanel.gameObject.SetActive(true);
+                break;
+            case 2:
+                upgradePanel.gameObject.SetActive(true);
+                break;
+            default:
+                Debug.LogWarning("Invalid button ID received");
+                break;
+        }
     }
 }
