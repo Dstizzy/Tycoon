@@ -33,7 +33,7 @@ public class CameraAutoBounds : MonoBehaviour
         }
 
         // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
-        Renderer[] renderers = FindObjectsOfType<Renderer>();
+        Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
         if (renderers.Length == 0)
         {
             Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
