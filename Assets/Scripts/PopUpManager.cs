@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PopUpManager : MonoBehaviour
 {
@@ -13,6 +13,7 @@ public class PopUpManager : MonoBehaviour
 
     private List<GameObject> popUps;
     private PlayerActions playerActions;
+    private Transform lastClickedBuilding;
 
     private TradeHutManager tradeHutManager;
     public static Transform buildingTransform;
@@ -56,89 +57,76 @@ public class PopUpManager : MonoBehaviour
 
         worldPos.z = 0;
 
-        if (hit.collider != null)
-        {
-            buildingTransform = hit.collider.transform;
+        if (hit.collider != null) {
+            lastClickedBuilding = hit.collider.transform;
+            Transform buildingTransform = lastClickedBuilding;
             Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
             Vector3 fixedPopUpPosition = buildingTransform.position + offset;
 
-            if (popUps == null)
+            if(popUps != null)
             {
-                popUps = new List<GameObject>();
-
-                float buttonSpacing = 2.0f;
-
-                foreach (GameObject button in buildingButtonsPreFab)
-                {
-                    if (buildingTransform.tag != "Lab" || popUps.Count < 2)
-                    {
-                        GameObject newButton = Instantiate(button, fixedPopUpPosition, Quaternion.identity);
-
-                        popUps.Add(newButton);
-                        switch (buildingTransform.tag)
-                        {
-                            case "Trade Hut":
-                                if (popUps.Count == 1)
-                                    newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Trade");
-                                else if (popUps.Count == 2)
-                                    newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Info");
-                                else
-                                    newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Upgrade");
-                                newButton.tag = "Trade Hut";
-                                break;
-                            default:
-                                newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Test");
-                                break;
-                        }
-                        fixedPopUpPosition.y -= buttonSpacing;
-                    }
-                }
-            }
-            else
-            {
-                foreach (GameObject currentPopUp in popUps)
+                foreach(GameObject currentPopUp in popUps)
                 {
                     if (currentPopUp != null)
                         Destroy(currentPopUp);
                 }
                 popUps = null;
+                return;
             }
-        }
-        else
-        {
-            if(hit.collider != popUps[0] || hit.collider != popUps[1] || hit.collider != popUps[2])
+
+            popUps = new List<GameObject>();
+            float buttonSpacing = 2.0f;
+
+            int buttonCount = (buildingTransform.CompareTag("Lab")) ? 2 : 3;
+
+            for(int i = 0; i < buttonCount && i < buildingButtonsPreFab.Length; i++)
             {
+                GameObject buttonPreFab = buildingButtonsPreFab[i];
+                GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
+                popUps.Add(newButton);
 
-                foreach (GameObject currentPopUp in popUps)
+                string buttonText = i switch
                 {
-                    if (currentPopUp != null)
-                        Destroy(currentPopUp);
+                    0 => "Trade",
+                    1 => "Info",
+                    2 => "Upgrade",
+                    _ => "Button"
+                };
+
+                ButtonsPopUp buttonComponent = newButton.GetComponentInChildren<ButtonsPopUp>();
+                buttonComponent.SetText(buttonText);
+
+                int capturedId = i;
+                Button uiButton = newButton.GetComponentInChildren<Button>();
+                if (uiButton != null)
+                {
+                    uiButton.onClick.RemoveAllListeners();
+                    uiButton.onClick.AddListener(() => OnBuildingButtonClick(capturedId));
                 }
-                popUps = null;
+                else
+                    Debug.LogWarning("button was null");
+                fixedPopUpPosition.y -= buttonSpacing;
             }
         }
-
     }
-    public void ShowFunctionPanel()
+
+    public void OnBuildingButtonClick(int buttonId)
     {
-        TradeHutManager.Instance.ShowTradePanel();
-        switch (buildingTransform.tag)
+        if(lastClickedBuilding == null)
+        {
+            Debug.LogWarning("No building was selected before clicking a button");
+            return;
+        }
+
+        string buildingTag = lastClickedBuilding.tag;
+        switch (buildingTag)
         {
             case "Trade Hut":
-                TradeHutManager.Instance.ShowTradePanel();
-                TradeHutManager myManager = new TradeHutManager();
-                myManager.ShowTradePanel();
+                TradeHutManager.Instance.TradeHutButtonClick(buttonId);
                 break;
             default:
-                Debug.Log("No function assigned to this building.");
+                Debug.LogWarning($"Unknown building tag: {buildingTag}");
                 break;
         }
-    }
-    public void ShowInfoPanel()
-    {
-    }
-
-    public void ShowUpgradePanel()
-    {
     }
 }
