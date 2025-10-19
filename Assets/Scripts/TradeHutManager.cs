@@ -7,15 +7,16 @@ using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
 
-    public int crudeToolCount = 0;
-    public int refinedToolCount = 0;
-    public int artifactCount = 0;
-
     public Transform container;          // The parent object where trade items will be placed.
     public Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
     public Transform tradePanel;
     public Transform infoPanel;
     public Transform upgradePanel;
+
+    public int crudeToolCount = 0;
+    public int refinedToolCount = 0;
+    public int artifactCount = 0;
+
 
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
@@ -81,8 +82,6 @@ public class TradeHutManager : MonoBehaviour {
         tradeItems.Add(tradeItemTransform);
     }
 
-
-
     public void OnClickIncreaseButton(Transform Item) {
         // Uses the item's Tag to determine which counter variable to update.
         switch (Item.tag) {
@@ -143,6 +142,7 @@ public class TradeHutManager : MonoBehaviour {
         switch (buttonID) {
             case TRADE_BUTTON:
                 ShowTradePanel();
+                tradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
                 break;
             case INFO_BUTTON:
                 Debug.Log("Building Panel: Sell requested.");
@@ -171,6 +171,7 @@ public class TradeHutManager : MonoBehaviour {
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
         }
+        PopUpManager.Instance.EnablePlayerInput();
     }
     private void ShowTradePanel() {
         tradePanel.gameObject.SetActive(true);
