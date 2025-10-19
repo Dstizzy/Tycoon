@@ -7,12 +7,14 @@ using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
     public int crudeToolCount = 0;
-
-    public Transform container;
+    public static int tradeHutLevel = 1;
+    public GameObject upgradeContainer;
+    public Transform tradeContainer;
     public Transform tradeItemTemplate;
     public Transform tradePanel;
     public Transform infoPanel;
     public Transform upgradePanel;
+    public TextMeshProUGUI tradeHutLevelText;
 
     public static TradeHutManager Instance { get; private set; }
 
@@ -23,7 +25,7 @@ public class TradeHutManager : MonoBehaviour {
             Instance = this;
         }
 
-        if (container == null) {
+        if (tradeContainer == null) {
             Debug.LogError("Container is not assigned in the Inspector!");
         } 
         
@@ -43,10 +45,14 @@ public class TradeHutManager : MonoBehaviour {
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f);
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), 0.0f);
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), 1.0f);
+
+        Button[] buttons = upgradeContainer.GetComponentsInChildren<Button>();
+        buttons[0].onClick.AddListener(() => UpgradeButtonClick("yes"));
+        buttons[1].onClick.AddListener(() => UpgradeButtonClick("cancel"));
     }
 
     private void CreateItem(Sprite itemSprite, string itemName, int itemvalue, float positionIndex) {
-        Transform tradeItemTransform = Instantiate(tradeItemTemplate, container);
+        Transform tradeItemTransform = Instantiate(tradeItemTemplate, tradeContainer);
         RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
         float tradeItemWidth = 30f;
@@ -57,6 +63,31 @@ public class TradeHutManager : MonoBehaviour {
         tradeItemTransform.Find("ItemImage").GetComponent<Image>().sprite = itemSprite;
 
         tradeItemTransform.gameObject.SetActive(true);
+    }
+
+    public int GetTradeHutLevel()
+    {
+                return tradeHutLevel;
+    }
+
+    public void UpgradeButtonClick(string buttonType)
+    {
+        if(buttonType == "yes")
+        {
+            tradeHutLevel++;
+            tradeHutLevelText.text = $"lvl. {tradeHutLevel}";
+            Debug.Log("Yes button clicked");
+        }
+        else if (buttonType == "cancel")
+        {
+            upgradePanel.gameObject.SetActive(false);
+            Debug.Log("Upgrade cancelled.");
+        }
+        else
+        {
+            Debug.LogWarning("Invalid button type received");
+        }
+
     }
 
     public void TradeHutButtonClick(int buttonId) {

@@ -1,6 +1,7 @@
 using NUnit.Framework;
 
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,20 +18,10 @@ public class PopUpManager : MonoBehaviour
 
     private TradeHutManager tradeHutManager;
     public static Transform buildingTransform;
-
-    public static PopUpManager Instance { get; private set; }
+    public TextMeshProUGUI TradeHutLevel;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
         playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
@@ -57,15 +48,16 @@ public class PopUpManager : MonoBehaviour
 
         worldPos.z = 0;
 
-        if (hit.collider != null) {
+        if (hit.collider != null)
+        {
             lastClickedBuilding = hit.collider.transform;
             Transform buildingTransform = lastClickedBuilding;
             Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
             Vector3 fixedPopUpPosition = buildingTransform.position + offset;
 
-            if(popUps != null)
+            if (popUps != null)
             {
-                foreach(GameObject currentPopUp in popUps)
+                foreach (GameObject currentPopUp in popUps)
                 {
                     if (currentPopUp != null)
                         Destroy(currentPopUp);
@@ -79,7 +71,7 @@ public class PopUpManager : MonoBehaviour
 
             int buttonCount = (buildingTransform.CompareTag("Lab")) ? 2 : 3;
 
-            for(int i = 0; i < buttonCount && i < buildingButtonsPreFab.Length; i++)
+            for (int i = 0; i < buttonCount && i < buildingButtonsPreFab.Length; i++)
             {
                 GameObject buttonPreFab = buildingButtonsPreFab[i];
                 GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
@@ -108,6 +100,17 @@ public class PopUpManager : MonoBehaviour
                 fixedPopUpPosition.y -= buttonSpacing;
             }
         }
+
+        if (TradeHutLevel.gameObject.activeInHierarchy)
+        {
+            TradeHutLevel.text = "Hello";
+            TradeHutLevel.text = $"lvl. {tradeHutManager.GetTradeHutLevel()}";
+            TradeHutLevel.gameObject.SetActive(false);
+        }
+        else
+        {
+            TradeHutLevel.gameObject.SetActive(true);
+        }
     }
 
     public void OnBuildingButtonClick(int buttonId)
@@ -122,7 +125,8 @@ public class PopUpManager : MonoBehaviour
         switch (buildingTag)
         {
             case "Trade Hut":
-                TradeHutManager.Instance.TradeHutButtonClick(buttonId);
+                tradeHutManager = TradeHutManager.Instance;
+                tradeHutManager.TradeHutButtonClick(buttonId);
                 break;
             default:
                 Debug.LogWarning($"Unknown building tag: {buildingTag}");
