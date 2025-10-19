@@ -61,6 +61,10 @@ public class HoverScript : MonoBehaviour {
         playerActions.PlayerInput.Disable();
     }
 
+    public void EnableHover() {
+        playerActions.PlayerInput.Enable();
+    }
+
 }
 
 

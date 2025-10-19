@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using UnityEditor.Search;
+using Unity.VisualScripting;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -73,43 +73,97 @@ public class PopUpManager : MonoBehaviour {
 
         popUps = new();
 
-        foreach (GameObject button in buildingButtonsPreFab) {
-            if (buildingTransform.tag != "Lab" || popUps.Count < 2) {
-                GameObject newButton = Instantiate(button, fixedPopUpPosition, Quaternion.identity);
-                popUps.Add(newButton);
-                if (popUps.Count == 1) {
-                    switch (buildingTransform.tag) {
-                        case "Trade Hut":
-                            newButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnBuildingButtonClick(buildingTransform));
-                            newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Trade");
-                            break;
-                        default:
-                            newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Test");
-                            break;
-                    }
-                } else if (popUps.Count == 2) {
-                    newButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnBuildingButtonClick(buildingTransform));
-                    newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Info");
-                } else {
-                    newButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnBuildingButtonClick(buildingTransform));
-                    newButton.GetComponentInChildren<ButtonsPopUp>().SetText("Upgrade");
-                }
-            }
+        int buttonCount = (buildingTransform.CompareTag("Lab")) ? 2 : buildingButtonsPreFab.Length;
+
+        for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++) {
+
+            GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
+            GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
+
+            popUps.Add(newButton);
+
+            string uniqueButtonName = buildingTransform.tag switch {
+                "Trade Hut" => "Trade",
+                "Lab" => "Research",
+                "Ore Refinory" => "Refine",
+                "Exploration Unit" => "Explore",
+                "Forge" => "Craft",
+                _ => "BuildingButton"
+            };
+
+            string buttonText = buttonIndex switch {
+                0 => uniqueButtonName,
+                1 => "Info",
+                2 => "Upgrade",
+                _ => "Button"
+            };
+
+            int buttonId = buttonIndex + 1;
+
+            newButton.GetComponentInChildren<ButtonsPopUp>().SetText(buttonText);
+            newButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnBuildingButtonClick(buttonId));
+
             fixedPopUpPosition.y -= buttonSpacing;
         }
     }
-    public void OnBuildingButtonClick(Transform buildingTransform) {
+    public void OnBuildingButtonClick(int buttonId) {
         switch (buildingTransform.tag) {
             case "Trade Hut":
-                tradeHutManager.ShowTradePanel();
-                DisablePlayerInput();
+                tradeHutManager.RequestTradeHutPanel(buttonId);
+                break;
+            //case "Lab":
+            //    labManaager.RequestTradeHutPanel(buttonId);
+            //    break;
+            //case "Forge":
+            //    forgeManager.RequestForgePanel(buttonId);
+            //    break;
+            //case "Ore Refinory":
+            //    oreRefinoryManager.RequestOreRefinoryPanel(buttonId);
+            //    break;
+            //case "Exploration Unit":
+            //    explorationUnitManager.RequestExplorationUnitPanel(buttonId);
+            //    break;
+            default:
+                Debug.Log("Building Panel: Unknown building type.");
                 break;
         }
+        DisablePlayerInput();
     }
+    public void ClosePanel(int buttonId) {
+        switch (buildingTransform.tag) {
+            case "Trade Hut":
+                tradeHutManager.CloseTradeHutPanel(buttonId);
+                break;
+            //case "Lab":
+            //    labManaager.RequestTradeHutPanel(buttonId);
+            //    break;
+            //case "Forge":
+            //    forgeManager.RequestForgePanel(buttonId);
+            //    break;
+            //case "Ore Refinory":
+            //    oreRefinoryManager.RequestOreRefinoryPanel(buttonId);
+            //    break;
+            //case "Exploration Unit":
+            //    explorationUnitManager.RequestExplorationUnitPanel(buttonId);
+            //    break;
+            default:
+                Debug.Log("Building Panel: Unknown building type.");
+                break;
+        }
+        EnablePlayerInput();
+    }
+   
+
     public void DisablePlayerInput() {
         playerActions.PlayerInput.Disable();
         HoverScript.Instance.DisbaleHover();
     }
+    public void EnablePlayerInput() {
+        playerActions.PlayerInput.Enable();
+        HoverScript.Instance.EnableHover();
+        ClosePopUps();
+    }
+
     private void ClosePopUps() {
         if (popUps != null) {
             foreach (GameObject currentPopUp in popUps) {

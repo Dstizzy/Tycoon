@@ -13,11 +13,16 @@ public class TradeHutManager : MonoBehaviour {
 
     public Transform container;          // The parent object where trade items will be placed.
     public Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
-    public Transform tradePanel;         // The main trade panel UI object.
-    public Transform infoPanel;          // An auxiliary info panel (currently unused).
+    public Transform tradePanel;
+    public Transform infoPanel;
+    public Transform upgradePanel;
 
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
+    const int TRADE_ITEM_SPACING = 30;
+    const int TRADE_BUTTON = 1;
+    const int INFO_BUTTON = 2;
+    const int UPGRADE_BUTTON = 3;
 
     // A list to hold references to all the instantiated trade item UI elements.
     private List<Transform> tradeItems = new();
@@ -55,8 +60,7 @@ public class TradeHutManager : MonoBehaviour {
 
         tradeItemTransform.tag = ItemTag;
 
-        float tradeItemWidth = 30f;
-        tradeItemRectTransform.anchoredPosition = new Vector2(tradeItemWidth * positionIndex, 0);
+        tradeItemRectTransform.anchoredPosition = new Vector2(TRADE_ITEM_SPACING * positionIndex, 0);
 
         // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
         tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemvalue.ToString();
@@ -77,9 +81,7 @@ public class TradeHutManager : MonoBehaviour {
         tradeItems.Add(tradeItemTransform);
     }
 
-    public void ShowTradePanel() {
-        tradePanel.gameObject.SetActive(true);
-    }
+
 
     public void OnClickIncreaseButton(Transform Item) {
         // Uses the item's Tag to determine which counter variable to update.
@@ -136,4 +138,57 @@ public class TradeHutManager : MonoBehaviour {
                 break;
         }
     }
+
+    public void RequestTradeHutPanel(int buttonID) {
+        switch (buttonID) {
+            case TRADE_BUTTON:
+                ShowTradePanel();
+                break;
+            case INFO_BUTTON:
+                Debug.Log("Building Panel: Sell requested.");
+                break;
+            case UPGRADE_BUTTON:
+                Debug.Log("Building Panel: Info requested.");
+                break;
+            default:
+                Debug.Log("Building Panel: Unknown button ID.");
+                break;
+        }
+    }
+
+    public void CloseTradeHutPanel(int buttonID) {
+        switch (buttonID) {
+            case TRADE_BUTTON:
+                CloseTradePanel();
+                break;
+            case INFO_BUTTON:
+                Debug.Log("Building Panel: Sell requested.");
+                break;
+            case UPGRADE_BUTTON:
+                Debug.Log("Building Panel: Info requested.");
+                break;
+            default:
+                Debug.Log("Building Panel: Unknown button ID.");
+                break;
+        }
+    }
+    private void ShowTradePanel() {
+        tradePanel.gameObject.SetActive(true);
+    }
+    private void ShowInfoPane() {
+        infoPanel.gameObject.SetActive(true);
+    }
+    private void ShowUpgradePanel() {
+        upgradePanel.gameObject.SetActive(true);
+    }
+    private void CloseTradePanel() {
+        tradePanel.gameObject.SetActive(false);
+    }
+    private void CloseInfoPanel() {
+        infoPanel.gameObject.SetActive(false);
+    }
+    private void CloseUpgradePanel() {
+        upgradePanel.gameObject.SetActive(false);
+    }
+
 }
