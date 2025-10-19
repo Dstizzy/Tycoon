@@ -32,9 +32,15 @@ public class CameraAutoBounds : MonoBehaviour
             }
         }
 
-        // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
-        Renderer[] renderers = FindObjectsOfType<Renderer>();
-        if (renderers.Length == 0)
+#if UNITY_2023_1_OR_NEWER
+        // *New API (FindObjectsByType) for Unity 2023+
+        Renderer[] renderers = Object.FindObjectsByType<Renderer>(FindObjectsSortMode.InstanceID);
+#else
+        // Legacy fallback for older Unity versions
+        Renderer[] renderers = Object.FindObjectsOfType<Renderer>();
+#endif
+
+        if (renderers == null || renderers.Length == 0)
         {
             Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
             return;
@@ -67,7 +73,6 @@ public class CameraAutoBounds : MonoBehaviour
         // Add extra space
         min += Vector2.one * margin;
         max -= Vector2.one * margin;
-
 
         // Passing values to the CameraDragPan script
         targetPanScript.minWorld = min;
