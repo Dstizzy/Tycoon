@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Trade Hut
   - Lab
+  - Exploration
+  - Forge
+  - Refinery
   layers:
   - Default
   - TransparentFX
