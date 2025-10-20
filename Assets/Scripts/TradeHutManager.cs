@@ -45,6 +45,12 @@ public class TradeHutManager : MonoBehaviour {
         } else {
             tradePanel.gameObject.SetActive(false);
         }
+
+        if (infoPanel == null) {
+            Debug.LogError("Info Panel is not assigned in the Inspector!");
+        } else {
+            infoPanel.gameObject.SetActive(false);
+        }
     }
 
     private void Start() {
@@ -148,7 +154,8 @@ public class TradeHutManager : MonoBehaviour {
                 tradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
                 break;
             case INFO_BUTTON:
-                Debug.Log("Building Panel: Sell requested.");
+                ShowInfoPanel();
+                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
                 Debug.Log("Building Panel: Info requested.");
@@ -165,7 +172,7 @@ public class TradeHutManager : MonoBehaviour {
                 CloseTradePanel();
                 break;
             case INFO_BUTTON:
-                Debug.Log("Building Panel: Sell requested.");
+                CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
                 Debug.Log("Building Panel: Info requested.");
@@ -179,7 +186,7 @@ public class TradeHutManager : MonoBehaviour {
     private void ShowTradePanel() {
         tradePanel.gameObject.SetActive(true);
     }
-    private void ShowInfoPane() {
+    private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     private void ShowUpgradePanel() {
