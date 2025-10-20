@@ -13,7 +13,7 @@ public class Item {
     public static int GetItemValue(ItemType itemType) {
         switch(itemType) {
             case ItemType.CrudeTool: 
-                return 6;
+                return 5;
             case ItemType.RefinedTool: 
                 return 10;
             case ItemType.Articfatct: 
@@ -27,10 +27,10 @@ public class Item {
         switch(itemType) {
             case ItemType.CrudeTool: 
                 return ItemSprites.itemSprites.crudeTool;
-            //case ItemType.RefinedTool: 
-            //    return Resources.Load<Image>("Images/Items/RefinedTool");
-            //case ItemType.Articfatct: 
-            //    return Resources.Load<Image>("Images/Items/Artifact");
+            case ItemType.RefinedTool:
+                return ItemSprites.itemSprites.refinedTool;
+            case ItemType.Articfatct: 
+                return ItemSprites.itemSprites.artifact;
             default:
                 return null;
         }

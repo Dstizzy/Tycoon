@@ -6,9 +6,18 @@ TagManager:
   tags:
   - Trade Hut
   - Lab
+<<<<<<< HEAD
   - Exploration
   - Forge
   - Refinery
+=======
+  - Crude Tool
+  - Artifact
+  - Refined Tool
+  - Exploration
+  - Ore Refinery
+  - Forge
+>>>>>>> origin/main-2
   layers:
   - Default
   - TransparentFX
