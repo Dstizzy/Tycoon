@@ -32,6 +32,7 @@ public class CameraAutoBounds : MonoBehaviour
             }
         }
 
+<<<<<<< HEAD
 #if UNITY_2023_1_OR_NEWER
         // *New API (FindObjectsByType) for Unity 2023+
         Renderer[] renderers = Object.FindObjectsByType<Renderer>(FindObjectsSortMode.InstanceID);
@@ -41,6 +42,11 @@ public class CameraAutoBounds : MonoBehaviour
 #endif
 
         if (renderers == null || renderers.Length == 0)
+=======
+        // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
+        Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+        if (renderers.Length == 0)
+>>>>>>> 58937ec8a73d706d4bf7d9e665afe73e038e7c55
         {
             Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
             return;

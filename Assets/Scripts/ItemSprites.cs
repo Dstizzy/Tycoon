@@ -14,4 +14,6 @@ public class ItemSprites : MonoBehaviour
 
     [Header("Item Sprites")]
     public Sprite crudeTool;
+    public Sprite refinedTool;
+    public Sprite artifact;
 }

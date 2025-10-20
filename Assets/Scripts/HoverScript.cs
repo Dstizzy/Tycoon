@@ -9,8 +9,15 @@ public class HoverScript : MonoBehaviour {
     private Transform currentHoverObject;
 
     private PlayerActions playerActions;
+    public static HoverScript Instance { get; private set; }
 
     private void Awake() {
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+        } else {
+            Instance = this;
+        }
+
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
         playerActions.PlayerInput.Hover.performed += Hover;
@@ -34,20 +41,42 @@ public class HoverScript : MonoBehaviour {
         // =========================================================
 
         // Case A: Mouse moved OFF the previous object (either to empty space or a new object)
-        if (prevHoverObject != null && prevHoverObject != currentHoverObject) {
-            // Revert the color/state of the object we just left
-            prevHoverObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        if (prevHoverObject != null && prevHoverObject != currentHoverObject)
+        {
+            // Retrieve the SpriteRenderer and check if it exists before using it
+            SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
+
+            if (prevRenderer != null)
+            { // <-- ADDED NULL CHECK HERE
+              // Revert the color/state of the object we just left
+                prevRenderer.color = Color.white;
+            }
         }
 
         // Case B: Mouse moved ONTO a new object
-        if (currentHoverObject != null && currentHoverObject != prevHoverObject) {
-            // Set the color/state of the new object
-            currentHoverObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        if (currentHoverObject != null && currentHoverObject != prevHoverObject)
+        {
+            // Retrieve the SpriteRenderer and check if it exists before using it
+            SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
+
+            if (currentRenderer != null)
+            { // <-- ADDED NULL CHECK HERE
+              // Set the color/state of the new object
+                currentRenderer.color = Color.red;
+            }
         }
 
-        // 5. Update the state for the next frame
-        // What we hit this frame becomes the 'previous' object for the next frame's comparison
-        prevHoverObject = currentHoverObject;
+            // 5. Update the state for the next frame
+            // What we hit this frame becomes the 'previous' object for the next frame's comparison
+            prevHoverObject = currentHoverObject;
+    }
+
+    public void DisbaleHover() {
+        playerActions.PlayerInput.Disable();
+    }
+
+    public void EnableHover() {
+        playerActions.PlayerInput.Enable();
     }
 
 }
