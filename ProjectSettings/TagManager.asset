@@ -7,17 +7,23 @@ TagManager:
   - Trade Hut
   - Lab
 <<<<<<< HEAD
+<<<<<<< HEAD
   - Exploration
   - Forge
   - Refinery
 =======
+=======
+>>>>>>> origin/Chloe
   - Crude Tool
   - Artifact
   - Refined Tool
   - Exploration
   - Ore Refinery
   - Forge
+<<<<<<< HEAD
 >>>>>>> origin/main-2
+=======
+>>>>>>> origin/Chloe
   layers:
   - Default
   - TransparentFX

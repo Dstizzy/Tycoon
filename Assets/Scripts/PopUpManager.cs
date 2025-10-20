@@ -15,13 +15,19 @@ public class PopUpManager : MonoBehaviour {
     private List<GameObject> popUps;
     private PlayerActions playerActions;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private Transform lastClickedBuilding;
 =======
+=======
+>>>>>>> origin/Chloe
     private Transform buildingTransform;
     private List<RaycastResult> raycastResults = new List<RaycastResult>();
 
     public static PopUpManager Instance { get; private set; }
+<<<<<<< HEAD
 >>>>>>> origin/main-2
+=======
+>>>>>>> origin/Chloe
 
     private void Awake() {
         if (Instance != null && Instance != this) {
@@ -32,6 +38,7 @@ public class PopUpManager : MonoBehaviour {
 
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
+<<<<<<< HEAD
 <<<<<<< HEAD
         playerActions.PlayerInput.BuildingActions.performed += OnBuildingClick;
 =======
@@ -45,6 +52,13 @@ public class PopUpManager : MonoBehaviour {
 =======
             playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
 >>>>>>> origin/main-2
+=======
+        playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
+    }
+    private void OnDestroy() {
+        if (playerActions != null) {
+            playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
+>>>>>>> origin/Chloe
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
@@ -52,11 +66,16 @@ public class PopUpManager : MonoBehaviour {
     private void OnBuildingClick(InputAction.CallbackContext context) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private void OnBuildingClick(InputAction.CallbackContext context) {
 =======
         PointerEventData eventData = new PointerEventData(EventSystem.current);
         eventData.position = Mouse.current.position.ReadValue();
 >>>>>>> origin/main-2
+=======
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Mouse.current.position.ReadValue();
+>>>>>>> origin/Chloe
 
         // 2. CLEAR and CHECK FOR UI HITS using RaycastAll
         raycastResults.Clear();
@@ -72,6 +91,7 @@ public class PopUpManager : MonoBehaviour {
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
 
         if (hit.collider != null) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             lastClickedBuilding = hit.collider.transform;
             Transform buildingTransform = lastClickedBuilding;
@@ -123,6 +143,8 @@ public class PopUpManager : MonoBehaviour {
                 fixedPopUpPosition.y -= buttonSpacing;
             }
 =======
+=======
+>>>>>>> origin/Chloe
             if (popUps == null || (buildingTransform != null && hit.collider.transform.tag != buildingTransform.tag)) {
                 ClosePopUps();
                 buildingTransform = hit.collider.transform;
@@ -131,7 +153,10 @@ public class PopUpManager : MonoBehaviour {
                 ClosePopUps();
         } else {
             ClosePopUps();
+<<<<<<< HEAD
 >>>>>>> origin/main-2
+=======
+>>>>>>> origin/Chloe
         }
     }
     private void CreateBuildingButtons(Transform buildingTransform) {
@@ -139,6 +164,7 @@ public class PopUpManager : MonoBehaviour {
         Vector3 fixedPopUpPosition = buildingTransform.position + offset;
         float buttonSpacing = 2.0f;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     public void OnBuildingButtonClick(int buttonId)
     {
@@ -159,6 +185,8 @@ public class PopUpManager : MonoBehaviour {
                 break;
         }
 =======
+=======
+>>>>>>> origin/Chloe
         popUps = new();
 
         int buttonCount = (buildingTransform.CompareTag("Lab")) ? 2 : buildingButtonsPreFab.Length;
@@ -261,6 +289,9 @@ public class PopUpManager : MonoBehaviour {
             popUps = null;
             buildingTransform = null;
         }
+<<<<<<< HEAD
 >>>>>>> origin/main-2
+=======
+>>>>>>> origin/Chloe
     }
 }
