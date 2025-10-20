@@ -145,7 +145,7 @@ public class TradeHutManager : MonoBehaviour {
                 tradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
                 break;
             case INFO_BUTTON:
-                ShowInfoPane();
+                ShowInfoPanel();
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
@@ -178,7 +178,7 @@ public class TradeHutManager : MonoBehaviour {
     private void ShowTradePanel() {
         tradePanel.gameObject.SetActive(true);
     }
-    private void ShowInfoPane() {
+    private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     private void ShowUpgradePanel() {
