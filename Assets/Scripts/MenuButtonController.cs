@@ -12,8 +12,6 @@ public class MenuButtonController : MonoBehaviour
         ButtonPanel.SetActive(isVisible);
 
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/changed_main
+
+
