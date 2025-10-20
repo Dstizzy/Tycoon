@@ -16,12 +16,19 @@ public class ForgeManager : MonoBehaviour {
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+
+        if( craftPanel == null) {
+            Debug.LogError("Craft Panel is not assigned");
+        } else {
+            craftPanel.gameObject.SetActive(false);
+        }
     }
 
     public void RequestForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:
-                Debug.Log("Forge Panel: Refine requested.");
+                ShowCraftPanel();
+                craftPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
                 break;
             case INFO_BUTTON:
                 ShowInfoPanel();
@@ -39,7 +46,7 @@ public class ForgeManager : MonoBehaviour {
     public void CloseForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:
-                CloseTradePanel();
+                CloseCraftPanel();
                 break;
             case INFO_BUTTON:
                 CloseInfoPanel();
@@ -53,7 +60,7 @@ public class ForgeManager : MonoBehaviour {
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
-    private void ShowExplorePanel() {
+    private void ShowCraftPanel() {
         craftPanel.gameObject.SetActive(true);
     }
     private void ShowInfoPanel() {
@@ -62,7 +69,7 @@ public class ForgeManager : MonoBehaviour {
     private void ShowUpgradePanel() {
         upgradePanel.gameObject.SetActive(true);
     }
-    private void CloseTradePanel() {
+    private void CloseCraftPanel() {
         craftPanel.gameObject.SetActive(false);
     }
     private void CloseInfoPanel() {

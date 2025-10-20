@@ -16,12 +16,19 @@ public class LabManager : MonoBehaviour
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+
+        if(innovatePanel == null) {
+            Debug.LogError("Innovate Panel is not assigned");
+        } else {
+            innovatePanel.gameObject.SetActive(false);
+        }
     }
 
     public void RequestLabPanel(int buttonID) {
         switch (buttonID) {
             case INNOVATE_BUTTON:
-                Debug.Log("Forge Panel: Refine requested.");
+                ShowInnovatePanel();
+                innovatePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INNOVATE_BUTTON));
                 break;
             case INFO_BUTTON:
                 ShowInfoPanel();
@@ -39,7 +46,7 @@ public class LabManager : MonoBehaviour
     public void CloseLabPanel(int buttonID) {
         switch (buttonID) {
             case INNOVATE_BUTTON:
-                CloseTradePanel();
+                CloseInnovatePanel();
                 break;
             case INFO_BUTTON:
                 CloseInfoPanel();
@@ -53,14 +60,14 @@ public class LabManager : MonoBehaviour
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
-    private void ShowExplorePanel() {
+    private void ShowInnovatePanel() {
         innovatePanel.gameObject.SetActive(true);
     }
     private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     
-    private void CloseTradePanel() {
+    private void CloseInnovatePanel() {
         innovatePanel.gameObject.SetActive(false);
     }
     private void CloseInfoPanel() {
