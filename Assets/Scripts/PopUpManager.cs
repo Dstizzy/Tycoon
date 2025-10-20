@@ -11,6 +11,10 @@ public class PopUpManager : MonoBehaviour {
     [SerializeField] private GameObject[] buildingButtonsPreFab;
     [SerializeField] private Camera cam;
     [SerializeField] private TradeHutManager tradeHutManager;
+    [SerializeField] private ExplorationUnitManager explortionUnitManager;
+    [SerializeField] private OreRefinery_Manager oreRefineryManager;
+    [SerializeField] private ForgeManager forgeManager;
+    [SerializeField] private LabManager labManager;
 
     private List<GameObject> popUps;
     private PlayerActions playerActions;
@@ -111,48 +115,24 @@ public class PopUpManager : MonoBehaviour {
             case "Trade Hut":
                 tradeHutManager.RequestTradeHutPanel(buttonId);
                 break;
-            //case "Lab":
-            //    labManaager.RequestTradeHutPanel(buttonId);
-            //    break;
-            //case "Forge":
-            //    forgeManager.RequestForgePanel(buttonId);
-            //    break;
-            //case "Ore Refinory":
-            //    oreRefinoryManager.RequestOreRefinoryPanel(buttonId);
-            //    break;
-            //case "Exploration Unit":
-            //    explorationUnitManager.RequestExplorationUnitPanel(buttonId);
-            //    break;
+            case "Lab":
+                labManager.RequestLabPanel(buttonId);
+                break;
+            case "Forge":
+                forgeManager.RequestForgePanel(buttonId);
+                break;
+            case "Ore Refinery":
+                oreRefineryManager.RequestOreRefinoryPanel(buttonId);
+                break;
+            case "Exploration Unit":
+                explortionUnitManager.RequestExplorationUnitPanel(buttonId);
+                break;
             default:
                 Debug.Log("Building Panel: Unknown building type.");
                 break;
         }
         DisablePlayerInput();
     }
-    //public void ClosePanel(int buttonId) {
-    //    switch (buildingTransform.tag) {
-    //        case "Trade Hut":
-    //            tradeHutManager.CloseTradeHutPanel(buttonId);
-    //            break;
-    //        //case "Lab":
-    //        //    labManaager.RequestTradeHutPanel(buttonId);
-    //        //    break;
-    //        //case "Forge":
-    //        //    forgeManager.RequestForgePanel(buttonId);
-    //        //    break;
-    //        //case "Ore Refinory":
-    //        //    oreRefinoryManager.RequestOreRefinoryPanel(buttonId);
-    //        //    break;
-    //        //case "Exploration Unit":
-    //        //    explorationUnitManager.RequestExplorationUnitPanel(buttonId);
-    //        //    break;
-    //        default:
-    //            Debug.Log("Building Panel: Unknown building type.");
-    //            break;
-    //    }
-    //    EnablePlayerInput();
-    //}
-   
 
     public void DisablePlayerInput() {
         playerActions.PlayerInput.Disable();
