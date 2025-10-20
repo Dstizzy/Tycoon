@@ -14,7 +14,12 @@ public class PopUpManager : MonoBehaviour {
     private PlayerActions playerActions;
     private Transform lastClickedBuilding;
 
-    private void Awake() {
+    [SerializeField] private TradeHutManager tradeHutManager;
+    public static Transform buildingTransform;
+    public TextMeshProUGUI TradeHutLevel;
+
+    private void Awake()
+    {
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
         playerActions.PlayerInput.BuildingActions.performed += OnBuildingClick;
@@ -28,8 +33,8 @@ public class PopUpManager : MonoBehaviour {
         }
     }
 
-    private void OnBuildingClick(InputAction.CallbackContext context) {
-
+    private void OnBuildingClick(InputAction.CallbackContext context)
+    {
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
 
         Vector3 worldPos = cam.ScreenToWorldPoint(mouseScreenPos);
@@ -89,6 +94,18 @@ public class PopUpManager : MonoBehaviour {
                 fixedPopUpPosition.y -= buttonSpacing;
             }
         }
+        if (hit.collider != null)
+        {
+            if (TradeHutLevel.gameObject.activeInHierarchy)
+            {
+                TradeHutLevel.text = tradeHutManager.tradeHutLevelText.text;
+                TradeHutLevel.gameObject.SetActive(false);
+            }
+            else
+            {
+                TradeHutLevel.gameObject.SetActive(true);
+            }
+        }
     }
 
     public void OnBuildingButtonClick(int buttonId)
@@ -103,7 +120,8 @@ public class PopUpManager : MonoBehaviour {
         switch (buildingTag)
         {
             case "Trade Hut":
-                TradeHutManager.Instance.TradeHutButtonClick(buttonId);
+                //tradeHutManager = TradeHutManager.Instance;
+                tradeHutManager.TradeHutButtonClick(buttonId);
                 break;
             default:
                 Debug.LogWarning($"Unknown building tag: {buildingTag}");

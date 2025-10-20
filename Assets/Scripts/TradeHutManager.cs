@@ -59,6 +59,32 @@ public class TradeHutManager : MonoBehaviour {
         tradeItemTransform.gameObject.SetActive(true);
     }
 
+    public int GetTradeHutLevel()
+    {
+       return tradeHutLevel;
+    }
+
+    public void UpgradeButtonClick(string buttonType)
+    {
+        if(buttonType == "yes")
+        {
+            tradeHutLevel += 1;
+            tradeHutLevelText.text = $"lvl. {tradeHutLevel}";
+            //upgradePanel.gameObject.SetActive(false);
+            Debug.Log("Yes button clicked");
+        }
+        else if (buttonType == "cancel")
+        {
+            upgradePanel.gameObject.SetActive(false);
+            Debug.Log("Upgrade cancelled.");
+        }
+        else
+        {
+            Debug.LogWarning("Invalid button type received");
+        }
+
+    }
+
     public void TradeHutButtonClick(int buttonId) {
         // make sure all panels are inactive
         tradePanel.gameObject.SetActive(false);
