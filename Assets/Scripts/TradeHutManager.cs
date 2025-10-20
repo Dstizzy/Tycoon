@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
-
-    public Transform container;          // The parent object where trade items will be placed.
-    public Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
+    public Transform tradeContainer;
+    public Transform tradeItemTemplate;
     public Transform tradePanel;
     public Transform infoPanel;
     public Transform upgradePanel;
+    public TextMeshProUGUI tradeHutLevelText;
 
     public int crudeToolCount = 0;
     public int refinedToolCount = 0;
     public int artifactCount = 0;
-
 
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
@@ -24,12 +24,16 @@ public class TradeHutManager : MonoBehaviour {
     const int TRADE_BUTTON = 1;
     const int INFO_BUTTON = 2;
     const int UPGRADE_BUTTON = 3;
+    const int STARTING_LEVEL = 1;
+    const int ENDING_LEVEL = 5;
+
+    public static int tradeHutLevel = STARTING_LEVEL;
 
     // A list to hold references to all the instantiated trade item UI elements.
     private List<Transform> tradeItems = new();
 
     private void Awake() {
-        if (container == null) {
+        if (tradeContainer == null) {
             Debug.LogError("Container is not assigned in the Inspector!");
         }
 
@@ -41,6 +45,24 @@ public class TradeHutManager : MonoBehaviour {
             Debug.LogError("Trade Panel is not assigned in the Inspector!");
         } else {
             tradePanel.gameObject.SetActive(false);
+        }
+
+        if (infoPanel == null) {
+            Debug.LogError("Info Panel is not assigned in the Inspector!");
+        } else {
+            infoPanel.gameObject.SetActive(false);
+        }
+
+        if (upgradePanel == null) {
+            Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
+        } else {
+            upgradePanel.gameObject.SetActive(false);
+        }
+
+        if(tradeHutLevelText != null) {
+            tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        } else {
+            Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
         }
     }
 
@@ -56,7 +78,7 @@ public class TradeHutManager : MonoBehaviour {
         int itemCount = 0;
 
         // Instantiate the template and set its position in the container.
-        Transform tradeItemTransform = Instantiate(tradeItemTemplate, container);
+        Transform tradeItemTransform = Instantiate(tradeItemTemplate, tradeContainer);
         RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
         tradeItemTransform.tag = ItemTag;
@@ -145,10 +167,13 @@ public class TradeHutManager : MonoBehaviour {
                 tradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
                 break;
             case INFO_BUTTON:
-                Debug.Log("Building Panel: Sell requested.");
+                ShowInfoPanel();
+                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -156,15 +181,40 @@ public class TradeHutManager : MonoBehaviour {
         }
     }
 
+    private void UpgradeTradeHut()
+    {
+        // Check if the trade hut can be upgraded
+        if (tradeHutLevel < ENDING_LEVEL)
+        {
+            tradeHutLevel += 1;
+        }
+        else
+        {
+            Debug.Log("Trade Hut is already at max level.");
+        }
+        tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        
+        //Close the upgrade panel after upgrading
+        CloseUpgradePanel();
+        PopUpManager.Instance.EnablePlayerInput();
+    }
+
+    public int GetLevel()
+    {
+        return tradeHutLevel;
+    }
+
+
     public void CloseTradeHutPanel(int buttonID) {
         switch (buttonID) {
             case TRADE_BUTTON:
                 CloseTradePanel();
                 break;
             case INFO_BUTTON:
-                Debug.Log("Building Panel: Sell requested.");
+                CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
+                CloseUpgradePanel();
                 Debug.Log("Building Panel: Info requested.");
                 break;
             default:
@@ -176,7 +226,7 @@ public class TradeHutManager : MonoBehaviour {
     private void ShowTradePanel() {
         tradePanel.gameObject.SetActive(true);
     }
-    private void ShowInfoPane() {
+    private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     private void ShowUpgradePanel() {

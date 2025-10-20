@@ -9,9 +9,9 @@ TagManager:
   - Crude Tool
   - Artifact
   - Refined Tool
-  - Exploration
   - Ore Refinery
   - Forge
+  - Exploration Unit
   layers:
   - Default
   - TransparentFX
