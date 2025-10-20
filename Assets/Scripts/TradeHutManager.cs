@@ -6,9 +6,19 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TradeHutManager : MonoBehaviour {
+public class TradeHutManager : MonoBehaviour 
+{
+    const int MIN_SELL_ITEM_COUNT = 0;
+    const int MAX_SELL_ITEM_COUNT = 100;
+    const int TRADE_ITEM_SPACING = 30;
+    const int TRADE_BUTTON = 1;
+    const int INFO_BUTTON = 2;
+    const int UPGRADE_BUTTON = 3;
+    const int STARTING_LEVEL = 1;
+    const int ENDING_LEVEL = 5;
+
     public int crudeToolCount = 0;
-    public static int tradeHutLevel = 1;
+    public static int tradeHutLevel = STARTING_LEVEL;
     public Transform tradeContainer;
     public Transform tradeItemTemplate;
     public Transform tradePanel;
@@ -19,14 +29,6 @@ public class TradeHutManager : MonoBehaviour {
     //public int crudeToolCount = 0;
     public int refinedToolCount = 0;
     public int artifactCount = 0;
-
-
-    const int MIN_SELL_ITEM_COUNT = 0;
-    const int MAX_SELL_ITEM_COUNT = 100;
-    const int TRADE_ITEM_SPACING = 30;
-    const int TRADE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
 
     // A list to hold references to all the instantiated trade item UI elements.
     private List<Transform> tradeItems = new();
@@ -189,6 +191,12 @@ public class TradeHutManager : MonoBehaviour {
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
     }
+
+    public int GetLevel()
+    {
+        return tradeHutLevel;
+    }
+
 
     public void CloseTradeHutPanel(int buttonID) {
         switch (buttonID) {

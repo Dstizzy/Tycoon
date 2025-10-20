@@ -11,7 +11,7 @@ public class OreRefinery_Manager : MonoBehaviour {
     [SerializeField] private Transform explorePanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
-    private static int oreLevel = STARTING_LEVEL;
+    public static int oreLevel = STARTING_LEVEL;
 
     private void Awake() {
         if (infoPanel == null) {
@@ -56,6 +56,8 @@ public class OreRefinery_Manager : MonoBehaviour {
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
     }
+
+    public int GetLevel() { return oreLevel; }
 
     public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) {

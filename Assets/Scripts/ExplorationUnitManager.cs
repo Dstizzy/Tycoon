@@ -11,7 +11,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
-    private static int explorationUnitLevel = STARTING_LEVEL;
+    public static int explorationUnitLevel = STARTING_LEVEL;
 
     private void Awake() 
     {
@@ -56,6 +56,8 @@ public class ExplorationUnitManager : MonoBehaviour
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
     }
+
+    public int GetLevel() { return explorationUnitLevel; }
 
     public void CloseExplorationUnitPanel(int buttonID) {
         switch (buttonID) {

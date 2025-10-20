@@ -1,15 +1,17 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuButtonController : MonoBehaviour
 {
-    public GameObject ButtonPanel; // Assign to this object
+    public Button[] DropdownButtons; // Assign to this object
 
     private bool isVisible = false;
 
     public void ToggleMenu()
     {
         isVisible = !isVisible;
-        ButtonPanel.SetActive(isVisible);
+        DropdownButtons[0].gameObject.SetActive(isVisible);
+        DropdownButtons[1].gameObject.SetActive(isVisible);
 
     }
 }
