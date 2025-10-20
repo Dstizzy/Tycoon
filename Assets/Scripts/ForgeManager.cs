@@ -11,7 +11,7 @@ public class ForgeManager : MonoBehaviour {
     [SerializeField] private Transform craftPanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
-    private static int forgeLevel = STARTING_LEVEL;
+    public static int forgeLevel = STARTING_LEVEL;
 
     private void Awake() {
         if (infoPanel == null) {
@@ -55,6 +55,8 @@ public class ForgeManager : MonoBehaviour {
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
     }
+
+    public int GetLevel() { return forgeLevel; }
 
     public void CloseForgePanel(int buttonID) {
         switch (buttonID) {
