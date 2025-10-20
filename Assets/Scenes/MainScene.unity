@@ -676,9 +676,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba70f76e9db6b249bdd9479dfa90b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
-  crudeToolCount: 0
-  refinedToolCount: 0
-  artifactCount: 0
   container: {fileID: 460349205}
   tradeItemTemplate: {fileID: 1712966643}
   tradePanel: {fileID: 1024672991}
@@ -2296,7 +2293,7 @@ GameObject:
   - component: {fileID: 1075250141}
   - component: {fileID: 1075250140}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2366,10 +2363,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 177811380}
-        m_TargetAssemblyTypeName: TradeHutManager, Assembly-CSharp
-        m_MethodName: CloseTradePanel
-        m_Mode: 1
+      - m_Target: {fileID: 678275748}
+        m_TargetAssemblyTypeName: PopUpManager, Assembly-CSharp
+        m_MethodName: ClosePanel
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

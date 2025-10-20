@@ -129,29 +129,29 @@ public class PopUpManager : MonoBehaviour {
         }
         DisablePlayerInput();
     }
-    public void ClosePanel(int buttonId) {
-        switch (buildingTransform.tag) {
-            case "Trade Hut":
-                tradeHutManager.CloseTradeHutPanel(buttonId);
-                break;
-            //case "Lab":
-            //    labManaager.RequestTradeHutPanel(buttonId);
-            //    break;
-            //case "Forge":
-            //    forgeManager.RequestForgePanel(buttonId);
-            //    break;
-            //case "Ore Refinory":
-            //    oreRefinoryManager.RequestOreRefinoryPanel(buttonId);
-            //    break;
-            //case "Exploration Unit":
-            //    explorationUnitManager.RequestExplorationUnitPanel(buttonId);
-            //    break;
-            default:
-                Debug.Log("Building Panel: Unknown building type.");
-                break;
-        }
-        EnablePlayerInput();
-    }
+    //public void ClosePanel(int buttonId) {
+    //    switch (buildingTransform.tag) {
+    //        case "Trade Hut":
+    //            tradeHutManager.CloseTradeHutPanel(buttonId);
+    //            break;
+    //        //case "Lab":
+    //        //    labManaager.RequestTradeHutPanel(buttonId);
+    //        //    break;
+    //        //case "Forge":
+    //        //    forgeManager.RequestForgePanel(buttonId);
+    //        //    break;
+    //        //case "Ore Refinory":
+    //        //    oreRefinoryManager.RequestOreRefinoryPanel(buttonId);
+    //        //    break;
+    //        //case "Exploration Unit":
+    //        //    explorationUnitManager.RequestExplorationUnitPanel(buttonId);
+    //        //    break;
+    //        default:
+    //            Debug.Log("Building Panel: Unknown building type.");
+    //            break;
+    //    }
+    //    EnablePlayerInput();
+    //}
    
 
     public void DisablePlayerInput() {
