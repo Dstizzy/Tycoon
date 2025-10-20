@@ -199,6 +199,12 @@ public class TradeHutManager : MonoBehaviour {
         PopUpManager.Instance.EnablePlayerInput();
     }
 
+    public int GetLevel()
+    {
+        return tradeHutLevel;
+    }
+
+
     public void CloseTradeHutPanel(int buttonID) {
         switch (buttonID) {
             case TRADE_BUTTON:

@@ -68,6 +68,8 @@ public class OreRefinery_Manager : MonoBehaviour {
         PopUpManager.Instance.EnablePlayerInput();
     }
 
+    public int GetLevel() { return oreLevel; }
+
     public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
             case REFINE_BUTTON:

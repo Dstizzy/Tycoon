@@ -76,6 +76,8 @@ public class ForgeManager : MonoBehaviour {
         PopUpManager.Instance.EnablePlayerInput();
     }
 
+    public int GetLevel() { return forgeLevel; }
+
     public void CloseForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:

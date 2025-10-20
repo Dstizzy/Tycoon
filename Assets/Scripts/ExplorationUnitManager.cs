@@ -74,6 +74,8 @@ public class ExplorationUnitManager : MonoBehaviour {
         PopUpManager.Instance.EnablePlayerInput();
     }
 
+    public int GetLevel() { return explorationUnitLevel; }
+
     public void CloseExplorationUnitPanel(int buttonID) {
         switch (buttonID) {
             case EXPLORE_BUTTON:
