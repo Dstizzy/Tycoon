@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
     public int crudeToolCount = 0;
     public static int tradeHutLevel = 1;
-    public GameObject upgradeContainer;
     public Transform tradeContainer;
     public Transform tradeItemTemplate;
     public Transform tradePanel;
@@ -51,6 +51,12 @@ public class TradeHutManager : MonoBehaviour {
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+
+        if (upgradePanel == null) {
+            Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
+        } else {
+            upgradePanel.gameObject.SetActive(false);
+        }
     }
 
     private void Start() {
@@ -58,6 +64,9 @@ public class TradeHutManager : MonoBehaviour {
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.Articfatct), "Artifact", Item.GetItemValue(Item.ItemType.Articfatct), 1.0f, "Artifact");
+
+        // Creates individual button for upgrading the Trade Hut
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
     }
 
     // Instantiates a new trade item UI element, sets its visual data, and configures its buttons.
@@ -147,6 +156,13 @@ public class TradeHutManager : MonoBehaviour {
         }
     }
 
+    private void UpgradeTradeHut() {
+        tradeHutLevel += 1;
+        Debug.Log("Trade Hut upgraded to level " + tradeHutLevel);
+        //tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        CloseUpgradePanel();
+    }
+
     public void RequestTradeHutPanel(int buttonID) {
         switch (buttonID) {
             case TRADE_BUTTON:
@@ -158,7 +174,8 @@ public class TradeHutManager : MonoBehaviour {
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -175,6 +192,7 @@ public class TradeHutManager : MonoBehaviour {
                 CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
+                CloseUpgradePanel();
                 Debug.Log("Building Panel: Info requested.");
                 break;
             default:

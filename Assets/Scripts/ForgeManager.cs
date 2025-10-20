@@ -18,6 +18,12 @@ public class ForgeManager : MonoBehaviour {
         }
     }
 
+    public void Start()
+    {
+        // Creates individual button for upgrading the Trade Hut
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
+    }
+
     public void RequestForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:
@@ -28,14 +34,18 @@ public class ForgeManager : MonoBehaviour {
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
         }
     }
-
+    public void UpgradeForge() {
+        Debug.Log("Forge upgraded!");
+        CloseUpgradePanel();
+    }
     public void CloseForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:
@@ -45,7 +55,7 @@ public class ForgeManager : MonoBehaviour {
                 CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                CloseUpgradePanel();
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -53,7 +63,7 @@ public class ForgeManager : MonoBehaviour {
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
-    private void ShowExplorePanel() {
+    private void ShowForgePanel() {
         craftPanel.gameObject.SetActive(true);
     }
     private void ShowInfoPanel() {

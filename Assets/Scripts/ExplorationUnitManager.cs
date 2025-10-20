@@ -10,12 +10,24 @@ public class ExplorationUnitManager : MonoBehaviour
     const int INFO_BUTTON = 2;
     const int UPGRADE_BUTTON = 3;
 
-    private void Awake() {
+    private void Awake() 
+    {
         if (infoPanel == null) {
             Debug.LogError("Trade Panel is not assigned in the Inspector!");
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+    }
+
+    public void Start()
+    {
+        // Creates individual button for upgrading the Trade Hut
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeExplorationUnit());
+    }
+
+    public void UpgradeExplorationUnit()
+    {
+        CloseUpgradePanel();
     }
 
     public void RequestExplorationUnitPanel(int buttonID) {
@@ -27,7 +39,8 @@ public class ExplorationUnitManager : MonoBehaviour
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationUnitPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationUnitPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -44,7 +57,7 @@ public class ExplorationUnitManager : MonoBehaviour
                 Debug.Log("Building Panel: Sell requested.");
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                CloseUpgradePanel();
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");

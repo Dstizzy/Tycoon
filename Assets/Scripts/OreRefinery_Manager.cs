@@ -18,6 +18,17 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
     }
 
+    public void Start()
+    {
+        upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
+    }
+
+    public void UpgradeOreRefinory() 
+    {
+        Debug.Log("Ore Refinory upgraded!");
+        CloseUpgradePanel();
+    }
+
     public void RequestOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
             case REFINE_BUTTON:
@@ -28,7 +39,8 @@ public class OreRefinery_Manager : MonoBehaviour {
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -45,7 +57,7 @@ public class OreRefinery_Manager : MonoBehaviour {
                 CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                CloseUpgradePanel();
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
