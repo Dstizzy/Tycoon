@@ -39,7 +39,6 @@ public class CameraAutoBounds : MonoBehaviour
         );
 
         if (renderers == null || renderers.Length == 0)
-        // ... (나머지 코드는 그대로)
         {
             Debug.LogWarning("CameraAutoBounds: No renderers found in the scene. Make sure there are SpriteRenderers or Tilemaps present.");
             return;
