@@ -2,13 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class OreRefinery_Manager : MonoBehaviour {
-    [SerializeField] private Transform explorePanel;
-    [SerializeField] private Transform infoPanel;
-    [SerializeField] private Transform upgradePanel;
-
     const int REFINE_BUTTON = 1;
     const int INFO_BUTTON = 2;
     const int UPGRADE_BUTTON = 3;
+    const int STARTING_LEVEL = 1;
+    const int ENDING_LEVEL = 5;
+
+    [SerializeField] private Transform explorePanel;
+    [SerializeField] private Transform infoPanel;
+    [SerializeField] private Transform upgradePanel;
+    private static int oreLevel = STARTING_LEVEL;
 
     private void Awake() {
         if (infoPanel == null) {
@@ -16,17 +19,6 @@ public class OreRefinery_Manager : MonoBehaviour {
         } else {
             infoPanel.gameObject.SetActive(false);
         }
-    }
-
-    public void Start()
-    {
-        upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
-    }
-
-    public void UpgradeOreRefinory() 
-    {
-        Debug.Log("Ore Refinory upgraded!");
-        CloseUpgradePanel();
     }
 
     public void RequestOreRefinoryPanel(int buttonID) {
@@ -40,12 +32,29 @@ public class OreRefinery_Manager : MonoBehaviour {
                 break;
             case UPGRADE_BUTTON:
                 ShowUpgradePanel();
+                upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
                 upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
         }
+    }
+
+    public void UpgradeOreRefinory()
+    {
+        // Check if the ore refinery can be upgraded
+        if (oreLevel < ENDING_LEVEL)
+        {
+            oreLevel += 1;
+        }
+        else
+        {
+            Debug.Log("Ore Refinery is already at max level.");
+        }
+
+        // Close the upgrade panel after upgrading
+        CloseUpgradePanel();
     }
 
     public void CloseOreRefinoryPanel(int buttonID) {

@@ -64,9 +64,6 @@ public class TradeHutManager : MonoBehaviour {
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.Articfatct), "Artifact", Item.GetItemValue(Item.ItemType.Articfatct), 1.0f, "Artifact");
-
-        // Creates individual button for upgrading the Trade Hut
-        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
     }
 
     // Instantiates a new trade item UI element, sets its visual data, and configures its buttons.
@@ -156,13 +153,6 @@ public class TradeHutManager : MonoBehaviour {
         }
     }
 
-    private void UpgradeTradeHut() {
-        tradeHutLevel += 1;
-        Debug.Log("Trade Hut upgraded to level " + tradeHutLevel);
-        //tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-        CloseUpgradePanel();
-    }
-
     public void RequestTradeHutPanel(int buttonID) {
         switch (buttonID) {
             case TRADE_BUTTON:
@@ -175,12 +165,29 @@ public class TradeHutManager : MonoBehaviour {
                 break;
             case UPGRADE_BUTTON:
                 ShowUpgradePanel();
+                upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
                 upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
         }
+    }
+
+    private void UpgradeTradeHut()
+    {
+        // Check if the trade hut can be upgraded
+        if (tradeHutLevel < 5)
+        {
+            tradeHutLevel += 1;
+        }
+        else
+        {
+            Debug.Log("Trade Hut is already at max level.");
+        }
+        //tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        // Close the upgrade panel after upgrading
+        CloseUpgradePanel();
     }
 
     public void CloseTradeHutPanel(int buttonID) {
