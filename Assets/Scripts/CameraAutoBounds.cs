@@ -76,4 +76,8 @@ public class CameraAutoBounds : MonoBehaviour
 
         Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete → min: {min}, max: {max}");
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/changed_main

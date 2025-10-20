@@ -7,11 +7,11 @@ using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
 
-    public Transform container;          // The parent object where trade items will be placed.
-    public Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
-    public Transform tradePanel;
-    public Transform infoPanel;
-    public Transform upgradePanel;
+    [SerializeField] private Transform container;          // The parent object where trade items will be placed.
+    [SerializeField] private Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
+    [SerializeField] private Transform tradePanel;
+    [SerializeField] private Transform infoPanel;
+    [SerializeField] private Transform upgradePanel;
 
     public int crudeToolCount = 0;
     public int refinedToolCount = 0;
@@ -41,6 +41,12 @@ public class TradeHutManager : MonoBehaviour {
             Debug.LogError("Trade Panel is not assigned in the Inspector!");
         } else {
             tradePanel.gameObject.SetActive(false);
+        }
+
+        if (infoPanel == null) {
+            Debug.LogError("Info Panel is not assigned in the Inspector!");
+        } else {
+            infoPanel.gameObject.SetActive(false);
         }
     }
 
@@ -190,7 +196,7 @@ public class TradeHutManager : MonoBehaviour {
                 CloseTradePanel();
                 break;
             case INFO_BUTTON:
-                Debug.Log("Building Panel: Sell requested.");
+                CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
                 Debug.Log("Building Panel: Info requested.");

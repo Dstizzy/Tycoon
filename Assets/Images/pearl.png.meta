@@ -14,6 +14,7 @@ TextureImporter:
   - first:
       213: -2569021538138386213
     second: pearl_3
+<<<<<<< HEAD
   - first:
       213: -2485946199279336615
     second: pearl_4
@@ -23,6 +24,8 @@ TextureImporter:
   - first:
       213: -3746786898580844083
     second: pearl_6
+=======
+>>>>>>> origin/changed_main
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -114,6 +117,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+<<<<<<< HEAD
   - serializedVersion: 4
     buildTarget: Android
     maxTextureSize: 2048
@@ -153,6 +157,8 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+=======
+>>>>>>> origin/changed_main
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -161,9 +167,15 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
+<<<<<<< HEAD
         y: 5
         width: 919
         height: 565
+=======
+        y: 0
+        width: 779
+        height: 436
+>>>>>>> origin/changed_main
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,10 +194,17 @@ TextureImporter:
       name: pearl_1
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 904
         y: 272
         width: 6
         height: 7
+=======
+        x: 757
+        y: 347
+        width: 20
+        height: 33
+>>>>>>> origin/changed_main
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -204,10 +223,17 @@ TextureImporter:
       name: pearl_2
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 912
         y: 277
         width: 7
         height: 6
+=======
+        x: 765
+        y: 379
+        width: 8
+        height: 7
+>>>>>>> origin/changed_main
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -226,9 +252,15 @@ TextureImporter:
       name: pearl_3
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 905
         y: 267
         width: 6
+=======
+        x: 6
+        y: 177
+        width: 7
+>>>>>>> origin/changed_main
         height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -244,6 +276,7 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+<<<<<<< HEAD
     - serializedVersion: 2
       name: pearl_4
       rect:
@@ -310,6 +343,8 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+=======
+>>>>>>> origin/changed_main
     outline: []
     customData: 
     physicsShape: []
@@ -328,9 +363,12 @@ TextureImporter:
       pearl_1: 3790890670923940958
       pearl_2: -2740588835324782208
       pearl_3: -2569021538138386213
+<<<<<<< HEAD
       pearl_4: -2485946199279336615
       pearl_5: -6138428036189203701
       pearl_6: -3746786898580844083
+=======
+>>>>>>> origin/changed_main
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

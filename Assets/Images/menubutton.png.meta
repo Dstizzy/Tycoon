@@ -46,7 +46,11 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
+<<<<<<< HEAD
   spriteMode: 1
+=======
+  spriteMode: 2
+>>>>>>> origin/changed_main
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -87,6 +91,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
+<<<<<<< HEAD
     textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
@@ -126,6 +131,8 @@ TextureImporter:
     buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
+=======
+>>>>>>> origin/changed_main
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -142,6 +149,7 @@ TextureImporter:
       name: menubutton_0
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 241
         y: 243
         width: 542
@@ -157,6 +165,19 @@ TextureImporter:
         - {x: 271, y: -273}
       physicsShape: []
       tessellationDetail: 0
+=======
+        x: 227
+        y: 228
+        width: 569
+        height: 569
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+>>>>>>> origin/changed_main
       bones: []
       spriteID: e35f8f8f68ec30210800000000000000
       internalID: 1298108196710839614
@@ -168,7 +189,11 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
+<<<<<<< HEAD
     spriteID: b6d9a75cf02264a58a627b02889efca2
+=======
+    spriteID: 
+>>>>>>> origin/changed_main
     internalID: 0
     vertices: []
     indices: 
