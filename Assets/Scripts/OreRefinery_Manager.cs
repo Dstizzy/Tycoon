@@ -9,7 +9,6 @@ public class OreRefinery_Manager : MonoBehaviour {
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
-    [SerializeField] private Transform explorePanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
     private static int oreLevel = STARTING_LEVEL;
