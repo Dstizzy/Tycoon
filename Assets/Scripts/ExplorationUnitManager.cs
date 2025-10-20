@@ -1,3 +1,5 @@
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,6 +7,7 @@ public class ExplorationUnitManager : MonoBehaviour {
     [SerializeField] private Transform explorePanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
+    public TextMeshProUGUI explorationUnitLevelText;
 
     const int EXPLORE_BUTTON = 1;
     const int INFO_BUTTON = 2;
@@ -12,12 +15,9 @@ public class ExplorationUnitManager : MonoBehaviour {
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
-    [SerializeField] private Transform infoPanel;
-    [SerializeField] private Transform upgradePanel;
     private static int explorationUnitLevel = STARTING_LEVEL;
 
-    private void Awake() 
-    {
+    private void Awake() {
         if (infoPanel == null) {
             Debug.LogError("Trade Panel is not assigned in the Inspector!");
         } else {
@@ -28,6 +28,12 @@ public class ExplorationUnitManager : MonoBehaviour {
             Debug.LogError("Explore Panel is not assigned");
         } else {
             explorePanel.gameObject.SetActive(false);
+        }
+
+        if(explorationUnitLevelText == null) {
+            Debug.LogError("Exploration Unit Level Text is not assigned");
+        } else {
+            explorationUnitLevelText.text = "Level " + explorationUnitLevel.ToString();
         }
     }
 
@@ -52,20 +58,20 @@ public class ExplorationUnitManager : MonoBehaviour {
         }
     }
 
-    public void UpgradeExplorationUnit()
-    {
+    public void UpgradeExplorationUnit() {
         // Check if the exploration unit can be upgraded
-        if (ExplorationUnitManager.explorationUnitLevel < ENDING_LEVEL)
-        {
+        if (explorationUnitLevel < ENDING_LEVEL) {
             explorationUnitLevel += 1;
-        }
-        else
-        {
+        } else {
             Debug.Log("Exploration Unit is already at max level.");
         }
 
+
+        explorationUnitLevelText.text = "Level " + explorationUnitLevel.ToString();
+
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
+        PopUpManager.Instance.EnablePlayerInput();
     }
 
     public void CloseExplorationUnitPanel(int buttonID) {

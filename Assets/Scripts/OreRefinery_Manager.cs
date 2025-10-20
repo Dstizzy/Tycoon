@@ -1,8 +1,9 @@
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OreRefinery_Manager : MonoBehaviour {
-    [SerializeField] private Transform refinePanel;
     const int REFINE_BUTTON = 1;
     const int INFO_BUTTON = 2;
     const int UPGRADE_BUTTON = 3;
@@ -11,6 +12,8 @@ public class OreRefinery_Manager : MonoBehaviour {
 
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
+    public TextMeshProUGUI oreRefineryText;
+
     private static int oreLevel = STARTING_LEVEL;
 
     private void Awake() {
@@ -18,6 +21,12 @@ public class OreRefinery_Manager : MonoBehaviour {
             Debug.LogError("Info Panel is not assigned in the Inspector!");
         } else {
             infoPanel.gameObject.SetActive(false);
+        }
+
+        if(oreRefineryText == null) {
+            Debug.LogError("Ore Refinery Level Text is not assigned");
+        } else {
+            oreRefineryText.text = "Level " + oreLevel.ToString();
         }
     }
 
@@ -53,14 +62,15 @@ public class OreRefinery_Manager : MonoBehaviour {
             Debug.Log("Ore Refinery is already at max level.");
         }
 
+        oreRefineryText.text = "Level " + oreLevel.ToString();
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
+        PopUpManager.Instance.EnablePlayerInput();
     }
 
     public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
             case REFINE_BUTTON:
-                CloseTradePanel();
                 break;
             case INFO_BUTTON:
                 CloseInfoPanel();
@@ -74,18 +84,18 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
-    private void ShowExplorePanel() {
-        refinePanel.gameObject.SetActive(true);
-    }
+    //private void ShowExplorePanel() {
+    //    refinePanel.gameObject.SetActive(true);
+    //}
     private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     private void ShowUpgradePanel() {
         upgradePanel.gameObject.SetActive(true);
     }
-    private void CloseTradePanel() {
-        refinePanel.gameObject.SetActive(false);
-    }
+    //private void CloseTradePanel() {
+    //    refinePanel.gameObject.SetActive(false);
+    //}
     private void CloseInfoPanel() {
         infoPanel.gameObject.SetActive(false);
     }

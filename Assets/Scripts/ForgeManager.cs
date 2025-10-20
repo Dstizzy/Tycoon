@@ -1,3 +1,5 @@
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,9 @@ public class ForgeManager : MonoBehaviour {
     [SerializeField] private Transform craftPanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
+    public TextMeshProUGUI forgeLevelText;
+
+
     private static int forgeLevel = STARTING_LEVEL;
 
     private void Awake() {
@@ -24,6 +29,12 @@ public class ForgeManager : MonoBehaviour {
             Debug.LogError("Craft Panel is not assigned");
         } else {
             craftPanel.gameObject.SetActive(false);
+        }
+
+        if(forgeLevelText == null) {
+            Debug.LogError("Forge Level Text is not assigned");
+        } else {
+            forgeLevelText.text = "Level " + forgeLevel.ToString();
         }
     }
 
@@ -59,8 +70,10 @@ public class ForgeManager : MonoBehaviour {
             Debug.Log("Exploration Unit is already at max level.");
         }
 
+        forgeLevelText.text = "Level " + forgeLevel.ToString();
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
+        PopUpManager.Instance.EnablePlayerInput();
     }
 
     public void CloseForgePanel(int buttonID) {
