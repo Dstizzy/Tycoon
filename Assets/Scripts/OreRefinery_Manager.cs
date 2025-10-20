@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class OreRefinery_Manager : MonoBehaviour {
-    [SerializeField] private Transform explorePanel;
+    [SerializeField] private Transform refinePanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
 
@@ -54,7 +54,7 @@ public class OreRefinery_Manager : MonoBehaviour {
         PopUpManager.Instance.EnablePlayerInput();
     }
     private void ShowExplorePanel() {
-        explorePanel.gameObject.SetActive(true);
+        refinePanel.gameObject.SetActive(true);
     }
     private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
@@ -63,7 +63,7 @@ public class OreRefinery_Manager : MonoBehaviour {
         upgradePanel.gameObject.SetActive(true);
     }
     private void CloseTradePanel() {
-        explorePanel.gameObject.SetActive(false);
+        refinePanel.gameObject.SetActive(false);
     }
     private void CloseInfoPanel() {
         infoPanel.gameObject.SetActive(false);

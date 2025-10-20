@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExplorationUnitManager : MonoBehaviour
-{
+public class ExplorationUnitManager : MonoBehaviour {
+    [SerializeField] private Transform explorePanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
 
@@ -16,11 +16,19 @@ public class ExplorationUnitManager : MonoBehaviour
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+
+        if (explorePanel == null) {
+            Debug.LogError("Explore Panel is not assigned");
+        } else {
+            explorePanel.gameObject.SetActive(false);
+        }
     }
 
     public void RequestExplorationUnitPanel(int buttonID) {
         switch (buttonID) {
             case EXPLORE_BUTTON:
+                ShowExplorationPanel();
+                explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationUnitPanel(EXPLORE_BUTTON));
                 break;
             case INFO_BUTTON:
                 ShowInfoPanel();
@@ -38,6 +46,7 @@ public class ExplorationUnitManager : MonoBehaviour
     public void CloseExplorationUnitPanel(int buttonID) {
         switch (buttonID) {
             case EXPLORE_BUTTON:
+                CloseExplorationPanel();
                 break;
             case INFO_BUTTON:
                 CloseInfoPanel();
@@ -53,12 +62,19 @@ public class ExplorationUnitManager : MonoBehaviour
         PopUpManager.Instance.EnablePlayerInput();
     }
 
+    private void ShowExplorationPanel() {
+        explorePanel.gameObject.SetActive(true);
+    }
+
     private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
 
     private void ShowUpgradePanel() {
         upgradePanel.gameObject.SetActive(true);
+    }
+    private void CloseExplorationPanel() {
+        explorePanel.gameObject.SetActive(false);
     }
     private void CloseInfoPanel() {
         infoPanel.gameObject.SetActive(false);
