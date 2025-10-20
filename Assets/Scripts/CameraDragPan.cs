@@ -80,8 +80,8 @@ public class CameraDragPan : MonoBehaviour
 
             // Pixel → World Conversion (Vertical basis: size*2 == vertical world units on screen)
             float pxToWorld = cam.orthographicSize * 2f / Screen.height;
-			Vector3 move = new Vector3(-deltaPx.x * pxToWorld, -deltaPx.y * pxToWorld, 0f);
-			if (invert) move = -move;
+            Vector3 move = new Vector3(deltaPx.x * pxToWorld, deltaPx.y * pxToWorld, 0f);
+            if (invert) move = -move;
 			move *= panSpeed;
 
 			if (clampToBounds)
