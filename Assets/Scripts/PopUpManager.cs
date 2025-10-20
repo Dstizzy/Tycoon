@@ -79,7 +79,6 @@ public class PopUpManager : MonoBehaviour {
 
             GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
-                        GameObject newButton = Instantiate(button, fixedPopUpPosition, Quaternion.identity);
             popUps.Add(newButton);
 
             string uniqueButtonName = buildingTransform.tag switch {
@@ -173,6 +172,5 @@ public class PopUpManager : MonoBehaviour {
             popUps = null;
             buildingTransform = null;
         }
-        TradeHutManager.Instance.ShowTradePanel();
     }
 }
