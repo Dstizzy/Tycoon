@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using TMPro;
 using Unity.VisualScripting;
 
 using UnityEngine;
@@ -11,22 +11,23 @@ public class PopUpManager : MonoBehaviour {
     [SerializeField] private GameObject[] buildingButtonsPreFab;
     [SerializeField] private Camera cam;
     [SerializeField] private TradeHutManager tradeHutManager;
-
     private List<GameObject> popUps;
     private PlayerActions playerActions;
-    private Transform buildingTransform;
     private List<RaycastResult> raycastResults = new List<RaycastResult>();
-
-    private TradeHutManager tradeHutManager;
     public static Transform buildingTransform;
     public TextMeshProUGUI TradeHutLevel;
 
+    public static PopUpManager Instance { get; private set; }
+
     private void Awake()
     {
-        if (Instance != null && Instance != this) {
-            Destroy(gameObject);
-        } else {
+        if (Instance == null)
+        {
             Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
         }
 
         playerActions = new PlayerActions();

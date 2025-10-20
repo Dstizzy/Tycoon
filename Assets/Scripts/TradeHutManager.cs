@@ -16,7 +16,7 @@ public class TradeHutManager : MonoBehaviour {
     public Transform upgradePanel;
     public TextMeshProUGUI tradeHutLevelText;
 
-    public int crudeToolCount = 0;
+    //public int crudeToolCount = 0;
     public int refinedToolCount = 0;
     public int artifactCount = 0;
 
@@ -32,7 +32,7 @@ public class TradeHutManager : MonoBehaviour {
     private List<Transform> tradeItems = new();
 
     private void Awake() {
-        if (container == null) {
+        if (tradeContainer == null) {
             Debug.LogError("Container is not assigned in the Inspector!");
         }
 
@@ -59,7 +59,7 @@ public class TradeHutManager : MonoBehaviour {
         int itemCount = 0;
 
         // Instantiate the template and set its position in the container.
-        Transform tradeItemTransform = Instantiate(tradeItemTemplate, container);
+        Transform tradeItemTransform = Instantiate(tradeItemTemplate, tradeContainer);
         RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
         tradeItemTransform.tag = ItemTag;
