@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
-
-    [SerializeField] private Transform container;          // The parent object where trade items will be placed.
-    [SerializeField] private Transform tradeItemTemplate;  // The prefab/template for a single trade item entry.
-    [SerializeField] private Transform tradePanel;
-    [SerializeField] private Transform infoPanel;
-    [SerializeField] private Transform upgradePanel;
-
     public int crudeToolCount = 0;
+    public static int tradeHutLevel = 1;
+    public Transform tradeContainer;
+    public Transform tradeItemTemplate;
+    public Transform tradePanel;
+    public Transform infoPanel;
+    public Transform upgradePanel;
+    public TextMeshProUGUI tradeHutLevelText;
+
+    //public int crudeToolCount = 0;
     public int refinedToolCount = 0;
     public int artifactCount = 0;
 
@@ -29,7 +32,7 @@ public class TradeHutManager : MonoBehaviour {
     private List<Transform> tradeItems = new();
 
     private void Awake() {
-        if (container == null) {
+        if (tradeContainer == null) {
             Debug.LogError("Container is not assigned in the Inspector!");
         }
 
@@ -48,6 +51,12 @@ public class TradeHutManager : MonoBehaviour {
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+
+        if (upgradePanel == null) {
+            Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
+        } else {
+            upgradePanel.gameObject.SetActive(false);
+        }
     }
 
     private void Start() {
@@ -62,7 +71,7 @@ public class TradeHutManager : MonoBehaviour {
         int itemCount = 0;
 
         // Instantiate the template and set its position in the container.
-        Transform tradeItemTransform = Instantiate(tradeItemTemplate, container);
+        Transform tradeItemTransform = Instantiate(tradeItemTemplate, tradeContainer);
         RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
         tradeItemTransform.tag = ItemTag;
@@ -155,12 +164,30 @@ public class TradeHutManager : MonoBehaviour {
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
         }
+    }
+
+    private void UpgradeTradeHut()
+    {
+        // Check if the trade hut can be upgraded
+        if (tradeHutLevel < 5)
+        {
+            tradeHutLevel += 1;
+        }
+        else
+        {
+            Debug.Log("Trade Hut is already at max level.");
+        }
+        //tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        // Close the upgrade panel after upgrading
+        CloseUpgradePanel();
     }
 
     public void CloseTradeHutPanel(int buttonID) {
@@ -172,6 +199,7 @@ public class TradeHutManager : MonoBehaviour {
                 CloseInfoPanel();
                 break;
             case UPGRADE_BUTTON:
+                CloseUpgradePanel();
                 Debug.Log("Building Panel: Info requested.");
                 break;
             default:
