@@ -145,10 +145,12 @@ public class TradeHutManager : MonoBehaviour {
                 tradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
                 break;
             case INFO_BUTTON:
-                Debug.Log("Building Panel: Sell requested.");
+                ShowInfoPanel();
+                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
+                ShowUpgradePanel();
+                upgradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -176,7 +178,7 @@ public class TradeHutManager : MonoBehaviour {
     private void ShowTradePanel() {
         tradePanel.gameObject.SetActive(true);
     }
-    private void ShowInfoPane() {
+    private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     private void ShowUpgradePanel() {
