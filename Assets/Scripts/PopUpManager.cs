@@ -105,6 +105,18 @@ public class PopUpManager : MonoBehaviour {
             case "Trade Hut":
                 TradeHutManager.Instance.TradeHutButtonClick(buttonId);
                 break;
+            case "Refinery":
+                RefineryManager.Instance.RefineryButtonClick(buttonId);
+                break;
+            case "Lab":
+                LabManager.Instance.LabButtonClick(buttonId);
+                break;
+            case "Exploration":
+                ExplorationUnitManager.Instance.ExplorationButtonClick(buttonId);
+                break;
+            case "Forge":
+                ForgeManager.Instance.ForgeButtonClick(buttonId);
+                break;
             default:
                 Debug.LogWarning($"Unknown building tag: {buildingTag}");
                 break;
