@@ -3,27 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags:
-  - Trade Hut
-  - Lab
-<<<<<<< HEAD
-<<<<<<< HEAD
-  - Exploration
-  - Forge
-  - Refinery
-=======
-=======
->>>>>>> origin/Chloe
-  - Crude Tool
-  - Artifact
-  - Refined Tool
-  - Exploration
-  - Ore Refinery
-  - Forge
-<<<<<<< HEAD
->>>>>>> origin/main-2
-=======
->>>>>>> origin/Chloe
+  tags: []
   layers:
   - Default
   - TransparentFX
