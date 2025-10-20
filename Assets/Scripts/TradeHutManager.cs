@@ -59,7 +59,7 @@ public class TradeHutManager : MonoBehaviour {
         tradeItemTransform.gameObject.SetActive(true);
     }
 
-    public int GetTradeHutLevel()
+    /*public int GetTradeHutLevel()
     {
        return tradeHutLevel;
     }
@@ -83,7 +83,7 @@ public class TradeHutManager : MonoBehaviour {
             Debug.LogWarning("Invalid button type received");
         }
 
-    }
+    }*/
 
     public void TradeHutButtonClick(int buttonId) {
         // make sure all panels are inactive

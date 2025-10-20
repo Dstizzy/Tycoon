@@ -16,7 +16,7 @@ public class PopUpManager : MonoBehaviour {
 
     [SerializeField] private TradeHutManager tradeHutManager;
     public static Transform buildingTransform;
-    public TextMeshProUGUI TradeHutLevel;
+    //public TextMeshProUGUI TradeHutLevel;
 
     private void Awake()
     {
@@ -94,7 +94,7 @@ public class PopUpManager : MonoBehaviour {
                 fixedPopUpPosition.y -= buttonSpacing;
             }
         }
-        if (hit.collider != null)
+        /*if (hit.collider != null)
         {
             if (TradeHutLevel.gameObject.activeInHierarchy)
             {
@@ -105,7 +105,7 @@ public class PopUpManager : MonoBehaviour {
             {
                 TradeHutLevel.gameObject.SetActive(true);
             }
-        }
+        }*/
     }
 
     public void OnBuildingButtonClick(int buttonId)
