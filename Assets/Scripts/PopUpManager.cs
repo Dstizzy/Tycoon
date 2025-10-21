@@ -22,12 +22,6 @@ public class PopUpManager : MonoBehaviour
     private PlayerActions playerActions;
     private List<RaycastResult> raycastResults = new List<RaycastResult>();
     public static Transform buildingTransform;
-    public TextMeshProUGUI TradeHutLevelText;
-    public TextMeshProUGUI OreLevelText;
-    public TextMeshProUGUI ExplorationLevelText;
-    public TextMeshProUGUI ForgeLevelText;
-
-
 
     public static PopUpManager Instance { get; private set; }
 

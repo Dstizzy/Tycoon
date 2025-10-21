@@ -4269,10 +4269,6 @@ MonoBehaviour:
   oreRefineryManager: {fileID: 930000709}
   forgeManager: {fileID: 793877435}
   labManager: {fileID: 1670020820}
-  TradeHutLevelText: {fileID: 0}
-  OreLevelText: {fileID: 0}
-  ExplorationLevelText: {fileID: 0}
-  ForgeLevelText: {fileID: 0}
 --- !u!4 &678275749
 Transform:
   m_ObjectHideFlags: 0
