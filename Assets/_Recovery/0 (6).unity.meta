@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/PreFabs/OnClickHandler.prefab.meta
+guid: 226ed82db3f112d47972540614588f75
+PrefabImporter:
+========
 guid: 4da69e1efb939294aa3d2a74a8f86c45
 DefaultImporter:
+>>>>>>>> changed_main:Assets/_Recovery/0 (6).unity.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

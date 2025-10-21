@@ -3,20 +3,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ForgeManager : MonoBehaviour {
-    const int CRAFT_BUTTON = 1;
+public class OreRefinery_Manager : MonoBehaviour {
+    const int REFINE_BUTTON = 1;
     const int INFO_BUTTON = 2;
     const int UPGRADE_BUTTON = 3;
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
-    [SerializeField] private Transform craftPanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
-    public TextMeshProUGUI forgeLevelText;
+    public TextMeshProUGUI oreRefineryText;
 
-
-    private static int forgeLevel = STARTING_LEVEL;
+    private static int oreLevel = STARTING_LEVEL;
 
     private void Awake() {
         if (infoPanel == null) {
@@ -25,63 +23,56 @@ public class ForgeManager : MonoBehaviour {
             infoPanel.gameObject.SetActive(false);
         }
 
-        if( craftPanel == null) {
-            Debug.LogError("Craft Panel is not assigned");
+        if(oreRefineryText == null) {
+            Debug.LogError("Ore Refinery Level Text is not assigned");
         } else {
-            craftPanel.gameObject.SetActive(false);
-        }
-
-        if(forgeLevelText == null) {
-            Debug.LogError("Forge Level Text is not assigned");
-        } else {
-            forgeLevelText.text = "Level " + forgeLevel.ToString();
+            oreRefineryText.text = "Level " + oreLevel.ToString();
         }
     }
 
-    public void RequestForgePanel(int buttonID) {
+    public void RequestOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
-            case CRAFT_BUTTON:
-                ShowCraftPanel();
-                craftPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
+            case REFINE_BUTTON:
+                Debug.Log("Ore Refinery Panel: Refine requested.");
                 break;
             case INFO_BUTTON:
                 ShowInfoPanel();
-                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(INFO_BUTTON));
+                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
                 ShowUpgradePanel();
-                upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
-                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
+                upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
+                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
         }
     }
-    public void UpgradeForge()
+
+    public void UpgradeOreRefinory()
     {
-        // Check if the forge can be upgraded
-        if (forgeLevel < ENDING_LEVEL)
+        // Check if the ore refinery can be upgraded
+        if (oreLevel < ENDING_LEVEL)
         {
-            forgeLevel += 1;
+            oreLevel += 1;
         }
         else
         {
-            Debug.Log("Exploration Unit is already at max level.");
+            Debug.Log("Ore Refinery is already at max level.");
         }
 
-        forgeLevelText.text = "Level " + forgeLevel.ToString();
+        oreRefineryText.text = "Level " + oreLevel.ToString();
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();
     }
 
-    public int GetLevel() { return forgeLevel; }
+    public int GetLevel() { return oreLevel; }
 
-    public void CloseForgePanel(int buttonID) {
+    public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
-            case CRAFT_BUTTON:
-                CloseCraftPanel();
+            case REFINE_BUTTON:
                 break;
             case INFO_BUTTON:
                 CloseInfoPanel();
@@ -95,18 +86,18 @@ public class ForgeManager : MonoBehaviour {
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
-    private void ShowCraftPanel() {
-        craftPanel.gameObject.SetActive(true);
-    }
+    //private void ShowExplorePanel() {
+    //    refinePanel.gameObject.SetActive(true);
+    //}
     private void ShowInfoPanel() {
         infoPanel.gameObject.SetActive(true);
     }
     private void ShowUpgradePanel() {
         upgradePanel.gameObject.SetActive(true);
     }
-    private void CloseCraftPanel() {
-        craftPanel.gameObject.SetActive(false);
-    }
+    //private void CloseTradePanel() {
+    //    refinePanel.gameObject.SetActive(false);
+    //}
     private void CloseInfoPanel() {
         infoPanel.gameObject.SetActive(false);
     }
