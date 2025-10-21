@@ -181,29 +181,19 @@ public class TradeHutManager : MonoBehaviour {
         }
     }
 
-    private void UpgradeTradeHut()
-    {
+    private void UpgradeTradeHut() {
         // Check if the trade hut can be upgraded
         if (tradeHutLevel < ENDING_LEVEL)
-        {
             tradeHutLevel += 1;
-        }
         else
-        {
             Debug.Log("Trade Hut is already at max level.");
-        }
+
         tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
         
         //Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();
     }
-
-    public int GetLevel()
-    {
-        return tradeHutLevel;
-    }
-
 
     public void CloseTradeHutPanel(int buttonID) {
         switch (buttonID) {
@@ -241,5 +231,4 @@ public class TradeHutManager : MonoBehaviour {
     private void CloseUpgradePanel() {
         upgradePanel.gameObject.SetActive(false);
     }
-
 }
