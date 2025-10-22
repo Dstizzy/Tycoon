@@ -115,7 +115,7 @@ public class PopUpManager : MonoBehaviour
             {
                 "Trade Hut" => "Trade",
                 "Lab" => "Research",
-                "Ore Refinory" => "Refine",
+                "Ore Refinery" => "Refine",
                 "Exploration Unit" => "Explore",
                 "Forge" => "Craft",
                 _ => "BuildingButton"

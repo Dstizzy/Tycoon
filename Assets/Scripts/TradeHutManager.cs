@@ -6,8 +6,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TradeHutManager : MonoBehaviour 
-{
+public class TradeHutManager : MonoBehaviour {
+    public Transform tradeContainer;
+    public Transform tradeItemTemplate;
+    public Transform tradePanel;
+    public Transform infoPanel;
+    public Transform upgradePanel;
+    public TextMeshProUGUI tradeHutLevelText;
+
+    public int crudeToolCount = 0;
+    public int refinedToolCount = 0;
+    public int artifactCount = 0;
+
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
     const int TRADE_ITEM_SPACING = 30;
@@ -17,18 +27,7 @@ public class TradeHutManager : MonoBehaviour
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
-    public int crudeToolCount = 0;
     public static int tradeHutLevel = STARTING_LEVEL;
-    public Transform tradeContainer;
-    public Transform tradeItemTemplate;
-    public Transform tradePanel;
-    public Transform infoPanel;
-    public Transform upgradePanel;
-    public TextMeshProUGUI tradeHutLevelText;
-
-    //public int crudeToolCount = 0;
-    public int refinedToolCount = 0;
-    public int artifactCount = 0;
 
     // A list to hold references to all the instantiated trade item UI elements.
     private List<Transform> tradeItems = new();
@@ -58,6 +57,12 @@ public class TradeHutManager : MonoBehaviour
             Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
         } else {
             upgradePanel.gameObject.SetActive(false);
+        }
+
+        if(tradeHutLevelText != null) {
+            tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        } else {
+            Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
         }
     }
 
@@ -179,7 +184,7 @@ public class TradeHutManager : MonoBehaviour
     private void UpgradeTradeHut()
     {
         // Check if the trade hut can be upgraded
-        if (tradeHutLevel < 5)
+        if (tradeHutLevel < ENDING_LEVEL)
         {
             tradeHutLevel += 1;
         }
@@ -187,9 +192,11 @@ public class TradeHutManager : MonoBehaviour
         {
             Debug.Log("Trade Hut is already at max level.");
         }
-        //tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-        // Close the upgrade panel after upgrading
+        tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+        
+        //Close the upgrade panel after upgrading
         CloseUpgradePanel();
+        PopUpManager.Instance.EnablePlayerInput();
     }
 
     public int GetLevel()

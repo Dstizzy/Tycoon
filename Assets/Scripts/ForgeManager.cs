@@ -1,3 +1,5 @@
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +13,10 @@ public class ForgeManager : MonoBehaviour {
     [SerializeField] private Transform craftPanel;
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
-    public static int forgeLevel = STARTING_LEVEL;
+    public TextMeshProUGUI forgeLevelText;
+
+
+    private static int forgeLevel = STARTING_LEVEL;
 
     private void Awake() {
         if (infoPanel == null) {
@@ -19,12 +24,25 @@ public class ForgeManager : MonoBehaviour {
         } else {
             infoPanel.gameObject.SetActive(false);
         }
+
+        if( craftPanel == null) {
+            Debug.LogError("Craft Panel is not assigned");
+        } else {
+            craftPanel.gameObject.SetActive(false);
+        }
+
+        if(forgeLevelText == null) {
+            Debug.LogError("Forge Level Text is not assigned");
+        } else {
+            forgeLevelText.text = "Level " + forgeLevel.ToString();
+        }
     }
 
     public void RequestForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:
-                Debug.Log("Forge Panel: Refine requested.");
+                ShowCraftPanel();
+                craftPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
                 break;
             case INFO_BUTTON:
                 ShowInfoPanel();
@@ -52,8 +70,10 @@ public class ForgeManager : MonoBehaviour {
             Debug.Log("Exploration Unit is already at max level.");
         }
 
+        forgeLevelText.text = "Level " + forgeLevel.ToString();
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
+        PopUpManager.Instance.EnablePlayerInput();
     }
 
     public int GetLevel() { return forgeLevel; }
@@ -61,7 +81,7 @@ public class ForgeManager : MonoBehaviour {
     public void CloseForgePanel(int buttonID) {
         switch (buttonID) {
             case CRAFT_BUTTON:
-                CloseTradePanel();
+                CloseCraftPanel();
                 break;
             case INFO_BUTTON:
                 CloseInfoPanel();
@@ -75,7 +95,7 @@ public class ForgeManager : MonoBehaviour {
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
-    private void ShowForgePanel() {
+    private void ShowCraftPanel() {
         craftPanel.gameObject.SetActive(true);
     }
     private void ShowInfoPanel() {
@@ -84,7 +104,7 @@ public class ForgeManager : MonoBehaviour {
     private void ShowUpgradePanel() {
         upgradePanel.gameObject.SetActive(true);
     }
-    private void CloseTradePanel() {
+    private void CloseCraftPanel() {
         craftPanel.gameObject.SetActive(false);
     }
     private void CloseInfoPanel() {
