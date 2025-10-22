@@ -5651,6 +5651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b3cf5ad3d195f4fb0a25ed265cd3cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hover
+  mainCam: {fileID: 264605918}
 --- !u!1 &860028046
 GameObject:
   m_ObjectHideFlags: 0
@@ -8115,8 +8116,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4aff7b94e75444beb99152ed5b6605b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButtonController
-  MainMenuButton: {fileID: 0}
-  DropdownButtons: []
+  MainMenuButton: {fileID: 661684189}
+  DropdownButtons:
+  - {fileID: 1553696513}
+  - {fileID: 860028048}
 --- !u!1 &1308751419
 GameObject:
   m_ObjectHideFlags: 0

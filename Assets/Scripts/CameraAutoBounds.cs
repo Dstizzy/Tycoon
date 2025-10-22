@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraAutoBounds : MonoBehaviour
-{
+public class CameraAutoBounds : MonoBehaviour {
     [Tooltip("Automatic boundary calculation based on SpriteRenderer / TilemapRenderer across the entire scene")]
     public bool autoCalculate = true;
 
@@ -15,27 +14,31 @@ public class CameraAutoBounds : MonoBehaviour
     [Tooltip("Value for margin at the boundary (Unit: Unit)")]
     public float margin = 2f;
 
-    void Start()
-    {
-        if (autoCalculate) CalculateBounds();
+    void Awake() {
+        // Only do essential component lookups in Awake
+        if (targetPanScript == null) {
+            targetPanScript = GetComponent<CameraDragPan>();
+        }
     }
 
-    public void CalculateBounds()
-    {
-        if (targetPanScript == null)
-        {
+    void Start() { // <-- MOVED to Start()
+        if (autoCalculate) {
+            CalculateBounds();
+        }
+    }
+
+    public void CalculateBounds() {
+        if (targetPanScript == null) {
             targetPanScript = GetComponent<CameraDragPan>();
-            if (targetPanScript == null)
-            {
-                Debug.LogWarning("CameraAutoBounds: CameraDragPan script not found.");
+            if (targetPanScript == null) {
+                Debug.LogWarning("CameraAutoBounds: targetPanScript is still null. Cannot calculate bounds.");
                 return;
             }
         }
 
         // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
         Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
-        if (renderers.Length == 0)
-        {
+        if (renderers.Length == 0) {
             Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
             return;
         }
@@ -44,21 +47,17 @@ public class CameraAutoBounds : MonoBehaviour
         Vector2 min = Vector2.zero;
         Vector2 max = Vector2.zero;
 
-        foreach (Renderer r in renderers)
-        {
+        foreach (Renderer r in renderers) {
             if (!string.IsNullOrEmpty(targetTag) && !r.CompareTag(targetTag))
                 continue; // If a tag filter is set
 
             Bounds b = r.bounds;
 
-            if (first)
-            {
+            if (first) {
                 min = b.min;
                 max = b.max;
                 first = false;
-            }
-            else
-            {
+            } else {
                 min = Vector2.Min(min, b.min);
                 max = Vector2.Max(max, b.max);
             }

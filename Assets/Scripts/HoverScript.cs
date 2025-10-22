@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class HoverScript : MonoBehaviour {
 
+    public Camera mainCam;
+
     RaycastHit2D raycastHit2D;
 
     private Transform prevHoverObject;
@@ -28,7 +30,7 @@ public class HoverScript : MonoBehaviour {
         Vector2 mouseScreenPos = context.ReadValue<Vector2>();
 
         // Then convert to world space:
-        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
+        Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
         // 2. Perform the 2D Raycast (a single-point check at the mouse's location)
         raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero);

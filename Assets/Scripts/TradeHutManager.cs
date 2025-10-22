@@ -189,7 +189,10 @@ public class TradeHutManager : MonoBehaviour {
             Debug.Log("Trade Hut is already at max level.");
 
         tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-        
+
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
         //Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();

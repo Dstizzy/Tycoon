@@ -63,6 +63,10 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
 
         oreRefineryText.text = "Level " + oreLevel.ToString();
+
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();
