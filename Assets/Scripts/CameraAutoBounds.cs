@@ -63,11 +63,6 @@ public class CameraAutoBounds : MonoBehaviour {
             }
         }
 
-        // Add extra space
-        min += Vector2.one * margin;
-        max -= Vector2.one * margin;
-
-
         // Passing values to the CameraDragPan script
         targetPanScript.minWorld = min;
         targetPanScript.maxWorld = max;
