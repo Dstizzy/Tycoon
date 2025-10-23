@@ -27,13 +27,11 @@ public class PopUpManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
+        if (Instance != null && Instance != this) {
+            Destroy(this.gameObject);
+        } else {
             Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+            DontDestroyOnLoad(this.gameObject);
         }
 
         playerActions = new PlayerActions();
