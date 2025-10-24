@@ -69,6 +69,9 @@ public class ExplorationUnitManager : MonoBehaviour {
 
         explorationUnitLevelText.text = "Level " + explorationUnitLevel.ToString();
 
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();

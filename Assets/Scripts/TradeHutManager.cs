@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour {
@@ -14,9 +13,9 @@ public class TradeHutManager : MonoBehaviour {
     public Transform upgradePanel;
     public TextMeshProUGUI tradeHutLevelText;
 
-    public int crudeToolCount = 0;
-    public int refinedToolCount = 0;
-    public int artifactCount = 0;
+    public int crudeToolSellCount = 0;
+    public int refinedToolSellCount = 0;
+    public int artifactSellCount = 0;
 
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
@@ -30,9 +29,11 @@ public class TradeHutManager : MonoBehaviour {
     public static int tradeHutLevel = STARTING_LEVEL;
 
     // A list to hold references to all the instantiated trade item UI elements.
-    private List<Transform> tradeItems = new();
+    private List<Transform> tradeItems;
 
     private void Awake() {
+        tradeItems = new();
+
         if (tradeContainer == null) {
             Debug.LogError("Container is not assigned in the Inspector!");
         }
@@ -59,7 +60,7 @@ public class TradeHutManager : MonoBehaviour {
             upgradePanel.gameObject.SetActive(false);
         }
 
-        if(tradeHutLevelText != null) {
+        if (tradeHutLevelText != null) {
             tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
         } else {
             Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
@@ -104,26 +105,43 @@ public class TradeHutManager : MonoBehaviour {
         tradeItems.Add(tradeItemTransform);
     }
 
+    public void SellItem() {
+        int totalSellValue = 0;
+
+        if (crudeToolSellCount > 0)
+            totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
+
+        if (refinedToolSellCount > 0)
+            totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
+
+        if (artifactSellCount > 0)
+            totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Articfatct);
+
+        InventoryManager.Instance.TryAddPearl(totalSellValue);
+
+        return;
+    }
+
     public void OnClickIncreaseButton(Transform Item) {
         // Uses the item's Tag to determine which counter variable to update.
         switch (Item.tag) {
             case "Crude Tool":
                 // Check against the maximum selling limit before incrementing.
-                if (crudeToolCount < MAX_SELL_ITEM_COUNT) {
-                    crudeToolCount += 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolCount.ToString();
+                if (crudeToolSellCount < MAX_SELL_ITEM_COUNT) {
+                    crudeToolSellCount += 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolSellCount.ToString();
                 }
                 break;
             case "Refined Tool":
-                if (refinedToolCount < MAX_SELL_ITEM_COUNT) {
-                    refinedToolCount += 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolCount.ToString();
+                if (refinedToolSellCount < MAX_SELL_ITEM_COUNT) {
+                    refinedToolSellCount += 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolSellCount.ToString();
                 }
                 break;
             case "Artifact":
-                if (artifactCount < MAX_SELL_ITEM_COUNT) {
-                    artifactCount += 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactCount.ToString();
+                if (artifactSellCount < MAX_SELL_ITEM_COUNT) {
+                    artifactSellCount += 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactSellCount.ToString();
                 }
                 break;
             default:
@@ -137,21 +155,21 @@ public class TradeHutManager : MonoBehaviour {
         switch (Item.tag) {
             case "Crude Tool":
                 // Check against the minimum selling limit (0) before decrementing.
-                if (crudeToolCount > MIN_SELL_ITEM_COUNT) {
-                    crudeToolCount -= 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolCount.ToString();
+                if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) {
+                    crudeToolSellCount -= 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolSellCount.ToString();
                 }
                 break;
             case "Refined Tool":
-                if (refinedToolCount > MIN_SELL_ITEM_COUNT) {
-                    refinedToolCount -= 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolCount.ToString();
+                if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) {
+                    refinedToolSellCount -= 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolSellCount.ToString();
                 }
                 break;
             case "Artifact":
-                if (artifactCount > MIN_SELL_ITEM_COUNT) {
-                    artifactCount -= 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactCount.ToString();
+                if (artifactSellCount > MIN_SELL_ITEM_COUNT) {
+                    artifactSellCount -= 1;
+                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactSellCount.ToString();
                 }
                 break;
             default:
@@ -164,16 +182,17 @@ public class TradeHutManager : MonoBehaviour {
         switch (buttonID) {
             case TRADE_BUTTON:
                 ShowTradePanel();
-                tradePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
+                tradePanel.Find("SellButton").GetComponent<Button>().onClick.AddListener(() => SellItem());
+                tradePanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
                 break;
             case INFO_BUTTON:
                 ShowInfoPanel();
-                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
+                infoPanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
                 break;
             case UPGRADE_BUTTON:
                 ShowUpgradePanel();
-                upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
-                upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
+                upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
+                upgradePanel.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
                 break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
@@ -181,29 +200,22 @@ public class TradeHutManager : MonoBehaviour {
         }
     }
 
-    private void UpgradeTradeHut()
-    {
+    private void UpgradeTradeHut() {
         // Check if the trade hut can be upgraded
         if (tradeHutLevel < ENDING_LEVEL)
-        {
             tradeHutLevel += 1;
-        }
         else
-        {
             Debug.Log("Trade Hut is already at max level.");
-        }
+
         tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-        
+
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
         //Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();
     }
-
-    public int GetLevel()
-    {
-        return tradeHutLevel;
-    }
-
 
     public void CloseTradeHutPanel(int buttonID) {
         switch (buttonID) {
@@ -241,5 +253,4 @@ public class TradeHutManager : MonoBehaviour {
     private void CloseUpgradePanel() {
         upgradePanel.gameObject.SetActive(false);
     }
-
 }

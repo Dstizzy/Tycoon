@@ -11,12 +11,12 @@ public class Item {
     }
 
     public static int GetItemValue(ItemType itemType) {
-        switch(itemType) {
-            case ItemType.CrudeTool: 
+        switch (itemType) {
+            case ItemType.CrudeTool:
                 return 5;
-            case ItemType.RefinedTool: 
+            case ItemType.RefinedTool:
                 return 10;
-            case ItemType.Articfatct: 
+            case ItemType.Articfatct:
                 return 20;
             default:
                 return 0;
@@ -24,16 +24,11 @@ public class Item {
     }
 
     public static Sprite GetItemSprite(ItemType itemType) {
-        switch(itemType) {
-            case ItemType.CrudeTool: 
-                return ItemSprites.itemSprites.crudeTool;
-            case ItemType.RefinedTool:
-                return ItemSprites.itemSprites.refinedTool;
-            case ItemType.Articfatct: 
-                return ItemSprites.itemSprites.artifact;
-            default:
-                return null;
+        if (ItemSprites.itemSprites == null) {
+            Debug.LogError("ItemSprites.Instance is NULL! Cannot retrieve sprites.");
+            return null;
         }
-    }
 
+        return ItemSprites.itemSprites.GetSprite(itemType);
+    }
 }
