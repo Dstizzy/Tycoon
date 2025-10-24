@@ -2,7 +2,6 @@ using NUnit.Framework.Constraints;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -18,9 +17,9 @@ public class PopUpManager : MonoBehaviour
     [SerializeField] private ForgeManager forgeManager;
     [SerializeField] private LabManager labManager;
 
-    private List<GameObject> popUps;
-    private PlayerActions playerActions;
-    private List<RaycastResult> raycastResults = new List<RaycastResult>();
+    private       List<GameObject>    popUps;
+    private       PlayerActions       playerActions;
+    private       List<RaycastResult> raycastResults = new List<RaycastResult>();
     public static Transform buildingTransform;
     public TextMeshProUGUI TradeHutLevelText;
     public TextMeshProUGUI OreLevelText;

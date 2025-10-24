@@ -1,14 +1,16 @@
+/* Libraries */
 using System.Collections.Generic;
-
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TradeHutManager : MonoBehaviour {
+public class TradeHutManager : MonoBehaviour
+{
+
     public Transform tradeContainer;
     public Transform tradeItemTemplate;
+
     public Transform tradePanel;
     public Transform infoPanel;
     public Transform upgradePanel;
