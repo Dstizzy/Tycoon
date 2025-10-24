@@ -21,24 +21,16 @@ public class PopUpManager : MonoBehaviour
     private       PlayerActions       playerActions;
     private       List<RaycastResult> raycastResults = new List<RaycastResult>();
     public static Transform buildingTransform;
-    public TextMeshProUGUI TradeHutLevelText;
-    public TextMeshProUGUI OreLevelText;
-    public TextMeshProUGUI ExplorationLevelText;
-    public TextMeshProUGUI ForgeLevelText;
-
-
 
     public static PopUpManager Instance { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null)
-        {
+        if (Instance != null && Instance != this) {
+            Destroy(this.gameObject);
+        } else {
             Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+            DontDestroyOnLoad(this.gameObject);
         }
 
         playerActions = new PlayerActions();

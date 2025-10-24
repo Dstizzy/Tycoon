@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class HoverScript : MonoBehaviour {
 
+    public Camera mainCam;
+
     RaycastHit2D raycastHit2D;
 
     private Transform prevHoverObject;
@@ -28,7 +30,7 @@ public class HoverScript : MonoBehaviour {
         Vector2 mouseScreenPos = context.ReadValue<Vector2>();
 
         // Then convert to world space:
-        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
+        Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
         // 2. Perform the 2D Raycast (a single-point check at the mouse's location)
         raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
@@ -41,34 +43,30 @@ public class HoverScript : MonoBehaviour {
         // =========================================================
 
         // Case A: Mouse moved OFF the previous object (either to empty space or a new object)
-        if (prevHoverObject != null && prevHoverObject != currentHoverObject)
-        {
+        if (prevHoverObject != null && prevHoverObject != currentHoverObject) {
             // Retrieve the SpriteRenderer and check if it exists before using it
             SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
 
-            if (prevRenderer != null)
-            { // <-- ADDED NULL CHECK HERE
-              // Revert the color/state of the object we just left
+            if (prevRenderer != null) { // <-- ADDED NULL CHECK HERE
+                                        // Revert the color/state of the object we just left
                 prevRenderer.color = Color.white;
             }
         }
 
         // Case B: Mouse moved ONTO a new object
-        if (currentHoverObject != null && currentHoverObject != prevHoverObject)
-        {
+        if (currentHoverObject != null && currentHoverObject != prevHoverObject) {
             // Retrieve the SpriteRenderer and check if it exists before using it
             SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
 
-            if (currentRenderer != null)
-            { // <-- ADDED NULL CHECK HERE
-              // Set the color/state of the new object
+            if (currentRenderer != null) { // <-- ADDED NULL CHECK HERE
+                                           // Set the color/state of the new object
                 currentRenderer.color = Color.red;
             }
         }
 
-            // 5. Update the state for the next frame
-            // What we hit this frame becomes the 'previous' object for the next frame's comparison
-            prevHoverObject = currentHoverObject;
+        // 5. Update the state for the next frame
+        // What we hit this frame becomes the 'previous' object for the next frame's comparison
+        prevHoverObject = currentHoverObject;
     }
 
     public void DisbaleHover() {
