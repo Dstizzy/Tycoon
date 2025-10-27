@@ -8,9 +8,13 @@ using UnityEngine.UI;
 public class InventoryManager : MonoBehaviour {
 
     public static InventoryManager Instance { get; private set; }
+
     public Transform InventoryPanel;
     public Transform ResourceContainer;
     public Transform ResourceTemplate;
+
+    private TextMeshProUGUI PearlCountText;
+    private TextMeshProUGUI CrystalCountText;
 
     const int MIN_PEARL_COUNT = 0;
     const int MAX_PEARL_COUNT = 1000;
@@ -41,12 +45,12 @@ public class InventoryManager : MonoBehaviour {
     }
 
     private void Start() {
-        CreateResource(Resources.Load<Sprite>("Sprites/PearlIcon"), "Pearl", 0, "Pearl");
-        CreateResource(Resources.Load<Sprite>("Sprites/CrystalIcon"), "Crystal", 1, "Crystal");
+       CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Pearl), "Pearl", 0, "Pearl");
+       CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Crystal), "Crystal", 10, "Crystal");
     }
-    private void CreateResource(Sprite ResourceSprite, string ResourceName, float positionIndex, string ResourceTag) {
+    private void CreateResource(Sprite resourceSprite, string resourceName, float positionIndex, string resourceTag) {
 
-        int ResourceCount = ResourceName switch {
+        int ResourceCount = resourceTag switch {
             "Pearl" => pearlCount,
             "Crystal" => crystalCount,
             _ => 0
@@ -56,13 +60,17 @@ public class InventoryManager : MonoBehaviour {
         Transform ResourceTransform = Instantiate(ResourceTemplate, ResourceContainer);
         RectTransform ResourceRectTransform = ResourceTransform.GetComponent<RectTransform>();
 
-        ResourceTransform.tag = ResourceTag;
+        ResourceTransform.tag = resourceTag;
 
         ResourceRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
 
         // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
-        ResourceTransform.Find("ResourceSprite").GetComponent<Image>().sprite = ResourceSprite;
+        ResourceTransform.Find("ResourceSprite").GetComponent<Image>().sprite = resourceSprite;
         ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = "  x" + ResourceCount.ToString();
+        if (resourceTag == "Pearl")
+            PearlCountText = ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+        else
+            CrystalCountText = ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
 
         ResourceTransform.gameObject.SetActive(true);
     }
@@ -77,6 +85,7 @@ public class InventoryManager : MonoBehaviour {
             pearlCount += pearlAmount;
 
         OnPearlCountChanged?.Invoke(pearlCount);
+        PearlCountText.text = "  x" + pearlCount.ToString();
 
         return;
     }
@@ -92,6 +101,7 @@ public class InventoryManager : MonoBehaviour {
             pearlCount -= pearlAmount;
 
         OnPearlCountChanged?.Invoke(pearlCount);
+        PearlCountText.text = "  x" + pearlCount.ToString();
 
         return;
     }
@@ -125,10 +135,11 @@ public class InventoryManager : MonoBehaviour {
         return;
     }
 
-    
-
     public void ActivateInventoryPanel() {
         InventoryPanel.gameObject.SetActive(true);
+    }
+    public void DeactivateInventoryPanel() {
+        InventoryPanel.gameObject.SetActive(false);
     }
 
     public Action<int> OnPearlCountChanged;
