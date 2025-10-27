@@ -45,8 +45,8 @@ public class InventoryManager : MonoBehaviour {
     }
 
     private void Start() {
-       CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Pearl), "Pearl", 0, "Pearl");
-       CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Crystal), "Crystal", 10, "Crystal");
+        CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Pearl), "Pearl", 0, "Pearl");
+        CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Crystal), "Crystal", 10, "Crystal");
     }
     private void CreateResource(Sprite resourceSprite, string resourceName, float positionIndex, string resourceTag) {
 
@@ -107,7 +107,7 @@ public class InventoryManager : MonoBehaviour {
     }
 
     public void TryAddCrystal(int pearlAmount) {
-        if (pearlCount > MAX_PEARL_COUNT) {
+        if (pearlCount > MAX_CRYSTAL_COUNT) {
             Debug.LogError("Pearl count is at maximum!");
             return;
         } else if ((pearlCount + pearlAmount) > MAX_PEARL_COUNT) {
@@ -116,12 +116,13 @@ public class InventoryManager : MonoBehaviour {
             pearlCount += pearlAmount;
 
         OnCrystalCountChanged?.Invoke(crystalCount);
+        CrystalCountText.text = "  x" + crystalCount.ToString();
 
         return;
     }
 
     public void TrySpendCrystal(int pearlAmount) {
-        if (pearlCount < MIN_PEARL_COUNT) {
+        if (pearlCount < MIN_CRYSTAL_COUNT) {
             Debug.LogError("Pearl count is at minimum!");
             return;
         } else if (pearlCount < pearlAmount) {
@@ -131,6 +132,7 @@ public class InventoryManager : MonoBehaviour {
             pearlCount -= pearlAmount;
 
         OnCrystalCountChanged?.Invoke(crystalCount);
+        CrystalCountText.text = "  x" + crystalCount.ToString();
 
         return;
     }
