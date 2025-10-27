@@ -1,4 +1,4 @@
-/* Libraries */
+/* Libraries                                                                                     */
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,19 +6,7 @@ using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour
 {
-
-    public Transform tradeContainer;
-    public Transform tradeItemTemplate;
-
-    public Transform tradePanel;
-    public Transform infoPanel;
-    public Transform upgradePanel;
-    public TextMeshProUGUI tradeHutLevelText;
-
-    public int crudeToolSellCount = 0;
-    public int refinedToolSellCount = 0;
-    public int artifactSellCount = 0;
-
+    /* Symbolic Constants                                                                          */
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
     const int TRADE_ITEM_SPACING = 30;
@@ -28,59 +16,90 @@ public class TradeHutManager : MonoBehaviour
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
-    public static int tradeHutLevel = STARTING_LEVEL;
+    /* Inspector Variables                                                                       */
+    public Transform tradeContainer;
+    public Transform tradeItemTemplate;
+    public Transform tradePanel;
+    public Transform infoPanel;
+    public Transform upgradePanel;
 
-    // A list to hold references to all the instantiated trade item UI elements.
+    public TextMeshProUGUI tradeHutLevelText;
+
+    /* Public Variables                                                                          */
+    public int crudeToolSellCount   = 0;
+    public        int refinedToolSellCount = 0;
+    public        int artifactSellCount    = 0;
+    public static int tradeHutLevel        = STARTING_LEVEL;
+
+    /* A list to hold references to all the instantiated trade item UI elements.                 */
     private List<Transform> tradeItems;
 
-    private void Awake() {
+    /* Checks for existence of required components and initializes the trade hut UI.             */
+    private void Awake() 
+    {
         tradeItems = new();
 
-        if (tradeContainer == null) {
+        if (tradeContainer == null) 
+        {
             Debug.LogError("Container is not assigned in the Inspector!");
         }
 
-        // Hides the trade item template and the main trade panel when the game starts.
-        if (tradeItemTemplate != null) {
+        if (tradeItemTemplate != null) 
+        {
             tradeItemTemplate.gameObject.SetActive(false);
         }
-        if (tradePanel == null) {
+
+        if (tradePanel == null) 
+        {
             Debug.LogError("Trade Panel is not assigned in the Inspector!");
-        } else {
+        } 
+        else 
+        {
             tradePanel.gameObject.SetActive(false);
         }
 
         if (infoPanel == null) {
             Debug.LogError("Info Panel is not assigned in the Inspector!");
-        } else {
+        } 
+        else 
+        {
             infoPanel.gameObject.SetActive(false);
         }
 
-        if (upgradePanel == null) {
+        if (upgradePanel == null) 
+        {
             Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
-        } else {
+        } 
+        else 
+        {
             upgradePanel.gameObject.SetActive(false);
         }
 
-        if (tradeHutLevelText != null) {
+        if (tradeHutLevelText != null) 
+        {
             tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-        } else {
+        } 
+        else 
+        {
             Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
         }
     }
 
-    private void Start() {
-        // Creates the individual trade item entries for Crude Tools, Refined Tools, and Artifacts
+
+    private void Start() 
+    {
+        /* Creates the individual trade item entries for each craftable item                     */
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.Articfatct), "Artifact", Item.GetItemValue(Item.ItemType.Articfatct), 1.0f, "Artifact");
     }
 
-    // Instantiates a new trade item UI element, sets its visual data, and configures its buttons.
-    private void CreateItem(Sprite itemSprite, string itemName, int itemvalue, float positionIndex, string ItemTag) {
-        int itemCount = 0;
+    /* Instantiates a new trade item UI element, sets its visual data, and configures its buttons */
+    private void CreateItem(Sprite itemSprite, string itemName, int itemvalue, float positionIndex, string ItemTag) 
+    {
+        int itemCount = 0; /* Count of items to sell                                             */
 
-        // Instantiate the template and set its position in the container.
+        /* Instantiate the template and set its position in the container.                       */
         Transform tradeItemTransform = Instantiate(tradeItemTemplate, tradeContainer);
         RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
@@ -88,18 +107,18 @@ public class TradeHutManager : MonoBehaviour
 
         tradeItemRectTransform.anchoredPosition = new Vector2(TRADE_ITEM_SPACING * positionIndex, 0);
 
-        // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
+        /* Populate the TextMeshPro and Image components with item-specific data.                */
         tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemvalue.ToString();
-        tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemName.Equals("Artifact") ? "    Artifact" : itemName;
-        tradeItemTransform.Find("ItemImage").GetComponent<Image>().sprite = itemSprite;
+        tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemName.Equals("Artifact") ? "    Artifact" : itemName;
+        tradeItemTransform.Find("ItemImage").GetComponent<Image>().sprite         = itemSprite;
         tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + itemCount.ToString();
 
-        // Get references to the increase and decrease buttons.
+        /* Get references to the increase and decrease buttons.                                  */
         Button increaseButton = tradeItemTransform.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
         Button decreaseButton = tradeItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
-        // Dynamically add listeners to the buttons, passing the specific item's Transform.
-        // This ensures the button click only affects its corresponding item entry.
+        /* Dynamically add listeners to the buttons, passing the specific item's Transform.      */
+        /* This ensures the button click only affects its corresponding item entry.              */
         increaseButton.onClick.AddListener(() => OnClickIncreaseButton(tradeItemTransform));
         decreaseButton.onClick.AddListener(() => OnClickDecreaseButton(tradeItemTransform));
 
@@ -107,8 +126,9 @@ public class TradeHutManager : MonoBehaviour
         tradeItems.Add(tradeItemTransform);
     }
 
-    public void SellItem() {
-        int totalSellValue = 0;
+    public void SellItem() 
+    {
+        int totalSellValue = 0; /* Total value of items to be sold.                              */
 
         if (crudeToolSellCount > 0)
             totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
@@ -124,8 +144,9 @@ public class TradeHutManager : MonoBehaviour
         return;
     }
 
-    public void OnClickIncreaseButton(Transform Item) {
-        // Uses the item's Tag to determine which counter variable to update.
+    public void OnClickIncreaseButton(Transform Item) 
+     {
+        /* Uses the item's Tag to determine which counter variable to update.                    */
         switch (Item.tag) {
             case "Crude Tool":
                 // Check against the maximum selling limit before incrementing.

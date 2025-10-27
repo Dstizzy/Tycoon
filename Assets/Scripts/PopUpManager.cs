@@ -129,32 +129,6 @@ public class PopUpManager : MonoBehaviour
         }
     }
 
-    public void ActivateBuildingText(Transform buildingTransform)
-    {
-        /*switch (buildingTransform.tag)
-        {
-            case "Trade Hut":
-                TradeHutLevelText.text = "Trade Hut Level: " + tradeHutManager.GetLevel();
-                TradeHutLevelText.gameObject.SetActive(true);
-                break;
-            case "Ore Refinory":
-                OreLevelText.text = "Ore Refinery Level: " + oreRefineryManager.GetLevel();
-                OreLevelText.gameObject.SetActive(true);
-                break;
-            case "Exploration Unit":
-                ExplorationLevelText.text = "Exploration Unit Level: " + explortionUnitManager.GetLevel();
-                ExplorationLevelText.gameObject.SetActive(true);
-                break;
-            case "Forge":
-                ForgeLevelText.text = "Forge Level: " + forgeManager.GetLevel();
-                ForgeLevelText.gameObject.SetActive(true);
-                break;
-            default:
-                Debug.Log("Building has no text");
-                break;
-        };*/
-    }
-
     public void OnBuildingButtonClick(int buttonId)
     {
         switch (buildingTransform.tag)

@@ -37,7 +37,8 @@ public class PanelsPopUpTest : InputTestFixture
         Vector2 screenPosition = new Vector2(0,0);
 
         // Load the Main Scene
-        SceneManager.LoadScene("MainScene");
+        if(SceneManager.GetActiveScene().name != "MainScene")
+            SceneManager.LoadScene("MainScene");
         yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
@@ -109,6 +110,7 @@ public class PanelsPopUpTest : InputTestFixture
                     ExitButton = GameObject.Find($"Building Panel Canvas/UI_TradeHut/TradeInfoPanel/ExitButton").GetComponent<Button>();
                     Assert.IsNotNull(ExitButton, "Could not find Exit Button.");
                     break;
+                /* This occurs when there is a fourth button                                     */
                 default:
                     Assert.Fail();
                     break;
@@ -133,7 +135,8 @@ public class PanelsPopUpTest : InputTestFixture
         Vector2 screenPosition = new Vector2(0, 0);
 
         // Load the Main Scene
-        SceneManager.LoadScene("MainScene");
+        if (SceneManager.GetActiveScene().name != "MainScene")
+            SceneManager.LoadScene("MainScene");
         yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
@@ -218,6 +221,7 @@ public class PanelsPopUpTest : InputTestFixture
             // Verify the panel is closed
             Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
+
         yield return null;
     }
 
@@ -230,7 +234,8 @@ public class PanelsPopUpTest : InputTestFixture
         Vector2 screenPosition = new Vector2(0, 0);
 
         // Load the Main Scene
-        SceneManager.LoadScene("MainScene");
+        if(SceneManager.GetActiveScene().name != "MainScene")
+            SceneManager.LoadScene("MainScene");
         yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
@@ -322,7 +327,8 @@ public class PanelsPopUpTest : InputTestFixture
         Vector2 screenPosition = new Vector2(0, 0);
 
         // Load the Main Scene
-        SceneManager.LoadScene("MainScene");
+        if(SceneManager.GetActiveScene().name != "MainScene")
+            SceneManager.LoadScene("MainScene");
         yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
@@ -407,6 +413,7 @@ public class PanelsPopUpTest : InputTestFixture
             // Verify the panel is closed
             Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
+        yield return new WaitForSeconds(6.0f);
         yield return null;
     }
 
@@ -419,7 +426,8 @@ public class PanelsPopUpTest : InputTestFixture
         Vector2 screenPosition = new Vector2(0, 0);
 
         // Load the Main Scene
-        SceneManager.LoadScene("MainScene");
+        if (SceneManager.GetActiveScene().name != "MainScene")
+            SceneManager.LoadScene("MainScene");
         yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
