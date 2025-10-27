@@ -13,7 +13,7 @@ public class PopUpManager : MonoBehaviour
     [SerializeField] private GameObject[] buildingButtonsPreFab;
     [SerializeField] private Camera cam;
     [SerializeField] private TradeHutManager tradeHutManager;
-    [SerializeField] private ExplorationUnitManager explortionUnitManager;
+    [SerializeField] private ExplorationUnitManager explorationUnitManager;
     [SerializeField] private OreRefinery_Manager oreRefineryManager;
     [SerializeField] private ForgeManager forgeManager;
     [SerializeField] private LabManager labManager;
@@ -180,7 +180,7 @@ public class PopUpManager : MonoBehaviour
                 oreRefineryManager.RequestOreRefinoryPanel(buttonId);
                 break;
             case "Exploration Unit":
-                explortionUnitManager.RequestExplorationUnitPanel(buttonId);
+                explorationUnitManager.RequestExplorationUnitPanel(buttonId);
                 break;
             default:
                 Debug.Log("Building Panel: Unknown building type.");
