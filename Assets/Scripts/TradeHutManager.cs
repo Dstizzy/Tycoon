@@ -117,9 +117,13 @@ public class TradeHutManager : MonoBehaviour {
         if (artifactSellCount > MIN_SELL_ITEM_COUNT)
             totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Articfatct);
 
-        crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
+        crudeToolSellCount = MIN_SELL_ITEM_COUNT;
         refinedToolSellCount = MIN_SELL_ITEM_COUNT;
-        artifactSellCount    = MIN_SELL_ITEM_COUNT;
+        artifactSellCount = MIN_SELL_ITEM_COUNT;
+
+        foreach (Transform tradeItem in tradeItems)
+            tradeItem.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + MIN_SELL_ITEM_COUNT.ToString();
+
 
         InventoryManager.Instance.TryAddPearl(totalSellValue);
 
