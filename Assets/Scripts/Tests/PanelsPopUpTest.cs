@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -20,6 +21,22 @@ public class PanelsPopUpTest : InputTestFixture
         }
     }
 
+    [UnityTearDown] // Runs after *each* [UnityTest]
+    public IEnumerator CleanupTestObjects()
+    {
+        // Find all the pop-up buttons that were likely left behind.
+        GameObject[] popUpButtons = GameObject.FindGameObjectsWithTag("BuildingButtonPopUp");
+
+        foreach (GameObject go in popUpButtons)
+        {
+            // Destroy them to ensure they aren't blocking the next test's input.
+            UnityEngine.Object.Destroy(go);
+        }
+
+        // Allow one frame for the destruction to take effect
+        yield return null;
+    }
+
     [Test]
     public void IsMouseAdded()
     {
@@ -29,16 +46,15 @@ public class PanelsPopUpTest : InputTestFixture
     }
 
     [UnityTest]
-    public IEnumerator TradeHutPanelsPopUpWhenButtonIsClicked()
+    public IEnumerator AllPanelsPopUpUponClickingBuildingButton()
     {
         Button ExitButton = null;
         GameObject myPanel = null;
-        Vector3 worldPosition = new Vector3(0,0,0);
-        Vector2 screenPosition = new Vector2(0,0);
+        Vector3 worldPosition = new Vector3(0, 0, 0);
+        Vector2 screenPosition = new Vector2(0, 0);
 
         // Load the Main Scene
-        if(SceneManager.GetActiveScene().name != "MainScene")
-            SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene("MainScene");
         yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
@@ -114,38 +130,21 @@ public class PanelsPopUpTest : InputTestFixture
                 default:
                     Assert.Fail();
                     break;
-            };
+            }
+            ;
+
             yield return null;
 
             // Close the panel by clicking the exit button
             ExitButton.onClick.Invoke();
-            
+
             // Verify the panel is closed
             Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
-        yield return null;
-    }
-
-    [UnityTest]
-    public IEnumerator ForgeButtonsPopUpWhenBuildingIsClicked()
-    {
-        Button ExitButton = null;
-        GameObject myPanel = null;
-        Vector3 worldPosition = new Vector3(0, 0, 0);
-        Vector2 screenPosition = new Vector2(0, 0);
-
-        // Load the Main Scene
-        if (SceneManager.GetActiveScene().name != "MainScene")
-            SceneManager.LoadScene("MainScene");
-        yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
-        GameObject myBuilding = GameObject.Find("Forge");
+        myBuilding = GameObject.Find("Forge");
         Assert.IsNotNull(myBuilding, $"Could not find forge");
-
-        // Set the main camera
-        Camera mainCamera = Camera.main;
-        Assert.IsNotNull(mainCamera, "Setup Error: Missing Main Camera.");
 
         // Loop through each of the three buttons: Trade, Upgrade, Info
         for (int buttonIndex = 0; buttonIndex < 3; buttonIndex++)
@@ -162,7 +161,7 @@ public class PanelsPopUpTest : InputTestFixture
 
             // Check for the presence of building buttons upon clicking the building
             GameObject[] popUpButtons = GameObject.FindGameObjectsWithTag("BuildingButtonPopUp");
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
             Assert.IsNotEmpty(popUpButtons, "No building buttons found.");
 
             // Check if the panels open up for each button
@@ -213,6 +212,7 @@ public class PanelsPopUpTest : InputTestFixture
                     break;
             }
             ;
+
             yield return null;
 
             // Close the panel by clicking the exit button
@@ -222,29 +222,9 @@ public class PanelsPopUpTest : InputTestFixture
             Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
 
-        yield return null;
-    }
-
-    [UnityTest]
-    public IEnumerator OreRefineryButtonsPopUpWhenBuildingIsClicked()
-    {
-        Button ExitButton = null;
-        GameObject myPanel = null;
-        Vector3 worldPosition = new Vector3(0, 0, 0);
-        Vector2 screenPosition = new Vector2(0, 0);
-
-        // Load the Main Scene
-        if(SceneManager.GetActiveScene().name != "MainScene")
-            SceneManager.LoadScene("MainScene");
-        yield return new WaitForSeconds(0.1f);
-
         // Find a specific building in the scene (Trade Hut)
-        GameObject myBuilding = GameObject.Find("Ore Refinery");
+        myBuilding = GameObject.Find("Ore Refinery");
         Assert.IsNotNull(myBuilding, $"Could not find ore refinery");
-
-        // Set the main camera
-        Camera mainCamera = Camera.main;
-        Assert.IsNotNull(mainCamera, "Setup Error: Missing Main Camera.");
 
         // Loop through each of the three buttons: Trade, Upgrade, Info
         for (int buttonIndex = 0; buttonIndex < 3; buttonIndex++)
@@ -308,36 +288,17 @@ public class PanelsPopUpTest : InputTestFixture
             yield return null;
 
             // Close the panel by clicking the exit button
-            if(ExitButton != null)
+            if (ExitButton != null)
                 ExitButton.onClick.Invoke();
 
             // Verify the panel is closed
-            if(myPanel != null)
+            if (myPanel != null)
                 Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
-        yield return null;
-    }
-
-    [UnityTest]
-    public IEnumerator ExplorationUnitButtonsPopUpWhenBuildingIsClicked()
-    {
-        Button ExitButton = null;
-        GameObject myPanel = null;
-        Vector3 worldPosition = new Vector3(0, 0, 0);
-        Vector2 screenPosition = new Vector2(0, 0);
-
-        // Load the Main Scene
-        if(SceneManager.GetActiveScene().name != "MainScene")
-            SceneManager.LoadScene("MainScene");
-        yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
-        GameObject myBuilding = GameObject.Find("Exploration");
+        myBuilding = GameObject.Find("Exploration");
         Assert.IsNotNull(myBuilding, $"Could not find exploration unit");
-
-        // Set the main camera
-        Camera mainCamera = Camera.main;
-        Assert.IsNotNull(mainCamera, "Setup Error: Missing Main Camera.");
 
         // Loop through each of the three buttons: Trade, Upgrade, Info
         for (int buttonIndex = 0; buttonIndex < 3; buttonIndex++)
@@ -405,6 +366,7 @@ public class PanelsPopUpTest : InputTestFixture
                     break;
             }
             ;
+
             yield return null;
 
             // Close the panel by clicking the exit button
@@ -413,30 +375,10 @@ public class PanelsPopUpTest : InputTestFixture
             // Verify the panel is closed
             Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
-        yield return new WaitForSeconds(6.0f);
-        yield return null;
-    }
-
-    [UnityTest]
-    public IEnumerator LabButtonsPopUpWhenBuildingIsClicked()
-    {
-        Button ExitButton = null;
-        GameObject myPanel = null;
-        Vector3 worldPosition = new Vector3(0, 0, 0);
-        Vector2 screenPosition = new Vector2(0, 0);
-
-        // Load the Main Scene
-        if (SceneManager.GetActiveScene().name != "MainScene")
-            SceneManager.LoadScene("MainScene");
-        yield return new WaitForSeconds(0.1f);
 
         // Find a specific building in the scene (Trade Hut)
-        GameObject myBuilding = GameObject.Find("Lab");
+        myBuilding = GameObject.Find("Lab");
         Assert.IsNotNull(myBuilding, $"Could not find lab");
-
-        // Set the main camera
-        Camera mainCamera = Camera.main;
-        Assert.IsNotNull(mainCamera, "Setup Error: Missing Main Camera.");
 
         // Loop through each of the three buttons: Trade, Upgrade, Info
         for (int buttonIndex = 0; buttonIndex < 2; buttonIndex++)
@@ -497,6 +439,7 @@ public class PanelsPopUpTest : InputTestFixture
                     break;
             }
             ;
+
             yield return null;
 
             // Close the panel by clicking the exit button
@@ -505,6 +448,7 @@ public class PanelsPopUpTest : InputTestFixture
             // Verify the panel is closed
             Assert.IsFalse(myPanel.activeSelf, "Panel did not close after clicking Exit button.");
         }
+
         yield return null;
     }
 }
