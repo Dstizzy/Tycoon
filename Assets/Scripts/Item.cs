@@ -7,7 +7,7 @@ public class Item {
     public enum ItemType {
         CrudeTool,
         RefinedTool,
-        Articfatct
+        Artifact
     }
 
     public static int GetItemValue(ItemType itemType) {
@@ -16,7 +16,7 @@ public class Item {
                 return 5;
             case ItemType.RefinedTool:
                 return 10;
-            case ItemType.Articfatct:
+            case ItemType.Artifact:
                 return 20;
             default:
                 return 0;
