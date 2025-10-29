@@ -5,42 +5,46 @@ using UnityEngine.UI;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
-   [SerializeField] private Transform explorePanel;
-   [SerializeField] private Transform infoPanel;
-   [SerializeField] private Transform upgradePanel;
-   public TextMeshProUGUI explorationUnitLevelText;
+   public TextMeshProUGUI explorationUnitLevelText; /* Displays urrent level of exploration unit */
+
+   [SerializeField] private Transform explorePanel;    /* Explore panel UI                       */
+   [SerializeField] private Transform infoPanel;       /* Info panel UI                          */
+   [SerializeField] private Transform upgradePanel;    /* Upgrade panel UI                       */
 
    [Header("Explore Panel Tabs")]
-   [SerializeField] private GameObject levelOneTab;
-   [SerializeField] private GameObject levelTwoTab;
-   [SerializeField] private GameObject levelThreeTab;
+   [SerializeField] private GameObject levelOneTab;    /* Level one tab on explore panel         */
+   [SerializeField] private GameObject levelTwoTab;    /* Level two tab on explore panel         */
+   [SerializeField] private GameObject levelThreeTab;  /* Level three tab on explore panel       */
 
    [Header("Boat Visuals")]
-   [SerializeField] private GameObject levelOneBoat;
-   [SerializeField] private GameObject levelTwoBoat;
-   [SerializeField] private GameObject levelThreeBoat;
+   [SerializeField] private GameObject levelOneBoat;   /* Boat for level one                     */
+   [SerializeField] private GameObject levelTwoBoat;   /* Boat for level two                     */
+   [SerializeField] private GameObject levelThreeBoat; /* Boat for level three                   */
 
-   const int EXPLORE_BUTTON       = 1;
-   const int INFO_BUTTON          = 2;
-   const int UPGRADE_BUTTON       = 3;
-   const int STARTING_LEVEL       = 1;
-   const int ENDING_LEVEL         = 3;
-   const int UPGRADE_COST         = 100;
-   const int LEVEL_1_TAB_ID       = 11;
-   const int LEVEL_2_TAB_ID       = 12;
-   const int LEVEL_3_TAB_ID       = 13;
-   const int LEVEL_1_EXPLORE_COST = 200;
-   const int LEVEL_2_EXPLORE_COST = 300;
-   const int LEVEL_3_EXPLORE_COST = 400;
-   const int EXPLORE_DURATION     = 2;
+   const int EXPLORE_BUTTON       = 1;   /* ID number of the explore button                      */
+   const int INFO_BUTTON          = 2;   /* ID number of the info button                         */
+   const int UPGRADE_BUTTON       = 3;   /* ID number of the upgrade button                      */
+   const int STARTING_LEVEL       = 1;   /* Starting level of the exploration unit               */
+   const int ENDING_LEVEL         = 3;   /* Maximum level of the exploration unit                */
+   const int UPGRADE_COST         = 100; /* Cost to upgrade the exploration unit                 */
+   const int LEVEL_1_TAB_ID       = 11;  /* ID number of the level 1 tab in the explore panel    */
+   const int LEVEL_2_TAB_ID       = 12;  /* ID number of the level 2 tab in the explore panel    */
+   const int LEVEL_3_TAB_ID       = 13;  /* ID number of the level 3 tab in the explore panel    */
+   const int LEVEL_1_EXPLORE_COST = 200; /* Cost of a level 1 exploration                        */
+   const int LEVEL_2_EXPLORE_COST = 300; /* Cost of a level 2 exploration                        */
+   const int LEVEL_3_EXPLORE_COST = 400; /* Cost of a level 3 exploration                        */
+   const int EXPLORE_DURATION     = 2;   /* Number of turns an exploration lasts                 */
 
-   private static int explorationUnitLevel = STARTING_LEVEL;
-   private static int exploreEndTurn       = 0;
 
-   private int activeExploreTabId = LEVEL_1_TAB_ID;
+   private static int explorationUnitLevel = STARTING_LEVEL; /* Current level of exploratin unit */
+   private static int exploreEndTurn       = 0;              /* End turn of current exploration  */
 
+   private int activeExploreTabId = LEVEL_1_TAB_ID;          /* The explore tab currently open   */
+   
+   /*  */
    private void Awake()
    {
+      /* Verify all panels are assigned and disable them at startup                              */
       if (infoPanel == null)
          Debug.LogError("Info Panel is not assigned in the Inspector!");
       else
@@ -69,10 +73,12 @@ public class ExplorationUnitManager : MonoBehaviour
       return true; // CurrencyManager.Instance.GetPearls() >= cost;
    }
 
+   /* Activates the requested exploration unit panel                                             */
    public void RequestExplorationUnitPanel(int buttonID)
    {
-      bool isExploring = IsExplorationOngoing();
+      bool isExploring = IsExplorationOngoing(); /* If an exploration is currently ongoing       */
 
+      /* Activate the correct exploration unit panel                                             */
       switch (buttonID)
       {
          case EXPLORE_BUTTON:
@@ -93,11 +99,14 @@ public class ExplorationUnitManager : MonoBehaviour
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => UpgradeExplorationUnit());
 
+               /* Allow upgrade only if user has enough currency, exploration is not ongoing,    */
+               /* and unit is not already at max level                                           */
                bool canAffordUpgrade = HasEnoughCurrency(UPGRADE_COST);
                bool canUpgrade = canAffordUpgrade && !isExploring;
                bool isMaxLevel = explorationUnitLevel >= ENDING_LEVEL;
                yesButton.interactable = canUpgrade && !isMaxLevel;
 
+               /* When fully upgraded, change upgrade button to inform user                      */
                Transform yesText = yesButtonTransform.Find("Text (TMP)");
                if (isMaxLevel && yesText != null)
                {
@@ -117,12 +126,12 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
-   /* Switche the explore tab based on the tab that has been clicked                             */
+   /* Switch the explore tab based on the tab that has been clicked                              */
    public void switchExploreTab(int tabId)
    {
       activeExploreTabId = tabId;
 
-      // Deactivate all three tabs
+      /* Deactivate all three tabs                                                               */
       if(levelOneTab != null) 
          levelOneTab.SetActive(false);
       if(levelTwoTab != null) 
@@ -130,7 +139,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if(levelThreeTab != null) 
          levelThreeTab.SetActive(false);
 
-      // Activate the requested panel
+      /* Activate the requested tab                                                              */
       switch(tabId)
       {
          case LEVEL_1_TAB_ID:
@@ -157,9 +166,10 @@ public class ExplorationUnitManager : MonoBehaviour
    public void UpdateExploreButton(int tabId, bool isExploring)
    {
       GameObject activeTab = null; /* The explore tab currently open                             */
-      int exploreCost      = 0; /* Cost of an exploration in the current explore tab             */
-      int requiredLevel    = 0; /* Level required to explore in current explore tab              */
+      int exploreCost      = 0;    /* Cost of an exploration in the current explore tab          */
+      int requiredLevel    = 0;    /* Level required to explore in current explore tab           */
 
+      /* Determine information of the active tab                                                 */
       switch (tabId)
       {
          case LEVEL_1_TAB_ID:
@@ -187,6 +197,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if(activeTab.activeSelf)
          activeTab.SetActive(true);
 
+      /* Get the explore button within the active tab                                            */
       Transform startButtonTransform = activeTab.transform.Find("ExploreButton");
       if(startButtonTransform == null)
       {
@@ -207,8 +218,10 @@ public class ExplorationUnitManager : MonoBehaviour
       Transform costTextTransform = startButtonTransform.transform.Find("ExploreCost");
       TextMeshProUGUI costText = (costTextTransform != null) ? costTextTransform.GetComponent<TextMeshProUGUI>() : null;
 
+      /* When exploration unit's level is not high enough for tab's exploration                  */
       if(needsUpgrade)
       {
+         /* Make button open upgrade panel instead of start exploration                          */
          startButton.onClick.RemoveAllListeners();
          startButton.onClick.AddListener(() =>
          {
@@ -216,8 +229,9 @@ public class ExplorationUnitManager : MonoBehaviour
                explorePanel.gameObject.SetActive(false);
             RequestExplorationUnitPanel(UPGRADE_BUTTON);
          });
-
          startButton.interactable = explorationUnitLevel < ENDING_LEVEL;
+
+         /* Change button to indicate upgrade panel will open                                    */
          if(costText != null)
          {
             costText.text = "Upgrade";
@@ -236,12 +250,15 @@ public class ExplorationUnitManager : MonoBehaviour
                      sibling.gameObject.SetActive(false);
          }
       }
+      /* Start an exploration                                                                    */
       else
       {
          startButton.onClick.AddListener(startExploration);
          bool canAffordExplore = HasEnoughCurrency(exploreCost);
          bool canExplore = canAffordExplore && !isExploring;
          startButton.interactable = canExplore;
+
+         /* Update button text to indicate exploration will start                                */
          if(costText != null)
          {
             costText.text = exploreCost.ToString();
@@ -284,6 +301,18 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       exploreEndTurn = 0;
       UpdateBoatVisuals();
+   }
+
+   /* Show the rewards found on an exploration                                                   */
+   public void ShowRewardsPanel()
+   {
+
+   }
+
+   /* Collect all rewards found on the exploration                                               */
+   public void CollectRewards()
+   {
+
    }
 
    /* Upgrade the exploration unit to the next level                                             */
