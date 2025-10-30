@@ -9,6 +9,7 @@ public class ItemSprites : MonoBehaviour {
     public Sprite crudeTool;
     public Sprite refinedTool;
     public Sprite artifact;
+    public Sprite sword;
 
     private void Awake() {
         if (itemSprites != null && itemSprites != this) {
@@ -26,6 +27,8 @@ public class ItemSprites : MonoBehaviour {
                 return refinedTool;
             case ItemType.Artifact:
                 return artifact;
+            case ItemType.Sword:
+                return sword;
             default:
                 return null;
         }
