@@ -1,15 +1,11 @@
-using NUnit.Framework.Constraints;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class PopUpManager : MonoBehaviour
-{
+public class PopUpManager : MonoBehaviour {
     [SerializeField] private GameObject[] buildingButtonsPreFab;
     [SerializeField] private Camera cam;
     [SerializeField] private TradeHutManager tradeHutManager;
@@ -25,8 +21,7 @@ public class PopUpManager : MonoBehaviour
 
     public static PopUpManager Instance { get; private set; }
 
-    private void Awake()
-    {
+    private void Awake() {
         if (Instance != null && Instance != this) {
             Destroy(this.gameObject);
         } else {
@@ -39,17 +34,14 @@ public class PopUpManager : MonoBehaviour
         playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
     }
 
-    private void OnDestroy()
-    {
-        if (playerActions != null)
-        {
+    private void OnDestroy() {
+        if (playerActions != null) {
             playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
-    private void OnBuildingClick(InputAction.CallbackContext context)
-    {
+    private void OnBuildingClick(InputAction.CallbackContext context) {
 
         PointerEventData eventData = new PointerEventData(EventSystem.current);
         eventData.position = Mouse.current.position.ReadValue();
@@ -67,26 +59,19 @@ public class PopUpManager : MonoBehaviour
 
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
 
-        if (hit.collider != null)
-        {
-            if (popUps == null || (buildingTransform != null && hit.collider.transform.tag != buildingTransform.tag))
-            {
+        if (hit.collider != null) {
+            if (popUps == null || (buildingTransform != null && hit.collider.transform.tag != buildingTransform.tag)) {
                 ClosePopUps();
                 buildingTransform = hit.collider.transform;
                 CreateBuildingButtons(buildingTransform);
-            }
-            else
-            {
+            } else {
                 ClosePopUps();
             }
-        }
-        else
-        {
+        } else {
             ClosePopUps();
         }
     }
-    private void CreateBuildingButtons(Transform buildingTransform)
-    {
+    private void CreateBuildingButtons(Transform buildingTransform) {
         Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
         Vector3 fixedPopUpPosition = buildingTransform.position + offset;
         float buttonSpacing = 2.0f;
@@ -95,16 +80,14 @@ public class PopUpManager : MonoBehaviour
 
         int buttonCount = (buildingTransform.CompareTag("Lab")) ? 2 : buildingButtonsPreFab.Length;
 
-        for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++)
-        {
+        for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++) {
 
             GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
 
             popUps.Add(newButton);
 
-            string uniqueButtonName = buildingTransform.tag switch
-            {
+            string uniqueButtonName = buildingTransform.tag switch {
                 "Trade Hut" => "Trade",
                 "Lab" => "Research",
                 "Ore Refinery" => "Refine",
@@ -113,8 +96,7 @@ public class PopUpManager : MonoBehaviour
                 _ => "BuildingButton"
             };
 
-            string buttonText = buttonIndex switch
-            {
+            string buttonText = buttonIndex switch {
                 0 => uniqueButtonName,
                 1 => "Info",
                 2 => "Upgrade",
@@ -130,36 +112,8 @@ public class PopUpManager : MonoBehaviour
         }
     }
 
-    public void ActivateBuildingText(Transform buildingTransform)
-    {
-        /*switch (buildingTransform.tag)
-        {
-            case "Trade Hut":
-                TradeHutLevelText.text = "Trade Hut Level: " + tradeHutManager.GetLevel();
-                TradeHutLevelText.gameObject.SetActive(true);
-                break;
-            case "Ore Refinory":
-                OreLevelText.text = "Ore Refinery Level: " + oreRefineryManager.GetLevel();
-                OreLevelText.gameObject.SetActive(true);
-                break;
-            case "Exploration Unit":
-                ExplorationLevelText.text = "Exploration Unit Level: " + explortionUnitManager.GetLevel();
-                ExplorationLevelText.gameObject.SetActive(true);
-                break;
-            case "Forge":
-                ForgeLevelText.text = "Forge Level: " + forgeManager.GetLevel();
-                ForgeLevelText.gameObject.SetActive(true);
-                break;
-            default:
-                Debug.Log("Building has no text");
-                break;
-        };*/
-    }
-
-    public void OnBuildingButtonClick(int buttonId)
-    {
-        switch (buildingTransform.tag)
-        {
+    public void OnBuildingButtonClick(int buttonId) {
+        switch (buildingTransform.tag) {
             case "Trade Hut":
                 tradeHutManager.RequestTradeHutPanel(buttonId);
                 break;
@@ -182,24 +136,19 @@ public class PopUpManager : MonoBehaviour
         DisablePlayerInput();
     }
 
-    public void DisablePlayerInput()
-    {
+    public void DisablePlayerInput() {
         playerActions.PlayerInput.Disable();
         HoverScript.Instance.DisbaleHover();
     }
-    public void EnablePlayerInput()
-    {
+    public void EnablePlayerInput() {
         playerActions.PlayerInput.Enable();
         HoverScript.Instance.EnableHover();
         ClosePopUps();
     }
 
-    private void ClosePopUps()
-    {
-        if (popUps != null)
-        {
-            foreach (GameObject currentPopUp in popUps)
-            {
+    private void ClosePopUps() {
+        if (popUps != null) {
+            foreach (GameObject currentPopUp in popUps) {
                 if (currentPopUp != null)
                     Destroy(currentPopUp);
             }
@@ -207,25 +156,4 @@ public class PopUpManager : MonoBehaviour
             buildingTransform = null;
         }
     }
-    /*private void CloseText(Transform buildingTransform)
-    {
-        switch (buildingTransform.tag)
-        {
-            case "Trade Hut":
-                TradeHutLevelText.gameObject.SetActive(false);
-                break;
-            case "Ore Refinery":
-                OreLevelText.gameObject.SetActive(false);
-                break;
-            case "Exploration Unit":
-                ExplorationLevelText.gameObject.SetActive(false);
-                break;
-            case "Forge":
-                ForgeLevelText.gameObject.SetActive(false);
-                break;
-            default:
-                Debug.Log("Building has no text");
-                break;
-        }
-    }*/
 }

@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MainUIManager : MonoBehaviour {
-    public Button MainMenuButton; // Assign to this object
-    public Button[] DropdownButtons; // Assign to this object
+    public Button MainMenuButton;
+    public Button[] DropdownButtons;
+    public Button InventoryButton;
 
     [SerializeField] private TextMeshProUGUI pearCountText;
     [SerializeField] private TextMeshProUGUI crystalCountText;
@@ -19,6 +20,9 @@ public class MainUIManager : MonoBehaviour {
         }
         // Add listener to main menu button
         MainMenuButton.onClick.AddListener(ToggleMenu);
+        InventoryButton.onClick.AddListener(() => {
+            InventoryManager.Instance.ActivateInventoryPanel();
+        });
 
         ChangePearlCountText(InventoryManager.Instance.pearlCount);
         ChangeCrystalCountText(InventoryManager.Instance.crystalCount);

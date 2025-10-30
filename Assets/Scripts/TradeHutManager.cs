@@ -13,9 +13,9 @@ public class TradeHutManager : MonoBehaviour {
     public Transform upgradePanel;
     public TextMeshProUGUI tradeHutLevelText;
 
-    public int crudeToolSellCount = 0;
-    public int refinedToolSellCount = 0;
-    public int artifactSellCount = 0;
+    private int crudeToolSellCount = 0;
+    private int refinedToolSellCount = 0;
+    private int artifactSellCount = 0;
 
     const int MIN_SELL_ITEM_COUNT = 0;
     const int MAX_SELL_ITEM_COUNT = 100;
@@ -71,7 +71,7 @@ public class TradeHutManager : MonoBehaviour {
         // Creates the individual trade item entries for Crude Tools, Refined Tools, and Artifacts
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
-        CreateItem(Item.GetItemSprite(Item.ItemType.Articfatct), "Artifact", Item.GetItemValue(Item.ItemType.Articfatct), 1.0f, "Artifact");
+        CreateItem(Item.GetItemSprite(Item.ItemType.Artifact), "Artifact", Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
     }
 
     // Instantiates a new trade item UI element, sets its visual data, and configures its buttons.
@@ -108,14 +108,22 @@ public class TradeHutManager : MonoBehaviour {
     public void SellItem() {
         int totalSellValue = 0;
 
-        if (crudeToolSellCount > 0)
+        if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
             totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
 
-        if (refinedToolSellCount > 0)
+        if (refinedToolSellCount > MIN_SELL_ITEM_COUNT)
             totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
 
-        if (artifactSellCount > 0)
-            totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Articfatct);
+        if (artifactSellCount > MIN_SELL_ITEM_COUNT)
+            totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact);
+
+        crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+        refinedToolSellCount = MIN_SELL_ITEM_COUNT;
+        artifactSellCount = MIN_SELL_ITEM_COUNT;
+
+        foreach (Transform tradeItem in tradeItems)
+            tradeItem.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + MIN_SELL_ITEM_COUNT.ToString();
+
 
         InventoryManager.Instance.TryAddPearl(totalSellValue);
 
