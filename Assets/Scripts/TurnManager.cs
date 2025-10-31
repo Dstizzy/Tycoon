@@ -4,107 +4,125 @@ using TMPro;
 
 public class TurnManager : MonoBehaviour
 {
-    // 1. 싱글톤 패턴을 위한 코드
-    // 'Instance'라는 static 변수에 자기 자신을 저장하여
-    // 다른 모든 스크립트가 'TurnManager.Instance'로 이 스크립트에 접근할 수 있게 합니다.
-    public static TurnManager Instance { get; private set; }
+   /* A public static instance of this class, following the  */
+   /* Singleton pattern. This allows other scripts to access */
+   /* it easily via 'TurnManager.Instance'.                  */
+   public static TurnManager Instance { get; private set; }
 
-    void Awake()
-    {
-        // 씬에 이미 TurnManager 인스턴스가 있는지 확인
-        if (Instance != null && Instance != this)
-        {
-            // 이미 있다면 이 오브젝트는 파괴
-            Destroy(gameObject);
-        }
-        else
-        {
-            // 없다면 이 인스턴스를 static 변수에 할당
-            Instance = this;
-            // (선택 사항) 씬이 바뀌어도 파괴되지 않게 하려면
-            // DontDestroyOnLoad(gameObject); 
-        }
-    }
-    // --- 싱글톤 코드 끝 ---
+   /* Enforces the Singleton pattern to ensure only one      */
+   /* instance of TurnManager exists.                        */
+   void Awake()
+   {
+      /* Enforce the singleton pattern                       */
+      if (Instance != null && Instance != this)
+      {
+         Destroy(gameObject);
+      }
+      else
+      {
+         Instance = this;
+         // (Optional) Uncomment this to make the manager persist across scenes
+         // DontDestroyOnLoad(gameObject); 
+      }
+   }
 
+   [Header("Crystal Setting")]
+   public int currentResource = 0;      /* The player's current total amount of Crystal.         */
+   public int resourcePerTurn = 50;     /* The amount of resource gained per turn.               */
+   public TextMeshProUGUI resourceText; /* The UI text element that displays the resource count. */
 
-    // --- 기존 GameManager의 로직 ---
-    [Header("Crystal Setting")]
-    public int currentResource = 0;
-    public int resourcePerTurn = 50; // 턴당 얻는 재화
-    public Text resourceText; // 또는 public TextMeshProUGUI resourceText;
+   [Header("Turn Setting")]
+   public int currentTurn = 1; /* The current turn number, starting from 1.         */
+   public int maxTurns = 20;   /* The maximum number of turns before the game ends. */
+   public Text turnText;       /* The UI text element to display the current turn.  */
 
-    [Header("Turn Setting")]
-    public int currentTurn = 1;
-    public int maxTurns = 20;
-    public Text turnText;     // 턴 텍스트 UI
+   [Header("UI/Game Status")]
+   public Button endTurnButton;       /* The button to disable when the game ends.    */
+   private bool _isGameActive = true; /* Tracks if the game is currently in progress. */
 
-    [Header("UI/Game Status")]
-    public Button endTurnButton; // 게임 종료 시 비활성화할 버튼
-    private bool isGameActive = true;
+   /*************************************************/
+   /* Initializes the UI elements with the starting */
+   /* values when the game begins.                  */
+   /*************************************************/
+   void Start()
+   {
+      UpdateResourceUI();
+      UpdateTurnUI();
+   }
 
-    void Start()
-    {
-        UpdateResourceUI();
-        UpdateTurnUI();
-    }
+   /***************************************************/
+   /* This function is called by the End Turn button. */
+   /* It processes the end-of-turn logic, including   */
+   /* resource gains and advancing the turn counter.  */
+   /***************************************************/
+   public void EndTurn()
+   {
+      Debug.Log("### TurnManager Start()가 실행되었습니다! ###");
 
-    // '턴 종료' 버튼이 호출할 공용(public) 함수
-    public void EndTurn()
-    {
-        if (!isGameActive) return; // 게임 종료 시 아무것도 안 함
+      /* Do nothing if the game is already over       */
+      if (!_isGameActive) return;
 
-        // 1. 재화 증가
-        currentResource += resourcePerTurn;
-        UpdateResourceUI();
+      currentResource += resourcePerTurn;
+      UpdateResourceUI();
 
-        // 2. 턴 증가
-        currentTurn++;
+      currentTurn++;
 
-        // 3. 턴 확인 및 UI 업데이트
-        if (currentTurn > maxTurns)
-        {
-            EndGame();
-        }
-        else
-        {
-            UpdateTurnUI();
-            Debug.Log("Turn" + currentTurn + "Start");
+      /* Check if the game should end                 */
+      if (currentTurn > maxTurns)
+      {
+         EndGame();
+      }
+      else
+      {
+         UpdateTurnUI();
+         Debug.Log("Turn" + currentTurn + "Start");
 
-            // 여기에 다음 턴이 시작될 때 필요한 로직을 추가
-            // (예: 적 턴 시작, 유닛 행동력 초기화 등)
-        }
-    }
+         /* Add logic for the next turn here (e.g., start */
+         /* enemy turn, reset unit actions, etc.)         */
+      }
+   }
 
-    void UpdateResourceUI()
-    {
-        if (resourceText != null)
-        {
-            resourceText.text = "Crystal: " + currentResource.ToString();
-        }
-    }
+   /***************************************************/
+   /* Updates the resource text UI element to display */
+   /* the current value of 'currentResource'.         */
+   /***************************************************/
+   void UpdateResourceUI()
+   {
+      if (resourceText != null)
+      {
+         resourceText.text = "Crystal: " + currentResource.ToString();
+      }
+   }
 
-    void UpdateTurnUI()
-    {
-        if (turnText != null)
-        {
-            turnText.text = "Turn: " + currentTurn.ToString() + " / " + maxTurns.ToString();
-        }
-    }
+   /***************************************************/
+   /* Updates the turn text UI element to display the */
+   /* current turn and the maximum turn limit.        */
+   /***************************************************/
+   void UpdateTurnUI()
+   {
+      if (turnText != null)
+      {
+         turnText.text = "Turn: " + currentTurn.ToString() + " / " + maxTurns.ToString();
+      }
+   }
 
-    void EndGame()
-    {
-        isGameActive = false;
-        Debug.Log("Game over! Reached max turn(" + maxTurns + ").");
+   /***************************************************/
+   /* Called when the 'maxTurns' limit is reached.    */
+   /* It stops the game logic and updates the UI.     */
+   /***************************************************/
+   void EndGame()
+   {
+      _isGameActive = false;
+      Debug.Log("Game over! Reached max turn(" + maxTurns + ").");
 
-        if (turnText != null)
-        {
-            turnText.text = "Game over!";
-        }
+      if (turnText != null)
+      {
+         turnText.text = "Game over!";
+      }
 
-        if (endTurnButton != null)
-        {
-            endTurnButton.interactable = false;
-        }
-    }
+      if (endTurnButton != null)
+      {
+         endTurnButton.interactable = false;
+      }
+   }
 }

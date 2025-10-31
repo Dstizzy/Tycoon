@@ -1025,8 +1025,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87a1a9352a412914ca467a4d84266d97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuManager
-  fadePanelAnimator: {fileID: 0}
-  fadeDuration: 0.5
+  FadePanelAnimator: {fileID: 1363003406}
+  FadeDuration: 0.5
 --- !u!114 &1994533838
 MonoBehaviour:
   m_ObjectHideFlags: 0

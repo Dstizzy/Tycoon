@@ -1,42 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; // 씬을 이동할 때 꼭 필요합니다!
+using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
-    public Animator fadePanelAnimator; // FadePanel의 Animator
-    public float fadeDuration = 0.5f;  // Fade_Out 애니메이션의 길이(초)
+   public Animator FadePanelAnimator;   /* The Animator for the FadePanel */
+   public float    FadeDuration = 0.5f; /* The duration of the fade-out animation in seconds */
 
-    // "START" 버튼을 눌렀을 때 실행될 함수
-    public void OnStartButtonClick()
-    {
-        StartCoroutine(FadeAndLoadScene("GameScene"));
-    }
+   // A function that executes when the user clicks the "START" button.
+   public void OnStartButtonClick()
+   {
+      StartCoroutine(FadeAndLoadScene("MainScene"));
+   }
 
-    // "INFO" 버튼을 눌렀을 때 실행될 함수
-    public void OnInfoButtonClick()
-    {
-        Debug.Log("정보 버튼 클릭!");
-        // TODO: 정보(Info) 팝업 창을 띄우는 코드
-    }
+   // A function that executes when the user clicks the "INFO" button.
+   public void OnInfoButtonClick()
+   {
+      Debug.Log("Info button clicked!");
+      // TODO: Code to display the information (Info) pop-up window
+   }
 
-    // "SETTINGS" 버튼을 눌렀을 때 실행될 함수
-    public void OnSettingsButtonClick()
-    {
-        Debug.Log("설정 버튼 클릭!");
-        // TODO: 설정(Settings) 팝업 창을 띄우는 코드
-    }
+   // A function that executes when the user clicks the "SETTINGS" button.
+   public void OnSettingsButtonClick()
+   {
+      Debug.Log("Settings button clicked!");
+      // TODO: Code to display the settings (Settings) pop-up window
+   }
 
-    private IEnumerator FadeAndLoadScene(string sceneName)
-    {
-        // 1. 애니메이션 트리거 실행
-        fadePanelAnimator.SetTrigger("StartFadeOut");
+   private IEnumerator FadeAndLoadScene(string sceneName)
+   {
+      // 1. Run the animation trigger
+      FadePanelAnimator.SetTrigger("StartFadeOut");
 
-        // 2. 애니메이션이 끝날 때까지 기다림
-        yield return new WaitForSeconds(fadeDuration);
+      // 2. Wait for the animation to finish
+      yield return new WaitForSeconds(FadeDuration);
 
-        // 3. 씬 로드
-        SceneManager.LoadScene(sceneName);
-    }
+      // 3. Load the scene
+      SceneManager.LoadScene(sceneName);
+   }
 }
