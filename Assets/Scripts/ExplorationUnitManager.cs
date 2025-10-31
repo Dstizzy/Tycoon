@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -5,21 +6,38 @@ using UnityEngine.UI;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
-   public TextMeshProUGUI explorationUnitLevelText; /* Displays urrent level of exploration unit */
+   [System.Serializable]
+   public class ExplorationReward
+   {
+      public string rewardName;                /* Name of exploration reward                     */
+      [Range(0f, 1f)] public float baseChance; /* Base chance of exploration finding item        */
+      [Range(0f, 1f)] public float levelBonus; /* Amount chances increase at each level upgrade  */
+      public int minimumAmount;                /* Min quantity that can be found per explore     */
+      public int maximumAmount;                /* Max quantity that can be found per explore     */
+   }
 
-   [SerializeField] private Transform explorePanel;    /* Explore panel UI                       */
-   [SerializeField] private Transform infoPanel;       /* Info panel UI                          */
-   [SerializeField] private Transform upgradePanel;    /* Upgrade panel UI                       */
+   public TextMeshProUGUI explorationUnitLevelText; /* Displays current exploration unit level   */
+
+   [SerializeField] private Transform  explorePanel;     /* Explore panel UI                     */
+   [SerializeField] private Transform  infoPanel;        /* Info panel UI                        */
+   [SerializeField] private Transform  upgradePanel;     /* Upgrade panel UI                     */
 
    [Header("Explore Panel Tabs")]
-   [SerializeField] private GameObject levelOneTab;    /* Level one tab on explore panel         */
-   [SerializeField] private GameObject levelTwoTab;    /* Level two tab on explore panel         */
-   [SerializeField] private GameObject levelThreeTab;  /* Level three tab on explore panel       */
+   [SerializeField] private GameObject levelOneTab;      /* Level one tab on explore panel       */
+   [SerializeField] private GameObject levelTwoTab;      /* Level two tab on explore panel       */
+   [SerializeField] private GameObject levelThreeTab;    /* Level three tab on explore panel     */
 
    [Header("Boat Visuals")]
-   [SerializeField] private GameObject levelOneBoat;   /* Boat for level one                     */
-   [SerializeField] private GameObject levelTwoBoat;   /* Boat for level two                     */
-   [SerializeField] private GameObject levelThreeBoat; /* Boat for level three                   */
+   [SerializeField] private GameObject levelOneBoat;     /* Boat for level one                   */
+   [SerializeField] private GameObject levelTwoBoat;     /* Boat for level two                   */
+   [SerializeField] private GameObject levelThreeBoat;   /* Boat for level three                 */
+
+   [Header("Exploration Rewards")]
+   [SerializeField] private ExplorationReward[] possibleRewards;
+                                                         /* Data table for possible rewards      */
+   [SerializeField] private Transform  rewardsPanel;     /* UI panel that displays rewards       */
+   [SerializeField] private Transform  rewardsContainer; /* Container for rewards entries        */
+   [SerializeField] private GameObject rewardEntry;      /* Prefab for a single reward           */
 
    const int EXPLORE_BUTTON       = 1;   /* ID number of the explore button                      */
    const int INFO_BUTTON          = 2;   /* ID number of the info button                         */
@@ -38,9 +56,19 @@ public class ExplorationUnitManager : MonoBehaviour
 
    private static int explorationUnitLevel = STARTING_LEVEL; /* Current level of exploratin unit */
    private static int exploreEndTurn       = 0;              /* End turn of current exploration  */
+   private int activeExploreTabId          = LEVEL_1_TAB_ID; /* The explore tab currently open   */
+   private List<(string name, int amount)> pendingRewards = new();
+                                                             /* Uncollected generated rewards    */
+   public  bool isExploring                = false;          /* Is exploration currently ongoing */
 
-   private int activeExploreTabId = LEVEL_1_TAB_ID;          /* The explore tab currently open   */
-   
+
+   private void Update()
+   {
+      if (Input.GetKeyDown(KeyCode.F))
+      {
+         FinishExploration();
+      }
+   }
    /*  */
    private void Awake()
    {
@@ -61,23 +89,16 @@ public class ExplorationUnitManager : MonoBehaviour
          explorationUnitLevelText.text = "Level " + explorationUnitLevel.ToString();
    }
 
-   /* Determines if an Exploration is currently ongoing                                          */
-   private bool IsExplorationOngoing()
-   {
-      return false; // PopUpManager.CurrentTurn < exploreEndTurn;
-   }
-
    /* Determines if the user has enough currency for an action                                   */
    private bool HasEnoughCurrency(int cost)
    {
-      return true; // CurrencyManager.Instance.GetPearls() >= cost;
+//  TODO ----------------------------------------------------    CurrencyManager.Instance.GetPearls() >= cost;
+      return true;
    }
 
    /* Activates the requested exploration unit panel                                             */
    public void RequestExplorationUnitPanel(int buttonID)
    {
-      bool isExploring = IsExplorationOngoing(); /* If an exploration is currently ongoing       */
-
       /* Activate the correct exploration unit panel                                             */
       switch (buttonID)
       {
@@ -158,7 +179,7 @@ public class ExplorationUnitManager : MonoBehaviour
             Debug.LogWarning("Unknown explore tab ID requested: " + tabId);
             break;
       }
-      UpdateExploreButton(tabId, IsExplorationOngoing());
+      UpdateExploreButton(tabId, isExploring);
    }
 
    /* Change the explore button based on if an exploration is currently ongoing, the user has    */
@@ -282,15 +303,16 @@ public class ExplorationUnitManager : MonoBehaviour
    /* Starts an exploration                                                                      */
    public void startExploration()
    {
-      if(IsExplorationOngoing()) 
+      if(isExploring) 
          return;
       Debug.Log("Exploration started!");
 
-      // add exploration duration to current turn and assign to the exploration's ending turn
-      //exploreEndTurn = PopUpManager.CurrentTurn + EXPLORE_DURATION;
+      //TODO -------------------------------------   add exploration duration to current turn and assign to the exploration's ending turn
+      //     -------------------------------------   exploreEndTurn = PopUpManager.CurrentTurn + EXPLORE_DURATION;
 
-      //deduct exploration cost here
+      //TODO -------------------------------------   deduct exploration cost here
 
+      isExploring = true;
       HideAllBoats();
       CloseExplorationPanel();
       PopUpManager.Instance.EnablePlayerInput();
@@ -299,20 +321,63 @@ public class ExplorationUnitManager : MonoBehaviour
    /* An exploration finishes after a certain number of turns has passed                         */
    public void FinishExploration()
    {
+      isExploring = false;
       exploreEndTurn = 0;
+      pendingRewards = GenerateExplorationRewards(explorationUnitLevel);
       UpdateBoatVisuals();
+      ShowRewardsPanel();
+   }
+
+   /* Generates a random set of rewards based on exploration level                               */
+   private List<(string name, int amount)> GenerateExplorationRewards(int level)
+   {
+      List<(string name, int amount)> rewards = new();
+
+      foreach(var r in possibleRewards)
+      {
+         float chance = r.baseChance + r.levelBonus * (level - 1);
+         chance = Mathf.Clamp01(chance);
+         if(Random.value <= chance)
+         {
+            int amount = Random.Range(r.minimumAmount, r.maximumAmount + 1);
+            rewards.Add((r.rewardName, amount));
+         }
+      }
+      return rewards;
    }
 
    /* Show the rewards found on an exploration                                                   */
    public void ShowRewardsPanel()
    {
+      /* Enable the rewards panel                                                                */
+      rewardsPanel.gameObject.SetActive(true);
+      /* Clear old entries                                                                       */
+      foreach (Transform child in rewardsContainer)
+         Destroy(child.gameObject);
 
+      foreach(var reward in pendingRewards)
+      {
+         GameObject entry = Instantiate(rewardEntry, rewardsContainer);
+         var tmp = entry.GetComponentInChildren<TextMeshProUGUI>();
+         if (tmp != null)
+            tmp.text = $"{reward.name} x{reward.amount}";
+      }
+
+      Button collectButton = rewardsPanel.Find("CollectButton").GetComponent<Button>();
+      collectButton.onClick.RemoveAllListeners();
+      collectButton.onClick.AddListener(() => CollectRewards());
    }
 
    /* Collect all rewards found on the exploration                                               */
    public void CollectRewards()
    {
+//TODO ------------------------------------------------------------------    add all rewards to player's inventory
 
+      Debug.Log("rewards collected");
+      foreach (var reward in pendingRewards)
+         Debug.Log($"{reward.name} x{reward.amount}");
+      pendingRewards.Clear();
+      rewardsPanel.gameObject.SetActive(false);
    }
 
    /* Upgrade the exploration unit to the next level                                             */
@@ -354,7 +419,7 @@ public class ExplorationUnitManager : MonoBehaviour
    /* Update the exploration boats based on Exploration Unit level or if they are exploring      */
    private void UpdateBoatVisuals()
    {
-      if (IsExplorationOngoing())
+      if (isExploring)
       {
          HideAllBoats();
          return;
