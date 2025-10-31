@@ -10,9 +10,13 @@ public class InventoryManager : MonoBehaviour {
     const int MAX_PEARL_COUNT = 1000;
     const int MIN_CRYSTAL_COUNT = MIN_PEARL_COUNT;
     const int MAX_CRYSTAL_COUNT = MAX_PEARL_COUNT;
+    const int MIN_ORE_COUNT = MIN_PEARL_COUNT;
+    const int MAX_ORE_COUNT = MAX_PEARL_COUNT;
+
 
     public int pearlCount;
     public int crystalCount;
+    public int oreCount = 1000;
 
     private void Awake() {
 
@@ -54,34 +58,72 @@ public class InventoryManager : MonoBehaviour {
 
         return;
     }
-    public void TryAddCrystal(int pearlAmount) {
-        if (pearlCount > MAX_PEARL_COUNT) {
-            Debug.LogError("Pearl count is at maximum!");
+    public void TryAddCrystal(int crystalAmount) {
+        if (crystalCount > MAX_CRYSTAL_COUNT) {
+            Debug.LogError("Crystal count is at maximum!");
             return;
-        } else if ((pearlCount + pearlAmount) > MAX_PEARL_COUNT) {
-            Debug.LogError("Pearl count is at maximum!");
+        } else if ((crystalCount + crystalAmount) > MAX_CRYSTAL_COUNT) {
+            Debug.LogError("Crystal count is at maximum!");
         } else
-            pearlCount += pearlAmount;
+            crystalCount += crystalAmount;
 
         OnCrystalCountChanged?.Invoke(crystalCount);
 
         return;
     }
-    public void TrySpendCrystal(int pearlAmount) {
-        if (pearlCount < MIN_PEARL_COUNT) {
-            Debug.LogError("Pearl count is at minimum!");
+    public void TrySpendCrystal(int crystalAmount) {
+        if (crystalCount < MIN_CRYSTAL_COUNT) {
+            Debug.LogError("Crystal count is at minimum!");
             return;
-        } else if (pearlCount < pearlAmount) {
-            Debug.LogError("Not enough pearls to spend!");
+        } else if (crystalCount < crystalAmount) {
+            Debug.LogError("Not enough crystals to spend!");
             return;
         } else
-            pearlCount -= pearlAmount;
+            crystalCount -= crystalAmount;
 
         OnCrystalCountChanged?.Invoke(crystalCount);
+
+        return;
+    }
+    public void TryAddOre(int oreAmount)
+    {
+        if (oreCount > MAX_ORE_COUNT)
+        {
+            Debug.LogError("Ore count is at maximum!");
+            return;
+        }
+        else if ((oreCount + oreAmount) > MAX_ORE_COUNT)
+        {
+            Debug.LogError("Ore count is at maximum!");
+        }
+        else
+            oreCount += oreAmount;
+
+        OnOreCountChanged?.Invoke(oreCount);
+
+        return;
+    }
+    public void TrySpendOre(int oreAmount)
+    {
+        if (oreCount < MIN_ORE_COUNT)
+        {
+            Debug.LogError("Ore count is at minimum!");
+            return;
+        }
+        else if (oreCount < oreAmount)
+        {
+            Debug.LogError("Not enough ore to spend!");
+            return;
+        }
+        else
+            oreCount -= oreAmount;
+
+        OnOreCountChanged?.Invoke(oreCount);
 
         return;
     }
 
     public Action<int> OnPearlCountChanged;
     public Action<int> OnCrystalCountChanged;
+    public Action<int> OnOreCountChanged;
 }
