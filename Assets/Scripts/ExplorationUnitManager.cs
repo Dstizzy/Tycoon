@@ -14,6 +14,7 @@ public class ExplorationUnitManager : MonoBehaviour
       [Range(0f, 1f)] public float levelBonus; /* Amount chances increase at each level upgrade  */
       public int minimumAmount;                /* Min quantity that can be found per explore     */
       public int maximumAmount;                /* Max quantity that can be found per explore     */
+      public Sprite rewardIcon;                /* Icon representing the reward                   */
    }
 
    public TextMeshProUGUI explorationUnitLevelText; /* Displays current exploration unit level   */
@@ -361,6 +362,14 @@ public class ExplorationUnitManager : MonoBehaviour
          var tmp = entry.GetComponentInChildren<TextMeshProUGUI>();
          if (tmp != null)
             tmp.text = $"{reward.name} x{reward.amount}";
+
+         var image = entry.GetComponentInChildren<Image>();
+         if(image != null)
+         {
+            var rewardData = System.Array.Find(possibleRewards, r => r.rewardName == reward.name);
+            if(rewardData != null && rewardData.rewardIcon != null)
+               image.sprite = rewardData.rewardIcon;
+         }
       }
 
       Button collectButton = rewardsPanel.Find("CollectButton").GetComponent<Button>();
