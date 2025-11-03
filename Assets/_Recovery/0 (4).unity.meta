@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/PreFabs/NewPanel.prefab.meta
+guid: b243bfbe203c3c54693883908e35cd55
+PrefabImporter:
+========
 guid: f0bcf86708b539047958481b4e5e24eb
 DefaultImporter:
+>>>>>>>> main:Assets/_Recovery/0 (4).unity.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
