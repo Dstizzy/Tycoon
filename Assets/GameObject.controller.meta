@@ -1,14 +1,8 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/Tests.meta
 guid: c472ca7407d4d91418291374fd8c055b
-folderAsset: yes
-DefaultImporter:
-========
-guid: f4d356a0610605f4280a5cfb6e013a88
 NativeFormatImporter:
->>>>>>>> main:Assets/GameObject.controller.meta
   externalObjects: {}
-  mainObjectFileID: 9100000
+  mainObjectFileID: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
