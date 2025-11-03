@@ -231,7 +231,7 @@ public class InventoryManager : MonoBehaviour {
    /* Attempts to deduct the specified amount of pearls from the player's count.   */
    public void TrySpendPearl(int pearlAmount) 
    {
-      if (pearlCount <= MIN_PEARL_COUNT) 
+      if (pearlCount <= MIN_PEARL_COUNT)
       {
          Debug.LogError("Pearl count is at minimum!");
          return;
