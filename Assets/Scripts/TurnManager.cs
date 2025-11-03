@@ -1,86 +1,136 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
-[RequireComponent(typeof(Camera))]
-public class CameraAutoBounds : MonoBehaviour
+public class TurnManager : MonoBehaviour
 {
-   [Tooltip("Automatic boundary calculation based on SpriteRenderer / TilemapRenderer across the entire scene")]
-   public bool autoCalculate = true;
+   // A public static instance of this class, following the 
+   // Singleton pattern. This allows other scripts to access
+   // it easily via 'TurnManager.Instance'.
+   public static TurnManager Instance { get; private set; }
 
-   [Tooltip("Tag filter for objects to find boundaries (leave blank to include all)")]
-   public string targetTag = "";
-
-   [Tooltip("CameraDragPan script to apply the results")]
-   public CameraDragPan targetPanScript;
-
-   [Tooltip("Value for margin at the boundary (Unit: Unit)")]
-   public float margin = 2f;
-
+   // Enforces the Singleton pattern to ensure only one 
+   // instance of TurnManager exists. 
    void Awake()
    {
-      // Only do essential component lookups in Awake
-      if (targetPanScript == null)
+      // Enforce the singleton pattern
+      if (Instance != null && Instance != this)
       {
-         targetPanScript = GetComponent<CameraDragPan>();
+         Destroy(gameObject);
+      }
+      else
+      {
+         Instance = this;
+         // (Optional) Uncomment this to make the manager persist across scenes
+         // DontDestroyOnLoad(gameObject); 
       }
    }
 
+   [Header("Crystal Setting")]
+   public int currentResource = 0;      // The player's current total amount of Crystal.
+   public int resourcePerTurn = 50;     // The amount of resource gained per turn.
+   public TextMeshProUGUI resourceText; // The UI text element that displays the resource count. 
+
+   [Header("Turn Setting")]
+   public int currentTurn = 1;      // The current turn number, starting from 1.
+   public int maxTurns    = 20;     // The maximum number of turns before the game ends.
+   public TextMeshProUGUI turnText; // The UI text element to display the current turn.
+
+   [Header("UI/Game Status")]
+   public Button endTurnButton;       // The button to disable when the game ends.
+   private bool _isGameActive = true; // Tracks if the game is currently in progress.
+
+   /*************************************************/
+   /* Initializes the UI elements with the starting */
+   /* values when the game begins.                  */
+   /*************************************************/
    void Start()
-   { // <-- MOVED to Start()
-      if (autoCalculate)
+   {
+      UpdateTurnUI();
+   }
+
+   /***************************************************/
+   /* This function is called by the End Turn button. */
+   /* It processes the end-of-turn logic, including   */
+   /* resource gains and advancing the turn counter.  */
+   /***************************************************/
+   public void EndTurn()
+   {
+      Debug.Log("### TurnManager Start() ###");
+
+      // Do nothing if the game is already over
+      if (!_isGameActive) return;
+
+      currentResource += resourcePerTurn;
+
+      currentTurn++;
+
+      /* Check if the game should end                 */
+      if (currentTurn > maxTurns)
       {
-         CalculateBounds();
+         EndGame();
+      }
+      else
+      {
+         UpdateTurnUI();
+         Debug.Log("Turn" + currentTurn + "Start");
+
+         // Add logic for the next turn here (e.g., start
+         // enemy turn, reset unit actions, etc.)        
       }
    }
 
-   public void CalculateBounds()
+   /***************************************************/
+   /* Called last every frame after all Update().     */
+   /* Ensures UI text overrides other scripts that    */
+   /* might change it during the Update() phase       */
+   /***************************************************/
+   void LateUpdate()
    {
-      if (targetPanScript == null)
+      UpdateResourceUI();
+   }
+
+   /***************************************************/
+   /* Updates the resource text UI element to display */
+   /* the current value of 'currentResource'.         */
+   /***************************************************/
+   void UpdateResourceUI()
+   {
+      if (resourceText != null)
       {
-         targetPanScript = GetComponent<CameraDragPan>();
-         if (targetPanScript == null)
-         {
-            Debug.LogWarning("CameraAutoBounds: targetPanScript is still null. Cannot calculate bounds.");
-            return;
-         }
+         resourceText.text = currentResource.ToString();
+      }
+   }
+
+   /***************************************************/
+   /* Updates the turn text UI element to display the */
+   /* current turn and the maximum turn limit.        */
+   /***************************************************/
+   void UpdateTurnUI()
+   {
+      if (turnText != null)
+      {
+         turnText.text = currentTurn.ToString() + " / " + maxTurns.ToString();
+      }
+   }
+
+   /***************************************************/
+   /* Called when the 'maxTurns' limit is reached.    */
+   /* It stops the game logic and updates the UI.     */
+   /***************************************************/
+   void EndGame()
+   {
+      _isGameActive = false;
+      Debug.Log("Game over! Reached max turn(" + maxTurns + ").");
+
+      if (turnText != null)
+      {
+         turnText.text = "Game over!";
       }
 
-      // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
-      Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
-      if (renderers.Length == 0)
+      if (endTurnButton != null)
       {
-         Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
-         return;
+         endTurnButton.interactable = false;
       }
-
-      bool first = true;
-      Vector2 min = Vector2.zero;
-      Vector2 max = Vector2.zero;
-
-      foreach (Renderer r in renderers)
-      {
-         if (!string.IsNullOrEmpty(targetTag) && !r.CompareTag(targetTag))
-            continue; // If a tag filter is set
-
-         Bounds b = r.bounds;
-
-         if (first)
-         {
-            min = b.min;
-            max = b.max;
-            first = false;
-         }
-         else
-         {
-            min = Vector2.Min(min, b.min);
-            max = Vector2.Max(max, b.max);
-         }
-      }
-
-      // Passing values to the CameraDragPan script
-      targetPanScript.minWorld = min;
-      targetPanScript.maxWorld = max;
-      targetPanScript.clampToBounds = true;
-
-      Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete Å® min: {min}, max: {max}");
    }
 }
