@@ -1,4 +1,4 @@
-Ôªøusing UnityEngine;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class CameraAutoBounds : MonoBehaviour
@@ -81,6 +81,6 @@ public class CameraAutoBounds : MonoBehaviour
       targetPanScript.maxWorld = max;
       targetPanScript.clampToBounds = true;
 
-      Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete ‚Üí min: {min}, max: {max}");
+      Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete Å® min: {min}, max: {max}");
    }
 }
