@@ -65,7 +65,7 @@ public class TurnManager : MonoBehaviour
 
       currentTurn++;
 
-      /* Check if the game should end                 */
+      // Check if the game should end
       if (currentTurn > maxTurns)
       {
          EndGame();
