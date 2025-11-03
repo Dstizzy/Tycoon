@@ -14736,7 +14736,7 @@ MonoBehaviour:
   crudeConfirmation: {fileID: 547104561}
   refinedConfirmation: {fileID: 1149189575}
   artifactConfirmation: {fileID: 324926103}
-  craftPanel: {fileID: 0}
+  craftPanel: {fileID: 1896969107}
   tool1OreCost: 15
   tool2OreCost: 25
   tool3OreCost: 50
@@ -16207,6 +16207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   pearlCount: 0
   crystalCount: 0
+  oreCount: 0
 --- !u!4 &2135487484
 Transform:
   m_ObjectHideFlags: 0
