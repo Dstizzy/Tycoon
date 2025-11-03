@@ -41,6 +41,7 @@ public class InventoryManager : MonoBehaviour {
    /* Public properties                                                            */
    public int pearlCount  {  get; private set; }
    public int crystalCount  { get; private set; }
+   public int oreCount { get;  set; }
    public int crudeToolCount { get; private set; }
    public int refinedToolCount { get; private set; }
    public int artifactCount { get; private set; }
@@ -49,6 +50,7 @@ public class InventoryManager : MonoBehaviour {
    public Action<int> OnPearlCountChanged;                                         
    /* Delegate for when the crystal count changes.                                 */
    public Action<int> OnCrystalCountChanged;                                       
+   public Action<int> OnOreCountChanged;
                                                                                    
    /* Sets up the singleton instance and initializes the inventory panel state.    */
    private void Awake() 
