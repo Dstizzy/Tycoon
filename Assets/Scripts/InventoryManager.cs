@@ -13,6 +13,7 @@ public class InventoryManager : MonoBehaviour {
 
     public int pearlCount;
     public int crystalCount;
+    public int oreCount;
 
     private void Awake() {
 
@@ -84,4 +85,5 @@ public class InventoryManager : MonoBehaviour {
 
     public Action<int> OnPearlCountChanged;
     public Action<int> OnCrystalCountChanged;
+    public Action<int> OnOreCountChanged;
 }
