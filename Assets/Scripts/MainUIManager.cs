@@ -13,9 +13,19 @@ public class MainUIManager : MonoBehaviour {
 
     private bool isVisible = false;
 
-    private void Start() {
-        // Initially hide dropdown buttons
-        foreach (Button btn in DropdownButtons) {
+    private void Awake() {
+
+      if (InventoryManager.Instance == null) {
+         // This is primarily for safety, though the script execution order should help.
+         // You might need to check your Unity Project Settings -> Script Execution Order 
+         // to ensure InventoryManager runs before MainUIManager.
+         Debug.LogError("InventoryManager instance is not yet available in MainUIManager Awake. Delaying subscriptions.");
+         // If it's not ready, we cannot subscribe yet and must defer to Start().
+         return;
+      }
+
+      // Initially hide dropdown buttons
+      foreach (Button btn in DropdownButtons) {
             btn.gameObject.SetActive(false);
         }
         // Add listener to main menu button

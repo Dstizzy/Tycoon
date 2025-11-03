@@ -19,12 +19,15 @@ public class Item {
         switch (itemType) {
             case ItemType.CrudeTool:
                 return CRUDE_TOOL_SELL_VALUE;
-         case ItemType.RefinedTool:
+            case ItemType.RefinedTool:
                 return REFINED_TOOL_SELL_VALUE;
             case ItemType.Artifact:
                 return ARTIFACT_TOOL_SELL_VALUE;
+            case ItemType.Sword:
+                return SWORD_PRICE;
             default:
-                return 0;
+                Debug.LogError("Unkown Item");
+            return 0;
         }
     }
 
