@@ -1604,6 +1604,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba70f76e9db6b249bdd9479dfa90b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
+  tradeContainer: {fileID: 0}
+  tradeItemTemplate: {fileID: 0}
+  tradePanel: {fileID: 0}
+  infoPanel: {fileID: 0}
+  upgradePanel: {fileID: 0}
+  tradeHutLevelText: {fileID: 0}
+  crudeToolSellCount: 0
+  refinedToolSellCount: 0
+  artifactSellCount: 0
 --- !u!1 &180668542
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,6 +2620,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationUnitManager
+  explorationUnitLevelText: {fileID: 0}
+  explorePanel: {fileID: 0}
+  infoPanel: {fileID: 0}
+  upgradePanel: {fileID: 0}
+  levelOneTab: {fileID: 0}
+  levelTwoTab: {fileID: 0}
+  levelThreeTab: {fileID: 0}
+  levelOneBoat: {fileID: 0}
+  levelTwoBoat: {fileID: 0}
+  levelThreeBoat: {fileID: 0}
+  possibleRewards: []
+  rewardsPanel: {fileID: 0}
+  rewardsContainer: {fileID: 0}
+  rewardEntry: {fileID: 0}
+  isExploring: 0
 --- !u!1 &313944517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3085,6 +3109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2bd390a7ec890843aaf51653c38346a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  crudeTool: {fileID: 0}
+  refinedTool: {fileID: 0}
+  artifact: {fileID: 0}
 --- !u!1 &451993530
 GameObject:
   m_ObjectHideFlags: 0
@@ -4860,10 +4887,6 @@ MonoBehaviour:
   oreRefineryManager: {fileID: 930000709}
   forgeManager: {fileID: 793877435}
   labManager: {fileID: 1670020820}
-  TradeHutLevelText: {fileID: 587055042}
-  OreLevelText: {fileID: 761622630}
-  ExplorationLevelText: {fileID: 691016589}
-  ForgeLevelText: {fileID: 2102743707}
 --- !u!4 &678275749
 Transform:
   m_ObjectHideFlags: 0
@@ -6050,6 +6073,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea54b18dfe33cf44f9aaee7b0325d1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  craftPanel: {fileID: 0}
+  infoPanel: {fileID: 0}
+  upgradePanel: {fileID: 0}
+  forgeLevelText: {fileID: 0}
 --- !u!1 &806409090
 GameObject:
   m_ObjectHideFlags: 0
@@ -6966,6 +6993,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b9308f1d5d11e48b57caf5bdd23734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  infoPanel: {fileID: 0}
+  upgradePanel: {fileID: 0}
+  oreRefineryText: {fileID: 0}
 --- !u!1 &935026831
 GameObject:
   m_ObjectHideFlags: 0
@@ -12835,6 +12865,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f1811928929e4e95bb852c98457db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  innovatePanel: {fileID: 0}
+  infoPanel: {fileID: 0}
 --- !u!1 &1703890007
 GameObject:
   m_ObjectHideFlags: 0
@@ -14082,37 +14114,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940729350}
   m_CullTransparentMesh: 1
---- !u!1 &1970007713
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1970007714}
-  m_Layer: 5
-  m_Name: CancelButton
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1970007714
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1970007713}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1970008817
 GameObject:
   m_ObjectHideFlags: 0
@@ -16140,7 +16141,6 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1970007714}
   - {fileID: 264605919}
   - {fileID: 101405399}
   - {fileID: 212754115}
