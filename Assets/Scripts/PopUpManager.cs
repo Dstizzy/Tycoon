@@ -2,7 +2,6 @@ using NUnit.Framework.Constraints;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -18,9 +17,9 @@ public class PopUpManager : MonoBehaviour
     [SerializeField] private ForgeManager forgeManager;
     [SerializeField] private LabManager labManager;
 
-    private List<GameObject> popUps;
-    private PlayerActions playerActions;
-    private List<RaycastResult> raycastResults = new List<RaycastResult>();
+    private       List<GameObject>    popUps;
+    private       PlayerActions       playerActions;
+    private       List<RaycastResult> raycastResults = new List<RaycastResult>();
     public static Transform buildingTransform;
 
     public static PopUpManager Instance { get; private set; }
@@ -127,32 +126,6 @@ public class PopUpManager : MonoBehaviour
 
             fixedPopUpPosition.y -= buttonSpacing;
         }
-    }
-
-    public void ActivateBuildingText(Transform buildingTransform)
-    {
-        /*switch (buildingTransform.tag)
-        {
-            case "Trade Hut":
-                TradeHutLevelText.text = "Trade Hut Level: " + tradeHutManager.GetLevel();
-                TradeHutLevelText.gameObject.SetActive(true);
-                break;
-            case "Ore Refinory":
-                OreLevelText.text = "Ore Refinery Level: " + oreRefineryManager.GetLevel();
-                OreLevelText.gameObject.SetActive(true);
-                break;
-            case "Exploration Unit":
-                ExplorationLevelText.text = "Exploration Unit Level: " + explortionUnitManager.GetLevel();
-                ExplorationLevelText.gameObject.SetActive(true);
-                break;
-            case "Forge":
-                ForgeLevelText.text = "Forge Level: " + forgeManager.GetLevel();
-                ForgeLevelText.gameObject.SetActive(true);
-                break;
-            default:
-                Debug.Log("Building has no text");
-                break;
-        };*/
     }
 
     public void OnBuildingButtonClick(int buttonId)

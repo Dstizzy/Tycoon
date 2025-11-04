@@ -6,7 +6,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.InputSystem",
-        "UnityEngine.InputSystem"
+        "UnityEngine.InputSystem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -21,11 +22,5 @@
         "UNITY_INCLUDE_TESTS"
     ],
     "versionDefines": [],
-    "noEngineReferences": false,
-    "dependencies": {
-        "com.unity.inputsystem": "1.10.1"
-    },
-    "testables": [
-        "com.unity.inputsystem"
-    ]
+    "noEngineReferences": false
 }
