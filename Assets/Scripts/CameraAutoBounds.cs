@@ -1,73 +1,86 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraAutoBounds : MonoBehaviour {
-    [Tooltip("Automatic boundary calculation based on SpriteRenderer / TilemapRenderer across the entire scene")]
-    public bool autoCalculate = true;
+public class CameraAutoBounds : MonoBehaviour
+{
+   [Tooltip("Automatic boundary calculation based on SpriteRenderer / TilemapRenderer across the entire scene")]
+   public bool autoCalculate = true;
 
-    [Tooltip("Tag filter for objects to find boundaries (leave blank to include all)")]
-    public string targetTag = "";
+   [Tooltip("Tag filter for objects to find boundaries (leave blank to include all)")]
+   public string targetTag = "";
 
-    [Tooltip("CameraDragPan script to apply the results")]
-    public CameraDragPan targetPanScript;
+   [Tooltip("CameraDragPan script to apply the results")]
+   public CameraDragPan targetPanScript;
 
-    [Tooltip("Value for margin at the boundary (Unit: Unit)")]
-    public float margin = 2f;
+   [Tooltip("Value for margin at the boundary (Unit: Unit)")]
+   public float margin = 2f;
 
-    void Awake() {
-        // Only do essential component lookups in Awake
-        if (targetPanScript == null) {
-            targetPanScript = GetComponent<CameraDragPan>();
-        }
-    }
+   void Awake()
+   {
+      // Only do essential component lookups in Awake
+      if (targetPanScript == null)
+      {
+         targetPanScript = GetComponent<CameraDragPan>();
+      }
+   }
 
-    void Start() { // <-- MOVED to Start()
-        if (autoCalculate) {
-            CalculateBounds();
-        }
-    }
+   void Start()
+   { // <-- MOVED to Start()
+      if (autoCalculate)
+      {
+         CalculateBounds();
+      }
+   }
 
-    public void CalculateBounds() {
-        if (targetPanScript == null) {
-            targetPanScript = GetComponent<CameraDragPan>();
-            if (targetPanScript == null) {
-                Debug.LogWarning("CameraAutoBounds: targetPanScript is still null. Cannot calculate bounds.");
-                return;
-            }
-        }
-
-        // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
-        Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
-        if (renderers.Length == 0) {
-            Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
+   public void CalculateBounds()
+   {
+      if (targetPanScript == null)
+      {
+         targetPanScript = GetComponent<CameraDragPan>();
+         if (targetPanScript == null)
+         {
+            Debug.LogWarning("CameraAutoBounds: targetPanScript is still null. Cannot calculate bounds.");
             return;
-        }
+         }
+      }
 
-        bool first = true;
-        Vector2 min = Vector2.zero;
-        Vector2 max = Vector2.zero;
+      // Get all renderers in the scene (SpriteRenderer, TilemapRenderer, etc.)
+      Renderer[] renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+      if (renderers.Length == 0)
+      {
+         Debug.LogWarning("CameraAutoBounds: There is no renderer. Please check if your scene contains a SpriteRenderer or Tilemap.");
+         return;
+      }
 
-        foreach (Renderer r in renderers) {
-            if (!string.IsNullOrEmpty(targetTag) && !r.CompareTag(targetTag))
-                continue; // If a tag filter is set
+      bool first = true;
+      Vector2 min = Vector2.zero;
+      Vector2 max = Vector2.zero;
 
-            Bounds b = r.bounds;
+      foreach (Renderer r in renderers)
+      {
+         if (!string.IsNullOrEmpty(targetTag) && !r.CompareTag(targetTag))
+            continue; // If a tag filter is set
 
-            if (first) {
-                min = b.min;
-                max = b.max;
-                first = false;
-            } else {
-                min = Vector2.Min(min, b.min);
-                max = Vector2.Max(max, b.max);
-            }
-        }
+         Bounds b = r.bounds;
 
-        // Passing values to the CameraDragPan script
-        targetPanScript.minWorld = min;
-        targetPanScript.maxWorld = max;
-        targetPanScript.clampToBounds = true;
+         if (first)
+         {
+            min = b.min;
+            max = b.max;
+            first = false;
+         }
+         else
+         {
+            min = Vector2.Min(min, b.min);
+            max = Vector2.Max(max, b.max);
+         }
+      }
 
-        Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete → min: {min}, max: {max}");
-    }
+      // Passing values to the CameraDragPan script
+      targetPanScript.minWorld = min;
+      targetPanScript.maxWorld = max;
+      targetPanScript.clampToBounds = true;
+
+      Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete → min: {min}, max: {max}");
+   }
 }

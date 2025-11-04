@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 21e2dc42e28afec48af2d60b596c2df9
+guid: 58dfd16950564bb44946d683c4840d85
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3442510670807604945
-    second: lightOn_0
+      213: -245802748967542464
+    second: RewardsPanel_0
+  - first:
+      213: -5902339242946183842
+    second: RewardsPanel_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +99,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lightOn_0
+      name: RewardsPanel_0
       rect:
         serializedVersion: 2
-        x: 39
-        y: 56
-        width: 402
-        height: 388
+        x: 64
+        y: 94
+        width: 373
+        height: 276
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1de9af4473146cf20800000000000000
-      internalID: 3442510670807604945
+      spriteID: 041a9feb3bbb69cf0800000000000000
+      internalID: -245802748967542464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RewardsPanel_1
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 53
+        width: 153
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5d38500bbda61ea0800000000000000
+      internalID: -5902339242946183842
       vertices: []
       indices: 
       edges: []
@@ -148,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lightOn_0: 3442510670807604945
+      RewardsPanel_0: -245802748967542464
+      RewardsPanel_1: -5902339242946183842
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
