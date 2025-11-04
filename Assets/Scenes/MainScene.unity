@@ -2943,7 +2943,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &191839099
 MonoBehaviour:
@@ -16877,7 +16877,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1344742988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20826,7 +20826,7 @@ MonoBehaviour:
   infoPanel: {fileID: 1527445483}
   pathButtons: {fileID: 164057130}
   initialTab: {fileID: 2086728722}
-  commerceTab: {fileID: 1836248426}
+  commerceTab: {fileID: 1150889849}
   productionTab: {fileID: 389177037}
   explorationTab: {fileID: 2052934712}
 --- !u!1 &1694762742
