@@ -467,15 +467,35 @@ public class TradeHutManager : MonoBehaviour {
    }
 
    public void ShowSellPanel() {
-      if (buyPanel.gameObject.activeSelf)
-         CloseBuyPanel();
+      if (buyPanel.gameObject.activeSelf) 
+      {
+         if(buyWindow.gameObject.activeSelf)
+            CloseBuyWindow();
 
+         CloseBuyPanel();
+      }
+
+      if(currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
       sellPanel.gameObject.SetActive(true);
    }
 
    public void ShowBuyPanel() {
-      if (sellPanel.gameObject.activeSelf)
+      if (sellPanel.gameObject.activeSelf) 
+      { 
+         if(SellWindow.gameObject.activeSelf)
+            CloseSellWindow();
          CloseSellPanel();
+      }
+
+      if(currentSellItem != null) 
+      {
+         Destroy(currentSellItem.gameObject);
+         currentSellItem = null;
+      }
       buyPanel.gameObject.SetActive(true);
    }
 

@@ -11,7 +11,7 @@ public class InventoryManager : MonoBehaviour {
    /* Inspector variables for UI elements.                                          */
    public Transform InventoryPanel;
    public Transform ResourcePanel;
-   public Transform ResourceInfoWindow;
+   public Transform ResourceWindow;
    public Transform CraftsPanel;
    public Transform ResourceContainer;                                             
    public Transform ResourceTemplate;                                              
@@ -19,6 +19,9 @@ public class InventoryManager : MonoBehaviour {
    public Transform CraftTemplate;                                             
    public Transform ResourceWindowContainer;                                             
    public Transform ResourceWindowTemplate;                                             
+   public Transform CraftWindow;                                             
+   public Transform CraftWindowContainer;                                             
+   public Transform CraftWindowTemplate;                                             
                                                                                    
    private TextMeshProUGUI PearlCountText;                                         
    private TextMeshProUGUI CrystalCountText;                                       
@@ -50,6 +53,7 @@ public class InventoryManager : MonoBehaviour {
    public int artifactCount { get; private set; }
 
    private Transform currentResource;  
+   private Transform currentCraft;  
    /* Delegate for when the pearl count changes.                                   */
    public Action<int> OnPearlCountChanged;                                         
    /* Delegate for when the crystal count changes.                                 */
@@ -82,10 +86,10 @@ public class InventoryManager : MonoBehaviour {
       else
           ResourcePanel.gameObject.SetActive(false);
 
-      if(ResourceInfoWindow == null)
+      if(ResourceWindow == null)
          Debug.LogError("Resource Info Window is not assigned in the Inspector!");
       else
-         ResourceInfoWindow.gameObject.SetActive(false);
+         ResourceWindow.gameObject.SetActive(false);
 
       if(ResourceTemplate == null)
          Debug.LogError("Resource Template is not assigned in the Inspector!");
@@ -96,6 +100,16 @@ public class InventoryManager : MonoBehaviour {
          Debug.LogError("Resource Window Template is not assigned in the Inspector!");
       else
          ResourceWindowTemplate.gameObject.SetActive(false);
+
+      if(CraftWindowTemplate == null)
+         Debug.LogError("Craft window templateis not assigned in the Inspector");
+      else
+         CraftWindowTemplate.gameObject.SetActive(false);
+
+      if(CraftWindow == null) 
+         Debug.Log("Craft window is ont assigned in the inspector");
+      else
+         CraftWindow.gameObject.SetActive(false);
 
       pearlCount       = MIN_PEARL_COUNT;
       crystalCount     = MIN_CRYSTAL_COUNT;
@@ -215,10 +229,13 @@ public class InventoryManager : MonoBehaviour {
    
      /* Populate the resource count text and Image components with item-specific   */
      /* data                                                                       */
-     craftTransform.Find("CraftSprite").GetComponent<Image>().sprite        = craftSprite;
-     craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
+     Button craftButton = craftTransform.Find("CraftButton").GetComponent<Button>();
+
+      craftButton.image.sprite = craftSprite;
+
+      craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
       
-     switch (craftTag) 
+     switch (craftTag)
      { 
          case "Crude tool":
             CrudeToolCountText   = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
@@ -233,6 +250,7 @@ public class InventoryManager : MonoBehaviour {
             break;
       }
 
+      craftButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); } );
       craftTransform.gameObject.SetActive(true);
    }
 
@@ -273,6 +291,49 @@ public class InventoryManager : MonoBehaviour {
       currentResource = resourceTransform;
       resourceTransform.gameObject.SetActive(true);
       ShowResourceWindow();
+   }
+
+   private void CreateCraftWindow(Sprite crafteSprite, string craftTag) {
+      int craftCount = 0;
+      string craftInfo = "";
+
+      Transform craftTransform = Instantiate(CraftWindowTemplate, CraftWindowContainer);
+      RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
+
+      if (currentCraft != null) {
+         Destroy(currentCraft.gameObject);
+         currentCraft = null;
+      }
+
+      craftTransform.tag = craftTag;
+
+      switch (craftTag) {
+         case "Crude Tool":
+            craftCount = pearlCount;
+            craftInfo = Item.GetItemDescription(Item.ItemType.CrudeTool);
+            break;
+         case "Refined Tool":
+            craftCount = crystalCount;
+            craftInfo = Item.GetItemDescription(Item.ItemType.RefinedTool);
+            break;
+         case "Artifact":
+            craftCount = artifactCount;
+            craftInfo = Item.GetItemDescription(Item.ItemType.Artifact);
+            break;
+         default:
+            Debug.Log("Unknown item tag for resource window.");
+            break;
+      }
+
+      // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
+      craftTransform.Find("CraftImage").GetComponent<Image>().sprite = crafteSprite;
+      craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = "  x" + craftCount.ToString();
+      craftTransform.Find("CraftName").GetComponent<TextMeshProUGUI>().text = craftTag;
+      craftTransform.Find("CraftInfo").GetComponent<TextMeshProUGUI>().text = craftInfo;
+
+      currentCraft = craftTransform;
+      craftTransform.gameObject.SetActive(true);
+      ShowCraftWindow();
    }
 
    /* Attempts to add the specified amount of pearls to the player's count.        */
@@ -373,6 +434,22 @@ public class InventoryManager : MonoBehaviour {
    public void DeactivateInventoryPanel() 
    {
       InventoryPanel.gameObject.SetActive(false);
+
+      if(currentCraft != null) {
+         Destroy(currentCraft.gameObject);
+         currentCraft = null;
+      }
+
+      if(currentResource != null) {
+         Destroy(currentResource.gameObject);
+         currentResource = null;
+      }
+
+      if(ResourceWindow.gameObject.activeSelf)
+         DeactivateResourcePanel(); 
+
+      if(CraftWindow.gameObject.activeSelf)
+         DeactivateCraftsPanel();
    }
 
    public void ActivateResourcePanel()
@@ -402,6 +479,9 @@ public class InventoryManager : MonoBehaviour {
    }
 
    private void ShowResourceWindow() {
-      ResourceInfoWindow.gameObject.SetActive(true);
+      ResourceWindow.gameObject.SetActive(true);
+   }
+   private void ShowCraftWindow() {
+      CraftWindow.gameObject.SetActive(true);
    }
 }
