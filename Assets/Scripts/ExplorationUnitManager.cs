@@ -55,6 +55,7 @@ public class ExplorationUnitManager : MonoBehaviour
    const int EXPLORE_DURATION     = 2;   /* Number of turns an exploration lasts                 */
 
    private TurnManager turnManager;
+   private InventoryManager inventoryManager;
    private static int explorationUnitLevel = STARTING_LEVEL; /* Current level of exploratin unit */
    private static int exploreEndTurn       = 0;              /* End turn of current exploration  */
    private int activeExploreTabId          = LEVEL_1_TAB_ID; /* The explore tab currently open   */
@@ -67,7 +68,11 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       turnManager = TurnManager.Instance;
       if(turnManager == null)
-         Debug.LogError("TurnManager instance not found! Make sure TurnManager exists in scene");
+         Debug.LogError("TurnManager instance not found! Make sure TurnManager exists in scene.");
+
+      inventoryManager = InventoryManager.Instance;
+      if (inventoryManager == null)
+         Debug.LogError("InventoryManager instance not found! Make sure InventoryManager exists in scene.");
    }
 
    /*  */
@@ -99,10 +104,14 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    /* Determines if the user has enough currency for an action                                   */
-   private bool HasEnoughCurrency(int cost)
+   private bool HasEnoughPearls(int cost)
    {
-//  TODO ----------------------------------------------------    CurrencyManager.Instance.GetPearls() >= cost;
-      return true;
+      if (inventoryManager == null)
+      {
+         Debug.LogError("InventoryManager not found!");
+         return false;
+      }
+      return inventoryManager.pearlCount >= cost;
    }
 
    /* Activates the requested exploration unit panel                                             */
@@ -131,7 +140,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
                /* Allow upgrade only if user has enough currency, exploration is not ongoing,    */
                /* and unit is not already at max level                                           */
-               bool canAffordUpgrade = HasEnoughCurrency(UPGRADE_COST);
+               bool canAffordUpgrade = HasEnoughPearls(UPGRADE_COST);
                bool canUpgrade = canAffordUpgrade && !isExploring;
                bool isMaxLevel = explorationUnitLevel >= ENDING_LEVEL;
                yesButton.interactable = canUpgrade && !isMaxLevel;
@@ -283,8 +292,8 @@ public class ExplorationUnitManager : MonoBehaviour
       /* Start an exploration                                                                    */
       else
       {
-         startButton.onClick.AddListener(StartExploration);
-         bool canAffordExplore = HasEnoughCurrency(exploreCost);
+         startButton.onClick.AddListener(() => StartExploration(exploreCost));
+         bool canAffordExplore = HasEnoughPearls(exploreCost);
          bool canExplore = canAffordExplore && !isExploring;
          startButton.interactable = canExplore;
 
@@ -310,18 +319,21 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    /* Starts an exploration                                                                      */
-   public void StartExploration()
+   public void StartExploration(int cost)
    {
-      if(isExploring) 
+      if(isExploring)
+      {
+         Debug.LogError("Exploration is already ongoing!");
          return;
-      Debug.Log("Exploration started!");
+      }
+      if (!HasEnoughPearls(cost))
+      {
+         Debug.LogError("Not enough pearls for exploration!");
+         return;
+      }
+      inventoryManager.TrySpendPearl(cost);
 
-      //TODO -------------------------------------   add exploration duration to current turn and assign to the exploration's ending turn
-      //     -------------------------------------   exploreEndTurn = PopUpManager.CurrentTurn + EXPLORE_DURATION;
       exploreEndTurn = turnManager.currentTurn + EXPLORE_DURATION;
-
-      //TODO -------------------------------------   deduct exploration cost here
-
       isExploring = true;
       HideAllBoats();
       CloseExplorationPanel();
@@ -401,10 +413,11 @@ public class ExplorationUnitManager : MonoBehaviour
    /* Upgrade the exploration unit to the next level                                             */
    public void UpgradeExplorationUnit()
    {
-      if(explorationUnitLevel < ENDING_LEVEL)
+      if(explorationUnitLevel < ENDING_LEVEL && HasEnoughPearls(UPGRADE_COST))
       {
          explorationUnitLevel += 1;
          UpdateBoatVisuals();
+         inventoryManager.TrySpendPearl(UPGRADE_COST);
       }
       else
       {

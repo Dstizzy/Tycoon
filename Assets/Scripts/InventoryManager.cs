@@ -15,7 +15,17 @@ public class InventoryManager : MonoBehaviour {
     public int crystalCount;
     public int oreCount;
 
-    private void Awake() {
+
+   void Update()
+   {
+      if (Input.GetKeyDown(KeyCode.P))
+      {
+         TryAddPearl(800); // Press P to give yourself 1000 pearls
+         Debug.Log("Added 800 pearls for testing!");
+      }
+   }
+
+   private void Awake() {
 
         if (Instance != null && Instance != this) {
             Destroy(this.gameObject);
