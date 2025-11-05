@@ -87,6 +87,16 @@ public class InventoryManager : MonoBehaviour {
       else
          ResourceInfoWindow.gameObject.SetActive(false);
 
+      if(ResourceTemplate == null)
+         Debug.LogError("Resource Template is not assigned in the Inspector!");
+      else
+         ResourceTemplate.gameObject.SetActive(false);
+
+      if(ResourceWindowTemplate == null)
+         Debug.LogError("Resource Window Template is not assigned in the Inspector!");
+      else
+         ResourceWindowTemplate.gameObject.SetActive(false);
+
       pearlCount       = MIN_PEARL_COUNT;
       crystalCount     = MIN_CRYSTAL_COUNT;
       crudeToolCount   = MIN_CRUDE_TOOL_COUNT;
@@ -97,8 +107,8 @@ public class InventoryManager : MonoBehaviour {
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
    private void Start() 
    {
-      CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Pearl), "Pearl", PEARL_POSITION, "Pearl");
-      CreateResource(Resource.GetResourceSprite(Resource.ResourceType.Crystal), "Crystal", CRYSTAL_POSITION, "Crystal");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), "Pearl", PEARL_POSITION, "Pearl");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), "Crystal", CRYSTAL_POSITION, "Crystal");
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), "CrudeTool", CRUDE_TOOL_POSITION, "Crude Tool");
       CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", REFINED_TOOL_POSITION, "Refined Tool");
@@ -111,7 +121,11 @@ public class InventoryManager : MonoBehaviour {
    {                                                                                
       /* The initial count of the resource to display.                             */
       int resourceCount;
-      
+      Button resourceButton;
+      Transform ResourceTransform;
+      RectTransform ResourceRectTransform;
+
+
       switch (resourceTag) 
       {
          case "Pearl":
@@ -127,10 +141,10 @@ public class InventoryManager : MonoBehaviour {
         
       /* Instantiate the template and set its position in the container.
       /* Transform of the newly created resource UI element.                       */
-      Transform ResourceTransform = Instantiate(ResourceTemplate, ResourceContainer);
+      ResourceTransform = Instantiate(ResourceTemplate, ResourceContainer);
       
      /* RectTransform for positioning the new resource UI element.                 */
-      RectTransform ResourceRectTransform = ResourceTransform.GetComponent<RectTransform>();
+     ResourceRectTransform = ResourceTransform.GetComponent<RectTransform>();
       
       ResourceTransform.tag = resourceTag;
    
@@ -139,9 +153,12 @@ public class InventoryManager : MonoBehaviour {
    
      /* Populate the resource count text and Image components with item-specific   */
      /* data                                                                       */
-     ResourceTransform.Find("ResourceSprite").GetComponent<Image>().sprite        = resourceSprite;
-     ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
-      
+      ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
+      resourceButton = ResourceTransform.Find("ResourceButton").GetComponent<Button>();
+
+     resourceButton.image.sprite = resourceSprite;
+     resourceButton.onClick.AddListener(() => CreateResourceWindow(resourceSprite, resourceTag));
+
      switch (resourceTag) 
      { 
          case "Pearl":
@@ -219,23 +236,28 @@ public class InventoryManager : MonoBehaviour {
       craftTransform.gameObject.SetActive(true);
    }
 
-   private void CreateResourceWindow(Sprite itemSprite, string itemTag) {
+   private void CreateResourceWindow(Sprite resourceSprite, string resourceTag) {
       int resourceCount   = 0;
       string resourceInfo = "";
 
-      Transform     resourceTransform     = Instantiate(ResourceWindowTemplate, ResourceContainer);
+      Transform     resourceTransform     = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
       RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
 
-      resourceTransform.tag = itemTag;
+      if (currentResource != null) {
+         Destroy(currentResource.gameObject);
+         currentResource = null;
+      }
 
-      switch (itemTag) {
+      resourceTransform.tag = resourceTag;
+
+      switch (resourceTag) {
          case "Pearl":
             resourceCount = pearlCount;
-            resourceInfo = "A precious gem found in the depths of the ocean.";
+            resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Pearl);
             break;
          case "Crystal":
             resourceCount = crystalCount;
-            resourceInfo = "A rare mineral with magical properties.";
+            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
             break;
          default: 
             Debug.Log("Unknown item tag for resource window.");
@@ -243,9 +265,9 @@ public class InventoryManager : MonoBehaviour {
       }
 
       // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
-      resourceTransform.Find("ResourceImage").GetComponent<Image>().sprite         = itemSprite;
-      resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = "  " + resourceCount.ToString();
-      resourceTransform.Find("ResourceName").GetComponent<TextMeshProUGUI>().text  = itemTag;
+      resourceTransform.Find("ResourceImage").GetComponent<Image>().sprite         = resourceSprite;
+      resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = "  x" + resourceCount.ToString();
+      resourceTransform.Find("ResourceName").GetComponent<TextMeshProUGUI>().text  = resourceTag;
       resourceTransform.Find("ResourceInfo").GetComponent<TextMeshProUGUI>().text  = resourceInfo;
 
       currentResource = resourceTransform;

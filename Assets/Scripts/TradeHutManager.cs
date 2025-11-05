@@ -157,7 +157,7 @@ public class TradeHutManager : MonoBehaviour {
 
       // Dynamically add listeners to the buttons, passing the specific item's Transform.
       // This ensures the button click only affects its corresponding item entry.
-      itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, Resources.Load<Sprite>("00-removebg-preview"), itemName, itemValue, itemTag));
+      itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, Resources.GetResourceSprite(Resources.ResourceType.Pearl), itemName, itemValue, itemTag));
 
       tradeItemTransform.gameObject.SetActive(true);
    }
@@ -183,7 +183,7 @@ public class TradeHutManager : MonoBehaviour {
 
       // Dynamically add listeners to the buttons, passing the specific item's Transform.
       // This ensures the button click only affects its corresponding item entry.
-      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, Resources.Load<Sprite>("00-removebg-preview"), itemName, itemValue, itemTag));
+      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, Resources.GetResourceSprite(Resources.ResourceType.Pearl), itemName, itemValue, itemTag));
 
       tradeItemTransform.gameObject.SetActive(true);
    }
@@ -229,7 +229,7 @@ public class TradeHutManager : MonoBehaviour {
       int itemCount = 0;
 
       if (currentSellItem != null) {
-         Destroy(currentSellItem);
+         Destroy(currentSellItem.gameObject);
          currentSellItem = null;
       }
 
