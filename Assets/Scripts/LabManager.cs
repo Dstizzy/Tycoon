@@ -139,6 +139,7 @@ public class LabManager : MonoBehaviour
         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
     }
 
+    /* Handle different changes upon clicking a buy button                                       */
     private void HandleInnovation(GameObject tab, int tier)
     {
         switch (tier)
@@ -173,6 +174,7 @@ public class LabManager : MonoBehaviour
         };
     }
 
+    /* Spend certain amount of resources and give corresponding innovations                      */
     public void PerformBuy(int pearlCost, int itemCost)
     {
         InventoryManager.Instance.TrySpendPearl(pearlCost);

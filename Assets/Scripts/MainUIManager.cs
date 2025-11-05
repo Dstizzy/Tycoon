@@ -12,7 +12,7 @@ public class MainUIManager : MonoBehaviour {
 
     private bool isVisible = false;
 
-    private void Start() {
+    private void Awake() {
         // Initially hide dropdown buttons
         foreach (Button btn in DropdownButtons) {
             btn.gameObject.SetActive(false);
