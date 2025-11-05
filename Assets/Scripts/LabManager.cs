@@ -12,6 +12,12 @@ public class LabManager : MonoBehaviour
     const int TIER_ONE = 1;
     const int TIER_TWO = 2;
     const int TIER_THREE = 3;
+    const int TIER_ONE_PEARL_COST = 100;
+    const int TIER_ONE_ITEM_COST = 10;
+    const int TIER_TWO_PEARL_COST = 350;
+    const int TIER_TWO_ITEM_COST = 25;
+    const int TIER_THREE_PEARL_COST = 700;
+    const int TIER_THREE_ITEM_COST = 50;
 
     /* Inspector Variables                                                                       */
     [SerializeField] private Transform innovatePanel;
@@ -138,6 +144,7 @@ public class LabManager : MonoBehaviour
         switch (tier)
         {
             case TIER_ONE:
+                PerformBuy(TIER_ONE_PEARL_COST, TIER_ONE_ITEM_COST);
                 tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
@@ -146,6 +153,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("costContainer/tierOneCost").gameObject.SetActive(false);
                 break;
             case TIER_TWO:
+                PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
                 tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
@@ -154,6 +162,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("costContainer/tierTwoCost").gameObject.SetActive(false);
                 break;
             case TIER_THREE:
+                PerformBuy(TIER_THREE_PEARL_COST, TIER_THREE_ITEM_COST);
                 tab.transform.Find("branch/thirdConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/thirdConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeUnfilled").gameObject.SetActive(false);
@@ -162,6 +171,13 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
                 break;
         };
+    }
+
+    public void PerformBuy(int pearlCost, int itemCost)
+    {
+        InventoryManager.Instance.TrySpendPearl(pearlCost);
+        InventoryManager.Instance.TrySpendItem("Crude Tool", itemCost);
+
     }
 
     /* Return to the initial tab upon clicking the back arrow button                             */
