@@ -140,7 +140,7 @@ public class InventoryManager : MonoBehaviour {
     }
 
     /* Remove an amount of certain items from the inventory                                      */
-    public void TrySellItem(string itemType, int itemAmount)
+    public void TrySpendItem(string itemType, int itemAmount)
     {
         switch (itemType)
         {
