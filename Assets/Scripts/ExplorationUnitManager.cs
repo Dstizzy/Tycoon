@@ -54,7 +54,7 @@ public class ExplorationUnitManager : MonoBehaviour
    const int LEVEL_3_EXPLORE_COST = 400; /* Cost of a level 3 exploration                        */
    const int EXPLORE_DURATION     = 2;   /* Number of turns an exploration lasts                 */
 
-
+   private TurnManager turnManager;
    private static int explorationUnitLevel = STARTING_LEVEL; /* Current level of exploratin unit */
    private static int exploreEndTurn       = 0;              /* End turn of current exploration  */
    private int activeExploreTabId          = LEVEL_1_TAB_ID; /* The explore tab currently open   */
@@ -63,13 +63,21 @@ public class ExplorationUnitManager : MonoBehaviour
    public  bool isExploring                = false;          /* Is exploration currently ongoing */
 
 
+   private void Start()
+   {
+      turnManager = TurnManager.Instance;
+      if(turnManager == null)
+         Debug.LogError("TurnManager instance not found! Make sure TurnManager exists in scene");
+   }
+
+   /*  */
    private void Update()
    {
-      if (Input.GetKeyDown(KeyCode.F))
-      {
-         FinishExploration();
-      }
+      if(isExploring && turnManager != null)
+         if(turnManager.currentTurn >= exploreEndTurn)
+            FinishExploration();
    }
+
    /*  */
    private void Awake()
    {
@@ -149,7 +157,7 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    /* Switch the explore tab based on the tab that has been clicked                              */
-   public void switchExploreTab(int tabId)
+   public void SwitchExploreTab(int tabId)
    {
       activeExploreTabId = tabId;
 
@@ -275,7 +283,7 @@ public class ExplorationUnitManager : MonoBehaviour
       /* Start an exploration                                                                    */
       else
       {
-         startButton.onClick.AddListener(startExploration);
+         startButton.onClick.AddListener(StartExploration);
          bool canAffordExplore = HasEnoughCurrency(exploreCost);
          bool canExplore = canAffordExplore && !isExploring;
          startButton.interactable = canExplore;
@@ -302,7 +310,7 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    /* Starts an exploration                                                                      */
-   public void startExploration()
+   public void StartExploration()
    {
       if(isExploring) 
          return;
@@ -310,6 +318,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       //TODO -------------------------------------   add exploration duration to current turn and assign to the exploration's ending turn
       //     -------------------------------------   exploreEndTurn = PopUpManager.CurrentTurn + EXPLORE_DURATION;
+      exploreEndTurn = turnManager.currentTurn + EXPLORE_DURATION;
 
       //TODO -------------------------------------   deduct exploration cost here
 
@@ -476,9 +485,9 @@ public class ExplorationUnitManager : MonoBehaviour
       explorePanel.gameObject.SetActive(true);
       int requiredLevel = activeExploreTabId - LEVEL_1_TAB_ID + 1;
       if(explorationUnitLevel < requiredLevel)
-         switchExploreTab(LEVEL_1_TAB_ID + explorationUnitLevel - 1);
+         SwitchExploreTab(LEVEL_1_TAB_ID + explorationUnitLevel - 1);
       else
-         switchExploreTab(activeExploreTabId);
+         SwitchExploreTab(activeExploreTabId);
    }
 
    /* Show the exploration unit's information panel                                              */

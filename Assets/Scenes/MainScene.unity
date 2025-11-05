@@ -8123,7 +8123,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 312859142}
         m_TargetAssemblyTypeName: ExplorationUnitManager, Assembly-CSharp
-        m_MethodName: switchExploreTab
+        m_MethodName: SwitchExploreTab
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12586,7 +12586,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 312859142}
         m_TargetAssemblyTypeName: ExplorationUnitManager, Assembly-CSharp
-        m_MethodName: switchExploreTab
+        m_MethodName: SwitchExploreTab
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12719,7 +12719,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 312859142}
         m_TargetAssemblyTypeName: ExplorationUnitManager, Assembly-CSharp
-        m_MethodName: switchExploreTab
+        m_MethodName: SwitchExploreTab
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
