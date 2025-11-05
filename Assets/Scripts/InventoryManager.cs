@@ -11,11 +11,14 @@ public class InventoryManager : MonoBehaviour {
    /* Inspector variables for UI elements.                                          */
    public Transform InventoryPanel;
    public Transform ResourcePanel;
+   public Transform ResourceInfoWindow;
    public Transform CraftsPanel;
    public Transform ResourceContainer;                                             
    public Transform ResourceTemplate;                                              
    public Transform CraftContainer;                                             
    public Transform CraftTemplate;                                             
+   public Transform ResourceWindowContainer;                                             
+   public Transform ResourceWindowTemplate;                                             
                                                                                    
    private TextMeshProUGUI PearlCountText;                                         
    private TextMeshProUGUI CrystalCountText;                                       
@@ -46,6 +49,7 @@ public class InventoryManager : MonoBehaviour {
    public int refinedToolCount { get; private set; }
    public int artifactCount { get; private set; }
 
+   private Transform currentResource;  
    /* Delegate for when the pearl count changes.                                   */
    public Action<int> OnPearlCountChanged;                                         
    /* Delegate for when the crystal count changes.                                 */
@@ -77,6 +81,11 @@ public class InventoryManager : MonoBehaviour {
          Debug.LogError("Resource Panel is not assigned in the Inspector!");
       else
           ResourcePanel.gameObject.SetActive(false);
+
+      if(ResourceInfoWindow == null)
+         Debug.LogError("Resource Info Window is not assigned in the Inspector!");
+      else
+         ResourceInfoWindow.gameObject.SetActive(false);
 
       pearlCount       = MIN_PEARL_COUNT;
       crystalCount     = MIN_CRYSTAL_COUNT;
@@ -209,7 +218,41 @@ public class InventoryManager : MonoBehaviour {
 
       craftTransform.gameObject.SetActive(true);
    }
-   
+
+   private void CreateResourceWindow(Sprite itemSprite, string itemTag) {
+      int resourceCount   = 0;
+      string resourceInfo = "";
+
+      Transform     resourceTransform     = Instantiate(ResourceWindowTemplate, ResourceContainer);
+      RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
+
+      resourceTransform.tag = itemTag;
+
+      switch (itemTag) {
+         case "Pearl":
+            resourceCount = pearlCount;
+            resourceInfo = "A precious gem found in the depths of the ocean.";
+            break;
+         case "Crystal":
+            resourceCount = crystalCount;
+            resourceInfo = "A rare mineral with magical properties.";
+            break;
+         default: 
+            Debug.Log("Unknown item tag for resource window.");
+            break;
+      }
+
+      // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
+      resourceTransform.Find("ResourceImage").GetComponent<Image>().sprite         = itemSprite;
+      resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = "  " + resourceCount.ToString();
+      resourceTransform.Find("ResourceName").GetComponent<TextMeshProUGUI>().text  = itemTag;
+      resourceTransform.Find("ResourceInfo").GetComponent<TextMeshProUGUI>().text  = resourceInfo;
+
+      currentResource = resourceTransform;
+      resourceTransform.gameObject.SetActive(true);
+      ShowResourceWindow();
+   }
+
    /* Attempts to add the specified amount of pearls to the player's count.        */
    public void TryAddPearl(int pearlAmount)
    {
@@ -334,5 +377,9 @@ public class InventoryManager : MonoBehaviour {
    private void DeactivateCraftsPanel()
    {
       CraftsPanel.gameObject.SetActive(false);
+   }
+
+   private void ShowResourceWindow() {
+      ResourceInfoWindow.gameObject.SetActive(true);
    }
 }
