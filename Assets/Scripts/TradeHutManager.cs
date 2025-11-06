@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TradeHutManager : MonoBehaviour 
 {
-   /* Inspector variables                                   */
+   /* Inspector variables                                                                             */
    [SerializeField] private Transform TradePanels;            
    [SerializeField] private Transform BuyPanel;               
    [SerializeField] private Transform BuyItemContainer;       
@@ -24,17 +24,17 @@ public class TradeHutManager : MonoBehaviour
 
    public TextMeshProUGUI tradeHutLevelText;
 
-   /* Private variables                                     */
+   /* Private variables                                                                               */
    private int artifactSellCount     = 0; 
    private int crudeToolSellCount    = 0; 
    private int refinedToolSellCount  = 0; 
    private int swordBuyCount         = 0;
 
-   /* Transform                                             */
+   /* Transform                                                                                       */
    private Transform currentBuyItem;      
    private Transform currentSellItem;
 
-   /* Constants                                             */
+   /* Constants                                                                                       */
    const int ENDING_LEVEL        = 5;     
    const int INFO_BUTTON         = 2;     
    const int MAX_BUY_ITEM_COUNT  = 100;   
@@ -117,7 +117,8 @@ public class TradeHutManager : MonoBehaviour
          BuyItemTemplate.gameObject.SetActive(false);
    }
 
-   private void Start() {
+   private void Start() 
+   {
       CreateSellItem(Item.GetItemSprite(Item.ItemType.CrudeTool), Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
       CreateSellItem(Item.GetItemSprite(Item.ItemType.RefinedTool), Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
       CreateSellItem(Item.GetItemSprite(Item.ItemType.Artifact), Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
@@ -568,17 +569,20 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Deactivates the Upgrade panel                                                                   */
-   private void CloseUpgradePanel() {
+   private void CloseUpgradePanel() 
+   {
       UpgradePanel.gameObject.SetActive(false);
    }
 
    /* Deactivates the Sell item entries panel                                                         */
-   private void CloseSellPanel() {
+   private void CloseSellPanel() 
+   {
       SellPanel.gameObject.SetActive(false);
    }
 
    /* Deactivates the Buy item entries panel                                                          */
-   private void CloseBuyPanel() {
+   private void CloseBuyPanel() 
+   {
       BuyPanel.gameObject.SetActive(false);
    }
 
