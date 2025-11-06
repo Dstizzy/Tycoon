@@ -21,21 +21,6 @@ public class PanelsPopUpTest : InputTestFixture
         }
     }
 
-    [UnityTearDown] // Runs after *each* [UnityTest]
-    public IEnumerator CleanupTestObjects()
-    {
-        // Find all the pop-up buttons that were likely left behind.
-        GameObject[] popUpButtons = GameObject.FindGameObjectsWithTag("BuildingButtonPopUp");
-
-        foreach (GameObject go in popUpButtons)
-        {
-            // Destroy them to ensure they aren't blocking the next test's input.
-            UnityEngine.Object.Destroy(go);
-        }
-
-        // Allow one frame for the destruction to take effect
-        yield return null;
-    }
 
     [Test]
     public void IsMouseAdded()
