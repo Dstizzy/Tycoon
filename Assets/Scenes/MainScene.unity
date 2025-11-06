@@ -2184,21 +2184,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba70f76e9db6b249bdd9479dfa90b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
-  sellItemContainer: {fileID: 460349205}
-  sellItemTemplate: {fileID: 1712966643}
-  SellWindowTemplate: {fileID: 65785624}
-  SellWindowContainer: {fileID: 1958255415}
   BuyItemContainer: {fileID: 1311362404}
   BuyItemTemplate: {fileID: 2127299601}
   BuyWindowContainer: {fileID: 1387172145}
   BuyWindowTemplate: {fileID: 206400520}
-  tradePanels: {fileID: 1113495824}
-  sellPanel: {fileID: 1024672991}
-  buyPanel: {fileID: 1296913991}
-  buyWindow: {fileID: 1401748498}
   SellWindow: {fileID: 644685944}
-  infoPanel: {fileID: 1779872260}
-  upgradePanel: {fileID: 470639710}
+  SellWindowContainer: {fileID: 1958255415}
+  SellWindowTemplate: {fileID: 65785624}
+  BuyPanel: {fileID: 1296913991}
+  BuyWindow: {fileID: 1401748498}
+  InfoPanel: {fileID: 1779872260}
+  SellItemContainer: {fileID: 460349205}
+  SellItemTemplate: {fileID: 1712966643}
+  SellPanel: {fileID: 1024672991}
+  TradePanels: {fileID: 1113495824}
+  UpgradePanel: {fileID: 470639710}
   tradeHutLevelText: {fileID: 587055042}
 --- !u!1 &197960581
 GameObject:
