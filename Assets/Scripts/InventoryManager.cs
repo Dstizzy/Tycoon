@@ -217,6 +217,7 @@ public class InventoryManager : MonoBehaviour
             break;
          default:
             craftCount = 0;
+            Debug.LogError("Unknown craft tag: " + craftTag);
             break;
       }
 
