@@ -459,26 +459,22 @@ public class TradeHutManager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
-   /* Activates the main trade panels                                                                 */
    private void ShowTradePanel() 
    {
       TradePanels.gameObject.SetActive(true);
       ShowSellPanel();
    }
 
-   /* Activates the Info panel                                                                        */
    private void ShowInfoPanel() 
    {
       InfoPanel.gameObject.SetActive(true);
    }
 
-   /* Activates the Upgrade panel                                                                     */
    private void ShowUpgradePanel() 
    {
       UpgradePanel.gameObject.SetActive(true);
    }
 
-   /* Closes the Buy panel and opens the Sell panel                                                   */
    public void ShowSellPanel() 
    {
       if (BuyPanel.gameObject.activeSelf) 
@@ -498,7 +494,6 @@ public class TradeHutManager : MonoBehaviour
       SellPanel.gameObject.SetActive(true);
    }
 
-   /* Closes the Sell panel and opens the Buy panel                                                   */
    public void ShowBuyPanel() 
    {
       if (SellPanel.gameObject.activeSelf) 
@@ -518,19 +513,16 @@ public class TradeHutManager : MonoBehaviour
       BuyPanel.gameObject.SetActive(true);
    }
 
-   /* Activates the main Buy transaction window                                                       */
    public void ShowBuyWindow() 
     {
       BuyWindow.gameObject.SetActive(true);
    }
 
-   /* Activates the main Sell transaction window                                                      */
    public void ShowSellWindow() 
    {
       SellWindow.gameObject.SetActive(true);
    }
 
-   /* Deactivates the main trade panels and cleans up counters and instantiated items                 */
    private void CloseTradePanel() 
    {
       TradePanels.gameObject.SetActive(false);
@@ -549,7 +541,6 @@ public class TradeHutManager : MonoBehaviour
          currentBuyItem = null;
       }
 
-      /* Reset all sell and buy counters to 0 */
       crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
       refinedToolSellCount = MIN_SELL_ITEM_COUNT;
       artifactSellCount    = MIN_SELL_ITEM_COUNT;
@@ -562,37 +553,31 @@ public class TradeHutManager : MonoBehaviour
          CloseBuyWindow();
    }
 
-   /* Deactivates the Info panel                                                                      */
    private void CloseInfoPanel() 
    {
       InfoPanel.gameObject.SetActive(false);
    }
 
-   /* Deactivates the Upgrade panel                                                                   */
    private void CloseUpgradePanel() 
    {
       UpgradePanel.gameObject.SetActive(false);
    }
 
-   /* Deactivates the Sell item entries panel                                                         */
    private void CloseSellPanel() 
    {
       SellPanel.gameObject.SetActive(false);
    }
 
-   /* Deactivates the Buy item entries panel                                                          */
    private void CloseBuyPanel() 
    {
       BuyPanel.gameObject.SetActive(false);
    }
 
-   /* Deactivates the Sell transaction window                                                         */
    private void CloseSellWindow() 
    {
       SellWindow.gameObject?.SetActive(false);
    }
 
-   /* Deactivates the Buy transaction window                                                          */
    private void CloseBuyWindow() 
    {
       BuyWindow.gameObject?.SetActive(false);

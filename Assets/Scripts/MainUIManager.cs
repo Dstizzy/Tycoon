@@ -31,7 +31,7 @@ public class MainUIManager : MonoBehaviour {
         // Add listener to main menu button
         MainMenuButton.onClick.AddListener(ToggleMenu);
         InventoryButton.onClick.AddListener(() => {
-            InventoryManager.Instance.ActivateInventoryPanel();
+            InventoryManager.Instance.ShowInventoryPanel();
         });
 
         ChangePearlCountText(InventoryManager.Instance.pearlCount);

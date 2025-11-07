@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Item {
 
-   const int CRUDE_TOOL_SELL_VALUE    = 5;
-   const int REFINED_TOOL_SELL_VALUE  = 10;
-   const int ARTIFACT_TOOL_SELL_VALUE = 20;
-   const string CRUDE_TOOL_DESCRIPTION = 
+   const int    CRUDE_TOOL_SELL_VALUE    = 5;
+   const int    REFINED_TOOL_SELL_VALUE  = 10;
+   const int    ARTIFACT_TOOL_SELL_VALUE = 20;
+   const string CRUDE_TOOL_DESCRIPTION   = 
       "A basic tool made from rudimentary materials. " +
       "Useful for simple tasks but lacks durability.";
    const string REFINED_TOOL_DESCRIPTION =

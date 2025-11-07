@@ -4,24 +4,25 @@ using TMPro;
 using UnityEngine;                                                                  
 using UnityEngine.UI;                                                               
                                                                                     
-public class InventoryManager : MonoBehaviour {                                     
-   /* Holds a reference to the singleton instance of this class.                   */
+public class InventoryManager : MonoBehaviour 
+{                                     
+   /* Holds a reference to the singleton instance of this class.                    */
    public static InventoryManager Instance { get; private set; }                   
                                                                                     
    /* Inspector variables for UI elements.                                          */
-   public Transform InventoryPanel;
-   public Transform ResourcePanel;
-   public Transform ResourceWindow;
-   public Transform CraftsPanel;
-   public Transform ResourceContainer;                                             
-   public Transform ResourceTemplate;                                              
-   public Transform CraftContainer;                                             
-   public Transform CraftTemplate;                                             
-   public Transform ResourceWindowContainer;                                             
-   public Transform ResourceWindowTemplate;                                             
-   public Transform CraftWindow;                                             
-   public Transform CraftWindowContainer;                                             
-   public Transform CraftWindowTemplate;                                             
+   [SerializeField] private Transform InventoryPanel;
+   [SerializeField] private Transform ResourcePanel;
+   [SerializeField] private Transform ResourceWindow;
+   [SerializeField] private Transform CraftsPanel;
+   [SerializeField] private Transform ResourceContainer;                                             
+   [SerializeField] private Transform ResourceTemplate;                                              
+   [SerializeField] private Transform CraftContainer;                                             
+   [SerializeField] private Transform CraftTemplate;                                             
+   [SerializeField] private Transform ResourceWindowContainer;                                             
+   [SerializeField] private Transform ResourceWindowTemplate;                                             
+   [SerializeField] private Transform CraftWindow;                                             
+   [SerializeField] private Transform CraftWindowContainer;                                             
+   [SerializeField] private Transform CraftWindowTemplate;                                             
                                                                                    
    private TextMeshProUGUI PearlCountText;                                         
    private TextMeshProUGUI CrystalCountText;                                       
@@ -45,19 +46,24 @@ public class InventoryManager : MonoBehaviour {
    const int ARTIFACT_POSITION      = REFINED_TOOL_POSITION + 10;
 
    /* Public properties                                                            */
-   public int pearlCount  {  get; private set; }
-   public int crystalCount  { get; private set; }
-   public int oreCount { get;  set; }
-   public int crudeToolCount { get; private set; }
-   public int refinedToolCount { get; private set; }
-   public int artifactCount { get; private set; }
+   public int pearlCount       {  get; private set; }
+   public int crystalCount     { get; private set;  }
+   public int oreCount         { get;  set;         }
+   public int crudeToolCount   { get; private set;  }
+   public int refinedToolCount { get; private set;  }
+   public int artifactCount    { get; private set;  }
 
+   /* Private variables                                                            */
    private Transform currentResource;  
-   private Transform currentCraft;  
+   private Transform currentCraft;
+   
    /* Delegate for when the pearl count changes.                                   */
    public Action<int> OnPearlCountChanged;                                         
+
    /* Delegate for when the crystal count changes.                                 */
-   public Action<int> OnCrystalCountChanged;                                       
+   public Action<int> OnCrystalCountChanged;
+
+   /* Delegate for when the crystal count changes.                                 */
    public Action<int> OnOreCountChanged;
                                                                                    
    /* Sets up the singleton instance and initializes the inventory panel state.    */
@@ -101,7 +107,13 @@ public class InventoryManager : MonoBehaviour {
       else
          ResourceWindowTemplate.gameObject.SetActive(false);
 
-      if(CraftWindowTemplate == null)
+      if (CraftTemplate == null || CraftContainer == null) 
+      {
+         Debug.LogError("CraftTemplate or CraftContainer is not assigned in the Inspector in InventoryManager!", this);
+         return;
+      }
+
+      if (CraftWindowTemplate == null)
          Debug.LogError("Craft window templateis not assigned in the Inspector");
       else
          CraftWindowTemplate.gameObject.SetActive(false);
@@ -121,24 +133,22 @@ public class InventoryManager : MonoBehaviour {
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
    private void Start() 
    {
-      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), "Pearl", PEARL_POSITION, "Pearl");
-      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), "Crystal", CRYSTAL_POSITION, "Crystal");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, "Pearl");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, "Crystal");
 
-      CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), "CrudeTool", CRUDE_TOOL_POSITION, "Crude Tool");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", REFINED_TOOL_POSITION, "Refined Tool");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Artifact), "Artifact", ARTIFACT_POSITION, "Artifact");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), REFINED_TOOL_POSITION, "Refined Tool");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Artifact), ARTIFACT_POSITION, "Artifact");
    }
    
    /* Creates and positions a resource display element in the inventory panel.     */
-   private void CreateResource(Sprite resourceSprite, string resourceName,          
-                                float positionIndex,  string resourceTag)           
+   private void CreateResource(Sprite resourceSprite, float positionIndex,  string resourceTag)           
    {                                                                                
       /* The initial count of the resource to display.                             */
-      int resourceCount;
-      Button resourceButton;
-      Transform ResourceTransform;
-      RectTransform ResourceRectTransform;
-
+      int           resourceCount;
+      Button        resourceWindowButton;
+      Transform     resourceTransform;
+      RectTransform resourceRectTransform;
 
       switch (resourceTag) 
       {
@@ -149,51 +159,51 @@ public class InventoryManager : MonoBehaviour {
             resourceCount = crystalCount;
             break;
          default:
+            Debug.LogError("Unknown resource tag: " + resourceTag);
             resourceCount = 0;
             break;
       }
         
-      /* Instantiate the template and set its position in the container.
+      /* Instantiate the resource template and set its position in the container   */
       /* Transform of the newly created resource UI element.                       */
-      ResourceTransform = Instantiate(ResourceTemplate, ResourceContainer);
+      resourceTransform = Instantiate(ResourceTemplate, ResourceContainer);
       
-     /* RectTransform for positioning the new resource UI element.                 */
-     ResourceRectTransform = ResourceTransform.GetComponent<RectTransform>();
+      /* RectTransform for positioning the new resource UI element.                */
+      resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
       
-      ResourceTransform.tag = resourceTag;
+      resourceTransform.tag = resourceTag;
    
-     /* Places the new resource entry in a horizontal row inside the inventory     */
-     ResourceRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
-   
-     /* Populate the resource count text and Image components with item-specific   */
-     /* data                                                                       */
-      ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
-      resourceButton = ResourceTransform.Find("ResourceButton").GetComponent<Button>();
+      /* Places the new resource entry in a horizontal row inside the inventory    */
+      resourceRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
+      
+      /* Populate the resource components with item-specific data                  */
+      resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
+      resourceWindowButton = resourceTransform.Find("ResourceButton").GetComponent<Button>();
+      resourceWindowButton.image.sprite = resourceSprite;
+      
+      resourceWindowButton.onClick.AddListener(() => CreateResourceWindow(resourceSprite, resourceTag));
 
-     resourceButton.image.sprite = resourceSprite;
-     resourceButton.onClick.AddListener(() => CreateResourceWindow(resourceSprite, resourceTag));
-
-     switch (resourceTag) 
-     { 
-         case "Pearl":
-            PearlCountText   = ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
-            break;
-         case "Crystal":
-            CrystalCountText = ResourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
-            break;
-         default:
+      switch (resourceTag) 
+      { 
+          case "Pearl":
+             PearlCountText   = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+             break;
+          case "Crystal":
+             CrystalCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+             break;
+          default:
+            Debug.LogError("Unknown resource tag: " + resourceTag);
             break;
       }
 
-      ResourceTransform.gameObject.SetActive(true);
+      resourceTransform.gameObject.SetActive(true);
    }
 
-   private void CreateCraft(Sprite craftSprite,   string craftName,          
-                             float positionIndex, string craftTag)           
+   private void CreateCraft(Sprite craftSprite, float positionIndex, string craftTag)           
    {                                                                                
-      /* The initial count of the crafts to display.                             */
-      int craftCount;
-      
+      int    craftCount;
+      Button craftWindowButton;
+
       switch (craftTag) 
       {
          case "Crude Tool":
@@ -210,33 +220,25 @@ public class InventoryManager : MonoBehaviour {
             break;
       }
 
-      if (CraftTemplate == null || CraftContainer == null) {
-         Debug.LogError("CraftTemplate or CraftContainer is not assigned in the Inspector in InventoryManager!", this);
-         return; // Exit the method to avoid NullReferenceException
-      }
-
-      /* Instantiate the template and set its position in the container.
+      /* Instantiate the craft template and set its position in the container.     */
       /* Transform of the newly created resource UI element.                       */
       Transform craftTransform = Instantiate(CraftTemplate, CraftContainer);
       
-     /* RectTransform for positioning the new resource UI element.                 */
-      RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
-      
+      /* RectTransform for positioning the new resource UI element.                 */
+       RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
+       
       craftTransform.tag = craftTag;
-   
-     /* Places the new resource entry in a horizontal row inside the inventory     */
-     craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
-   
-     /* Populate the resource count text and Image components with item-specific   */
-     /* data                                                                       */
-     Button craftButton = craftTransform.Find("CraftButton").GetComponent<Button>();
-
-      craftButton.image.sprite = craftSprite;
-
-      craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
       
-     switch (craftTag)
-     { 
+      /* Places the new resource entry in a horizontal row inside the inventory     */
+      craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
+      
+      /* Populate the resource components with item-specific data                   */
+      craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
+      craftWindowButton = craftTransform.Find("CraftButton").GetComponent<Button>();
+      craftWindowButton.image.sprite = craftSprite;
+     
+      switch (craftTag)
+      { 
          case "Crude tool":
             CrudeToolCountText   = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
@@ -250,18 +252,24 @@ public class InventoryManager : MonoBehaviour {
             break;
       }
 
-      craftButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); } );
+      /* Dynamically add listeners to the buttons, which creates the craft window  */
+      craftWindowButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); } );
+     
       craftTransform.gameObject.SetActive(true);
    }
 
-   private void CreateResourceWindow(Sprite resourceSprite, string resourceTag) {
-      int resourceCount   = 0;
-      string resourceInfo = "";
+   private void CreateResourceWindow(Sprite resourceSprite, string resourceTag) 
+   {
+      int    resourceCount = 0;
+      string resourceInfo  = "";
 
-      Transform     resourceTransform     = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
+      /* Instantiate the resource template and set its position in the container.  */
+      /* Transform of the newly created resource UI element.                       */
+      Transform resourceTransform         = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
       RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
 
-      if (currentResource != null) {
+      if (currentResource != null) 
+      {
          Destroy(currentResource.gameObject);
          currentResource = null;
       }
@@ -271,11 +279,11 @@ public class InventoryManager : MonoBehaviour {
       switch (resourceTag) {
          case "Pearl":
             resourceCount = pearlCount;
-            resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Pearl);
+            resourceInfo  = Resources.GetResourceDescription(Resources.ResourceType.Pearl);
             break;
          case "Crystal":
             resourceCount = crystalCount;
-            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
+            resourceInfo  = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
             break;
          default: 
             Debug.Log("Unknown item tag for resource window.");
@@ -293,11 +301,14 @@ public class InventoryManager : MonoBehaviour {
       ShowResourceWindow();
    }
 
-   private void CreateCraftWindow(Sprite crafteSprite, string craftTag) {
-      int craftCount = 0;
-      string craftInfo = "";
+   private void CreateCraftWindow(Sprite crafteSprite, string craftTag) 
+   {
+      int    craftCount = 0;
+      string craftInfo  = "";
 
-      Transform craftTransform = Instantiate(CraftWindowTemplate, CraftWindowContainer);
+      /* Instantiate the resource template and set its position in the container.  */
+      /* Transform of the newly created resource UI element.                       */
+      Transform craftTransform     = Instantiate(CraftWindowTemplate, CraftWindowContainer);
       RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
 
       if (currentCraft != null) {
@@ -307,36 +318,36 @@ public class InventoryManager : MonoBehaviour {
 
       craftTransform.tag = craftTag;
 
-      switch (craftTag) {
+      switch (craftTag) 
+      {
          case "Crude Tool":
             craftCount = pearlCount;
-            craftInfo = Item.GetItemDescription(Item.ItemType.CrudeTool);
+            craftInfo  = Item.GetItemDescription(Item.ItemType.CrudeTool);
             break;
          case "Refined Tool":
             craftCount = crystalCount;
-            craftInfo = Item.GetItemDescription(Item.ItemType.RefinedTool);
+            craftInfo  = Item.GetItemDescription(Item.ItemType.RefinedTool);
             break;
          case "Artifact":
             craftCount = artifactCount;
-            craftInfo = Item.GetItemDescription(Item.ItemType.Artifact);
+            craftInfo  = Item.GetItemDescription(Item.ItemType.Artifact);
             break;
          default:
             Debug.Log("Unknown item tag for resource window.");
             break;
       }
 
-      // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
-      craftTransform.Find("CraftImage").GetComponent<Image>().sprite = crafteSprite;
+      /* Populate craft components with item-specific data (value, name, sprite).  */
+      craftTransform.Find("CraftImage").GetComponent<Image>().sprite         = crafteSprite;
       craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = "  x" + craftCount.ToString();
-      craftTransform.Find("CraftName").GetComponent<TextMeshProUGUI>().text = craftTag;
-      craftTransform.Find("CraftInfo").GetComponent<TextMeshProUGUI>().text = craftInfo;
+      craftTransform.Find("CraftName").GetComponent<TextMeshProUGUI>().text  = craftTag;
+      craftTransform.Find("CraftInfo").GetComponent<TextMeshProUGUI>().text  = craftInfo;
 
       currentCraft = craftTransform;
       craftTransform.gameObject.SetActive(true);
       ShowCraftWindow();
    }
 
-   /* Attempts to add the specified amount of pearls to the player's count.        */
    public void TryAddPearl(int pearlAmount)
    {
       if (pearlCount > MAX_PEARL_COUNT) 
@@ -356,7 +367,6 @@ public class InventoryManager : MonoBehaviour {
       return;
    }
    
-   /* Attempts to deduct the specified amount of pearls from the player's count.   */
    public void TrySpendPearl(int pearlAmount) 
    {
       if (pearlCount <= MIN_PEARL_COUNT)
@@ -379,8 +389,6 @@ public class InventoryManager : MonoBehaviour {
       return;
    }
    
-   
-   /* Attempts to add the specified amount of crystals to the player's count.      */
    public void TryAddCrystal(int crystalAmount) 
    {
       if (crystalCount > MAX_CRYSTAL_COUNT) 
@@ -400,7 +408,6 @@ public class InventoryManager : MonoBehaviour {
       return;
    }
    
-   /* Attempts to deduct the specified amount of crystals from the player's count. */
    public void TrySpendCrystal(int crystalAmount) 
    {
       if (crystalCount < MIN_CRYSTAL_COUNT) 
@@ -423,65 +430,63 @@ public class InventoryManager : MonoBehaviour {
       return;
    }
    
-   /* Displays the inventory panel to the user.                                    */
-   public void ActivateInventoryPanel() 
+   public void ShowInventoryPanel() 
    {
       InventoryPanel.gameObject.SetActive(true);
       ResourcePanel.gameObject.SetActive(true);
    }
    
-   /* Hides the inventory panel from the user.                                     */
-   public void DeactivateInventoryPanel() 
-   {
-      InventoryPanel.gameObject.SetActive(false);
-
-      if(currentCraft != null) {
-         Destroy(currentCraft.gameObject);
-         currentCraft = null;
-      }
-
-      if(currentResource != null) {
-         Destroy(currentResource.gameObject);
-         currentResource = null;
-      }
-
-      if(ResourceWindow.gameObject.activeSelf)
-         DeactivateResourcePanel(); 
-
-      if(CraftWindow.gameObject.activeSelf)
-         DeactivateCraftsPanel();
-   }
-
-   public void ActivateResourcePanel()
+   public void ShowResourcePanel()
    {
       if(CraftsPanel.gameObject.activeSelf)
-         DeactivateCraftsPanel();
+         CloseCraftsPanel();
 
       ResourcePanel.gameObject.SetActive(true);
    }
-
-   private void DeactivateResourcePanel()
-   {
-      ResourcePanel.gameObject.SetActive(false);
-   }
-
-   public void ActivateCraftsPanel()
-   {
-      if(ResourcePanel.gameObject.activeSelf)
-         DeactivateResourcePanel();
-
-      CraftsPanel.gameObject.SetActive(true);
-   }
-
-   private void DeactivateCraftsPanel()
-   {
-      CraftsPanel.gameObject.SetActive(false);
-   }
-
    private void ShowResourceWindow() {
       ResourceWindow.gameObject.SetActive(true);
    }
    private void ShowCraftWindow() {
       CraftWindow.gameObject.SetActive(true);
+   }
+
+   public void CloseInventoryPanel() 
+   {
+      InventoryPanel.gameObject.SetActive(false);
+
+      if(currentCraft != null) 
+      {
+         Destroy(currentCraft.gameObject);
+         currentCraft = null;
+      }
+
+      if(currentResource != null) 
+      {
+         Destroy(currentResource.gameObject);
+         currentResource = null;
+      }
+
+      if(ResourceWindow.gameObject.activeSelf)
+         CloseResourcePanel(); 
+
+      if(CraftWindow.gameObject.activeSelf)
+         CloseCraftsPanel();
+   }
+   private void CloseResourcePanel()
+   {
+      ResourcePanel.gameObject.SetActive(false);
+   }
+
+   public void ShowCraftsPanel()
+   {
+      if(ResourcePanel.gameObject.activeSelf)
+         CloseResourcePanel();
+
+      CraftsPanel.gameObject.SetActive(true);
+   }
+
+   private void CloseCraftsPanel()
+   {
+      CraftsPanel.gameObject.SetActive(false);
    }
 }
