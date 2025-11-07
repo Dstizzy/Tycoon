@@ -91,7 +91,7 @@ public class TradeHutManager : MonoBehaviour
         /* Creates the individual trade item entries for each craftable item                     */
         CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
         CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
-        CreateItem(Item.GetItemSprite(Item.ItemType.Articfatct), "Artifact", Item.GetItemValue(Item.ItemType.Articfatct), 1.0f, "Artifact");
+        CreateItem(Item.GetItemSprite(Item.ItemType.Artifact), "Artifact", Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
     }
 
     /* Instantiates a new trade item UI element, sets its visual data, and configures its buttons */
@@ -137,7 +137,7 @@ public class TradeHutManager : MonoBehaviour
             totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
 
         if (artifactSellCount > 0)
-            totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Articfatct);
+            totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact);
 
         InventoryManager.Instance.TryAddPearl(totalSellValue);
 
