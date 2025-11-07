@@ -2184,20 +2184,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba70f76e9db6b249bdd9479dfa90b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
+  TradePanels: {fileID: 1113495824}
+  BuyPanel: {fileID: 1296913991}
   BuyItemContainer: {fileID: 1311362404}
   BuyItemTemplate: {fileID: 2127299601}
+  BuyWindow: {fileID: 1401748498}
   BuyWindowContainer: {fileID: 1387172145}
   BuyWindowTemplate: {fileID: 206400520}
+  SellPanel: {fileID: 1024672991}
+  SellItemContainer: {fileID: 460349205}
+  SellItemTemplate: {fileID: 1712966643}
   SellWindow: {fileID: 644685944}
   SellWindowContainer: {fileID: 1958255415}
   SellWindowTemplate: {fileID: 65785624}
-  BuyPanel: {fileID: 1296913991}
-  BuyWindow: {fileID: 1401748498}
   InfoPanel: {fileID: 1779872260}
-  SellItemContainer: {fileID: 460349205}
-  SellItemTemplate: {fileID: 1712966643}
-  SellPanel: {fileID: 1024672991}
-  TradePanels: {fileID: 1113495824}
   UpgradePanel: {fileID: 470639710}
   tradeHutLevelText: {fileID: 587055042}
 --- !u!1 &197960581
@@ -3671,7 +3671,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2135487483}
         m_TargetAssemblyTypeName: InventoryManager, Assembly-CSharp
-        m_MethodName: DeactivateInventoryPanel
+        m_MethodName: CloseInventoryPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9801,7 +9801,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2135487483}
         m_TargetAssemblyTypeName: InventoryManager, Assembly-CSharp
-        m_MethodName: ActivateResourcePanel
+        m_MethodName: ShowResourcePanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11506,7 +11506,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2135487483}
         m_TargetAssemblyTypeName: InventoryManager, Assembly-CSharp
-        m_MethodName: ActivateCraftsPanel
+        m_MethodName: ShowCraftsPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
