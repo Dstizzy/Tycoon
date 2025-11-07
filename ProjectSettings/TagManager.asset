@@ -12,7 +12,9 @@ TagManager:
   - Ore Refinery
   - Forge
   - Exploration Unit
-  - BuildingButtonPopUp
+  - Crystal
+  - Pearl
+  - Sword
   layers:
   - Default
   - TransparentFX
