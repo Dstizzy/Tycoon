@@ -309,7 +309,7 @@ public class TradeHutManager : MonoBehaviour
             {
                refinedToolSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + refinedToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (refinedToolSellCount * Item.GetItemPrice(Item.ItemType.RefinedTool)).ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
             }
             break;
          case "Artifact":
@@ -317,7 +317,7 @@ public class TradeHutManager : MonoBehaviour
             {
                artifactSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + artifactSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemPrice(Item.ItemType.Artifact)).ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
             }
             break;
          default:
