@@ -1533,7 +1533,7 @@ GameObject:
   - component: {fileID: 98411293}
   - component: {fileID: 98411294}
   m_Layer: 5
-  m_Name: productionTab (1)
+  m_Name: 'productionTab '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2593,7 +2593,7 @@ GameObject:
   - component: {fileID: 151103580}
   - component: {fileID: 151103581}
   m_Layer: 5
-  m_Name: commerceTab (1)
+  m_Name: 'commerceTab '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23276,13 +23276,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f1811928929e4e95bb852c98457db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  innovatePanel: {fileID: 0}
+  innovatePanel: {fileID: 100884298}
   infoPanel: {fileID: 1527445483}
-  pathButtons: {fileID: 0}
-  initialTab: {fileID: 0}
-  commerceTab: {fileID: 0}
-  productionTab: {fileID: 0}
-  explorationTab: {fileID: 0}
+  pathButtons: {fileID: 1253363589}
+  initialTab: {fileID: 2006668204}
+  commerceTab: {fileID: 151103579}
+  productionTab: {fileID: 98411292}
+  explorationTab: {fileID: 676949154}
 --- !u!1 &1670546221
 GameObject:
   m_ObjectHideFlags: 0
