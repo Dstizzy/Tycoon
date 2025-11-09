@@ -191,9 +191,9 @@ public class LabManager : MonoBehaviour
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
         {
-            Item.crudeToolPrice   += (Item.crudeToolPrice   * (int).10);
+            /*Item.crudeToolPrice   += (Item.crudeToolPrice   * (int).10);
             Item.refinedToolPrice += (Item.refinedToolPrice * (int).10);
-            Item.artifactPrice    += (Item.artifactPrice    * (int).10);
+            Item.artifactPrice    += (Item.artifactPrice    * (int).10);*/
         }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
