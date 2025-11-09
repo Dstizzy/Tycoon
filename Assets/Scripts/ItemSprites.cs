@@ -24,7 +24,7 @@ public class ItemSprites : MonoBehaviour {
                 return crudeTool;
             case ItemType.RefinedTool:
                 return refinedTool;
-            case ItemType.Articfatct:
+            case ItemType.Artifact:
                 return artifact;
             default:
                 return null;
