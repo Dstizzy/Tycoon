@@ -101,12 +101,12 @@ public class CraftingController : MonoBehaviour
         if (inv.oreCount >= oreCost)
         {
             inv.oreCount -= oreCost;
-            UnityEngine.Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
+            Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
             inv.OnOreCountChanged?.Invoke(inv.oreCount);
         }
         else
         {
-            UnityEngine.Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+            Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
         }
     }
 }

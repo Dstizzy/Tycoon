@@ -1,279 +1,584 @@
-/* Libraries                                                                                     */
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TradeHutManager : MonoBehaviour
+public class TradeHutManager : MonoBehaviour 
 {
-    /* Symbolic Constants                                                                          */
-    const int MIN_SELL_ITEM_COUNT = 0;
-    const int MAX_SELL_ITEM_COUNT = 100;
-    const int TRADE_ITEM_SPACING = 30;
-    const int TRADE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
-    const int STARTING_LEVEL = 1;
-    const int ENDING_LEVEL = 5;
+   /* Inspector variables                                                                             */
+   [SerializeField] private Transform TradePanels;            
+   [SerializeField] private Transform BuyPanel;               
+   [SerializeField] private Transform BuyItemContainer;       
+   [SerializeField] private Transform BuyItemTemplate;        
+   [SerializeField] private Transform BuyWindow;              
+   [SerializeField] private Transform BuyWindowContainer;     
+   [SerializeField] private Transform BuyWindowTemplate;      
+   [SerializeField] private Transform SellPanel;              
+   [SerializeField] private Transform SellItemContainer;              
+   [SerializeField] private Transform SellItemTemplate;       
+   [SerializeField] private Transform SellWindow;
+   [SerializeField] private Transform SellWindowContainer;
+   [SerializeField] private Transform SellWindowTemplate;     
+   [SerializeField] private Transform InfoPanel;                   
+   [SerializeField] private Transform UpgradePanel;           
 
-    /* Inspector Variables                                                                       */
-    public Transform tradeContainer;
-    public Transform tradeItemTemplate;
-    public Transform tradePanel;
-    public Transform infoPanel;
-    public Transform upgradePanel;
+   public TextMeshProUGUI tradeHutLevelText;
 
-    public TextMeshProUGUI tradeHutLevelText;
+   /* Private variables                                                                               */
+   private int artifactSellCount     = 0; 
+   private int crudeToolSellCount    = 0; 
+   private int refinedToolSellCount  = 0; 
+   private int swordBuyCount         = 0;
 
-    /* Public Variables                                                                          */
-    public int crudeToolSellCount   = 0;
-    public        int refinedToolSellCount = 0;
-    public        int artifactSellCount    = 0;
-    public static int tradeHutLevel        = STARTING_LEVEL;
+   /* Transform                                                                                       */
+   private Transform currentBuyItem;      
+   private Transform currentSellItem;
 
-    /* A list to hold references to all the instantiated trade item UI elements.                 */
-    private List<Transform> tradeItems;
+   /* Constants                                                                                       */
+   const int ENDING_LEVEL        = 5;     
+   const int INFO_BUTTON         = 2;     
+   const int MAX_BUY_ITEM_COUNT  = 100;   
+   const int MAX_SELL_ITEM_COUNT = 100;   
+   const int MIN_BUY_ITEM_COUNT  = 0;     
+   const int MIN_SELL_ITEM_COUNT = 0;     
+   const int STARTING_LEVEL      = 1;     
+   const int TRADE_BUTTON        = 1;     
+   const int BUY_ITEM_SPACING    = 30;    
+   const int UPGRADE_BUTTON      = 3;     
 
-    /* Checks for existence of required components and initializes the trade hut UI.             */
-    private void Awake() 
+   public static int tradeHutLevel;
+
+   private void Awake() 
+   {
+      tradeHutLevel = STARTING_LEVEL;
+
+      if (SellItemContainer == null)
+         Debug.LogError("Container is not assigned in the Inspector!");
+
+      if (SellItemTemplate != null)
+         SellItemTemplate.gameObject.SetActive(false);
+
+      if (TradePanels == null)
+         Debug.LogError("Trade Panel is not assigned in the Inspector!");
+      else
+         CloseTradePanel();
+
+      if (InfoPanel == null)
+         Debug.LogError("Info Panel is not assigned in the Inspector!");
+      else
+         CloseInfoPanel();
+
+      if (UpgradePanel == null)
+         Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
+      else
+         CloseUpgradePanel();
+
+      if (tradeHutLevelText != null)
+         tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+      else
+         Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
+
+      if (SellWindow == null)
+         Debug.LogError("Sell window is not assigned in the Inspector");
+      else
+         CloseSellWindow();
+
+      if (SellWindowTemplate == null)
+         Debug.LogError("Sell window template is not assigned in the Inspector");
+      else
+         SellWindowTemplate.gameObject.SetActive(false);
+
+      if (SellPanel == null)
+         Debug.LogError("Sell Panel is not assigned in the Inspector!");
+      else
+         CloseSellPanel();
+
+      if (BuyPanel == null)
+         Debug.LogError("Buy Panel is not assigned in the Inspector!");
+      else
+         CloseBuyPanel();
+
+      if (BuyWindowTemplate == null)
+         Debug.LogError("Buy Item Template is not assigned in the Inspector!");
+      else
+         BuyWindowTemplate.gameObject.SetActive(false);
+
+      if (BuyItemContainer == null)
+         Debug.LogError("Buy Container is not assigned in the Inspector!");
+
+      if (BuyWindow == null)
+         Debug.LogError("Buy Window is not assigned in the Inspector!");
+      else
+         BuyWindow.gameObject.SetActive(false);
+
+      if (BuyItemTemplate == null)
+         Debug.LogError("Buy Item Template is not assigned in the Inspector!");
+      else
+         BuyItemTemplate.gameObject.SetActive(false);
+   }
+
+   private void Start() 
+   {
+      CreateSellItem(Item.GetItemSprite(Item.ItemType.CrudeTool), Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
+      CreateSellItem(Item.GetItemSprite(Item.ItemType.RefinedTool), Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
+      CreateSellItem(Item.GetItemSprite(Item.ItemType.Artifact), Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
+
+      CreateBuyItem(Item.GetItemSprite(Item.ItemType.Sword), Item.GetItemPrice(Item.ItemType.Sword), 0, "Sword");
+   }
+
+   private void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
+   {
+      /* Instantiate the template and set its position in the container                               */
+      Transform     tradeItemTransform     = Instantiate(SellItemTemplate, SellItemContainer);
+      RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+
+      tradeItemTransform.tag = itemTag;
+      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
+
+      /* Populate the the item properties                                                             */
+      tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
+      tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals("Artifact") ? "   Artifact" : itemTag;
+      Button itemButton       = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
+      itemButton.image.sprite = itemSprite;
+
+      /* Dynamically add a listener to the button, which creates a sell window when clicked           */
+      itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, Resources.GetResourceSprite(Resources.ResourceType.Pearl), itemValue, itemTag));
+
+      tradeItemTransform.gameObject.SetActive(true);
+   }
+
+   private void CreateBuyItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
+   {
+      /* Instantiate the template and set its position in the container                               */
+      Transform     tradeItemTransform     = Instantiate(BuyItemTemplate, BuyItemContainer);
+      RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+
+      tradeItemTransform.tag = itemTag;
+
+      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);     
+
+      /* Populate the item properties                                                                 */
+      tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
+      Button itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
+
+      itemButton.image.sprite = itemSprite;
+
+      /* Dynamically add a listener to the button, which creates the buy window                       */
+      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, Resources.GetResourceSprite(Resources.ResourceType.Pearl), itemValue, itemTag));
+
+      tradeItemTransform.gameObject.SetActive(true);
+   }
+
+   /* Creates and populates the single buy transaction window                                         */
+   private void CreateBuyWindow(Sprite itemSprite, Sprite currencySprite, int itemValue, string itemTag) 
+   {
+      int itemCount = 0;
+
+      /* Destroy the previously opened buy window instance before creating a new one                  */
+      if (currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
+
+      Transform     buyItemTransfrom              = Instantiate(BuyWindowTemplate, BuyWindowContainer);
+      RectTransform buyItemTransfromRectTransform = buyItemTransfrom.GetComponent<RectTransform>();
+
+      buyItemTransfrom.tag = itemTag;
+
+      buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
+
+      /* Populate item properties                                                                     */
+      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
+      buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
+      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
+      buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+
+      /* Get references to the increase and decrease buttons                                          */
+      Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
+      Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
+
+      /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
+      increaseButton.onClick.AddListener(() => OnClickIncreaseBuyItemsCount(buyItemTransfrom));
+      decreaseButton.onClick.AddListener(() => OnClickDecreaseBuyItemsCount(buyItemTransfrom));
+
+      /* Store the reference to the newly created buy window instance                                 */
+      currentBuyItem = buyItemTransfrom;
+      buyItemTransfrom.gameObject.SetActive(true);
+      ShowBuyWindow();
+   }
+
+   /* Creates and populates the single sell transaction window                                        */
+   private void CreateSellWindow(Sprite itemSprite, Sprite currencySprite, int itemValue, string itemTag) 
+   {
+      int itemCount = 0;
+
+      /* Destroy the previously opened sell window instance before creating a new one                 */
+      if (currentSellItem != null) 
+      {
+         Destroy(currentSellItem.gameObject);
+         currentSellItem = null;
+      }
+
+      Transform     sellItemTransform     = Instantiate(SellWindowTemplate, SellWindowContainer);
+      RectTransform sellItemRectTransform = sellItemTransform.GetComponent<RectTransform>();
+
+      sellItemTransform.tag = itemTag;
+
+      sellItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
+
+      /* Populate item properties                                                                     */
+      sellItemTransform.Find("ItemImage").GetComponent<Image>().sprite              = itemSprite;
+      sellItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + itemCount.ToString();
+      sellItemTransform.Find("currencyIcon").GetComponent<Image>().sprite           = currencySprite;
+      sellItemTransform.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = "0";
+
+      /* Get references to the increase and decrease buttons                                          */
+      Button increaseButton = sellItemTransform.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
+      Button decreaseButton = sellItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
+
+      /* Dynamically add listeners to the buttons, increasing or decreasing the sell items            */
+      increaseButton.onClick.AddListener(() => OnClickIncreaseSellItemButton(sellItemTransform));
+      decreaseButton.onClick.AddListener(() => OnClickDecreaseSellItemButton(sellItemTransform));
+
+      /* Store the reference to the newly created sell window instance                                */
+      currentSellItem = sellItemTransform;
+      sellItemTransform.gameObject.SetActive(true);
+      ShowSellWindow();
+   }
+
+   /* Executes the sell transaction                                                                   */
+   public void SellItem() 
+   {
+      int totalSellValue = 0;
+
+      if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
+         totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
+
+      if (refinedToolSellCount > MIN_SELL_ITEM_COUNT)
+         totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
+
+      if (artifactSellCount > MIN_SELL_ITEM_COUNT)
+         totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact);
+
+      crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
+      refinedToolSellCount = MIN_SELL_ITEM_COUNT;
+      artifactSellCount    = MIN_SELL_ITEM_COUNT;
+
+      /* Destroy the instantiated sell window and remove the reference                                */
+      Destroy(currentSellItem.gameObject);
+      currentSellItem = null;
+
+      InventoryManager.Instance.TryAddPearl(totalSellValue);
+
+      CloseSellWindow();
+
+      return;
+   }
+
+   /* Executes the buy transaction                                                                    */
+   public void BuyItem() 
+   {
+      if (swordBuyCount > MIN_BUY_ITEM_COUNT)
+         InventoryManager.Instance.TrySpendPearl(swordBuyCount * Item.GetItemValue(Item.ItemType.Sword));
+
+      swordBuyCount = MIN_BUY_ITEM_COUNT;
+
+      Destroy(currentBuyItem.gameObject);
+      currentBuyItem = null;
+
+      CloseBuyWindow();
+
+      return;
+   }
+
+   /* Increments the count for the item being sold and updates the UI                                 */
+   public void OnClickIncreaseSellItemButton(Transform item) 
+   {
+      switch (item.tag) 
+      {
+         case "Crude Tool":
+            if (crudeToolSellCount < MAX_SELL_ITEM_COUNT) 
+            {
+               crudeToolSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool)).ToString();
+            }
+            break;
+         case "Refined Tool":
+            if (refinedToolSellCount < MAX_SELL_ITEM_COUNT) 
+            {
+               refinedToolSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + refinedToolSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
+            }
+            break;
+         case "Artifact":
+            if (artifactSellCount < MAX_SELL_ITEM_COUNT) 
+            {
+               artifactSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + artifactSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
+            }
+            break;
+         default:
+            Debug.Log("Unknown item tag: " + item.tag);
+            break;
+      }
+   }
+
+   /* Decrements the count for the item being sold and updates the UI                                 */
+   public void OnClickDecreaseSellItemButton(Transform item) 
+   {
+      switch (item.tag) {
+         case "Crude Tool":
+            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) {
+               crudeToolSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + crudeToolSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool)).ToString();
+            }
+            break;
+         case "Refined Tool":
+            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) {
+               refinedToolSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + refinedToolSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
+            }
+            break;
+         case "Artifact":
+            if (artifactSellCount > MIN_SELL_ITEM_COUNT) {
+               artifactSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + artifactSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
+            }
+            break;
+         default:
+            Debug.Log("Unknown item tag: " + item.tag);
+            break;
+      }
+   }
+
+   /* Increments the count for the item being bought and updates the UI                               */
+   public void OnClickIncreaseBuyItemsCount(Transform item) {
+      switch (item.tag) 
+      {
+         case "Sword":
+            if (swordBuyCount < MAX_BUY_ITEM_COUNT) 
+            {
+               swordBuyCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + swordBuyCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (swordBuyCount * Item.GetItemPrice(Item.ItemType.Sword)).ToString();
+            }
+            break;
+         default:
+            Debug.Log("Unknown item tag: " + item.tag);
+            break;
+      }
+   }
+
+   /* Decrements the count for the item being bought and updates the UI                               */
+   public void OnClickDecreaseBuyItemsCount(Transform item) 
+   {
+      switch (item.tag) 
+      {
+         case "Sword":
+            if (swordBuyCount > MIN_BUY_ITEM_COUNT) 
+            {
+               swordBuyCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + swordBuyCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (swordBuyCount * Item.GetItemPrice(Item.ItemType.Sword)).ToString();
+            }
+            break;
+         default:
+            Debug.Log("Unknown item tag: " + item.tag);
+            break;
+      }
+   }
+
+   /* Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel           */
+   public void RequestTradeHutPanel(int buttonID) 
+   {
+      switch (buttonID) 
+      {
+         case TRADE_BUTTON:
+            ShowTradePanel();
+            SellWindow.Find("SellButton").GetComponent<Button>().onClick.AddListener(() => SellItem());
+            BuyWindow.Find("BuyButton").GetComponent<Button>().onClick.AddListener(() => BuyItem());
+            TradePanels.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
+            break;
+         case INFO_BUTTON:
+            ShowInfoPanel();
+            InfoPanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
+            break;
+         case UPGRADE_BUTTON:
+            ShowUpgradePanel();
+            UpgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
+            UpgradePanel.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
+            break;
+         default:
+            Debug.Log("Building Panel: Unknown button ID.");
+            break;
+      }
+   }
+
+   /* Increments the trade hut level                                                                  */
+   private void UpgradeTradeHut() 
+   {
+      if (tradeHutLevel < ENDING_LEVEL)
+         tradeHutLevel += 1;
+      else
+         Debug.Log("Trade Hut is already at max level.");
+
+      tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
+
+      UpgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      UpgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
+      CloseUpgradePanel();
+      PopUpManager.Instance.EnablePlayerInput();
+   }
+
+   /* Closes the panel corresponding to the button ID                                                 */
+   public void CloseTradeHutPanel(int buttonID)    
+   {
+      switch (buttonID) 
+      {
+         case TRADE_BUTTON:
+            CloseTradePanel();
+            break;
+         case INFO_BUTTON:
+            CloseInfoPanel();
+            break;
+         case UPGRADE_BUTTON:
+            CloseUpgradePanel();
+            break;
+         default:
+            Debug.Log("Building Panel: Unknown button ID.");
+            break;
+      }
+      PopUpManager.Instance.EnablePlayerInput();
+   }
+
+   private void ShowTradePanel() 
+   {
+      TradePanels.gameObject.SetActive(true);
+      ShowSellPanel();
+   }
+
+   private void ShowInfoPanel() 
+   {
+      InfoPanel.gameObject.SetActive(true);
+   }
+
+   private void ShowUpgradePanel() 
+   {
+      UpgradePanel.gameObject.SetActive(true);
+   }
+
+   public void ShowSellPanel() 
+   {
+      if (BuyPanel.gameObject.activeSelf) 
+      {
+         if (BuyWindow.gameObject.activeSelf)
+            CloseBuyWindow();
+
+         CloseBuyPanel();
+      }
+
+      /* Destroy the instantiated buy item/window instance if it exists                               */
+      if (currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
+      SellPanel.gameObject.SetActive(true);
+   }
+
+   public void ShowBuyPanel() 
+   {
+      if (SellPanel.gameObject.activeSelf) 
+      {
+         if (SellWindow.gameObject.activeSelf)
+            CloseSellWindow();
+
+         CloseSellPanel();
+      }
+
+      /* Destroy the instantiated sell item/window instance if it exists                              */
+      if (currentSellItem != null) 
+      {
+         Destroy(currentSellItem.gameObject);
+         currentSellItem = null;
+      }
+      BuyPanel.gameObject.SetActive(true);
+   }
+
+   public void ShowBuyWindow() 
     {
-        tradeItems = new();
+      BuyWindow.gameObject.SetActive(true);
+   }
 
-        if (tradeContainer == null) 
-        {
-            Debug.LogError("Container is not assigned in the Inspector!");
-        }
+   public void ShowSellWindow() 
+   {
+      SellWindow.gameObject.SetActive(true);
+   }
 
-        if (tradeItemTemplate != null) 
-        {
-            tradeItemTemplate.gameObject.SetActive(false);
-        }
+   private void CloseTradePanel() 
+   {
+      TradePanels.gameObject.SetActive(false);
 
-        if (tradePanel == null) 
-        {
-            Debug.LogError("Trade Panel is not assigned in the Inspector!");
-        } 
-        else 
-        {
-            tradePanel.gameObject.SetActive(false);
-        }
+      /* Destroy the instantiated sell item/window instance if it exists                              */
+      if (currentSellItem != null) 
+      {
+         Destroy(currentSellItem.gameObject);
+         currentSellItem = null;
+      }
 
-        if (infoPanel == null) {
-            Debug.LogError("Info Panel is not assigned in the Inspector!");
-        } 
-        else 
-        {
-            infoPanel.gameObject.SetActive(false);
-        }
+      /* Destroy the instantiated buy item/window instance if it exists                               */
+      if (currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
 
-        if (upgradePanel == null) 
-        {
-            Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
-        } 
-        else 
-        {
-            upgradePanel.gameObject.SetActive(false);
-        }
+      crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
+      refinedToolSellCount = MIN_SELL_ITEM_COUNT;
+      artifactSellCount    = MIN_SELL_ITEM_COUNT;
+      swordBuyCount        = MIN_BUY_ITEM_COUNT;
 
-        if (tradeHutLevelText != null) 
-        {
-            tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-        } 
-        else 
-        {
-            Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
-        }
-    }
+      if (SellWindow.gameObject.activeSelf)
+         CloseSellWindow();
 
+      if (BuyWindow.gameObject.activeSelf)
+         CloseBuyWindow();
+   }
 
-    private void Start() 
-    {
-        /* Creates the individual trade item entries for each craftable item                     */
-        CreateItem(Item.GetItemSprite(Item.ItemType.CrudeTool), "Crude Tool", Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
-        CreateItem(Item.GetItemSprite(Item.ItemType.RefinedTool), "Refined Tool", Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
-        CreateItem(Item.GetItemSprite(Item.ItemType.Artifact), "Artifact", Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
-    }
+   private void CloseInfoPanel() 
+   {
+      InfoPanel.gameObject.SetActive(false);
+   }
 
-    /* Instantiates a new trade item UI element, sets its visual data, and configures its buttons */
-    private void CreateItem(Sprite itemSprite, string itemName, int itemvalue, float positionIndex, string ItemTag) 
-    {
-        int itemCount = 0; /* Count of items to sell                                             */
+   private void CloseUpgradePanel() 
+   {
+      UpgradePanel.gameObject.SetActive(false);
+   }
 
-        /* Instantiate the template and set its position in the container.                       */
-        Transform tradeItemTransform = Instantiate(tradeItemTemplate, tradeContainer);
-        RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+   private void CloseSellPanel() 
+   {
+      SellPanel.gameObject.SetActive(false);
+   }
 
-        tradeItemTransform.tag = ItemTag;
+   private void CloseBuyPanel() 
+   {
+      BuyPanel.gameObject.SetActive(false);
+   }
 
-        tradeItemRectTransform.anchoredPosition = new Vector2(TRADE_ITEM_SPACING * positionIndex, 0);
+   private void CloseSellWindow() 
+   {
+      SellWindow.gameObject?.SetActive(false);
+   }
 
-        /* Populate the TextMeshPro and Image components with item-specific data.                */
-        tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemvalue.ToString();
-        tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemName.Equals("Artifact") ? "    Artifact" : itemName;
-        tradeItemTransform.Find("ItemImage").GetComponent<Image>().sprite         = itemSprite;
-        tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + itemCount.ToString();
-
-        /* Get references to the increase and decrease buttons.                                  */
-        Button increaseButton = tradeItemTransform.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
-        Button decreaseButton = tradeItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
-
-        /* Dynamically add listeners to the buttons, passing the specific item's Transform.      */
-        /* This ensures the button click only affects its corresponding item entry.              */
-        increaseButton.onClick.AddListener(() => OnClickIncreaseButton(tradeItemTransform));
-        decreaseButton.onClick.AddListener(() => OnClickDecreaseButton(tradeItemTransform));
-
-        tradeItemTransform.gameObject.SetActive(true);
-        tradeItems.Add(tradeItemTransform);
-    }
-
-    public void SellItem() 
-    {
-        int totalSellValue = 0; /* Total value of items to be sold.                              */
-
-        if (crudeToolSellCount > 0)
-            totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
-
-        if (refinedToolSellCount > 0)
-            totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
-
-        if (artifactSellCount > 0)
-            totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact);
-
-        InventoryManager.Instance.TryAddPearl(totalSellValue);
-
-        return;
-    }
-
-    public void OnClickIncreaseButton(Transform Item) 
-     {
-        /* Uses the item's Tag to determine which counter variable to update.                    */
-        switch (Item.tag) {
-            case "Crude Tool":
-                // Check against the maximum selling limit before incrementing.
-                if (crudeToolSellCount < MAX_SELL_ITEM_COUNT) {
-                    crudeToolSellCount += 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolSellCount.ToString();
-                }
-                break;
-            case "Refined Tool":
-                if (refinedToolSellCount < MAX_SELL_ITEM_COUNT) {
-                    refinedToolSellCount += 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolSellCount.ToString();
-                }
-                break;
-            case "Artifact":
-                if (artifactSellCount < MAX_SELL_ITEM_COUNT) {
-                    artifactSellCount += 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactSellCount.ToString();
-                }
-                break;
-            default:
-                Debug.Log("Unknown item tag: " + Item.tag);
-                break;
-        }
-    }
-
-    public void OnClickDecreaseButton(Transform Item) {
-        // Uses the item's Tag to determine which counter variable to update.
-        switch (Item.tag) {
-            case "Crude Tool":
-                // Check against the minimum selling limit (0) before decrementing.
-                if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) {
-                    crudeToolSellCount -= 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + crudeToolSellCount.ToString();
-                }
-                break;
-            case "Refined Tool":
-                if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) {
-                    refinedToolSellCount -= 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + refinedToolSellCount.ToString();
-                }
-                break;
-            case "Artifact":
-                if (artifactSellCount > MIN_SELL_ITEM_COUNT) {
-                    artifactSellCount -= 1;
-                    Item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "  " + artifactSellCount.ToString();
-                }
-                break;
-            default:
-                Debug.Log("Unknown item tag: " + Item.tag);
-                break;
-        }
-    }
-
-    public void RequestTradeHutPanel(int buttonID) {
-        switch (buttonID) {
-            case TRADE_BUTTON:
-                ShowTradePanel();
-                tradePanel.Find("SellButton").GetComponent<Button>().onClick.AddListener(() => SellItem());
-                tradePanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
-                break;
-            case INFO_BUTTON:
-                ShowInfoPanel();
-                infoPanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
-                break;
-            case UPGRADE_BUTTON:
-                ShowUpgradePanel();
-                upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
-                upgradePanel.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
-                break;
-            default:
-                Debug.Log("Building Panel: Unknown button ID.");
-                break;
-        }
-    }
-
-    private void UpgradeTradeHut() {
-        // Check if the trade hut can be upgraded
-        if (tradeHutLevel < ENDING_LEVEL)
-            tradeHutLevel += 1;
-        else
-            Debug.Log("Trade Hut is already at max level.");
-
-        tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-
-        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
-        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
-
-        //Close the upgrade panel after upgrading
-        CloseUpgradePanel();
-        PopUpManager.Instance.EnablePlayerInput();
-    }
-
-    public void CloseTradeHutPanel(int buttonID) {
-        switch (buttonID) {
-            case TRADE_BUTTON:
-                CloseTradePanel();
-                break;
-            case INFO_BUTTON:
-                CloseInfoPanel();
-                break;
-            case UPGRADE_BUTTON:
-                CloseUpgradePanel();
-                Debug.Log("Building Panel: Info requested.");
-                break;
-            default:
-                Debug.Log("Building Panel: Unknown button ID.");
-                break;
-        }
-        PopUpManager.Instance.EnablePlayerInput();
-    }
-    private void ShowTradePanel() {
-        tradePanel.gameObject.SetActive(true);
-    }
-    private void ShowInfoPanel() {
-        infoPanel.gameObject.SetActive(true);
-    }
-    private void ShowUpgradePanel() {
-        upgradePanel.gameObject.SetActive(true);
-    }
-    private void CloseTradePanel() {
-        tradePanel.gameObject.SetActive(false);
-    }
-    private void CloseInfoPanel() {
-        infoPanel.gameObject.SetActive(false);
-    }
-    private void CloseUpgradePanel() {
-        upgradePanel.gameObject.SetActive(false);
-    }
+   private void CloseBuyWindow() 
+   {
+      BuyWindow.gameObject?.SetActive(false);
+   }
 }
