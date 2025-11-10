@@ -134,6 +134,7 @@ public class LabManager : MonoBehaviour
     {
         initialTab.gameObject.SetActive(false);
         tab.gameObject.SetActive(true);
+        /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
         tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
         tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
@@ -284,6 +285,16 @@ public class LabManager : MonoBehaviour
     /* Close the info panel                                                                      */
     private void CloseInfoPanel() {
         infoPanel.gameObject.SetActive(false);
+    }
+
+    private void OnMouseEnter()
+    {
+        
+    }
+
+    private void OnMouseLeave()
+    {
+
     }
 
 }
