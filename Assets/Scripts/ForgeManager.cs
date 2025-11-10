@@ -71,6 +71,10 @@ public class ForgeManager : MonoBehaviour {
         }
 
         forgeLevelText.text = "Level " + forgeLevel.ToString();
+
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();

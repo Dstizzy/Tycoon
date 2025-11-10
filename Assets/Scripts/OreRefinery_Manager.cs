@@ -23,7 +23,7 @@ public class OreRefinery_Manager : MonoBehaviour {
             infoPanel.gameObject.SetActive(false);
         }
 
-        if(oreRefineryText == null) {
+        if (oreRefineryText == null) {
             Debug.LogError("Ore Refinery Level Text is not assigned");
         } else {
             oreRefineryText.text = "Level " + oreLevel.ToString();
@@ -50,25 +50,23 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
     }
 
-    public void UpgradeOreRefinory()
-    {
+    public void UpgradeOreRefinory() {
         // Check if the ore refinery can be upgraded
-        if (oreLevel < ENDING_LEVEL)
-        {
+        if (oreLevel < ENDING_LEVEL) {
             oreLevel += 1;
-        }
-        else
-        {
+        } else {
             Debug.Log("Ore Refinery is already at max level.");
         }
 
         oreRefineryText.text = "Level " + oreLevel.ToString();
+
+        upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+
         // Close the upgrade panel after upgrading
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();
     }
-
-    public int GetLevel() { return oreLevel; }
 
     public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) {

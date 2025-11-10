@@ -2,7 +2,6 @@ using NUnit.Framework.Constraints;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,33 +12,25 @@ public class PopUpManager : MonoBehaviour
     [SerializeField] private GameObject[] buildingButtonsPreFab;
     [SerializeField] private Camera cam;
     [SerializeField] private TradeHutManager tradeHutManager;
-    [SerializeField] private ExplorationUnitManager explortionUnitManager;
+    [SerializeField] private ExplorationUnitManager explorationUnitManager;
     [SerializeField] private OreRefinery_Manager oreRefineryManager;
     [SerializeField] private ForgeManager forgeManager;
     [SerializeField] private LabManager labManager;
 
-    private List<GameObject> popUps;
-    private PlayerActions playerActions;
-    private List<RaycastResult> raycastResults = new List<RaycastResult>();
+    private       List<GameObject>    popUps;
+    private       PlayerActions       playerActions;
+    private       List<RaycastResult> raycastResults = new List<RaycastResult>();
     public static Transform buildingTransform;
-    public TextMeshProUGUI TradeHutLevelText;
-    public TextMeshProUGUI OreLevelText;
-    public TextMeshProUGUI ExplorationLevelText;
-    public TextMeshProUGUI ForgeLevelText;
-
-
 
     public static PopUpManager Instance { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null)
-        {
+        if (Instance != null && Instance != this) {
+            Destroy(this.gameObject);
+        } else {
             Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+            DontDestroyOnLoad(this.gameObject);
         }
 
         playerActions = new PlayerActions();
@@ -108,7 +99,6 @@ public class PopUpManager : MonoBehaviour
 
             GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
-
             popUps.Add(newButton);
 
             string uniqueButtonName = buildingTransform.tag switch
@@ -138,32 +128,6 @@ public class PopUpManager : MonoBehaviour
         }
     }
 
-    public void ActivateBuildingText(Transform buildingTransform)
-    {
-        /*switch (buildingTransform.tag)
-        {
-            case "Trade Hut":
-                TradeHutLevelText.text = "Trade Hut Level: " + tradeHutManager.GetLevel();
-                TradeHutLevelText.gameObject.SetActive(true);
-                break;
-            case "Ore Refinory":
-                OreLevelText.text = "Ore Refinery Level: " + oreRefineryManager.GetLevel();
-                OreLevelText.gameObject.SetActive(true);
-                break;
-            case "Exploration Unit":
-                ExplorationLevelText.text = "Exploration Unit Level: " + explortionUnitManager.GetLevel();
-                ExplorationLevelText.gameObject.SetActive(true);
-                break;
-            case "Forge":
-                ForgeLevelText.text = "Forge Level: " + forgeManager.GetLevel();
-                ForgeLevelText.gameObject.SetActive(true);
-                break;
-            default:
-                Debug.Log("Building has no text");
-                break;
-        };*/
-    }
-
     public void OnBuildingButtonClick(int buttonId)
     {
         switch (buildingTransform.tag)
@@ -181,7 +145,7 @@ public class PopUpManager : MonoBehaviour
                 oreRefineryManager.RequestOreRefinoryPanel(buttonId);
                 break;
             case "Exploration Unit":
-                explortionUnitManager.RequestExplorationUnitPanel(buttonId);
+                explorationUnitManager.RequestExplorationUnitPanel(buttonId);
                 break;
             default:
                 Debug.Log("Building Panel: Unknown building type.");
