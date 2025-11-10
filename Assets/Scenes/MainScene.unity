@@ -1781,7 +1781,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -7, y: 0}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &191839099
@@ -1816,7 +1816,7 @@ MonoBehaviour:
     m_Top: 30
     m_Bottom: 20
   m_ChildAlignment: 1
-  m_Spacing: 4
+  m_Spacing: 2
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -2631,36 +2631,48 @@ MonoBehaviour:
   levelTwoBoat: {fileID: 1448946466}
   levelThreeBoat: {fileID: 806409090}
   possibleRewards:
-  - rewardName: '  Artifact'
-    baseChance: 1
-    levelBonus: 0
-    minimumAmount: 1
-    maximumAmount: 4
-    rewardIcon: {fileID: -5853448795988058721, guid: 828e13d9bd7ecd5408cefc3170891e23, type: 3}
-  - rewardName: '  Crude Tool'
-    baseChance: 0.4
-    levelBonus: 0.1
-    minimumAmount: 1
-    maximumAmount: 2
-    rewardIcon: {fileID: -8254774734701108926, guid: cdb9953a25f627e4ca1a6fe7f1105deb, type: 3}
-  - rewardName: '  Nautilus'
-    baseChance: 0.02
-    levelBonus: 0.02
-    minimumAmount: 1
+  - rewardName: ' Artifact'
+    baseChance: 0.05
+    levelBonus: 0.15
+    minimumAmount: 0
     maximumAmount: 1
-    rewardIcon: {fileID: 1684816225930711868, guid: 5893f9534d97cd44892a8205037fa6aa, type: 3}
-  - rewardName: '  Diamond'
-    baseChance: 0.2
-    levelBonus: 0.1
-    minimumAmount: 1
-    maximumAmount: 2
-    rewardIcon: {fileID: 9098625996472104957, guid: bacddef0f01622d47865441938cefa70, type: 3}
-  - rewardName: '  Pearl'
-    baseChance: 0.75
-    levelBonus: 0.125
+    rewardIcon: {fileID: -5853448795988058721, guid: 828e13d9bd7ecd5408cefc3170891e23, type: 3}
+  - rewardName: ' Crude Tool'
+    baseChance: 0.5
+    levelBonus: 0.15
     minimumAmount: 1
     maximumAmount: 5
+    rewardIcon: {fileID: -8254774734701108926, guid: cdb9953a25f627e4ca1a6fe7f1105deb, type: 3}
+  - rewardName: ' Nautilus'
+    baseChance: 0.02
+    levelBonus: 0.04
+    minimumAmount: 0
+    maximumAmount: 1
+    rewardIcon: {fileID: 1684816225930711868, guid: 5893f9534d97cd44892a8205037fa6aa, type: 3}
+  - rewardName: ' Ore'
+    baseChance: 1
+    levelBonus: 0
+    minimumAmount: 20
+    maximumAmount: 75
+    rewardIcon: {fileID: 9098625996472104957, guid: bacddef0f01622d47865441938cefa70, type: 3}
+  - rewardName: ' Pearls'
+    baseChance: 0.05
+    levelBonus: 0.05
+    minimumAmount: 50
+    maximumAmount: 300
     rewardIcon: {fileID: 9098625996472104957, guid: 2379f371a8a6278458d110f6188d0b4b, type: 3}
+  - rewardName: ' Ancient Crystals'
+    baseChance: 0.1
+    levelBonus: 0.075
+    minimumAmount: 0
+    maximumAmount: 1
+    rewardIcon: {fileID: 9098625996472104957, guid: bacddef0f01622d47865441938cefa70, type: 3}
+  - rewardName: ' Reinforced Component'
+    baseChance: 0.2
+    levelBonus: 0.2
+    minimumAmount: 0
+    maximumAmount: 2
+    rewardIcon: {fileID: 5587712022116678939, guid: 6bd11f8a969ac5a448ac7f04fcb21feb, type: 3}
   rewardsPanel: {fileID: 1344742988}
   rewardsContainer: {fileID: 191839098}
   rewardEntry: {fileID: 6802433317973521069, guid: e4428a40e8843ad45911227f786de83e, type: 3}
@@ -3351,7 +3363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &472949066
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15896,8 +15908,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 49, y: 78}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2119616710
 MonoBehaviour:

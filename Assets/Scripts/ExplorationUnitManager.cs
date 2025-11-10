@@ -359,11 +359,13 @@ public class ExplorationUnitManager : MonoBehaviour
       {
          float chance = r.baseChance + r.levelBonus * (level - 1);
          chance = Mathf.Clamp01(chance);
-         if(Random.value <= chance)
-         {
-            int amount = Random.Range(r.minimumAmount, r.maximumAmount + 1);
-            rewards.Add((r.rewardName, amount));
-         }
+         int totalFound = 0;
+         for(int i = 0; i < r.maximumAmount; i++)
+            if (Random.value <= chance)
+               totalFound++;
+         if(totalFound < r.minimumAmount)
+            totalFound = r.minimumAmount;
+         rewards.Add((r.rewardName, totalFound));
       }
       return rewards;
    }
@@ -379,6 +381,8 @@ public class ExplorationUnitManager : MonoBehaviour
 
       foreach(var reward in pendingRewards)
       {
+         if(reward.amount <= 0)
+            continue;
          GameObject entry = Instantiate(rewardEntry, rewardsContainer);
          var tmp = entry.GetComponentInChildren<TextMeshProUGUI>();
          if (tmp != null)
