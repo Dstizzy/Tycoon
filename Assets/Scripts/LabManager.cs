@@ -183,7 +183,7 @@ public class LabManager : MonoBehaviour
     public void PerformBuy(int pearlCost, int itemCost)
     {
         InventoryManager.Instance.TrySpendPearl(pearlCost);
-        InventoryManager.Instance.TrySpendItem("Crude Tool", itemCost);
+        //InventoryManager.Instance.TrySpendItem("Crude Tool", itemCost);
 
     }
 
