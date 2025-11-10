@@ -287,14 +287,5 @@ public class LabManager : MonoBehaviour
         infoPanel.gameObject.SetActive(false);
     }
 
-    private void OnMouseEnter()
-    {
-        
-    }
-
-    private void OnMouseLeave()
-    {
-
-    }
 
 }
