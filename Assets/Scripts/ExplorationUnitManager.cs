@@ -46,7 +46,7 @@ public class ExplorationUnitManager : MonoBehaviour
    const int STARTING_LEVEL       = 1;   /* Starting level of the exploration unit               */
    const int ENDING_LEVEL         = 3;   /* Maximum level of the exploration unit                */
    const int UPGRADE_COST         = 100; /* Cost to upgrade the exploration unit                 */
-   const int LEVEL_1_TAB_ID       = 11;  /* ID number of the level 1 tab in the explore panel    */
+   const int LEVEL_1_TAB_ID       = 11;  /* ID number of the level 1 tab in the explore panel    */
    const int LEVEL_2_TAB_ID       = 12;  /* ID number of the level 2 tab in the explore panel    */
    const int LEVEL_3_TAB_ID       = 13;  /* ID number of the level 3 tab in the explore panel    */
    const int LEVEL_1_EXPLORE_COST = 200; /* Cost of a level 1 exploration                        */
