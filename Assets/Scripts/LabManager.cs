@@ -164,6 +164,78 @@ public class LabManager : MonoBehaviour
         };
     }
 
+    public void ImplementTierOneInnovation(GameObject tabType)
+    {
+        /* Permanently increase base sale price of all items by 10%                              */
+        if (tabType == commerceTab)
+        {
+            /*Item.crudeToolPrice   += (Item.crudeToolPrice   * (int).10);
+            Item.refinedToolPrice += (Item.refinedToolPrice * (int).10);
+            Item.artifactPrice    += (Item.artifactPrice    * (int).10);*/
+        }
+        /* Permanently reduce gold spent on refinery upkeep by 50%                               */
+        else if (tabType == productionTab)
+        {
+            Debug.Log("Ore upkeep reduced by 50%");
+        }
+        /* Tier 1 missions have succession increased by 25%                                      */
+        else if (tabType == explorationTab)
+        {
+            Debug.Log("Tier 1 missions increased by 25%");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
+
+    public void ImplementTierTwoInnovation(GameObject tabType)
+    {
+        /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
+        if (tabType == commerceTab)
+        {
+            Debug.Log("Unlock gamble action");
+        }
+        /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
+        /*    bonus item upon crafting a single item                                             */
+        else if (tabType == productionTab)
+        {
+            Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
+        }
+        /* Permanently increase gold by +15 per turn                                         */
+        else if (tabType == explorationTab)
+        {
+            Debug.Log("Permanently increase gold by +15 per turn");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
+
+    public void ImplementTierThreeInnovation(GameObject tabType)
+    {
+        /* Allows all items in storage to be sold for 5x multiplier                              */
+        if (tabType == commerceTab)
+        {
+            Debug.Log("All items in storage sold for 5x");
+        }
+        /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
+        else if (tabType == productionTab)
+        {
+            Debug.Log("Unlock Artifact and crafting results in double item");
+        }
+        /* Decrease search costs by 50%                                                          */
+        else if (tabType == explorationTab)
+        {
+            Debug.Log("Decrease search costs by 50%");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
+
     /* Return to the initial tab upon clicking the back arrow button                             */
     private void BackToInitialTab(GameObject tab)
     {
