@@ -103,12 +103,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""OnBuildingClick"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""d037bff8-ed86-4670-85cc-429cf3b7ae5a"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -126,7 +126,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d6122eed-44a1-44d6-965b-468f1796d9d8"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

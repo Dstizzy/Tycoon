@@ -46,14 +46,14 @@ public class HoverScript : MonoBehaviour {
        * =========================================================*/
 
       /* Case A: Mouse moved OFF the previous object (either to empty space or a new object)                                                          */
-      if (prevHoverObject != null && prevHoverObject != currentHoverObject) {
+      if (prevHoverObject != null && prevHoverObject != currentHoverObject) 
+      {
          /* Retrieve the SpriteRenderer and check if it exists before using it                                                                       */
          SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
 
-         if (prevRenderer != null) {
+         if (prevRenderer != null)
             /* Revert the color/state of the object we just left                                                                                    */
             prevRenderer.color = Color.white;
-         }
       }
 
       /* Case B: Mouse moved ONTO a new object                                                                                                        */
@@ -61,7 +61,8 @@ public class HoverScript : MonoBehaviour {
          /* Retrieve the SpriteRenderer and check if it exists before using it                                                                       */
          SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
 
-         if (currentRenderer != null) {
+         if (currentRenderer != null) 
+         {
             /* Set the color/state of the new object                                                                                                */
             currentRenderer.color = Color.red;
          }
