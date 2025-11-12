@@ -198,8 +198,8 @@ public class TradeHutManager : MonoBehaviour
       Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
       /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
-      increaseButton.onClick.AddListener(() => OnClickIncreaseBuyItemsCount(buyItemTransfrom));
-      decreaseButton.onClick.AddListener(() => OnClickDecreaseBuyItemsCount(buyItemTransfrom));
+      increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
+      decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
 
       /* Store the reference to the newly created buy window instance                                 */
       currentBuyItem = buyItemTransfrom;
@@ -237,8 +237,8 @@ public class TradeHutManager : MonoBehaviour
       Button decreaseButton = sellItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
       /* Dynamically add listeners to the buttons, increasing or decreasing the sell items            */
-      increaseButton.onClick.AddListener(() => OnClickIncreaseSellItemButton(sellItemTransform));
-      decreaseButton.onClick.AddListener(() => OnClickDecreaseSellItemButton(sellItemTransform));
+      increaseButton.onClick.AddListener(() => IncreaseSellItemCount(sellItemTransform));
+      decreaseButton.onClick.AddListener(() => DecreaseSellItemCount(sellItemTransform));
 
       /* Store the reference to the newly created sell window instance                                */
       currentSellItem = sellItemTransform;
@@ -246,7 +246,6 @@ public class TradeHutManager : MonoBehaviour
       ShowSellWindow();
    }
 
-   /* Executes the sell transaction                                                                   */
    public void SellItem() 
    {
       int totalSellValue = 0;
@@ -275,7 +274,6 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-   /* Executes the buy transaction                                                                    */
    public void BuyItem() 
    {
       if (swordBuyCount > MIN_BUY_ITEM_COUNT)
@@ -292,7 +290,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Increments the count for the item being sold and updates the UI                                 */
-   public void OnClickIncreaseSellItemButton(Transform item) 
+   public void IncreaseSellItemCount(Transform item) 
    {
       switch (item.tag) 
       {
@@ -327,25 +325,28 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Decrements the count for the item being sold and updates the UI                                 */
-   public void OnClickDecreaseSellItemButton(Transform item) 
+   public void DecreaseSellItemCount(Transform item) 
    {
       switch (item.tag) {
          case "Crude Tool":
-            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) {
+            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+            {
                crudeToolSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + crudeToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool)).ToString();
             }
             break;
          case "Refined Tool":
-            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) {
+            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) 
+            {
                refinedToolSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + refinedToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
             }
             break;
          case "Artifact":
-            if (artifactSellCount > MIN_SELL_ITEM_COUNT) {
+            if (artifactSellCount > MIN_SELL_ITEM_COUNT) 
+            {
                artifactSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + artifactSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
@@ -358,7 +359,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Increments the count for the item being bought and updates the UI                               */
-   public void OnClickIncreaseBuyItemsCount(Transform item) {
+   public void IncreaseBuyItemsCount(Transform item) {
       switch (item.tag) 
       {
          case "Sword":
@@ -376,7 +377,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Decrements the count for the item being bought and updates the UI                               */
-   public void OnClickDecreaseBuyItemsCount(Transform item) 
+   public void DecreaseBuyItemsCount(Transform item) 
    {
       switch (item.tag) 
       {
@@ -440,7 +441,7 @@ public class TradeHutManager : MonoBehaviour
    /* Closes the panel corresponding to the button ID                                                 */
    public void CloseTradeHutPanel(int buttonID)    
    {
-      switch (buttonID) 
+      switch (buttonID)
       {
          case TRADE_BUTTON:
             CloseTradePanel();

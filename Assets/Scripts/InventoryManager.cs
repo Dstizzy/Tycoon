@@ -144,7 +144,6 @@ public class InventoryManager : MonoBehaviour
    /* Creates and positions a resource display element in the inventory panel.     */
    private void CreateResource(Sprite resourceSprite, float positionIndex,  string resourceTag)           
    {                                                                                
-      /* The initial count of the resource to display.                             */
       int           resourceCount;
       Button        resourceWindowButton;
       Transform     resourceTransform;
@@ -180,7 +179,9 @@ public class InventoryManager : MonoBehaviour
       resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
       resourceWindowButton = resourceTransform.Find("ResourceButton").GetComponent<Button>();
       resourceWindowButton.image.sprite = resourceSprite;
-      
+
+      /* Dynamically add listeners to the button, which creates the resource       */
+      /* information window                                                        */
       resourceWindowButton.onClick.AddListener(() => CreateResourceWindow(resourceSprite, resourceTag));
 
       switch (resourceTag) 
@@ -225,15 +226,15 @@ public class InventoryManager : MonoBehaviour
       /* Transform of the newly created resource UI element.                       */
       Transform craftTransform = Instantiate(CraftTemplate, CraftContainer);
       
-      /* RectTransform for positioning the new resource UI element.                 */
+      /* RectTransform for positioning the new resource UI element.                */
        RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
        
       craftTransform.tag = craftTag;
       
-      /* Places the new resource entry in a horizontal row inside the inventory     */
+      /* Places the new resource entry in a horizontal row inside the inventory    */
       craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
       
-      /* Populate the resource components with item-specific data                   */
+      /* Populate the resource components with item-specific data                  */
       craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
       craftWindowButton = craftTransform.Find("CraftButton").GetComponent<Button>();
       craftWindowButton.image.sprite = craftSprite;
@@ -259,6 +260,7 @@ public class InventoryManager : MonoBehaviour
       craftTransform.gameObject.SetActive(true);
    }
 
+   /* Creates and populates the resource information window                        */
    private void CreateResourceWindow(Sprite resourceSprite, string resourceTag) 
    {
       int    resourceCount = 0;
@@ -269,6 +271,7 @@ public class InventoryManager : MonoBehaviour
       Transform resourceTransform         = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
       RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
 
+      /* Destroys the current resource in the window if it exists.                 */
       if (currentResource != null) 
       {
          Destroy(currentResource.gameObject);
@@ -291,7 +294,7 @@ public class InventoryManager : MonoBehaviour
             break;
       }
 
-      // Populate the TextMeshPro and Image components with item-specific data (value, name, sprite).
+      /* Populate the resource properties (value, name, sprite).                   */
       resourceTransform.Find("ResourceImage").GetComponent<Image>().sprite         = resourceSprite;
       resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = "  x" + resourceCount.ToString();
       resourceTransform.Find("ResourceName").GetComponent<TextMeshProUGUI>().text  = resourceTag;
@@ -302,6 +305,7 @@ public class InventoryManager : MonoBehaviour
       ShowResourceWindow();
    }
 
+   /* Creates and populates the craft information window                           */
    private void CreateCraftWindow(Sprite crafteSprite, string craftTag) 
    {
       int    craftCount = 0;
@@ -309,9 +313,10 @@ public class InventoryManager : MonoBehaviour
 
       /* Instantiate the resource template and set its position in the container.  */
       /* Transform of the newly created resource UI element.                       */
-      Transform craftTransform     = Instantiate(CraftWindowTemplate, CraftWindowContainer);
+      Transform     craftTransform     = Instantiate(CraftWindowTemplate, CraftWindowContainer);
       RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
 
+      /* Destroys the current craft in the window if it exists.                    */
       if (currentCraft != null) {
          Destroy(currentCraft.gameObject);
          currentCraft = null;
