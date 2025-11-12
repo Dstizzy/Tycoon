@@ -3328,22 +3328,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba70f76e9db6b249bdd9479dfa90b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
-  TradePanels: {fileID: 0}
-  BuyPanel: {fileID: 0}
-  BuyItemContainer: {fileID: 0}
-  BuyItemTemplate: {fileID: 0}
-  BuyWindow: {fileID: 0}
-  BuyWindowContainer: {fileID: 0}
-  BuyWindowTemplate: {fileID: 0}
-  SellPanel: {fileID: 0}
-  SellItemContainer: {fileID: 0}
-  SellItemTemplate: {fileID: 0}
-  SellWindow: {fileID: 0}
-  SellWindowContainer: {fileID: 0}
-  SellWindowTemplate: {fileID: 0}
-  InfoPanel: {fileID: 0}
-  UpgradePanel: {fileID: 0}
-  tradeHutLevelText: {fileID: 0}
+  TradePanels: {fileID: 1113495824}
+  BuyPanel: {fileID: 1296913991}
+  BuyItemContainer: {fileID: 1311362404}
+  BuyItemTemplate: {fileID: 2127299601}
+  BuyWindow: {fileID: 1401748498}
+  BuyWindowContainer: {fileID: 1311362404}
+  BuyWindowTemplate: {fileID: 206400520}
+  SellPanel: {fileID: 1024672991}
+  SellItemContainer: {fileID: 460349205}
+  SellItemTemplate: {fileID: 1712966643}
+  SellWindow: {fileID: 644685944}
+  SellWindowContainer: {fileID: 1958255415}
+  SellWindowTemplate: {fileID: 65785624}
+  InfoPanel: {fileID: 1779872260}
+  UpgradePanel: {fileID: 470639710}
+  tradeHutLevelText: {fileID: 1104922258}
 --- !u!1 &179536998
 GameObject:
   m_ObjectHideFlags: 0
@@ -13928,7 +13928,7 @@ Transform:
   m_GameObject: {fileID: 1045289869}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.7, y: 5.8, z: 0}
+  m_LocalPosition: {x: -12.6, y: 4.6, z: 0}
   m_LocalScale: {x: 5.125928, y: 5.125928, z: 5.125928}
   m_ConstrainProportionsScale: 0
   m_Children:
