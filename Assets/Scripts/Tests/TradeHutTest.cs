@@ -62,12 +62,21 @@ public class InventoryTest : InputTestFixture {
 
       Assert.IsNotNull(InventoryButton, "Inventory Button not found in the scene.");
 
+      //yield return new WaitForSeconds(0.1f);
+
       worldPosition = InventoryButton.transform.position;
       screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
-      InventoryButton.onClick.Invoke();
-      Assert.IsTrue(inventoryPanel.activeSelf, "Inventory Panel did not pop up");
+      Set(Mouse.current.position, screenPosition);
+      yield return null;
+      Press(Mouse.current.leftButton);
+      yield return null;
+      Release(Mouse.current.leftButton);
+      yield return null;
 
+      //InventoryButton.onClick.Invoke();
+      Assert.IsTrue(inventoryPanel.activeSelf, "Inventory Panel did not pop up");
       Assert.IsNotNull(ExitButton, "Exit Button not found in the Inventory Panel.");
+
       ExitButton.onClick.Invoke();
       Assert.IsFalse(inventoryPanel.activeSelf, "Inventory Panel did not close");
 
