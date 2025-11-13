@@ -12,7 +12,7 @@ public class OreRefinery_Manager : MonoBehaviour {
 
     [SerializeField] private Transform infoPanel;
     [SerializeField] private Transform upgradePanel;
-    public TextMeshProUGUI oreRefineryText;
+    public TextMeshProUGUI oreRefineryLevelText;
 
     private static int oreLevel = STARTING_LEVEL;
 
@@ -23,10 +23,10 @@ public class OreRefinery_Manager : MonoBehaviour {
             infoPanel.gameObject.SetActive(false);
         }
 
-        if (oreRefineryText == null) {
+        if (oreRefineryLevelText == null) {
             Debug.LogError("Ore Refinery Level Text is not assigned");
         } else {
-            oreRefineryText.text = "Level " + oreLevel.ToString();
+            oreRefineryLevelText.text = "Level " + oreLevel.ToString();
         }
     }
 
@@ -58,7 +58,7 @@ public class OreRefinery_Manager : MonoBehaviour {
             Debug.Log("Ore Refinery is already at max level.");
         }
 
-        oreRefineryText.text = "Level " + oreLevel.ToString();
+        oreRefineryLevelText.text = "Level " + oreLevel.ToString();
 
         upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
         upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
