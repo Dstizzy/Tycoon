@@ -20973,7 +20973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   infoPanel: {fileID: 65429469}
   upgradePanel: {fileID: 400734924}
-  oreRefineryText: {fileID: 1881340794}
+  oreRefineryText: {fileID: 0}
 --- !u!224 &1425482129
 RectTransform:
   m_ObjectHideFlags: 0
