@@ -20138,7 +20138,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0.8}
-  m_Radius: 2.3
+  m_Radius: 4
 --- !u!4 &1363283337
 Transform:
   m_ObjectHideFlags: 0
@@ -20973,7 +20973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   infoPanel: {fileID: 65429469}
   upgradePanel: {fileID: 400734924}
-  oreRefineryText: {fileID: 0}
+  oreRefineryLevelText: {fileID: 0}
 --- !u!224 &1425482129
 RectTransform:
   m_ObjectHideFlags: 0
