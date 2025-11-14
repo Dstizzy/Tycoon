@@ -129,7 +129,6 @@ public class PanelsPopUpTest : InputTestFixture
                     Assert.Fail();
                     break;
             }
-            ;
 
             yield return null;
 
@@ -172,7 +171,7 @@ public class PanelsPopUpTest : InputTestFixture
             Debug.Log($"Clicking button with text: {buttonTextComponent.text}");
 
             // Click a building button pop up
-            worldPosition = myButton.transform.position;
+            worldPosition  = myButton.transform.position;
             screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
             Set(Mouse.current.position, screenPosition);
             yield return null;
