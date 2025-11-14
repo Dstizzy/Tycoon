@@ -4,21 +4,35 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MainUIManager : MonoBehaviour {
-    public Button MainMenuButton; // Assign to this object
-    public Button[] DropdownButtons; // Assign to this object
+    public Button MainMenuButton;
+    public Button[] DropdownButtons;
+    public Button InventoryButton;
 
     [SerializeField] private TextMeshProUGUI pearCountText;
     [SerializeField] private TextMeshProUGUI crystalCountText;
 
     private bool isVisible = false;
 
-    private void Start() {
-        // Initially hide dropdown buttons
-        foreach (Button btn in DropdownButtons) {
+    private void Awake() {
+
+      if (InventoryManager.Instance == null) {
+         // This is primarily for safety, though the script execution order should help.
+         // You might need to check your Unity Project Settings -> Script Execution Order 
+         // to ensure InventoryManager runs before MainUIManager.
+         Debug.LogError("InventoryManager instance is not yet available in MainUIManager Awake. Delaying subscriptions.");
+         // If it's not ready, we cannot subscribe yet and must defer to Start().
+         return;
+      }
+
+      // Initially hide dropdown buttons
+      foreach (Button btn in DropdownButtons) {
             btn.gameObject.SetActive(false);
         }
         // Add listener to main menu button
         MainMenuButton.onClick.AddListener(ToggleMenu);
+        InventoryButton.onClick.AddListener(() => {
+            InventoryManager.Instance.ShowInventoryPanel();
+        });
 
         ChangePearlCountText(InventoryManager.Instance.pearlCount);
         ChangeCrystalCountText(InventoryManager.Instance.crystalCount);

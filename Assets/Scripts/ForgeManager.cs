@@ -25,13 +25,13 @@ public class ForgeManager : MonoBehaviour {
             infoPanel.gameObject.SetActive(false);
         }
 
-        if( craftPanel == null) {
+        if (craftPanel == null) {
             Debug.LogError("Craft Panel is not assigned");
         } else {
             craftPanel.gameObject.SetActive(false);
         }
 
-        if(forgeLevelText == null) {
+        if (forgeLevelText == null) {
             Debug.LogError("Forge Level Text is not assigned");
         } else {
             forgeLevelText.text = "Level " + forgeLevel.ToString();
@@ -58,15 +58,11 @@ public class ForgeManager : MonoBehaviour {
                 break;
         }
     }
-    public void UpgradeForge()
-    {
+    public void UpgradeForge() {
         // Check if the forge can be upgraded
-        if (forgeLevel < ENDING_LEVEL)
-        {
+        if (forgeLevel < ENDING_LEVEL) {
             forgeLevel += 1;
-        }
-        else
-        {
+        } else {
             Debug.Log("Exploration Unit is already at max level.");
         }
 
@@ -79,8 +75,6 @@ public class ForgeManager : MonoBehaviour {
         CloseUpgradePanel();
         PopUpManager.Instance.EnablePlayerInput();
     }
-
-    public int GetLevel() { return forgeLevel; }
 
     public void CloseForgePanel(int buttonID) {
         switch (buttonID) {
@@ -99,6 +93,7 @@ public class ForgeManager : MonoBehaviour {
         }
         PopUpManager.Instance.EnablePlayerInput();
     }
+    public int GetLevel() { return forgeLevel; }
     private void ShowCraftPanel() {
         craftPanel.gameObject.SetActive(true);
     }
