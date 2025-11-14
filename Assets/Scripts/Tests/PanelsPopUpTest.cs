@@ -41,8 +41,6 @@ public class PanelsPopUpTest : InputTestFixture
     public void IsMouseAdded()
     {
         Assert.IsNotNull(Mouse.current, "Setup Error: Missing Mouse device.");
-
-
     }
 
     [UnityTest]
