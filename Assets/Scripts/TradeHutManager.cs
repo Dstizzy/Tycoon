@@ -40,6 +40,7 @@ public class TradeHutManager : MonoBehaviour
    /* Transform                                                                                       */
    private Transform currentBuyItem;      
    private Transform currentSellItem;
+   private Transform currentMysteryBoxResult;
 
    /* Constants                                                                                       */
    const int ENDING_LEVEL        = 5;     
@@ -419,6 +420,7 @@ public class TradeHutManager : MonoBehaviour
       ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = Resources.GetResourceSprite(resource);
       ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
 
+      currentMysteryBoxResult = ResultTransform;
       ResultTransform.gameObject.SetActive(true);
    }
 
@@ -436,7 +438,7 @@ public class TradeHutManager : MonoBehaviour
       {
          MysterBoxResult(ResourceType.Crystal, 50);
 
-         InventoryManager.Instance.TryAddCrystal(50);
+         InventoryManager.Instance.TryAddPearl(50);
       }
    }
 
@@ -637,6 +639,11 @@ public class TradeHutManager : MonoBehaviour
 
    public void CloseMysteryBoxPanel() 
    {
+      if(currentMysteryBoxResult != null) 
+      {
+         Destroy(currentMysteryBoxResult.gameObject);
+         currentMysteryBoxResult = null;
+      }
       MysteryBoxPanel.gameObject.SetActive(false);
    }
 }
