@@ -22382,6 +22382,9 @@ MonoBehaviour:
   InfoPanel: {fileID: 0}
   UpgradePanel: {fileID: 0}
   tradeHutLevelText: {fileID: 407095655}
+  crudeToolSellCount: 0
+  refinedToolSellCount: 0
+  artifactSellCount: 0
 --- !u!222 &1789502029
 CanvasRenderer:
   m_ObjectHideFlags: 0
