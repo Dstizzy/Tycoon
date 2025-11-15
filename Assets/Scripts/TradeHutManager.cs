@@ -198,7 +198,7 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-      buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
+      //buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
 
       /* Populate item properties                                                                     */
       buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
@@ -410,6 +410,8 @@ public class TradeHutManager : MonoBehaviour
 
    public void MysterBoxResult(ResourceType resource, int resourceAmount) 
    {
+      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(false);
+
       Transform ResultContainer = MysteryBoxPanel.Find("ResultContainer");
       Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
       Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
@@ -422,6 +424,7 @@ public class TradeHutManager : MonoBehaviour
 
    public void OpenMysterBox() 
    {
+
       int successChance = Rng.Next(1, 101);
 
       if(successChance <= 60) 
@@ -630,5 +633,10 @@ public class TradeHutManager : MonoBehaviour
    private void CloseBuyWindow() 
    {
       BuyWindow.gameObject?.SetActive(false);
+   }
+
+   public void CloseMysteryBoxPanel() 
+   {
+      MysteryBoxPanel.gameObject.SetActive(false);
    }
 }

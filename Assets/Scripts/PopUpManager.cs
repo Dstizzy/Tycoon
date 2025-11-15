@@ -118,8 +118,6 @@ public class PopUpManager : MonoBehaviour {
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
             newButton.tag = "BuildingButton";
 
-            if(newButton.activeSelf);
-               Debug.Log($"[PopUpManager] Created button: {newButton.tag} at position {fixedPopUpPosition}");
          popUps.Add(newButton);
 
             string uniqueButtonName = buildingTransform.tag switch {
