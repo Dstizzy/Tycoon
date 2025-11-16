@@ -30,7 +30,7 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
     }
 
-    public void RequestOreRefinoryPanel(int buttonID) {
+    public void RequestOreRefinoryPanel(int buttonID) { 
         switch (buttonID) {
             case REFINE_BUTTON:
                 Debug.Log("Ore Refinery Panel: Refine requested.");
