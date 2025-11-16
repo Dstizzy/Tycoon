@@ -102,13 +102,13 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""OnBuildingClick"",
-                    ""type"": ""Button"",
+                    ""name"": ""OnBuildingHover"",
+                    ""type"": ""Value"",
                     ""id"": ""d037bff8-ed86-4670-85cc-429cf3b7ae5a"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -126,11 +126,11 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d6122eed-44a1-44d6-965b-468f1796d9d8"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""OnBuildingClick"",
+                    ""action"": ""OnBuildingHover"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -142,7 +142,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         // PlayerInput
         m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
         m_PlayerInput_Hover = m_PlayerInput.FindAction("Hover", throwIfNotFound: true);
-        m_PlayerInput_OnBuildingClick = m_PlayerInput.FindAction("OnBuildingClick", throwIfNotFound: true);
+        m_PlayerInput_OnBuildingHover = m_PlayerInput.FindAction("OnBuildingHover", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -224,7 +224,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerInput;
     private List<IPlayerInputActions> m_PlayerInputActionsCallbackInterfaces = new List<IPlayerInputActions>();
     private readonly InputAction m_PlayerInput_Hover;
-    private readonly InputAction m_PlayerInput_OnBuildingClick;
+    private readonly InputAction m_PlayerInput_OnBuildingHover;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerInput".
     /// </summary>
@@ -241,9 +241,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Hover => m_Wrapper.m_PlayerInput_Hover;
         /// <summary>
-        /// Provides access to the underlying input action "PlayerInput/OnBuildingClick".
+        /// Provides access to the underlying input action "PlayerInput/OnBuildingHover".
         /// </summary>
-        public InputAction @OnBuildingClick => m_Wrapper.m_PlayerInput_OnBuildingClick;
+        public InputAction @OnBuildingHover => m_Wrapper.m_PlayerInput_OnBuildingHover;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -273,9 +273,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Hover.started += instance.OnHover;
             @Hover.performed += instance.OnHover;
             @Hover.canceled += instance.OnHover;
-            @OnBuildingClick.started += instance.OnOnBuildingClick;
-            @OnBuildingClick.performed += instance.OnOnBuildingClick;
-            @OnBuildingClick.canceled += instance.OnOnBuildingClick;
+            @OnBuildingHover.started += instance.OnOnBuildingHover;
+            @OnBuildingHover.performed += instance.OnOnBuildingHover;
+            @OnBuildingHover.canceled += instance.OnOnBuildingHover;
         }
 
         /// <summary>
@@ -290,9 +290,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Hover.started -= instance.OnHover;
             @Hover.performed -= instance.OnHover;
             @Hover.canceled -= instance.OnHover;
-            @OnBuildingClick.started -= instance.OnOnBuildingClick;
-            @OnBuildingClick.performed -= instance.OnOnBuildingClick;
-            @OnBuildingClick.canceled -= instance.OnOnBuildingClick;
+            @OnBuildingHover.started -= instance.OnOnBuildingHover;
+            @OnBuildingHover.performed -= instance.OnOnBuildingHover;
+            @OnBuildingHover.canceled -= instance.OnOnBuildingHover;
         }
 
         /// <summary>
@@ -341,11 +341,11 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHover(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "OnBuildingClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "OnBuildingHover" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnOnBuildingClick(InputAction.CallbackContext context);
+        void OnOnBuildingHover(InputAction.CallbackContext context);
     }
 }

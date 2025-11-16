@@ -1,4 +1,5 @@
 /* libraries                                                                                     */
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,12 @@ public class LabManager : MonoBehaviour
     const int TIER_ONE = 1;
     const int TIER_TWO = 2;
     const int TIER_THREE = 3;
+    const int TIER_ONE_PEARL_COST = 100;
+    const int TIER_ONE_ITEM_COST = 10;
+    const int TIER_TWO_PEARL_COST = 350;
+    const int TIER_TWO_ITEM_COST = 25;
+    const int TIER_THREE_PEARL_COST = 700;
+    const int TIER_THREE_ITEM_COST = 50;
 
     /* Inspector Variables                                                                       */
     [SerializeField] private Transform innovatePanel;
@@ -128,17 +135,21 @@ public class LabManager : MonoBehaviour
     {
         initialTab.gameObject.SetActive(false);
         tab.gameObject.SetActive(true);
+        /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
         tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
         tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
     }
 
+    /* Handle different changes upon clicking a buy button                                       */
     private void HandleInnovation(GameObject tab, int tier)
     {
         switch (tier)
         {
             case TIER_ONE:
+                PerformBuy(TIER_ONE_PEARL_COST, TIER_ONE_ITEM_COST);
+                ImplementTierOneInnovation(tab);
                 tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
@@ -148,6 +159,8 @@ public class LabManager : MonoBehaviour
                 ImplementTierOneInnovation(tab);
                 break;
             case TIER_TWO:
+                PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
+                ImplementTierTwoInnovation(tab);
                 tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
@@ -157,6 +170,8 @@ public class LabManager : MonoBehaviour
                 ImplementTierTwoInnovation(tab);
                 break;
             case TIER_THREE:
+                PerformBuy(TIER_THREE_PEARL_COST, TIER_THREE_ITEM_COST);
+                ImplementTierThreeInnovation(tab);
                 tab.transform.Find("branch/thirdConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/thirdConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeUnfilled").gameObject.SetActive(false);
@@ -166,6 +181,14 @@ public class LabManager : MonoBehaviour
                 ImplementTierThreeInnovation(tab);
                 break;
         };
+    }
+
+    /* Spend certain amount of resources and give corresponding innovations                      */
+    public void PerformBuy(int pearlCost, int itemCost)
+    {
+        InventoryManager.Instance.TrySpendPearl(pearlCost);
+        //InventoryManager.Instance.TrySpendItem("Crude Tool", itemCost);
+
     }
 
     public void ImplementTierOneInnovation(GameObject tabType)
@@ -272,5 +295,6 @@ public class LabManager : MonoBehaviour
     {
         infoPanel.gameObject.SetActive(false);
     }
+
 
 }

@@ -14,6 +14,9 @@ public class PopUpManager : MonoBehaviour {
     [SerializeField] private ForgeManager forgeManager;
     [SerializeField] private LabManager labManager;
 
+   private Transform prevHoverObject;
+   private Transform currentHoverObject;
+
     private       List<GameObject>    popUps;
     private       PlayerActions       playerActions;
     private       List<RaycastResult> raycastResults = new List<RaycastResult>();
@@ -31,46 +34,75 @@ public class PopUpManager : MonoBehaviour {
 
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
+        playerActions.PlayerInput.OnBuildingHover.performed += OnBuildingHover;
     }
 
     private void OnDestroy() {
         if (playerActions != null) {
-            playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
+            playerActions.PlayerInput.OnBuildingHover.performed -= OnBuildingHover;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
-    private void OnBuildingClick(InputAction.CallbackContext context) {
+    private void OnBuildingHover(InputAction.CallbackContext context) {
 
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Mouse.current.position.ReadValue();
+      PointerEventData eventData = new PointerEventData(EventSystem.current);
+      eventData.position = context.ReadValue<Vector2>();
 
-        // 2. CLEAR and CHECK FOR UI HITS using RaycastAll
-        raycastResults.Clear();
-        EventSystem.current.RaycastAll(eventData, raycastResults);
+      /* 2. CLEAR and CHECK FOR UI HITS using RaycastAll                                                                                              */
+      // Assuming 'raycastResults' is a List<RaycastResult> and 'EventSystem.current' is accessible
+      raycastResults.Clear();
+      EventSystem.current.RaycastAll(eventData, raycastResults);
 
-        // If the list is not empty, a UI element was hit.
-        if (raycastResults.Count > 0) return;
+      /* If the list is not empty, a UI element was hit. Ignore hover logic.                                                                          */
+      if (raycastResults.Count > 0) return;
 
-        Vector2 mouseScreenPos = eventData.position;
+      Vector2 mouseScreenPos = eventData.position;
 
-        Vector3 worldPos = cam.ScreenToWorldPoint(mouseScreenPos);
+      Vector3 worldPos = cam.ScreenToWorldPoint(mouseScreenPos);
 
-        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+      // Perform a point raycast in 2D physics
+      RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+      Debug.Log($"[TEST] Raycast Hit: {hit.collider?.name}");
 
-        if (hit.collider != null) {
-            if (popUps == null || (buildingTransform != null && hit.collider.transform.tag != buildingTransform.tag)) {
-                ClosePopUps();
-                buildingTransform = hit.collider.transform;
-                CreateBuildingButtons(buildingTransform);
-            } else {
-                ClosePopUps();
-            }
-        } else {
-            ClosePopUps();
-        }
-    }
+      /* 3. Determine the object hit this frame, or null if nothing was hit                                                                           */
+      Transform currentHoverObject = hit.collider ? hit.collider.transform : null;
+
+      /* =========================================================
+       * 4. CORE HOVER LOGIC: Manage Pop-up State
+       * =========================================================*/
+
+      /* Case A: Mouse moved OFF the previous object (either to empty space or a new object)                                                          */
+      if (prevHoverObject != null && prevHoverObject != currentHoverObject) {
+         // The mouse is leaving an object. Close the pop-up related to the object we just left.
+         ClosePopUps();
+         buildingTransform = null; // Clear the reference to the old building
+      }
+
+      /* Case B: Mouse moved ONTO a new object (a building)                                                                                           */
+      if (currentHoverObject != null && currentHoverObject != prevHoverObject) {
+            // The mouse is entering a new object. Open the pop-up for the new object.
+            // We don't need to call ClosePopUps() here because it was handled in Case A.
+            buildingTransform = currentHoverObject;
+            CreateBuildingButtons(buildingTransform);
+      }
+
+      /* 5. Update the state for the next frame                                                                                                       */
+      prevHoverObject = currentHoverObject;
+
+
+      //if (hit.collider != null) {
+      //      if (popUps == null || (buildingTransform != null && hit.collider.transform.tag != buildingTransform.tag)) {
+      //          ClosePopUps();
+      //          buildingTransform = hit.collider.transform;
+      //          CreateBuildingButtons(buildingTransform);
+      //      } else {
+      //          ClosePopUps();
+      //      }
+      //  } else {
+      //      ClosePopUps();
+      //  }
+   }
     private void CreateBuildingButtons(Transform buildingTransform) {
         Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
         Vector3 fixedPopUpPosition = buildingTransform.position + offset;
@@ -84,7 +116,9 @@ public class PopUpManager : MonoBehaviour {
 
             GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
-            popUps.Add(newButton);
+            newButton.tag = "BuildingButton";
+
+         popUps.Add(newButton);
 
             string uniqueButtonName = buildingTransform.tag switch {
                 "Trade Hut" => "Trade",

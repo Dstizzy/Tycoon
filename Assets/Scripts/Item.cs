@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class Item {
 
-   const int    CRUDE_TOOL_SELL_VALUE    = 5;
-   const int    REFINED_TOOL_SELL_VALUE  = 10;
-   const int    ARTIFACT_TOOL_SELL_VALUE = 20;
+   static int crudeToolSellValue   = 5;
+   static int refinedToolSellValue = 10;
+   static int artifactSellValue    = 20;
+   static int swordPrice           = 5;
    const string CRUDE_TOOL_DESCRIPTION   = 
       "A basic tool made from rudimentary materials. " +
       "Useful for simple tasks but lacks durability.";
@@ -14,9 +15,6 @@ public class Item {
    const string ARTIFACT_DESCRIPTION = 
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
-
-
-   const int SWORD_PRICE = 5;
 
     public enum ItemType {
         CrudeTool,
@@ -28,13 +26,13 @@ public class Item {
     public static int GetItemValue(ItemType itemType) {
         switch (itemType) {
             case ItemType.CrudeTool:
-                return CRUDE_TOOL_SELL_VALUE;
+                return crudeToolSellValue;
             case ItemType.RefinedTool:
-                return REFINED_TOOL_SELL_VALUE;
+                return refinedToolSellValue;
             case ItemType.Artifact:
-                return ARTIFACT_TOOL_SELL_VALUE;
+                return artifactSellValue;
             case ItemType.Sword:
-                return SWORD_PRICE;
+                return swordPrice;
             default:
                 Debug.LogError("Unkown Item");
             return 0;
@@ -44,7 +42,7 @@ public class Item {
    public static int GetItemPrice(ItemType itemType) {
       switch (itemType) {
          case ItemType.Sword:
-            return SWORD_PRICE;
+            return swordPrice;
          default:
             return 0;
       }

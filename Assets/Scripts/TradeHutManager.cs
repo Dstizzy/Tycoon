@@ -1,6 +1,10 @@
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+
+using static Resources;
 
 public class TradeHutManager : MonoBehaviour 
 {
@@ -20,8 +24,12 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform SellWindowTemplate;     
    [SerializeField] private Transform InfoPanel;                   
    [SerializeField] private Transform UpgradePanel;           
+   [SerializeField] private Transform MysteryBoxPanel;        
 
    public TextMeshProUGUI tradeHutLevelText;
+
+   private readonly static System.Random Rng = new System.Random();
+
 
    /* Private variables                                                                               */
    private int artifactSellCount     = 0; 
@@ -32,6 +40,7 @@ public class TradeHutManager : MonoBehaviour
    /* Transform                                                                                       */
    private Transform currentBuyItem;      
    private Transform currentSellItem;
+   private Transform currentMysteryBoxResult;
 
    /* Constants                                                                                       */
    const int ENDING_LEVEL        = 5;     
@@ -114,6 +123,11 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Buy Item Template is not assigned in the Inspector!");
       else
          BuyItemTemplate.gameObject.SetActive(false);
+
+      if(MysteryBoxPanel == null)
+         Debug.LogError("Mystery Box Panel is not assigned in the Inspector!");
+      else
+         MysteryBoxPanel.gameObject.SetActive(false);
    }
 
    private void Start() 
@@ -185,7 +199,7 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-      buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
+      //buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
 
       /* Populate item properties                                                                     */
       buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
@@ -198,8 +212,8 @@ public class TradeHutManager : MonoBehaviour
       Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
       /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
-      increaseButton.onClick.AddListener(() => OnClickIncreaseBuyItemsCount(buyItemTransfrom));
-      decreaseButton.onClick.AddListener(() => OnClickDecreaseBuyItemsCount(buyItemTransfrom));
+      increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
+      decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
 
       /* Store the reference to the newly created buy window instance                                 */
       currentBuyItem = buyItemTransfrom;
@@ -237,8 +251,8 @@ public class TradeHutManager : MonoBehaviour
       Button decreaseButton = sellItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
       /* Dynamically add listeners to the buttons, increasing or decreasing the sell items            */
-      increaseButton.onClick.AddListener(() => OnClickIncreaseSellItemButton(sellItemTransform));
-      decreaseButton.onClick.AddListener(() => OnClickDecreaseSellItemButton(sellItemTransform));
+      increaseButton.onClick.AddListener(() => IncreaseSellItemCount(sellItemTransform));
+      decreaseButton.onClick.AddListener(() => DecreaseSellItemCount(sellItemTransform));
 
       /* Store the reference to the newly created sell window instance                                */
       currentSellItem = sellItemTransform;
@@ -246,7 +260,6 @@ public class TradeHutManager : MonoBehaviour
       ShowSellWindow();
    }
 
-   /* Executes the sell transaction                                                                   */
    public void SellItem() 
    {
       int totalSellValue = 0;
@@ -275,7 +288,6 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-   /* Executes the buy transaction                                                                    */
    public void BuyItem() 
    {
       if (swordBuyCount > MIN_BUY_ITEM_COUNT)
@@ -292,7 +304,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Increments the count for the item being sold and updates the UI                                 */
-   public void OnClickIncreaseSellItemButton(Transform item) 
+   public void IncreaseSellItemCount(Transform item) 
    {
       switch (item.tag) 
       {
@@ -327,25 +339,28 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Decrements the count for the item being sold and updates the UI                                 */
-   public void OnClickDecreaseSellItemButton(Transform item) 
+   public void DecreaseSellItemCount(Transform item) 
    {
       switch (item.tag) {
          case "Crude Tool":
-            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) {
+            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+            {
                crudeToolSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + crudeToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool)).ToString();
             }
             break;
          case "Refined Tool":
-            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) {
+            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) 
+            {
                refinedToolSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + refinedToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
             }
             break;
          case "Artifact":
-            if (artifactSellCount > MIN_SELL_ITEM_COUNT) {
+            if (artifactSellCount > MIN_SELL_ITEM_COUNT) 
+            {
                artifactSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + artifactSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
@@ -358,7 +373,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Increments the count for the item being bought and updates the UI                               */
-   public void OnClickIncreaseBuyItemsCount(Transform item) {
+   public void IncreaseBuyItemsCount(Transform item) {
       switch (item.tag) 
       {
          case "Sword":
@@ -376,7 +391,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    /* Decrements the count for the item being bought and updates the UI                               */
-   public void OnClickDecreaseBuyItemsCount(Transform item) 
+   public void DecreaseBuyItemsCount(Transform item) 
    {
       switch (item.tag) 
       {
@@ -393,6 +408,40 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
    }
+
+   public void MysterBoxResult(ResourceType resource, int resourceAmount) 
+   {
+      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(false);
+
+      Transform ResultContainer = MysteryBoxPanel.Find("ResultContainer");
+      Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
+      Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
+
+      ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = Resources.GetResourceSprite(resource);
+      ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
+
+      currentMysteryBoxResult = ResultTransform;
+      ResultTransform.gameObject.SetActive(true);
+   }
+
+   public void OpenMysterBox() 
+   {
+
+      int successChance = Rng.Next(1, 101);
+
+      if(successChance <= 60) 
+      { 
+         MysterBoxResult(ResourceType.Pearl, 200);
+
+         InventoryManager.Instance.TryAddPearl(200);
+      } else 
+      {
+         MysterBoxResult(ResourceType.Crystal, 50);
+
+         InventoryManager.Instance.TryAddPearl(50);
+      }
+   }
+
 
    /* Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel           */
    public void RequestTradeHutPanel(int buttonID) 
@@ -440,7 +489,7 @@ public class TradeHutManager : MonoBehaviour
    /* Closes the panel corresponding to the button ID                                                 */
    public void CloseTradeHutPanel(int buttonID)    
    {
-      switch (buttonID) 
+      switch (buttonID)
       {
          case TRADE_BUTTON:
             CloseTradePanel();
@@ -522,6 +571,12 @@ public class TradeHutManager : MonoBehaviour
       SellWindow.gameObject.SetActive(true);
    }
 
+   public void ShowMysteryBoxPanel() 
+   {
+      MysteryBoxPanel.gameObject.SetActive(true);
+      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(true);
+   }
+
    private void CloseTradePanel() 
    {
       TradePanels.gameObject.SetActive(false);
@@ -580,5 +635,15 @@ public class TradeHutManager : MonoBehaviour
    private void CloseBuyWindow() 
    {
       BuyWindow.gameObject?.SetActive(false);
+   }
+
+   public void CloseMysteryBoxPanel() 
+   {
+      if(currentMysteryBoxResult != null) 
+      {
+         Destroy(currentMysteryBoxResult.gameObject);
+         currentMysteryBoxResult = null;
+      }
+      MysteryBoxPanel.gameObject.SetActive(false);
    }
 }
