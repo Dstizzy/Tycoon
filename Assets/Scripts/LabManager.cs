@@ -22,6 +22,7 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject commerceTab;
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
+    [SerializeField] private CraftingController craftingController;
 
     /* Check if all required game objects exist and are in there required states                 */
     private void Awake() 
@@ -144,6 +145,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierOneButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierOneCost").gameObject.SetActive(false);
+                ImplementTierOneInnovation(tab);
                 break;
             case TIER_TWO:
                 tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
@@ -152,6 +154,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierTwoButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierTwoCost").gameObject.SetActive(false);
+                ImplementTierTwoInnovation(tab);
                 break;
             case TIER_THREE:
                 tab.transform.Find("branch/thirdConnector/unfilledConnector").gameObject.SetActive(false);
@@ -160,6 +163,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierThreeButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
+                ImplementTierThreeInnovation(tab);
                 break;
         };
     }
@@ -201,6 +205,8 @@ public class LabManager : MonoBehaviour
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
+            craftingController.UnlockRefinedToolFromLab();
+            craftingController.ApplyLockStateToUI();
         }
         /* Permanently increase gold by +15 per turn                                         */
         else if (tabType == explorationTab)
@@ -224,6 +230,8 @@ public class LabManager : MonoBehaviour
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock Artifact and crafting results in double item");
+            craftingController.UnlockArtifactToolFromLab();
+            craftingController.ApplyLockStateToUI();
         }
         /* Decrease search costs by 50%                                                          */
         else if (tabType == explorationTab)
@@ -260,7 +268,8 @@ public class LabManager : MonoBehaviour
     }
 
     /* Close the info panel                                                                      */
-    private void CloseInfoPanel() {
+    private void CloseInfoPanel()
+    {
         infoPanel.gameObject.SetActive(false);
     }
 
