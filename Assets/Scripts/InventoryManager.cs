@@ -25,22 +25,26 @@ public class InventoryManager : MonoBehaviour
    [SerializeField] private Transform CraftWindowTemplate;                                             
                                                                                    
    private TextMeshProUGUI PearlCountText;                                         
-   private TextMeshProUGUI CrystalCountText;                                       
+   private TextMeshProUGUI CrystalCountText;
+   private TextMeshProUGUI OreCountText;
    private TextMeshProUGUI CrudeToolCountText;                                       
    private TextMeshProUGUI RefinedToolCountText;                                       
    private TextMeshProUGUI ArtifactCountText;                                       
                                                                                    
    /* Constants                                                                     */
    const int MIN_PEARL_COUNT        = 0;                                                
-   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;                                  
+   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;
+   const int MIN_ORE_COUNT          = MIN_PEARL_COUNT;
    const int MIN_CRUDE_TOOL_COUNT   = 0;
    const int MIN_REFINED_TOOL_COUNT = 0;
    const int MIN_ARTIFACT_COUNT     = 0;
    const int MAX_PEARL_COUNT        = 1000;                                             
-   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;                                  
+   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;
+   const int MAX_ORE_COUNT          = MAX_PEARL_COUNT;
    const int RESOURCE_SPACING       = 30;
    const int PEARL_POSITION         = 0;
    const int CRYSTAL_POSITION       = PEARL_POSITION + 10;
+   const int ORE_POSITION           = CRYSTAL_POSITION + 10;
    const int CRUDE_TOOL_POSITION    = 0;
    const int REFINED_TOOL_POSITION  = CRUDE_TOOL_POSITION+ 10;
    const int ARTIFACT_POSITION      = REFINED_TOOL_POSITION + 10;
@@ -48,7 +52,7 @@ public class InventoryManager : MonoBehaviour
    /* Public properties                                                            */
    public int pearlCount       {  get; private set; }
    public int crystalCount     { get; private set;  }
-   public int oreCount         { get;  set;         }
+   public int oreCount         { get; private set;  }
    public int crudeToolCount   { get; private set;  }
    public int refinedToolCount { get; private set;  }
    public int artifactCount    { get; private set;  }
@@ -125,6 +129,7 @@ public class InventoryManager : MonoBehaviour
 
       pearlCount       = MIN_PEARL_COUNT;
       crystalCount     = MIN_CRYSTAL_COUNT;
+      oreCount         = MIN_ORE_COUNT;
       crudeToolCount   = MIN_CRUDE_TOOL_COUNT;
       refinedToolCount = MIN_REFINED_TOOL_COUNT;
       artifactCount    = MIN_ARTIFACT_COUNT;
@@ -135,6 +140,7 @@ public class InventoryManager : MonoBehaviour
    {
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, "Pearl");
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, "Crystal");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, "Ore");
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
       CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), REFINED_TOOL_POSITION, "Refined Tool");
@@ -156,6 +162,9 @@ public class InventoryManager : MonoBehaviour
             break;
          case "Crystal":
             resourceCount = crystalCount;
+            break;
+         case "Ore":
+            resourceCount = oreCount;
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
@@ -192,7 +201,10 @@ public class InventoryManager : MonoBehaviour
           case "Crystal":
              CrystalCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
-          default:
+          case "Ore":
+             OreCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+             break;
+         default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
             break;
       }
@@ -288,6 +300,10 @@ public class InventoryManager : MonoBehaviour
          case "Crystal":
             resourceCount = crystalCount;
             resourceInfo  = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
+            break;
+         case "Ore":
+            resourceCount = oreCount;
+            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
             break;
          default: 
             Debug.Log("Unknown item tag for resource window.");
@@ -435,7 +451,48 @@ public class InventoryManager : MonoBehaviour
       
       return;
    }
-   
+
+   public void TryAddOre(int oreAmount)
+   {
+      if (oreCount > MAX_ORE_COUNT)
+      {
+         Debug.LogError("Ore count is at maximum!");
+         return;
+      }
+      else
+         if ((oreCount + oreAmount) > MAX_ORE_COUNT)
+         Debug.LogError("Ore count is at maximum!");
+      else
+         oreCount += oreAmount;
+
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
+
+      return;
+   }
+
+   public void TrySpendOre(int oreAmount)
+   {
+      if (oreCount < MIN_ORE_COUNT)
+      {
+         Debug.LogError("Ore count is at minimum!");
+         return;
+      }
+      else
+         if (oreCount < oreAmount)
+      {
+         Debug.LogError("Not enough ore to spend!");
+         return;
+      }
+      else
+         oreCount -= oreAmount;
+
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
+
+      return;
+   }
+
    public void ShowInventoryPanel() 
    {
       InventoryPanel.gameObject.SetActive(true);

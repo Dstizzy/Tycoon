@@ -100,9 +100,13 @@ public class CraftingController : MonoBehaviour
 
         if (inv.oreCount >= oreCost)
         {
-            inv.oreCount -= oreCost;
-            Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
-            inv.OnOreCountChanged?.Invoke(inv.oreCount);
+           //inv.oreCount -= oreCost;
+           //Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
+           //inv.OnOreCountChanged?.Invoke(inv.oreCount);
+
+           // code added for OreRefinery_Manager.cs scripts by Juyoung
+           inv.TrySpendOre(oreCost);
+           Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
         }
         else
         {
