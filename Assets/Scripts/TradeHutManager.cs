@@ -434,7 +434,8 @@ public class TradeHutManager : MonoBehaviour
          MysterBoxResult(ResourceType.Pearl, 200);
 
          InventoryManager.Instance.TryAddPearl(200);
-      } else 
+      }
+      else 
       {
          MysterBoxResult(ResourceType.Crystal, 50);
 
