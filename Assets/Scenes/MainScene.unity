@@ -1627,7 +1627,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1911261355}
         m_TargetAssemblyTypeName: CraftingController, Assembly-CSharp
         m_MethodName: ConfirmCraftArtifact
         m_Mode: 1
@@ -12745,9 +12745,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1911261355}
         m_TargetAssemblyTypeName: CraftingController, Assembly-CSharp
-        m_MethodName: CancelCraftArtifact
+        m_MethodName: ConfirmCraftArtifact
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17412,7 +17412,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1911261355}
         m_TargetAssemblyTypeName: CraftingController, Assembly-CSharp
         m_MethodName: ConfirmCraftRefined
         m_Mode: 1
@@ -22154,7 +22154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1113495824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24892,7 +24892,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1911261355}
         m_TargetAssemblyTypeName: CraftingController, Assembly-CSharp
         m_MethodName: ConfirmCraftCrude
         m_Mode: 1
@@ -26839,9 +26839,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1911261355}
         m_TargetAssemblyTypeName: CraftingController, Assembly-CSharp
-        m_MethodName: CancelCraftCrude
+        m_MethodName: ConfirmCraftCrude
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35901,9 +35901,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1911261355}
         m_TargetAssemblyTypeName: CraftingController, Assembly-CSharp
-        m_MethodName: CancelCraftRefined
+        m_MethodName: ConfirmCraftRefined
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -40870,7 +40870,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   Pearl: {fileID: 8686295293490032475, guid: b0f977259d7670d4188c7db0fd7772f8, type: 3}
   Crystal: {fileID: -2857888365972879962, guid: 4b9a14b1b1beeda42ba8913d4627e20a, type: 3}
-  Ore: {fileID: 0}
+  Ore: {fileID: -3215638422625849363, guid: 6e08e0ee8f105d94f9fba630398baa74, type: 3}
 --- !u!1 &2064378786
 GameObject:
   m_ObjectHideFlags: 0
