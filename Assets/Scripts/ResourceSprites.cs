@@ -8,6 +8,7 @@ public class ResourceSprites : MonoBehaviour {
    [Header("Resource Sprites")]
    [SerializeField] private Sprite Pearl;
    [SerializeField] private Sprite Crystal;
+   [SerializeField] private Sprite Ore;
 
 
    private void Awake() {
@@ -24,6 +25,8 @@ public class ResourceSprites : MonoBehaviour {
             return Pearl;
          case ResourceType.Crystal:
             return Crystal;
+         case ResourceType.Ore:
+            return Ore;
          default:
             return null;
       }

@@ -8,10 +8,13 @@ public class Resources
    const string CRYSTAL_DESCRIPTION = 
       "A rare resource found underwater. " +
       "Crystals can be used to unlock certain research branches";
+   const string ORE_DESCRIPTION =
+      "just ore";
 
    public enum ResourceType {
      Pearl,
-     Crystal
+     Crystal,
+     Ore
    }
 
    public static string GetResourceDescription(ResourceType resourceType) {
@@ -20,6 +23,8 @@ public class Resources
             return PEARL_DESCRIPTION;
          case ResourceType.Crystal:
             return CRYSTAL_DESCRIPTION;
+         case ResourceType.Ore:
+            return ORE_DESCRIPTION;
          default:
             Debug.LogError("Unkown Description");
             return "";

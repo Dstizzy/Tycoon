@@ -51,6 +51,13 @@ public class CameraDragPan : MonoBehaviour
 
    void Update()
    {
+      // If the popup manager exists and the IsWindowOpen flag is true,
+      // exit immediately without executing the camera drag/zoom logic
+      if (PopUpManager.Instance != null && PopUpManager.Instance.IsWindowOpen)
+      {
+         return;
+      }
+
       HandleMousePan();
       if (enableWheelZoom) HandleWheelZoom();
    }
