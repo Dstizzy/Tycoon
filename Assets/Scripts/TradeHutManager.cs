@@ -10,7 +10,7 @@ public class TradeHutManager : MonoBehaviour
 {
    /* Inspector variables                                                                             */
    [SerializeField] private Transform TradePanels;            
-   [SerializeField] private Transform BuyPanel;               
+                    public  Transform BuyPanel;               
    [SerializeField] private Transform BuyItemContainer;       
    [SerializeField] private Transform BuyItemTemplate;        
    [SerializeField] private Transform BuyWindow;              
@@ -55,10 +55,19 @@ public class TradeHutManager : MonoBehaviour
    const int UPGRADE_BUTTON      = 3;     
 
    public static int tradeHutLevel;
+   public static TradeHutManager Instance;
 
    private void Awake() 
    {
       tradeHutLevel = STARTING_LEVEL;
+
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
 
       if (SellItemContainer == null)
          Debug.LogError("Container is not assigned in the Inspector!");
@@ -434,7 +443,8 @@ public class TradeHutManager : MonoBehaviour
          MysterBoxResult(ResourceType.Pearl, 200);
 
          InventoryManager.Instance.TryAddPearl(200);
-      } else 
+      }
+      else 
       {
          MysterBoxResult(ResourceType.Crystal, 50);
 
