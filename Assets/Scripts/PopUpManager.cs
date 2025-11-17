@@ -24,7 +24,12 @@ public class PopUpManager : MonoBehaviour {
 
     public static PopUpManager Instance { get; private set; }
 
-    private void Awake() {
+   // Added for CameraDragPan update(off when the pop up window is open)
+   /* This flag is used by the Camera script to disable */
+   /* panning and zooming while a window is open.       */
+   public bool IsWindowOpen { get; private set; } = false;
+
+   private void Awake() {
         if (Instance != null && Instance != this) {
             Destroy(this.gameObject);
         } else {
@@ -34,17 +39,17 @@ public class PopUpManager : MonoBehaviour {
 
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
+        playerActions.PlayerInput.OnBuildingHover.performed += OnBuildingHover;
     }
 
     private void OnDestroy() {
         if (playerActions != null) {
-            playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
+            playerActions.PlayerInput.OnBuildingHover.performed -= OnBuildingHover;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
-    private void OnBuildingClick(InputAction.CallbackContext context) {
+    private void OnBuildingHover(InputAction.CallbackContext context) {
 
       PointerEventData eventData = new PointerEventData(EventSystem.current);
       eventData.position = context.ReadValue<Vector2>();
@@ -115,7 +120,9 @@ public class PopUpManager : MonoBehaviour {
 
             GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
-            popUps.Add(newButton);
+            newButton.tag = "BuildingButton";
+
+         popUps.Add(newButton);
 
             string uniqueButtonName = buildingTransform.tag switch {
                 "Trade Hut" => "Trade",
@@ -167,10 +174,12 @@ public class PopUpManager : MonoBehaviour {
     }
 
     public void DisablePlayerInput() {
+        IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
         playerActions.PlayerInput.Disable();
         HoverScript.Instance.DisbaleHover();
     }
     public void EnablePlayerInput() {
+        IsWindowOpen = false; // Added for Drag/Pan update; Find the function(s) that CLOSE popups
         playerActions.PlayerInput.Enable();
         HoverScript.Instance.EnableHover();
         ClosePopUps();

@@ -6,10 +6,10 @@ using UnityEngine.UI;
                                                                                     
 public class InventoryManager : MonoBehaviour 
 {                                     
-   /* Holds a reference to the singleton instance of this class. � � � � � � �      */
+   /* Holds a reference to the singleton instance of this class. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    public static InventoryManager Instance { get; private set; }                   
                                                                                     
-   /* Inspector variables for UI elements. � � � � � � � � � � � � � �              */
+   /* Inspector variables for UI elements. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½              */
    [SerializeField] private Transform InventoryPanel;
    [SerializeField] private Transform ResourcePanel;
    [SerializeField] private Transform ResourceWindow;
@@ -25,45 +25,49 @@ public class InventoryManager : MonoBehaviour
    [SerializeField] private Transform CraftWindowTemplate;                                             
                                                                                    
    private TextMeshProUGUI PearlCountText;                                         
-   private TextMeshProUGUI CrystalCountText;                                       
+   private TextMeshProUGUI CrystalCountText;
+   private TextMeshProUGUI OreCountText;
    private TextMeshProUGUI CrudeToolCountText;                                       
    private TextMeshProUGUI RefinedToolCountText;                                       
    private TextMeshProUGUI ArtifactCountText;                                       
                                                                                    
    /* Constants                                                                     */
    const int MIN_PEARL_COUNT        = 0;                                                
-   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;                                  
+   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;
+   const int MIN_ORE_COUNT          = MIN_PEARL_COUNT;
    const int MIN_CRUDE_TOOL_COUNT   = 0;
    const int MIN_REFINED_TOOL_COUNT = 0;
    const int MIN_ARTIFACT_COUNT     = 0;
    const int MAX_PEARL_COUNT        = 1000;                                             
-   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;                                  
+   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;
+   const int MAX_ORE_COUNT          = MAX_PEARL_COUNT;
    const int RESOURCE_SPACING       = 30;
    const int PEARL_POSITION         = 0;
    const int CRYSTAL_POSITION       = PEARL_POSITION + 10;
+   const int ORE_POSITION           = CRYSTAL_POSITION + 10;
    const int CRUDE_TOOL_POSITION    = 0;
    const int REFINED_TOOL_POSITION  = CRUDE_TOOL_POSITION+ 10;
    const int ARTIFACT_POSITION      = REFINED_TOOL_POSITION + 10;
 
-   /* Public properties                               � � � � � � �   � � � � � �  */
-   public int pearlCount       {  get; private set; }
+   /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
+   public int pearlCount       { get; private set;  }
    public int crystalCount     { get; private set;  }
-   public int oreCount         { get;  set;         }
+   public int oreCount         { get; private set;  }
    public int crudeToolCount   { get; private set;  }
    public int refinedToolCount { get; private set;  }
    public int artifactCount    { get; private set;  }
 
-   /* Private variables � � � � � � � � � � � � � � � � � � � � � � � � � � �      */
+   /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource;  
    private Transform currentCraft;
    
-   /* Delegate for when the pearl count changes. � � � � � � � � � � � � � � � �   */
+   /* Delegate for when the pearl count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnPearlCountChanged;                                         
 
-   /* Delegate for when the crystal count changes. � � � � � � � � � � � � � � �   */
+   /* Delegate for when the crystal count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnCrystalCountChanged;
 
-   /* Delegate for when the crystal count changes. � � � � � � � � � � � � � � �   */
+   /* Delegate for when the crystal count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnOreCountChanged;
                                                                                    
    /* Sets up the singleton instance and initializes the inventory panel state.    */
@@ -125,6 +129,7 @@ public class InventoryManager : MonoBehaviour
 
       pearlCount       = MIN_PEARL_COUNT;
       crystalCount     = MIN_CRYSTAL_COUNT;
+      oreCount         = MIN_ORE_COUNT;
       crudeToolCount   = MIN_CRUDE_TOOL_COUNT;
       refinedToolCount = MIN_REFINED_TOOL_COUNT;
       artifactCount    = MIN_ARTIFACT_COUNT;
@@ -135,13 +140,14 @@ public class InventoryManager : MonoBehaviour
    {
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, "Pearl");
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, "Crystal");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, "Ore");
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
       CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), REFINED_TOOL_POSITION, "Refined Tool");
       CreateCraft(Item.GetItemSprite(Item.ItemType.Artifact), ARTIFACT_POSITION, "Artifact");
    }
    
-   /* Creates and positions a resource display element in the inventory panel. �   */
+   /* Creates and positions a resource display element in the inventory panel. ï¿½   */
    private void CreateResource(Sprite resourceSprite, float positionIndex,  string resourceTag)           
    {                                                                                
       int           resourceCount;
@@ -157,6 +163,9 @@ public class InventoryManager : MonoBehaviour
          case "Crystal":
             resourceCount = crystalCount;
             break;
+         case "Ore":
+            resourceCount = oreCount;
+            break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
             resourceCount = 0;
@@ -164,10 +173,10 @@ public class InventoryManager : MonoBehaviour
       }
         
       /* Instantiate the resource template and set its position in the container   */
-      /* Transform of the newly created resource UI element. � � � � � � � � �     */
+      /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
       resourceTransform = Instantiate(ResourceTemplate, ResourceContainer);
       
-      /* RectTransform for positioning the new resource UI element. � � � � ��     */
+      /* RectTransform for positioning the new resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ï¿½     */
       resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
       
       resourceTransform.tag = resourceTag;
@@ -192,7 +201,10 @@ public class InventoryManager : MonoBehaviour
           case "Crystal":
              CrystalCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
-          default:
+          case "Ore":
+             OreCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+             break;
+         default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
             break;
       }
@@ -204,7 +216,6 @@ public class InventoryManager : MonoBehaviour
    {                                                                                
       int    craftCount;
       Button craftWindowButton;
-
       switch (craftTag) 
       {
          case "Crude Tool":
@@ -223,10 +234,10 @@ public class InventoryManager : MonoBehaviour
       }
 
       /* Instantiate the craft template and set its position in the container.     */
-      /* Transform of the newly created resource UI element. � � � � � � � � �     */
+      /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
       Transform craftTransform = Instantiate(CraftTemplate, CraftContainer);
       
-      /* RectTransform for positioning the new resource UI element. � � � � � �    */
+      /* RectTransform for positioning the new resource UI element.                */
        RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
        
       craftTransform.tag = craftTag;
@@ -267,7 +278,7 @@ public class InventoryManager : MonoBehaviour
       string resourceInfo  = "";
 
       /* Instantiate the resource template and set its position in the container.  */
-      /* Transform of the newly created resource UI element. � � � � � � � � �     */
+      /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
       Transform resourceTransform         = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
       RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
 
@@ -289,6 +300,10 @@ public class InventoryManager : MonoBehaviour
             resourceCount = crystalCount;
             resourceInfo  = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
             break;
+         case "Ore":
+            resourceCount = oreCount;
+            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
+            break;
          default: 
             Debug.Log("Unknown item tag for resource window.");
             break;
@@ -308,11 +323,13 @@ public class InventoryManager : MonoBehaviour
    /* Creates and populates the craft information window                           */
    private void CreateCraftWindow(Sprite crafteSprite, string craftTag) 
    {
-      int    craftCount = 0;
+      Debug.Log("In CreateCraft Method");
+
+      int craftCount = 0;
       string craftInfo  = "";
 
       /* Instantiate the resource template and set its position in the container.  */
-      /* Transform of the newly created resource UI element. � � � � � � � � �     */
+      /* Transform of the newly created resource UI element.                       */
       Transform     craftTransform     = Instantiate(CraftWindowTemplate, CraftWindowContainer);
       RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
 
@@ -435,11 +452,54 @@ public class InventoryManager : MonoBehaviour
       
       return;
    }
-   
+
+   public void TryAddOre(int oreAmount)
+   {
+      if (oreCount > MAX_ORE_COUNT)
+      {
+         Debug.LogError("Ore count is at maximum!");
+         return;
+      }
+      else
+         if ((oreCount + oreAmount) > MAX_ORE_COUNT)
+         Debug.LogError("Ore count is at maximum!");
+      else
+         oreCount += oreAmount;
+
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
+
+      return;
+   }
+
+   public void TrySpendOre(int oreAmount)
+   {
+      if (oreCount < MIN_ORE_COUNT)
+      {
+         Debug.LogError("Ore count is at minimum!");
+         return;
+      }
+      else
+         if (oreCount < oreAmount)
+      {
+         Debug.LogError("Not enough ore to spend!");
+         return;
+      }
+      else
+         oreCount -= oreAmount;
+
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
+
+      return;
+   }
+
    public void ShowInventoryPanel() 
    {
       InventoryPanel.gameObject.SetActive(true);
       ResourcePanel.gameObject.SetActive(true);
+      // Added for camera fix
+      PopUpManager.Instance.DisablePlayerInput();
    }
    
    public void ShowResourcePanel()
@@ -458,6 +518,9 @@ public class InventoryManager : MonoBehaviour
 
    public void CloseInventoryPanel() 
    {
+      // Added for camera fix
+      PopUpManager.Instance.EnablePlayerInput();
+
       InventoryPanel.gameObject.SetActive(false);
 
       if(currentCraft != null) 

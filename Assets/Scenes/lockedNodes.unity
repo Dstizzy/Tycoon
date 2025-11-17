@@ -15197,6 +15197,7 @@ MonoBehaviour:
   SellWindowTemplate: {fileID: 502445082}
   InfoPanel: {fileID: 1342368473}
   UpgradePanel: {fileID: 983352147}
+  MysteryBoxPanel: {fileID: 0}
   tradeHutLevelText: {fileID: 636105382}
 --- !u!222 &1001462267
 CanvasRenderer:
@@ -21345,6 +21346,7 @@ MonoBehaviour:
   commerceTab: {fileID: 629863788}
   productionTab: {fileID: 287196495}
   explorationTab: {fileID: 148560603}
+  craftingController: {fileID: 0}
 --- !u!1 &1437886190
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "OnBuildingClick",
+                    "name": "OnBuildingHover",
                     "type": "Value",
                     "id": "d037bff8-ed86-4670-85cc-429cf3b7ae5a",
                     "expectedControlType": "Vector2",
@@ -44,7 +44,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "OnBuildingClick",
+                    "action": "OnBuildingHover",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
