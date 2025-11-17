@@ -1,5 +1,6 @@
 /* libraries                                                                                     */
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -149,6 +150,7 @@ public class LabManager : MonoBehaviour
             case TIER_ONE:
                 PerformBuy(TIER_ONE_PEARL_COST, TIER_ONE_ITEM_COST);
                 ImplementTierOneInnovation(tab);
+                UnlockNextNode(tab, 2);
                 tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
@@ -159,6 +161,7 @@ public class LabManager : MonoBehaviour
             case TIER_TWO:
                 PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
                 ImplementTierTwoInnovation(tab);
+                UnlockNextNode(tab, 3);
                 tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
@@ -256,6 +259,45 @@ public class LabManager : MonoBehaviour
         else
         {
             Debug.Log("There is no tab");
+        }
+    }
+
+    public void UnlockNextNode(GameObject tab, int tier)
+    {
+        Color currentColor;
+
+        if (tier == 2)
+        {
+
+            tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
+
+            currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
+            currentColor.a = 1.0f;
+            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
+            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().interactable = true;
+
+            currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
+            currentColor.a = 1.0f;
+            tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+        }
+        else
+        {
+            if (tier != 3)
+            {
+                Debug.Log("Accessing wrong tier node");
+                return;
+            }
+            tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
+
+            currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
+            currentColor.a = 255;
+            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
+            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
+
+            currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
+            currentColor.a = 255;
+            tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+
         }
     }
 
