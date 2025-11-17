@@ -30,12 +30,18 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
     [SerializeField] private CraftingController craftingController;
-
-    TradeHutManager tradeHutManager = TradeHutManager.Instance;
+   
+    TradeHutManager tradeHutManager;
 
     /* Check if all required game objects exist and are in there required states                 */
     private void Awake() 
     {
+      tradeHutManager = TradeHutManager.Instance;
+
+      if (tradeHutManager == null)
+            Debug.LogError("Insance is not initialized");
+
+
         /* Set the info panel to inactive if it exists                                           */
         if (infoPanel == null) 
         {
@@ -223,7 +229,7 @@ public class LabManager : MonoBehaviour
         /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
         if (tabType == commerceTab)
         {
-            Button mysteryBox = tradeHutManager.BuyPanel.Find("MysteryBox").GetComponent<Button>();
+            Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
             Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
 
             chainImage.gameObject.SetActive(false);
