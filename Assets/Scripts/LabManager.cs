@@ -262,13 +262,14 @@ public class LabManager : MonoBehaviour
         }
     }
 
+    /* Unlock the next tier node upon buying the previous tier node                              */
     public void UnlockNextNode(GameObject tab, int tier)
     {
         Color currentColor;
 
+        /* Get rid of the tier 2 lock and turn on buttons and text                               */
         if (tier == 2)
         {
-
             tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
 
             currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
@@ -280,6 +281,7 @@ public class LabManager : MonoBehaviour
             currentColor.a = 1.0f;
             tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
         }
+        /* Get ride of the tier 3 lock and turn on buttons and text                              */
         else
         {
             if (tier != 3)
