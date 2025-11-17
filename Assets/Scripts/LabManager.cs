@@ -32,6 +32,8 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject explorationTab;
     [SerializeField] private CraftingController craftingController;
 
+    TradeHutManager tradeHutManager = TradeHutManager.Instance;
+
     /* Check if all required game objects exist and are in there required states                 */
     private void Awake() 
     {
@@ -235,7 +237,12 @@ public class LabManager : MonoBehaviour
         /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
         if (tabType == commerceTab)
         {
-            Debug.Log("Unlock gamble action");
+            Button mysteryBox = tradeHutManager.BuyPanel.Find("MysteryBox").GetComponent<Button>();
+            Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
+
+            chainImage.gameObject.SetActive(false);
+            
+            mysteryBox.interactable = true;
         }
         /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
         /*    bonus item upon crafting a single item                                             */
@@ -245,7 +252,7 @@ public class LabManager : MonoBehaviour
             craftingController.UnlockRefinedToolFromLab();
             craftingController.ApplyLockStateToUI();
         }
-        /* Permanently increase gold by +15 per turn                                         */
+        /* Permanently increase gold by +15 per turn                                             */
         else if (tabType == explorationTab)
         {
             Debug.Log("Permanently increase gold by +15 per turn");
