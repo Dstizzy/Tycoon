@@ -137,7 +137,8 @@ public class OreRefinery_Manager : MonoBehaviour {
     }
 
     public void CloseOreRefinoryPanel(int buttonID) {
-        switch (buttonID) {
+        switch (buttonID) 
+        {
             case REFINE_BUTTON:
                 break;
             case INFO_BUTTON:
@@ -155,19 +156,23 @@ public class OreRefinery_Manager : MonoBehaviour {
     //private void ShowExplorePanel() {
     //    refinePanel.gameObject.SetActive(true);
     //}
-    private void ShowInfoPanel() {
+    private void ShowInfoPanel() 
+    {
         infoPanel.gameObject.SetActive(true);
     }
-    private void ShowUpgradePanel() {
+    private void ShowUpgradePanel() 
+    {
         upgradePanel.gameObject.SetActive(true);
     }
     //private void CloseTradePanel() {
     //    refinePanel.gameObject.SetActive(false);
     //}
-    private void CloseInfoPanel() {
+    private void CloseInfoPanel() 
+    {
         infoPanel.gameObject.SetActive(false);
     }
-    private void CloseUpgradePanel() {
+    private void CloseUpgradePanel() 
+    {
         upgradePanel.gameObject.SetActive(false);
     }
 }
