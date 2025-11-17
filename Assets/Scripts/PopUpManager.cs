@@ -63,7 +63,6 @@ public class PopUpManager : MonoBehaviour {
 
       // Perform a point raycast in 2D physics
       RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-      Debug.Log($"[TEST] Raycast Hit: {hit.collider?.name}");
 
       /* 3. Determine the object hit this frame, or null if nothing was hit                                                                           */
       Transform currentHoverObject = hit.collider ? hit.collider.transform : null;
