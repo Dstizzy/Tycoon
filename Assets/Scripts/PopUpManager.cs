@@ -24,7 +24,12 @@ public class PopUpManager : MonoBehaviour {
 
     public static PopUpManager Instance { get; private set; }
 
-    private void Awake() {
+   // Added for CameraDragPan update(off when the pop up window is open)
+   /* This flag is used by the Camera script to disable */
+   /* panning and zooming while a window is open.       */
+   public bool IsWindowOpen { get; private set; } = false;
+
+   private void Awake() {
         if (Instance != null && Instance != this) {
             Destroy(this.gameObject);
         } else {
@@ -169,10 +174,12 @@ public class PopUpManager : MonoBehaviour {
     }
 
     public void DisablePlayerInput() {
+        IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
         playerActions.PlayerInput.Disable();
         HoverScript.Instance.DisbaleHover();
     }
     public void EnablePlayerInput() {
+        IsWindowOpen = false; // Added for Drag/Pan update; Find the function(s) that CLOSE popups
         playerActions.PlayerInput.Enable();
         HoverScript.Instance.EnableHover();
         ClosePopUps();
