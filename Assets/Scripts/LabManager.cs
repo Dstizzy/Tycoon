@@ -52,6 +52,17 @@ public class LabManager : MonoBehaviour
         {
             innovatePanel.gameObject.SetActive(false);
         }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (initialTab == null)
+        {
+            Debug.LogError("Commerce Tab is not assigned");
+        }
+        else
+        {
+            initialTab.gameObject.SetActive(true);
+        }
+
         /* Set the research panel to inactive if it exists                                       */
         if (commerceTab == null)
         {
