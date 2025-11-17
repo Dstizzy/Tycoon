@@ -9488,7 +9488,7 @@ MonoBehaviour:
   - {fileID: 294294460293442742, guid: 7c753d9829e80f34381359cfd5b823b6, type: 3}
   cam: {fileID: 264605918}
   tradeHutManager: {fileID: 177811380}
-  explortionUnitManager: {fileID: 0}
+  explorationUnitManager: {fileID: 312859139}
   oreRefineryManager: {fileID: 930000709}
   forgeManager: {fileID: 793877435}
   labManager: {fileID: 1670020820}
@@ -12911,9 +12911,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccbabee0dc87d348aa98bb7d43b8980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
-  currentResource: 0
-  resourcePerTurn: 50
-  resourceText: {fileID: 830870357}
   currentTurn: 1
   maxTurns: 20
   turnText: {fileID: 1079991069}
@@ -13107,6 +13104,7 @@ MonoBehaviour:
   infoPanel: {fileID: 1531523129}
   upgradePanel: {fileID: 451993531}
   oreRefineryLevelText: {fileID: 0}
+  oreLevel: 1
 --- !u!1 &935026831
 GameObject:
   m_ObjectHideFlags: 0
@@ -17958,7 +17956,7 @@ RectTransform:
   m_GameObject: {fileID: 1265917667}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.32986802, y: 0.32986802, z: 0.32986802}
+  m_LocalScale: {x: 0.31537008, y: 0.31537008, z: 0.31537008}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 661684188}
@@ -30194,6 +30192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   Pearl: {fileID: 8686295293490032475, guid: b0f977259d7670d4188c7db0fd7772f8, type: 3}
   Crystal: {fileID: -2857888365972879962, guid: 4b9a14b1b1beeda42ba8913d4627e20a, type: 3}
+  Ore: {fileID: -3215638422625849363, guid: 6e08e0ee8f105d94f9fba630398baa74, type: 3}
 --- !u!1 &2062106672
 GameObject:
   m_ObjectHideFlags: 0

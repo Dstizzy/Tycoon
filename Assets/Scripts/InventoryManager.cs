@@ -497,6 +497,8 @@ public class InventoryManager : MonoBehaviour
    {
       InventoryPanel.gameObject.SetActive(true);
       ResourcePanel.gameObject.SetActive(true);
+      // Added for camera fix
+      PopUpManager.Instance.DisablePlayerInput();
    }
    
    public void ShowResourcePanel()
@@ -515,6 +517,9 @@ public class InventoryManager : MonoBehaviour
 
    public void CloseInventoryPanel() 
    {
+      // Added for camera fix
+      PopUpManager.Instance.EnablePlayerInput();
+
       InventoryPanel.gameObject.SetActive(false);
 
       if(currentCraft != null) 

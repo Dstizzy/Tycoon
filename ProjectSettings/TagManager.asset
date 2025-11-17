@@ -15,6 +15,8 @@ TagManager:
   - Crystal
   - Pearl
   - Sword
+  - BuildingButtonPopUp
+  - Ore
   layers:
   - Default
   - TransparentFX
