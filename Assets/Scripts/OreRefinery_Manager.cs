@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OreRefinery_Manager : MonoBehaviour {
+public class OreRefinery_Manager : MonoBehaviour { 
 
     public static OreRefinery_Manager Instance { get; private set; }
 
