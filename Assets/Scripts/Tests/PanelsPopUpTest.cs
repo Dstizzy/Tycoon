@@ -21,28 +21,11 @@ public class PanelsPopUpTest : InputTestFixture
         }
     }
 
-    [UnityTearDown] // Runs after *each* [UnityTest]
-    public IEnumerator CleanupTestObjects()
-    {
-        // Find all the pop-up buttons that were likely left behind.
-        GameObject[] popUpButtons = GameObject.FindGameObjectsWithTag("BuildingButtonPopUp");
-
-        foreach (GameObject go in popUpButtons)
-        {
-            // Destroy them to ensure they aren't blocking the next test's input.
-            UnityEngine.Object.Destroy(go);
-        }
-
-        // Allow one frame for the destruction to take effect
-        yield return null;
-    }
 
     [Test]
     public void IsMouseAdded()
     {
         Assert.IsNotNull(Mouse.current, "Setup Error: Missing Mouse device.");
-
-
     }
 
     [UnityTest]
@@ -131,7 +114,6 @@ public class PanelsPopUpTest : InputTestFixture
                     Assert.Fail();
                     break;
             }
-            ;
 
             yield return null;
 
@@ -174,7 +156,7 @@ public class PanelsPopUpTest : InputTestFixture
             Debug.Log($"Clicking button with text: {buttonTextComponent.text}");
 
             // Click a building button pop up
-            worldPosition = myButton.transform.position;
+            worldPosition  = myButton.transform.position;
             screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
             Set(Mouse.current.position, screenPosition);
             yield return null;
