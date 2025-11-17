@@ -17,6 +17,8 @@ TagManager:
   - Sword
   - BuildingButtonPopUp
   - BuildingButton
+  - BuildingButtonPopUp
+  - Ore
   layers:
   - Default
   - TransparentFX
