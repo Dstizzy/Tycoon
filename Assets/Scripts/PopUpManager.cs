@@ -39,17 +39,17 @@ public class PopUpManager : MonoBehaviour {
 
         playerActions = new PlayerActions();
         playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.OnBuildingClick.performed += OnBuildingClick;
+        playerActions.PlayerInput.OnBuildingHover.performed += OnBuildingHover;
     }
 
     private void OnDestroy() {
         if (playerActions != null) {
-            playerActions.PlayerInput.OnBuildingClick.performed -= OnBuildingClick;
+            playerActions.PlayerInput.OnBuildingHover.performed -= OnBuildingHover;
             playerActions.PlayerInput.Disable();
             playerActions.Dispose();
         }
     }
-    private void OnBuildingClick(InputAction.CallbackContext context) {
+    private void OnBuildingHover(InputAction.CallbackContext context) {
 
       PointerEventData eventData = new PointerEventData(EventSystem.current);
       eventData.position = context.ReadValue<Vector2>();
@@ -68,6 +68,7 @@ public class PopUpManager : MonoBehaviour {
 
       // Perform a point raycast in 2D physics
       RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+      Debug.Log($"[TEST] Raycast Hit: {hit.collider?.name}");
 
       /* 3. Determine the object hit this frame, or null if nothing was hit                                                                           */
       Transform currentHoverObject = hit.collider ? hit.collider.transform : null;
@@ -120,7 +121,9 @@ public class PopUpManager : MonoBehaviour {
 
             GameObject buttonPreFab = buildingButtonsPreFab[buttonIndex];
             GameObject newButton = Instantiate(buttonPreFab, fixedPopUpPosition, Quaternion.identity);
-            popUps.Add(newButton);
+            newButton.tag = "BuildingButton";
+
+         popUps.Add(newButton);
 
             string uniqueButtonName = buildingTransform.tag switch {
                 "Trade Hut" => "Trade",

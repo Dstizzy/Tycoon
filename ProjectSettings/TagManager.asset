@@ -16,6 +16,8 @@ TagManager:
   - Pearl
   - Sword
   - BuildingButtonPopUp
+  - BuildingButton
+  - BuildingButtonPopUp
   - Ore
   layers:
   - Default

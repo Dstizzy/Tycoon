@@ -1,6 +1,10 @@
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+
+using static Resources;
 
 public class TradeHutManager : MonoBehaviour 
 {
@@ -20,8 +24,12 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform SellWindowTemplate;     
    [SerializeField] private Transform InfoPanel;                   
    [SerializeField] private Transform UpgradePanel;           
+   [SerializeField] private Transform MysteryBoxPanel;        
 
    public TextMeshProUGUI tradeHutLevelText;
+
+   private readonly static System.Random Rng = new System.Random();
+
 
    /* Private variables                                                                               */
    private int artifactSellCount     = 0; 
@@ -32,6 +40,7 @@ public class TradeHutManager : MonoBehaviour
    /* Transform                                                                                       */
    private Transform currentBuyItem;      
    private Transform currentSellItem;
+   private Transform currentMysteryBoxResult;
 
    /* Constants                                                                                       */
    const int ENDING_LEVEL        = 5;     
@@ -114,6 +123,11 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Buy Item Template is not assigned in the Inspector!");
       else
          BuyItemTemplate.gameObject.SetActive(false);
+
+      if(MysteryBoxPanel == null)
+         Debug.LogError("Mystery Box Panel is not assigned in the Inspector!");
+      else
+         MysteryBoxPanel.gameObject.SetActive(false);
    }
 
    private void Start() 
@@ -185,7 +199,7 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-      buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
+      //buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
 
       /* Populate item properties                                                                     */
       buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
@@ -395,6 +409,40 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
+   public void MysterBoxResult(ResourceType resource, int resourceAmount) 
+   {
+      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(false);
+
+      Transform ResultContainer = MysteryBoxPanel.Find("ResultContainer");
+      Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
+      Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
+
+      ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = Resources.GetResourceSprite(resource);
+      ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
+
+      currentMysteryBoxResult = ResultTransform;
+      ResultTransform.gameObject.SetActive(true);
+   }
+
+   public void OpenMysterBox() 
+   {
+
+      int successChance = Rng.Next(1, 101);
+
+      if(successChance <= 60) 
+      { 
+         MysterBoxResult(ResourceType.Pearl, 200);
+
+         InventoryManager.Instance.TryAddPearl(200);
+      } else 
+      {
+         MysterBoxResult(ResourceType.Crystal, 50);
+
+         InventoryManager.Instance.TryAddPearl(50);
+      }
+   }
+
+
    /* Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel           */
    public void RequestTradeHutPanel(int buttonID) 
    {
@@ -523,6 +571,12 @@ public class TradeHutManager : MonoBehaviour
       SellWindow.gameObject.SetActive(true);
    }
 
+   public void ShowMysteryBoxPanel() 
+   {
+      MysteryBoxPanel.gameObject.SetActive(true);
+      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(true);
+   }
+
    private void CloseTradePanel() 
    {
       TradePanels.gameObject.SetActive(false);
@@ -581,5 +635,15 @@ public class TradeHutManager : MonoBehaviour
    private void CloseBuyWindow() 
    {
       BuyWindow.gameObject?.SetActive(false);
+   }
+
+   public void CloseMysteryBoxPanel() 
+   {
+      if(currentMysteryBoxResult != null) 
+      {
+         Destroy(currentMysteryBoxResult.gameObject);
+         currentMysteryBoxResult = null;
+      }
+      MysteryBoxPanel.gameObject.SetActive(false);
    }
 }
