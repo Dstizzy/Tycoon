@@ -293,17 +293,6 @@ public class CraftingController : MonoBehaviour
             Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
         }
     }
-      if (inv.oreCount >= oreCost)
-      {
-         inv.oreCount -= oreCost;
-         Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
-         inv.OnOreCountChanged?.Invoke(inv.oreCount);
-      }
-      else
-      {
-         Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
-      }
-   }
 
    /* Spend pearl if there is enoguh pearl in the inventory                                      */
    private bool TrySpendPearls(int pearls)

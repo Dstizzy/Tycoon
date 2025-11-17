@@ -11110,7 +11110,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &752180592
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21836,6 +21836,14 @@ MonoBehaviour:
   tool1OreCost: 15
   tool2OreCost: 25
   tool3OreCost: 50
+  refinedUnlockCost: 100
+  artifactUnlockCost: 200
+  refinedLockOverlay: {fileID: 0}
+  artifactLockOverlay: {fileID: 0}
+  refinedUnlockPanel: {fileID: 0}
+  artifactUnlockPanel: {fileID: 0}
+  refinedUnlockMessage: {fileID: 0}
+  artifactUnlockMessage: {fileID: 0}
 --- !u!1 &1413533714
 GameObject:
   m_ObjectHideFlags: 0
@@ -25883,6 +25891,7 @@ MonoBehaviour:
   commerceTab: {fileID: 151103579}
   productionTab: {fileID: 98411292}
   explorationTab: {fileID: 676949154}
+  craftingController: {fileID: 0}
 --- !u!1 &1670546221
 GameObject:
   m_ObjectHideFlags: 0
@@ -32168,6 +32177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   Pearl: {fileID: 8686295293490032475, guid: b0f977259d7670d4188c7db0fd7772f8, type: 3}
   Crystal: {fileID: -2857888365972879962, guid: 4b9a14b1b1beeda42ba8913d4627e20a, type: 3}
+  Ore: {fileID: 0}
 --- !u!1 &2062106672
 GameObject:
   m_ObjectHideFlags: 0
