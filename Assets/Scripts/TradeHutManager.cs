@@ -17,8 +17,6 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform BuyWindowContainer;     
    [SerializeField] private Transform BuyWindowTemplate;      
    [SerializeField] private Transform SellPanel;              
-   [SerializeField] private Transform SellItemContainer;              
-   [SerializeField] private Transform SellItemTemplate;       
    [SerializeField] private Transform SellWindow;
    [SerializeField] private Transform SellWindowContainer;
    [SerializeField] private Transform SellWindowTemplate;     
@@ -68,12 +66,6 @@ public class TradeHutManager : MonoBehaviour
          Instance = this;
          DontDestroyOnLoad(this.gameObject);
       }
-
-      if (SellItemContainer == null)
-         Debug.LogError("Container is not assigned in the Inspector!");
-
-      if (SellItemTemplate != null)
-         SellItemTemplate.gameObject.SetActive(false);
 
       if (TradePanels == null)
          Debug.LogError("Trade Panel is not assigned in the Inspector!");
@@ -150,6 +142,11 @@ public class TradeHutManager : MonoBehaviour
 
    private void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
+      Transform SellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
+                SellItemTemplate  = SellItemContainer.Find("SellItemTemplate").GetComponent<Transform>();
+      
+      SellItemTemplate.gameObject.SetActive(false);
+
       /* Instantiate the template and set its position in the container                               */
       Transform     tradeItemTransform     = Instantiate(SellItemTemplate, SellItemContainer);
       RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
