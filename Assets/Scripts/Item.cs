@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class Item {
 
-   static int crudeToolSellValue   = 5;
-   static int refinedToolSellValue = 10;
-   static int artifactSellValue    = 20;
-   static int swordPrice           = 5;
+   public static int crudeToolSellValue    { get; private set; } = 5;
+   public static int refinedToolSellValue  { get; private set; } = 10;
+   public static int artifactSellValue     { get; private set; } = 20;
+   public static int swordPrice            { get; private set; } = 5;
+   public static int tierOneIncreaseFactor { get; private set; } = 10;
+
    const string CRUDE_TOOL_DESCRIPTION   = 
       "A basic tool made from rudimentary materials. " +
       "Useful for simple tasks but lacks durability.";
    const string REFINED_TOOL_DESCRIPTION =
       "A well-crafted tool made from high-quality materials. " +
       "Offers better performance and durability for various tasks.";
-   const string ARTIFACT_DESCRIPTION = 
+   const string ARTIFACT_DESCRIPTION     = 
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
 
@@ -68,4 +70,10 @@ public class Item {
 
         return ItemSprites.itemSprites.GetSprite(itemType);
     }
+
+   public static void IncreaseItemsSellValue() {
+      Item.crudeToolSellValue   += (Item.crudeToolSellValue   * tierOneIncreaseFactor);
+      Item.refinedToolSellValue += (Item.refinedToolSellValue * tierOneIncreaseFactor);
+      Item.artifactSellValue    += (Item.artifactSellValue    * tierOneIncreaseFactor);
+   }
 }
