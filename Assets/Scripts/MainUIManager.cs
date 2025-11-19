@@ -36,7 +36,7 @@ public class MainUIManager : MonoBehaviour {
 
         ChangePearlCountText(InventoryManager.Instance.pearlCount);
         ChangeCrystalCountText(InventoryManager.Instance.crystalCount);
-        InventoryManager.Instance.OnPearlCountChanged += ChangePearlCountText;
+        InventoryManager.Instance.OnPearlCountChanged   += ChangePearlCountText;
         InventoryManager.Instance.OnCrystalCountChanged += ChangeCrystalCountText;
     }
     public void ToggleMenu() {

@@ -1,8 +1,13 @@
 
+using NUnit.Framework;
+
+using System;
+using System.Collections.Generic;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 using static Resources;
 
@@ -22,9 +27,10 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform SellWindowTemplate;     
    [SerializeField] private Transform InfoPanel;                   
    [SerializeField] private Transform UpgradePanel;           
-   [SerializeField] private Transform MysteryBoxPanel;        
-
-   public TextMeshProUGUI tradeHutLevelText;
+   [SerializeField] private Transform MysteryBoxPanel; 
+   
+   public List<TextMeshProUGUI> ItemSellValuesText { get; private set; }
+   public TextMeshProUGUI       tradeHutLevelText;
 
    private readonly static System.Random Rng = new System.Random();
 
@@ -53,6 +59,8 @@ public class TradeHutManager : MonoBehaviour
    const int UPGRADE_BUTTON      = 3;     
 
    public static int tradeHutLevel;
+
+
    public static TradeHutManager Instance;
 
    private void Awake() 
@@ -142,22 +150,29 @@ public class TradeHutManager : MonoBehaviour
 
    private void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
-      Transform SellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
-                SellItemTemplate  = SellItemContainer.Find("SellItemTemplate").GetComponent<Transform>();
-      
+      Transform       SellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
+                      SellItemTemplate  = SellItemContainer.Find("SellItemTemplate").GetComponent<Transform>(),
+                      tradeItemTransform;
+      RectTransform   tradeItemRectTransform;
+      Button          itemButton;
+      TextMeshProUGUI sellValueText;
+
       SellItemTemplate.gameObject.SetActive(false);
 
       /* Instantiate the template and set its position in the container                               */
-      Transform     tradeItemTransform     = Instantiate(SellItemTemplate, SellItemContainer);
-      RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+      tradeItemTransform     = Instantiate(SellItemTemplate, SellItemContainer);
+      tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
       tradeItemTransform.tag = itemTag;
       tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
 
       /* Populate the the item properties                                                             */
-      tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
+      sellValueText = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      sellValueText.text = itemValue.ToString();
+      ItemSellValuesText.Add(sellValueText);
+
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals("Artifact") ? "   Artifact" : itemTag;
-      Button itemButton       = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
+      itemButton       = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
       itemButton.image.sprite = itemSprite;
 
       /* Dynamically add a listener to the button, which creates a sell window when clicked           */
