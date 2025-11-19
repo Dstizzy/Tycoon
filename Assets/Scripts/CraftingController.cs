@@ -287,12 +287,14 @@ public class CraftingController : MonoBehaviour
            // code added for OreRefinery_Manager.cs scripts by Juyoung
            inv.TrySpendOre(oreCost);
            Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
-        }
-        else
-        {
+           TransactionMsgManager.Instance.ShowSuccess($"{toolName} crafted successfully! (-{oreCost} ore)");
+         }
+         else
+         {
             Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
-        }
-    }
+            TransactionMsgManager.Instance.ShowFailure($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+         }
+   }
 
    /* Spend pearl if there is enoguh pearl in the inventory                                      */
    private bool TrySpendPearls(int pearls)
