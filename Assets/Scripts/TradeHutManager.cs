@@ -15,9 +15,7 @@ public class TradeHutManager : MonoBehaviour
 {
    /* Inspector variables                                                                             */
    [SerializeField] private Transform TradePanels;            
-                    public  Transform BuyPanel;               
-   [SerializeField] private Transform BuyItemContainer;       
-   [SerializeField] private Transform BuyItemTemplate;        
+                    public  Transform BuyPanel;       
    [SerializeField] private Transform BuyWindow;              
    [SerializeField] private Transform BuyWindowContainer;     
    [SerializeField] private Transform BuyWindowTemplate;      
@@ -120,19 +118,11 @@ public class TradeHutManager : MonoBehaviour
       else
          BuyWindowTemplate.gameObject.SetActive(false);
 
-      if (BuyItemContainer == null)
-         Debug.LogError("Buy Container is not assigned in the Inspector!");
-
       if (BuyWindow == null)
          Debug.LogError("Buy Window is not assigned in the Inspector!");
       else
          BuyWindow.gameObject.SetActive(false);
-
-      if (BuyItemTemplate == null)
-         Debug.LogError("Buy Item Template is not assigned in the Inspector!");
-      else
-         BuyItemTemplate.gameObject.SetActive(false);
-
+      
       if(MysteryBoxPanel == null)
          Debug.LogError("Mystery Box Panel is not assigned in the Inspector!");
       else
@@ -183,9 +173,16 @@ public class TradeHutManager : MonoBehaviour
 
    private void CreateBuyItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
+      Transform     BuyItemContainer = BuyPanel.Find("BuyItemContainer").GetComponent<Transform>(),
+                    BuyItemTemplate  = BuyItemContainer.Find("BuyItemTemplate").GetComponent<Transform>(),
+                    tradeItemTransform;
+      RectTransform tradeItemRectTransform;
+
       /* Instantiate the template and set its position in the container                               */
-      Transform     tradeItemTransform     = Instantiate(BuyItemTemplate, BuyItemContainer);
-      RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+      tradeItemTransform     = Instantiate(BuyItemTemplate, BuyItemContainer);
+      tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+
+      BuyItemTemplate.gameObject.SetActive(false);
 
       tradeItemTransform.tag = itemTag;
 
