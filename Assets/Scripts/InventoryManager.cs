@@ -328,9 +328,7 @@ public class InventoryManager : MonoBehaviour
    /* Creates and populates the craft information window                           */
    private void CreateCraftWindow(Sprite crafteSprite, string craftTag) 
    {
-      Debug.Log("In CreateCraft Method");
-
-      int craftCount = 0;
+      int    craftCount = 0;
       string craftInfo  = "";
 
       /* Instantiate the resource template and set its position in the container.  */

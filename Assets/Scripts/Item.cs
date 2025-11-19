@@ -6,7 +6,7 @@ public class Item {
    public static int refinedToolSellValue  { get; private set; } = 10;
    public static int artifactSellValue     { get; private set; } = 20;
    public static int swordPrice            { get; private set; } = 5;
-   public static int tierOneIncreaseFactor { get; private set; } = 10;
+   public static int tierOneIncreaseFactor { get; private set; } = 2;
 
    const string CRUDE_TOOL_DESCRIPTION   = 
       "A basic tool made from rudimentary materials. " +
