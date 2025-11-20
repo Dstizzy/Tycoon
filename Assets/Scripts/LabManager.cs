@@ -1,4 +1,5 @@
 /* libraries                                                                                     */
+using System;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
@@ -217,7 +218,7 @@ public class LabManager : MonoBehaviour
     {
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
-            Item.IncreaseItemsSellValue();
+            Console.WriteLine();
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
         {

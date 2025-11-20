@@ -1,12 +1,17 @@
+using System;
+
 using UnityEngine;
 
 public class Item {
 
-   public static int crudeToolSellValue    { get; private set; } = 5;
-   public static int refinedToolSellValue  { get; private set; } = 10;
-   public static int artifactSellValue     { get; private set; } = 20;
+   public static int crudeToolSellValue    { get; private set; } = 15;
+   public static int weaponslSellValue     { get; private set; } = 20;
+   public static int engineSellValue       { get; private set; } = 200;
    public static int swordPrice            { get; private set; } = 5;
    public static int tierOneIncreaseFactor { get; private set; } = 2;
+
+   private const int MIN_CRUDE_TOOL_VALUE = 1;
+   private const int MAX_CRUDE_TOOL_VALUE = 30;
 
    const string CRUDE_TOOL_DESCRIPTION   = 
       "A basic tool made from rudimentary materials. " +
@@ -18,10 +23,12 @@ public class Item {
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
 
-    public enum ItemType {
+   public static Action<int, ItemType> OnItemValueChange;
+
+   public enum ItemType {
         CrudeTool,
-        RefinedTool,
-        Artifact,
+        Weapon,
+        Engine,
         Sword
     }
 
@@ -29,10 +36,10 @@ public class Item {
         switch (itemType) {
             case ItemType.CrudeTool:
                 return crudeToolSellValue;
-            case ItemType.RefinedTool:
-                return refinedToolSellValue;
-            case ItemType.Artifact:
-                return artifactSellValue;
+            case ItemType.Weapon:
+                return weaponslSellValue;
+            case ItemType.Engine:
+                return engineSellValue;
             case ItemType.Sword:
                 return swordPrice;
             default:
@@ -54,9 +61,9 @@ public class Item {
       switch (itemType) {
          case ItemType.CrudeTool:
             return CRUDE_TOOL_DESCRIPTION;
-         case ItemType.RefinedTool:
+         case ItemType.Weapon:
             return REFINED_TOOL_DESCRIPTION;
-         case ItemType.Artifact:
+         case ItemType.Engine:
             return ARTIFACT_DESCRIPTION;
          default:
             return "No description available.";
@@ -71,9 +78,127 @@ public class Item {
         return ItemSprites.itemSprites.GetSprite(itemType);
     }
 
-   public static void IncreaseItemsSellValue() {
-      Item.crudeToolSellValue   += (Item.crudeToolSellValue   * tierOneIncreaseFactor);
-      Item.refinedToolSellValue += (Item.refinedToolSellValue * tierOneIncreaseFactor);
-      Item.artifactSellValue    += (Item.artifactSellValue    * tierOneIncreaseFactor);
+   public static void TryIncreaseCrudeToolSellValue(int amount) {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if (crudeToolSellValue >= MAX_CRUDE_TOOL_VALUE) {
+         Debug.LogError("Crude Tool Sell Value is already at maximum!");
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (crudeToolSellValue + amount > MAX_CRUDE_TOOL_VALUE) {
+         // Log the error if the amount is too large
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_CRUDE_TOOL_VALUE}.");
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      crudeToolSellValue += amount;
+
+      OnItemValueChange?.Invoke(crudeToolSellValue, ItemType.CrudeTool);
+
+      return;
+   }
+
+   public static void TryDecreaseCrudeToolSellValue(int amount) {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (crudeToolSellValue <= MIN_CRUDE_TOOL_VALUE) {
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+      }
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (crudeToolSellValue - amount < MIN_CRUDE_TOOL_VALUE) {
+         // Log the error if the amount is too large
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_CRUDE_TOOL_VALUE}.");
+
+      }
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      crudeToolSellValue -= amount;
+
+      OnItemValueChange?.Invoke(crudeToolSellValue, ItemType.CrudeTool);
+
+      return;
+   }
+   public static void TryIncreaseWeaponsSellValue(int amount) {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if (weaponslSellValue >= MAX_CRUDE_TOOL_VALUE) {
+         Debug.LogError("Crude Tool Sell Value is already at maximum!");
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (weaponslSellValue + amount > MAX_CRUDE_TOOL_VALUE) {
+         // Log the error if the amount is too large
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_CRUDE_TOOL_VALUE}.");
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      weaponslSellValue += amount;
+
+      OnItemValueChange?.Invoke(weaponslSellValue, ItemType.Weapon);
+
+      return;
+   }
+
+   public static void TryDecreaseWeaponsSellValue(int amount) {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (weaponslSellValue <= MIN_CRUDE_TOOL_VALUE) {
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         return;
+      }
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (weaponslSellValue - amount < MIN_CRUDE_TOOL_VALUE) {
+         // Log the error if the amount is too large
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_CRUDE_TOOL_VALUE}.");
+         return;
+         // OPTION: Set value to min instead of rejecting
+         // crudeToolSellValue = MIN_VALUE; 
+         // return true;
+
+      }
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      weaponslSellValue -= amount;
+
+      OnItemValueChange?.Invoke(weaponslSellValue, ItemType.Weapon);
+
+      return;
+   }
+   public static void TryIncreaseEnginesSellValue(int amount) {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if (engineSellValue >= MAX_CRUDE_TOOL_VALUE) {
+         Debug.LogError("Crude Tool Sell Value is already at maximum!");
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (engineSellValue + amount > MAX_CRUDE_TOOL_VALUE) {
+         // Log the error if the amount is too large
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_CRUDE_TOOL_VALUE}.");
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      engineSellValue += amount;
+
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+      return;
+   }
+
+   public static void TryDecreaseEnginesSellValue(int amount) {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (engineSellValue <= MIN_CRUDE_TOOL_VALUE)
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (engineSellValue - amount < MIN_CRUDE_TOOL_VALUE)
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_CRUDE_TOOL_VALUE}.");
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      engineSellValue -= amount;
+
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+
+      return;
    }
 }

@@ -147,8 +147,8 @@ public class InventoryManager : MonoBehaviour
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, "Ore");
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), REFINED_TOOL_POSITION, "Refined Tool");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Artifact), ARTIFACT_POSITION, "Artifact");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Weapon), REFINED_TOOL_POSITION, "Weapon");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ARTIFACT_POSITION, "Engine");
    }
    
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
@@ -225,10 +225,10 @@ public class InventoryManager : MonoBehaviour
          case "Crude Tool":
             craftCount = crudeToolCount;
             break;
-         case "Refined Tool":
+         case "Weapon":
             craftCount = crystalCount;
             break;
-         case "Artifact":
+         case "Engine":
             craftCount = artifactCount;
             break;
          default:
@@ -259,10 +259,10 @@ public class InventoryManager : MonoBehaviour
          case "Crude Tool":
             CrudeToolCountText   = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
-         case "Refined Tool":
+         case "Weapon":
             RefinedToolCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
-         case "Artifact":
+         case "Engine":
             ArtifactCountText    = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
@@ -352,11 +352,11 @@ public class InventoryManager : MonoBehaviour
             break;
          case "Refined Tool":
             craftCount = crystalCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.RefinedTool);
+            craftInfo  = Item.GetItemDescription(Item.ItemType.Weapon);
             break;
          case "Artifact":
             craftCount = artifactCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.Artifact);
+            craftInfo  = Item.GetItemDescription(Item.ItemType.Engine);
             break;
          default:
             Debug.Log("Unknown item tag for resource window.");

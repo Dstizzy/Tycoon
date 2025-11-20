@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+using static Item;
 using static Resources;
 
 public class TradeHutManager : MonoBehaviour 
@@ -27,22 +28,25 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform UpgradePanel;           
    [SerializeField] private Transform MysteryBoxPanel; 
    
-   public List<TextMeshProUGUI> ItemSellValuesText { get; private set; }
+   public List<Transform> Items { get; private set; }
    public TextMeshProUGUI       tradeHutLevelText;
 
    private readonly static System.Random Rng = new System.Random();
 
 
    /* Private variables                                                                               */
-   private int artifactSellCount     = 0; 
-   private int crudeToolSellCount    = 0; 
-   private int refinedToolSellCount  = 0; 
-   private int swordBuyCount         = 0;
+   private int crudeToolSellCount = 0; 
+   private int weaponSellCount    = 0; 
+   private int engineSellCount    = 0; 
+   private int swordBuyCount      = 0;
 
    /* Transform                                                                                       */
-   private Transform currentBuyItem;      
-   private Transform currentSellItem;
-   private Transform currentMysteryBoxResult;
+   private Transform       currentBuyItem;      
+   private Transform       currentSellItem;
+   private Transform       currentMysteryBoxResult;
+   private TextMeshProUGUI crudeToolValueText;
+   private TextMeshProUGUI weaponValueText;
+   private TextMeshProUGUI engineValueText;
 
    /* Constants                                                                                       */
    const int ENDING_LEVEL        = 5;     
@@ -64,6 +68,9 @@ public class TradeHutManager : MonoBehaviour
    private void Awake() 
    {
       tradeHutLevel = STARTING_LEVEL;
+      Items = new();
+
+      Item.OnItemValueChange = ChangeItemValueText;
 
       if (Instance != null && Instance != this)
          Destroy(this.gameObject);
@@ -132,8 +139,8 @@ public class TradeHutManager : MonoBehaviour
    private void Start() 
    {
       CreateSellItem(Item.GetItemSprite(Item.ItemType.CrudeTool), Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
-      CreateSellItem(Item.GetItemSprite(Item.ItemType.RefinedTool), Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
-      CreateSellItem(Item.GetItemSprite(Item.ItemType.Artifact), Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
+      CreateSellItem(Item.GetItemSprite(Item.ItemType.Weapon), Item.GetItemValue(Item.ItemType.Weapon), 0.0f, "Weapon");
+      CreateSellItem(Item.GetItemSprite(Item.ItemType.Engine), Item.GetItemValue(Item.ItemType.Engine), 1.0f, "Engine");
 
       CreateBuyItem(Item.GetItemSprite(Item.ItemType.Sword), Item.GetItemPrice(Item.ItemType.Sword), 0, "Sword");
    }
@@ -156,10 +163,16 @@ public class TradeHutManager : MonoBehaviour
       tradeItemTransform.tag = itemTag;
       tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
 
-      /* Populate the the item properties                                                             */
+      //* Populate the the item properties                                                           */
+      //switch(tradeItemTransform.tag) {
+      //   case "Crude Tool":
+      //      crudeToolValueText = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      //   break;
+
+      //}
       sellValueText = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
       sellValueText.text = itemValue.ToString();
-      ItemSellValuesText.Add(sellValueText);
+      Items.Add(tradeItemTransform);
 
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals("Artifact") ? "   Artifact" : itemTag;
       itemButton       = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
@@ -285,15 +298,15 @@ public class TradeHutManager : MonoBehaviour
       if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
          totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
 
-      if (refinedToolSellCount > MIN_SELL_ITEM_COUNT)
-         totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
+      if (weaponSellCount > MIN_SELL_ITEM_COUNT)
+         totalSellValue += weaponSellCount * Item.GetItemValue(Item.ItemType.Weapon);
 
-      if (artifactSellCount > MIN_SELL_ITEM_COUNT)
-         totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact);
+      if (engineSellCount > MIN_SELL_ITEM_COUNT)
+         totalSellValue += engineSellCount * Item.GetItemValue(Item.ItemType.Engine);
 
       crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
-      refinedToolSellCount = MIN_SELL_ITEM_COUNT;
-      artifactSellCount    = MIN_SELL_ITEM_COUNT;
+      weaponSellCount = MIN_SELL_ITEM_COUNT;
+      engineSellCount    = MIN_SELL_ITEM_COUNT;
 
       /* Destroy the instantiated sell window and remove the reference                                */
       Destroy(currentSellItem.gameObject);
@@ -335,19 +348,19 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          case "Refined Tool":
-            if (refinedToolSellCount < MAX_SELL_ITEM_COUNT) 
+            if (weaponSellCount < MAX_SELL_ITEM_COUNT) 
             {
-               refinedToolSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + refinedToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
+               weaponSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + weaponSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (weaponSellCount * Item.GetItemValue(Item.ItemType.Weapon)).ToString();
             }
             break;
          case "Artifact":
-            if (artifactSellCount < MAX_SELL_ITEM_COUNT) 
+            if (engineSellCount < MAX_SELL_ITEM_COUNT) 
             {
-               artifactSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + artifactSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
+               engineSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * Item.GetItemValue(Item.ItemType.Engine)).ToString();
             }
             break;
          default:
@@ -369,19 +382,19 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          case "Refined Tool":
-            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) 
+            if (weaponSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               refinedToolSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + refinedToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
+               weaponSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + weaponSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.Weapon)).ToString();
             }
             break;
          case "Artifact":
-            if (artifactSellCount > MIN_SELL_ITEM_COUNT) 
+            if (engineSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               artifactSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + artifactSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
+               engineSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + engineSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * Item.GetItemValue(Item.ItemType.Engine)).ToString();
             }
             break;
          default:
@@ -459,6 +472,79 @@ public class TradeHutManager : MonoBehaviour
 
          InventoryManager.Instance.TryAddPearl(50);
       }
+   }
+
+   public void MarketFluctuate() {
+      int   crudeToolValue  = Item.GetItemValue(Item.ItemType.CrudeTool),
+            weaponValue     = Item.GetItemValue(Item.ItemType.Weapon),
+            engineValue     = Item.GetItemValue(Item.ItemType.Engine),
+            crudeToolChance = Rng.Next(1, 101),
+            weaponsChance   = Rng.Next(1, 101),
+            enginesChance   = Rng.Next(1, 101),
+            pearlAmount;
+
+      if (crudeToolChance <= 30) 
+      {
+         pearlAmount = (int) (crudeToolValue * (.01f * Rng.Next(50, 101)));
+         Item.TryIncreaseCrudeToolSellValue(pearlAmount);
+      }
+      else 
+         if(crudeToolChance <= 60) 
+         {
+            pearlAmount = (int)(crudeToolValue * (.01f * Rng.Next(50, 101)));
+            Item.TryDecreaseCrudeToolSellValue(pearlAmount);
+         }
+
+      if (weaponsChance <= 30) 
+      {
+         pearlAmount = (int)(weaponValue * (.01f * Rng.Next(50, 101)));
+         Item.TryIncreaseWeaponsSellValue(pearlAmount);
+      }
+      else 
+         if(weaponsChance <= 60) 
+         {
+            pearlAmount = (int)(weaponValue * (.01f * Rng.Next(50, 101)));
+            Item.TryDecreaseWeaponsSellValue(pearlAmount);
+         }
+
+      if (weaponsChance <= 30) 
+      {
+         pearlAmount = (int)(engineValue * (.01f * Rng.Next(50, 101)));
+         Item.TryIncreaseEnginesSellValue(pearlAmount);
+      }
+      else 
+         if(weaponsChance <= 60) 
+         {
+            pearlAmount = (int)(engineValue * (.01f * Rng.Next(50, 101)));
+            Item.TryDecreaseEnginesSellValue(pearlAmount);
+         }
+
+      return;
+   }
+
+   public void ChangeItemValueText(int newAmount, ItemType itemType) {
+      Transform currentItem;
+
+      switch (itemType) {
+         case ItemType.CrudeTool:
+            currentItem = Items.Find(d => d.CompareTag("Crude Tool"));
+            break;
+         case ItemType.Weapon:
+            currentItem = Items.Find(d => d.CompareTag("Weapon"));
+            break;
+         case ItemType.Engine:
+            currentItem = Items.Find(d => d.CompareTag("Engine"));
+            break;
+         default:
+            currentItem = null;
+            Debug.LogError("Unkown item");
+            break;
+      }
+
+      if (currentItem != null)
+         currentItem.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = newAmount.ToString();
+
+      return;
    }
 
 
@@ -615,8 +701,8 @@ public class TradeHutManager : MonoBehaviour
       }
 
       crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
-      refinedToolSellCount = MIN_SELL_ITEM_COUNT;
-      artifactSellCount    = MIN_SELL_ITEM_COUNT;
+      weaponSellCount = MIN_SELL_ITEM_COUNT;
+      engineSellCount    = MIN_SELL_ITEM_COUNT;
       swordBuyCount        = MIN_BUY_ITEM_COUNT;
 
       if (SellWindow.gameObject.activeSelf)
