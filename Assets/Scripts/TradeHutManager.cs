@@ -10,15 +10,13 @@ public class TradeHutManager : MonoBehaviour
 {
    /* Inspector variables                                                                             */
    [SerializeField] private Transform TradePanels;            
-   [SerializeField] private Transform BuyPanel;               
+                    public  Transform BuyPanel;               
    [SerializeField] private Transform BuyItemContainer;       
    [SerializeField] private Transform BuyItemTemplate;        
    [SerializeField] private Transform BuyWindow;              
    [SerializeField] private Transform BuyWindowContainer;     
    [SerializeField] private Transform BuyWindowTemplate;      
    [SerializeField] private Transform SellPanel;              
-   [SerializeField] private Transform SellItemContainer;              
-   [SerializeField] private Transform SellItemTemplate;       
    [SerializeField] private Transform SellWindow;
    [SerializeField] private Transform SellWindowContainer;
    [SerializeField] private Transform SellWindowTemplate;     
@@ -55,16 +53,19 @@ public class TradeHutManager : MonoBehaviour
    const int UPGRADE_BUTTON      = 3;     
 
    public static int tradeHutLevel;
+   public static TradeHutManager Instance;
 
    private void Awake() 
    {
       tradeHutLevel = STARTING_LEVEL;
 
-      if (SellItemContainer == null)
-         Debug.LogError("Container is not assigned in the Inspector!");
-
-      if (SellItemTemplate != null)
-         SellItemTemplate.gameObject.SetActive(false);
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
 
       if (TradePanels == null)
          Debug.LogError("Trade Panel is not assigned in the Inspector!");
@@ -141,6 +142,11 @@ public class TradeHutManager : MonoBehaviour
 
    private void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
+      Transform SellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
+                SellItemTemplate  = SellItemContainer.Find("SellItemTemplate").GetComponent<Transform>();
+      
+      SellItemTemplate.gameObject.SetActive(false);
+
       /* Instantiate the template and set its position in the container                               */
       Transform     tradeItemTransform     = Instantiate(SellItemTemplate, SellItemContainer);
       RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
@@ -434,7 +440,8 @@ public class TradeHutManager : MonoBehaviour
          MysterBoxResult(ResourceType.Pearl, 200);
 
          InventoryManager.Instance.TryAddPearl(200);
-      } else 
+      }
+      else 
       {
          MysterBoxResult(ResourceType.Crystal, 50);
 

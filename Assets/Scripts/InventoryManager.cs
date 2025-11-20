@@ -25,22 +25,30 @@ public class InventoryManager : MonoBehaviour
    [SerializeField] private Transform CraftWindowTemplate;                                             
                                                                                    
    private TextMeshProUGUI PearlCountText;                                         
-   private TextMeshProUGUI CrystalCountText;                                       
+   private TextMeshProUGUI CrystalCountText;
+   private TextMeshProUGUI OreCountText;
    private TextMeshProUGUI CrudeToolCountText;                                       
    private TextMeshProUGUI RefinedToolCountText;                                       
    private TextMeshProUGUI ArtifactCountText;                                       
                                                                                    
    /* Constants                                                                     */
    const int MIN_PEARL_COUNT        = 0;                                                
-   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;                                  
+   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;
+   const int MIN_ORE_COUNT          = MIN_PEARL_COUNT;
+
+   const int MAX_CRUDE_TOOL_COUNT   = 100;
+   const int MAX_REFINED_TOOL_COUNT = 100;
+   const int MAX_ARTIFACT_COUNT     = 100;
    const int MIN_CRUDE_TOOL_COUNT   = 0;
    const int MIN_REFINED_TOOL_COUNT = 0;
    const int MIN_ARTIFACT_COUNT     = 0;
    const int MAX_PEARL_COUNT        = 1000;                                             
-   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;                                  
+   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;
+   const int MAX_ORE_COUNT          = MAX_PEARL_COUNT;
    const int RESOURCE_SPACING       = 30;
    const int PEARL_POSITION         = 0;
    const int CRYSTAL_POSITION       = PEARL_POSITION + 10;
+   const int ORE_POSITION           = CRYSTAL_POSITION + 10;
    const int CRUDE_TOOL_POSITION    = 0;
    const int REFINED_TOOL_POSITION  = CRUDE_TOOL_POSITION+ 10;
    const int ARTIFACT_POSITION      = REFINED_TOOL_POSITION + 10;
@@ -48,7 +56,7 @@ public class InventoryManager : MonoBehaviour
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
    public int pearlCount       { get; private set;  }
    public int crystalCount     { get; private set;  }
-   public int oreCount         { get;  set;         }
+   public int oreCount         { get; private set;  }
    public int crudeToolCount   { get; private set;  }
    public int refinedToolCount { get; private set;  }
    public int artifactCount    { get; private set;  }
@@ -125,6 +133,7 @@ public class InventoryManager : MonoBehaviour
 
       pearlCount       = MIN_PEARL_COUNT;
       crystalCount     = MIN_CRYSTAL_COUNT;
+      oreCount         = MIN_ORE_COUNT;
       crudeToolCount   = MIN_CRUDE_TOOL_COUNT;
       refinedToolCount = MIN_REFINED_TOOL_COUNT;
       artifactCount    = MIN_ARTIFACT_COUNT;
@@ -135,6 +144,7 @@ public class InventoryManager : MonoBehaviour
    {
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, "Pearl");
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, "Crystal");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, "Ore");
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
       CreateCraft(Item.GetItemSprite(Item.ItemType.RefinedTool), REFINED_TOOL_POSITION, "Refined Tool");
@@ -156,6 +166,9 @@ public class InventoryManager : MonoBehaviour
             break;
          case "Crystal":
             resourceCount = crystalCount;
+            break;
+         case "Ore":
+            resourceCount = oreCount;
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
@@ -192,7 +205,10 @@ public class InventoryManager : MonoBehaviour
           case "Crystal":
              CrystalCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
-          default:
+          case "Ore":
+             OreCountText     = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+             break;
+         default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
             break;
       }
@@ -237,10 +253,10 @@ public class InventoryManager : MonoBehaviour
       craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
       craftWindowButton = craftTransform.Find("CraftButton").GetComponent<Button>();
       craftWindowButton.image.sprite = craftSprite;
-     
+
       switch (craftTag)
       { 
-         case "Crude tool":
+         case "Crude Tool":
             CrudeToolCountText   = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case "Refined Tool":
@@ -250,6 +266,7 @@ public class InventoryManager : MonoBehaviour
             ArtifactCountText    = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
+            Debug.LogError("Unkown craft");
             break;
       }
 
@@ -267,7 +284,7 @@ public class InventoryManager : MonoBehaviour
 
       /* Instantiate the resource template and set its position in the container.  */
       /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
-      Transform resourceTransform         = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
+      Transform     resourceTransform     = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
       RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
 
       /* Destroys the current resource in the window if it exists.                 */
@@ -288,6 +305,10 @@ public class InventoryManager : MonoBehaviour
             resourceCount = crystalCount;
             resourceInfo  = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
             break;
+         case "Ore":
+            resourceCount = oreCount;
+            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
+            break;
          default: 
             Debug.Log("Unknown item tag for resource window.");
             break;
@@ -307,9 +328,7 @@ public class InventoryManager : MonoBehaviour
    /* Creates and populates the craft information window                           */
    private void CreateCraftWindow(Sprite crafteSprite, string craftTag) 
    {
-      Debug.Log("In CreateCraft Method");
-
-      int craftCount = 0;
+      int    craftCount = 0;
       string craftInfo  = "";
 
       /* Instantiate the resource template and set its position in the container.  */
@@ -436,11 +455,167 @@ public class InventoryManager : MonoBehaviour
       
       return;
    }
-   
+
+   public void TryAddOre(int oreAmount)
+   {
+      if (oreCount > MAX_ORE_COUNT)
+      {
+         Debug.LogError("Ore count is at maximum!");
+         return;
+      }
+      else
+         if ((oreCount + oreAmount) > MAX_ORE_COUNT)
+         Debug.LogError("Ore count is at maximum!");
+      else
+         oreCount += oreAmount;
+
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
+
+      return;
+   }
+
+   public void TrySpendOre(int oreAmount)
+   {
+      if (oreCount <= MIN_ORE_COUNT)
+      {
+         Debug.LogError("Ore count is at minimum!");
+         return;
+      }
+      else
+         if (oreCount < oreAmount)
+      {
+         Debug.LogError("Not enough ore to spend!");
+         return;
+      }
+      else
+         oreCount -= oreAmount;
+
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
+
+      return;
+   }
+   public void TryAddCrudeTool(int crudeToolAmount)
+   {
+      if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT)
+      {
+         Debug.LogError("Crude tool count is at minimum!");
+         return;
+      }
+      else
+          if ((crudeToolCount + crudeToolAmount) > MAX_CRUDE_TOOL_COUNT)
+             Debug.LogError("Crystal count is at maximum!");
+          else
+             crudeToolCount += crudeToolAmount;
+      
+      CrudeToolCountText.text = " x" + crudeToolCount.ToString();
+
+      return;
+   }
+   public void TryUseCrudeTool(int crudeToolAmount)
+   {
+      if (crudeToolCount < MIN_CRUDE_TOOL_COUNT)
+      {
+         Debug.LogError("Crude tool count is at minimum!");
+         return;
+      }
+      else
+         if (crudeToolCount < crudeToolAmount)
+         {
+            Debug.LogError("Not enough crude tools!");
+            return;
+         }
+         else
+            crudeToolCount -= crudeToolAmount;
+        
+         CrudeToolCountText.text = " x" + crudeToolCount.ToString();
+
+      return;
+   }
+
+   public void TryAddRefinedTool(int refinedToolAmount)
+   {
+      if (refinedToolCount >= MAX_REFINED_TOOL_COUNT)
+      {
+         Debug.LogError("Refined tool count is at minimum!");
+         return;
+      }
+      else
+         if ((refinedToolCount + refinedToolAmount) > MAX_REFINED_TOOL_COUNT)
+            Debug.LogError("Refined Tool count is at maximum!");
+         else
+            refinedToolCount += refinedToolAmount;
+
+      RefinedToolCountText.text = " x" + refinedToolCount.ToString();
+
+      return;
+   }
+   public void TryUseRefinedTool(int refinedToolAmount)
+   {
+      if (refinedToolCount < MIN_REFINED_TOOL_COUNT)
+      {
+         Debug.LogError("Refined tool count is at minimum!");
+         return;
+      }
+      else
+         if (refinedToolCount < refinedToolAmount)
+         {
+            Debug.LogError("Not enough refined tools!");
+            return;
+         }
+         else
+         refinedToolCount -= refinedToolAmount;
+
+      RefinedToolCountText.text = " x" + refinedToolCount.ToString();
+
+      return;
+   }
+
+   public void TryAddArtifact(int artifactAmount)
+   {
+      if (artifactCount >= MAX_ARTIFACT_COUNT)
+      {
+         Debug.LogError("Artifact count is at minimum!");
+         return;
+      }
+      else
+         if ((artifactCount + artifactAmount) > MAX_ARTIFACT_COUNT)
+            Debug.LogError("Refined Tool count is at maximum!");
+         else
+            artifactCount += artifactAmount;
+
+      ArtifactCountText.text = " x" + artifactCount.ToString();
+
+      return;
+   }
+   public void TryUseArtifacts(int artifactAmount)
+   {
+      if (artifactCount < MIN_ARTIFACT_COUNT)
+      {
+         Debug.LogError("Artifact count is at minimum!");
+         return;
+      }
+      else
+         if (artifactCount < artifactAmount)
+         {
+            Debug.LogError("Not enough artifacts!");
+            return;
+         }
+         else
+         artifactCount -= artifactAmount;
+
+      ArtifactCountText.text = " x" + artifactCount.ToString();
+
+      return;
+   }
+
    public void ShowInventoryPanel() 
    {
       InventoryPanel.gameObject.SetActive(true);
       ResourcePanel.gameObject.SetActive(true);
+      // Added for camera fix
+      PopUpManager.Instance.DisablePlayerInput();
    }
    
    public void ShowResourcePanel()
@@ -459,6 +634,9 @@ public class InventoryManager : MonoBehaviour
 
    public void CloseInventoryPanel() 
    {
+      // Added for camera fix
+      PopUpManager.Instance.EnablePlayerInput();
+
       InventoryPanel.gameObject.SetActive(false);
 
       if(currentCraft != null) 

@@ -278,17 +278,33 @@ public class CraftingController : MonoBehaviour
    {
       var inv = InventoryManager.Instance;
 
-      if (inv.oreCount >= oreCost)
-      {
-         inv.oreCount -= oreCost;
-         Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
-         inv.OnOreCountChanged?.Invoke(inv.oreCount);
-      }
-      else
-      {
-         Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
-      }
-   }
+        if (inv.oreCount >= oreCost)
+        {
+           // code added for OreRefinery_Manager.cs scripts by Juyoung
+           inv.TrySpendOre(oreCost);
+
+           switch (toolName) 
+           { 
+              case "Crude Tool":
+                 inv.TryAddCrudeTool(1);
+                 break;
+              case "Refined Tool":
+                 inv.TryAddRefinedTool(1);
+                 break;
+              case "Artifact":
+                 inv.TryAddArtifact(1);
+                 break;
+              default:
+                 Debug.LogError("Unkown Item");
+                 break;
+           }
+           Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
+        }
+        else
+        {
+            Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+        }
+    }
 
    /* Spend pearl if there is enoguh pearl in the inventory                                      */
    private bool TrySpendPearls(int pearls)

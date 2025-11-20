@@ -1,5 +1,6 @@
 /* libraries                                                                                     */
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,10 +31,18 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
     [SerializeField] private CraftingController craftingController;
+   
+    TradeHutManager tradeHutManager;
 
     /* Check if all required game objects exist and are in there required states                 */
     private void Awake() 
     {
+      tradeHutManager = TradeHutManager.Instance;
+
+      if (tradeHutManager == null)
+            Debug.LogError("Insance is not initialized");
+
+
         /* Set the info panel to inactive if it exists                                           */
         if (infoPanel == null) 
         {
@@ -51,6 +60,17 @@ public class LabManager : MonoBehaviour
         {
             innovatePanel.gameObject.SetActive(false);
         }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (initialTab == null)
+        {
+            Debug.LogError("Commerce Tab is not assigned");
+        }
+        else
+        {
+            initialTab.gameObject.SetActive(true);
+        }
+
         /* Set the research panel to inactive if it exists                                       */
         if (commerceTab == null)
         {
@@ -150,6 +170,7 @@ public class LabManager : MonoBehaviour
             case TIER_ONE:
                 PerformBuy(TIER_ONE_PEARL_COST, TIER_ONE_ITEM_COST);
                 ImplementTierOneInnovation(tab);
+                UnlockNextNode(tab, 2);
                 tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
@@ -161,6 +182,7 @@ public class LabManager : MonoBehaviour
             case TIER_TWO:
                 PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
                 ImplementTierTwoInnovation(tab);
+                UnlockNextNode(tab, 3);
                 tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
                 tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
@@ -195,11 +217,7 @@ public class LabManager : MonoBehaviour
     {
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
-        {
-            /*Item.crudeToolPrice   += (Item.crudeToolPrice   * (int).10);
-            Item.refinedToolPrice += (Item.refinedToolPrice * (int).10);
-            Item.artifactPrice    += (Item.artifactPrice    * (int).10);*/
-        }
+            Item.IncreaseItemsSellValue();
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
         {
@@ -221,7 +239,12 @@ public class LabManager : MonoBehaviour
         /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
         if (tabType == commerceTab)
         {
-            Debug.Log("Unlock gamble action");
+            Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
+            Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
+
+            chainImage.gameObject.SetActive(false);
+            
+            mysteryBox.interactable = true;
         }
         /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
         /*    bonus item upon crafting a single item                                             */
@@ -231,7 +254,7 @@ public class LabManager : MonoBehaviour
             craftingController.UnlockRefinedToolFromLab();
             craftingController.ApplyLockStateToUI();
         }
-        /* Permanently increase gold by +15 per turn                                         */
+        /* Permanently increase gold by +15 per turn                                             */
         else if (tabType == explorationTab)
         {
             Debug.Log("Permanently increase gold by +15 per turn");
@@ -264,6 +287,47 @@ public class LabManager : MonoBehaviour
         else
         {
             Debug.Log("There is no tab");
+        }
+    }
+
+    /* Unlock the next tier node upon buying the previous tier node                              */
+    public void UnlockNextNode(GameObject tab, int tier)
+    {
+        Color currentColor;
+
+        /* Get rid of the tier 2 lock and turn on buttons and text                               */
+        if (tier == 2)
+        {
+            tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
+
+            currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
+            currentColor.a = 1.0f;
+            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
+            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().interactable = true;
+
+            currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
+            currentColor.a = 1.0f;
+            tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+        }
+        /* Get ride of the tier 3 lock and turn on buttons and text                              */
+        else
+        {
+            if (tier != 3)
+            {
+                Debug.Log("Accessing wrong tier node");
+                return;
+            }
+            tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
+
+            currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
+            currentColor.a = 255;
+            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
+            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
+
+            currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
+            currentColor.a = 255;
+            tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+
         }
     }
 
