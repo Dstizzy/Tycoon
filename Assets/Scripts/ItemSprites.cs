@@ -23,7 +23,7 @@ public class ItemSprites : MonoBehaviour {
         switch (itemType) {
             case ItemType.CrudeTool:
                 return crudeTool;
-            case ItemType.Weapon:
+            case ItemType.Harpoon:
                 return refinedTool;
             case ItemType.Engine:
                 return artifact;

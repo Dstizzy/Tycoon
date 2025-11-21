@@ -1,10 +1,10 @@
 
 using NUnit.Framework;
-
 using System;
 using System.Collections.Generic;
-
 using TMPro;
+
+using Unity.VisualScripting;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,36 +29,39 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform MysteryBoxPanel; 
    
    public List<Transform> Items { get; private set; }
-   public TextMeshProUGUI       tradeHutLevelText;
+   public TextMeshProUGUI tradeHutLevelText;
 
    private readonly static System.Random Rng = new System.Random();
 
+   /* Transforms                                                                                      */
+   private Transform       currentBuyItem,    
+                           currentSellItem,
+                           currentMysteryBoxResult;
+   private TextMeshProUGUI crudeToolValueText,
+                           weaponValueText,
+                           engineValueText;
 
    /* Private variables                                                                               */
-   private int crudeToolSellCount = 0; 
-   private int weaponSellCount    = 0; 
-   private int engineSellCount    = 0; 
-   private int swordBuyCount      = 0;
+   private int crudeToolSellCount = 0,
+               weaponSellCount    = 0, 
+               engineSellCount    = 0, 
+               swordBuyCount      = 0;
 
-   /* Transform                                                                                       */
-   private Transform       currentBuyItem;      
-   private Transform       currentSellItem;
-   private Transform       currentMysteryBoxResult;
-   private TextMeshProUGUI crudeToolValueText;
-   private TextMeshProUGUI weaponValueText;
-   private TextMeshProUGUI engineValueText;
+   /* Public variables                                                                                */
+   public int marketShiftMax = 2,
+              marketShiftMin = 1;
 
    /* Constants                                                                                       */
-   const int ENDING_LEVEL        = 5;     
-   const int INFO_BUTTON         = 2;     
-   const int MAX_BUY_ITEM_COUNT  = 100;   
-   const int MAX_SELL_ITEM_COUNT = 100;   
-   const int MIN_BUY_ITEM_COUNT  = 0;     
-   const int MIN_SELL_ITEM_COUNT = 0;     
-   const int STARTING_LEVEL      = 1;     
-   const int TRADE_BUTTON        = 1;     
-   const int BUY_ITEM_SPACING    = 30;    
-   const int UPGRADE_BUTTON      = 3;     
+   const int ENDING_LEVEL        = 5,  
+             INFO_BUTTON         = 2,     
+             MAX_BUY_ITEM_COUNT  = 100,   
+             MAX_SELL_ITEM_COUNT = 100,   
+             MIN_BUY_ITEM_COUNT  = 0,   
+             MIN_SELL_ITEM_COUNT = 0,     
+             STARTING_LEVEL      = 1,     
+             TRADE_BUTTON        = 1,     
+             BUY_ITEM_SPACING    = 30,    
+             UPGRADE_BUTTON      = 3;    
 
    public static int tradeHutLevel;
 
@@ -139,7 +142,7 @@ public class TradeHutManager : MonoBehaviour
    private void Start() 
    {
       CreateSellItem(Item.GetItemSprite(Item.ItemType.CrudeTool), Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
-      CreateSellItem(Item.GetItemSprite(Item.ItemType.Weapon), Item.GetItemValue(Item.ItemType.Weapon), 0.0f, "Weapon");
+      CreateSellItem(Item.GetItemSprite(Item.ItemType.Harpoon), Item.GetItemValue(Item.ItemType.Harpoon), 0.0f, "Harpoon");
       CreateSellItem(Item.GetItemSprite(Item.ItemType.Engine), Item.GetItemValue(Item.ItemType.Engine), 1.0f, "Engine");
 
       CreateBuyItem(Item.GetItemSprite(Item.ItemType.Sword), Item.GetItemPrice(Item.ItemType.Sword), 0, "Sword");
@@ -293,26 +296,38 @@ public class TradeHutManager : MonoBehaviour
 
    public void SellItem() 
    {
-      int totalSellValue = 0;
+      int totalSellValue  = 0;
 
-      if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
+      if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+      {
          totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
+         InventoryManager.Instance.TryUseCrudeTool(crudeToolSellCount);
+      }
 
-      if (weaponSellCount > MIN_SELL_ITEM_COUNT)
-         totalSellValue += weaponSellCount * Item.GetItemValue(Item.ItemType.Weapon);
+      if (weaponSellCount > MIN_SELL_ITEM_COUNT) 
+      {
+         totalSellValue += weaponSellCount * Item.GetItemValue(Item.ItemType.Harpoon);
+         InventoryManager.Instance.TryUseHarpoon(weaponSellCount);
+      }
 
-      if (engineSellCount > MIN_SELL_ITEM_COUNT)
+      if (engineSellCount > MIN_SELL_ITEM_COUNT) 
+      {
          totalSellValue += engineSellCount * Item.GetItemValue(Item.ItemType.Engine);
+         InventoryManager.Instance.TryUseEngine(engineSellCount);
+      }
 
-      crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
-      weaponSellCount = MIN_SELL_ITEM_COUNT;
+      InventoryManager.Instance.TryAddPearl(totalSellValue);
+
+      crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+      weaponSellCount    = MIN_SELL_ITEM_COUNT;
       engineSellCount    = MIN_SELL_ITEM_COUNT;
 
       /* Destroy the instantiated sell window and remove the reference                                */
-      Destroy(currentSellItem.gameObject);
-      currentSellItem = null;
-
-      InventoryManager.Instance.TryAddPearl(totalSellValue);
+      if (currentSellItem != null) 
+      {
+         Destroy(currentSellItem.gameObject);
+         currentSellItem = null;
+      }
 
       CloseSellWindow();
 
@@ -352,7 +367,7 @@ public class TradeHutManager : MonoBehaviour
             {
                weaponSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + weaponSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (weaponSellCount * Item.GetItemValue(Item.ItemType.Weapon)).ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (weaponSellCount * Item.GetItemValue(Item.ItemType.Harpoon)).ToString();
             }
             break;
          case "Artifact":
@@ -386,7 +401,7 @@ public class TradeHutManager : MonoBehaviour
             {
                weaponSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + weaponSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.Weapon)).ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.Harpoon)).ToString();
             }
             break;
          case "Artifact":
@@ -475,47 +490,87 @@ public class TradeHutManager : MonoBehaviour
    }
 
    public void MarketFluctuate() {
-      int   crudeToolValue  = Item.GetItemValue(Item.ItemType.CrudeTool),
-            weaponValue     = Item.GetItemValue(Item.ItemType.Weapon),
-            engineValue     = Item.GetItemValue(Item.ItemType.Engine),
-            crudeToolChance = Rng.Next(1, 101),
-            weaponsChance   = Rng.Next(1, 101),
-            enginesChance   = Rng.Next(1, 101),
-            pearlAmount;
+      //float fluctuationPercent;
+      int crudeToolValue      = Item.GetItemValue(Item.ItemType.CrudeTool),
+          harpoonValue        = Item.GetItemValue(Item.ItemType.Harpoon),
+          pressureValveValue  = Item.GetItemValue(Item.ItemType.PressureValve),
+          engineValue         = Item.GetItemValue(Item.ItemType.Engine),
+          crudeToolChance     = Rng.Next(1, 101),
+          harpoonChance       = Rng.Next(1, 101),
+          pressureValveChance = Rng.Next(1, 101),
+          engineChance        = Rng.Next(1, 101),
+          pearlAmount;
 
       if (crudeToolChance <= 30) 
       {
-         pearlAmount = (int) (crudeToolValue * (.01f * Rng.Next(50, 101)));
+         
+         //fluctuationPercent =  (.01f * Rng.Next(50, 101));
+         //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
          Item.TryIncreaseCrudeToolSellValue(pearlAmount);
       }
       else 
          if(crudeToolChance <= 60) 
          {
-            pearlAmount = (int)(crudeToolValue * (.01f * Rng.Next(50, 101)));
+            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+            //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount +" + pearlAmount);
             Item.TryDecreaseCrudeToolSellValue(pearlAmount);
          }
 
-      if (weaponsChance <= 30) 
+      if (harpoonChance <= 30) 
       {
-         pearlAmount = (int)(weaponValue * (.01f * Rng.Next(50, 101)));
+         //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+         //pearlAmount = (int) (weaponValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
          Item.TryIncreaseWeaponsSellValue(pearlAmount);
       }
       else 
-         if(weaponsChance <= 60) 
+         if(harpoonChance <= 60) 
          {
-            pearlAmount = (int)(weaponValue * (.01f * Rng.Next(50, 101)));
+            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+            //pearlAmount = (int) (weaponValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount -" + pearlAmount);
             Item.TryDecreaseWeaponsSellValue(pearlAmount);
          }
 
-      if (weaponsChance <= 30) 
+      if (pressureValveChance <= 30) 
       {
-         pearlAmount = (int)(engineValue * (.01f * Rng.Next(50, 101)));
+         //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+         //pearlAmount = (int) (weaponValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
+         Item.TryIncreaseWeaponsSellValue(pearlAmount);
+      }
+      else 
+         if(pressureValveChance <= 60) 
+         {
+            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+            //pearlAmount = (int) (weaponValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount -" + pearlAmount);
+            Item.TryDecreaseWeaponsSellValue(pearlAmount);
+         }
+
+      if (engineChance <= 30) 
+      {
+         //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
+         //pearlAmount = (int) (engineValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
          Item.TryIncreaseEnginesSellValue(pearlAmount);
       }
       else 
-         if(weaponsChance <= 60) 
+         if(engineChance <= 60) 
          {
-            pearlAmount = (int)(engineValue * (.01f * Rng.Next(50, 101)));
+            //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
+            //pearlAmount = (int) (engineValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount +" + pearlAmount);
             Item.TryDecreaseEnginesSellValue(pearlAmount);
          }
 
@@ -529,7 +584,7 @@ public class TradeHutManager : MonoBehaviour
          case ItemType.CrudeTool:
             currentItem = Items.Find(d => d.CompareTag("Crude Tool"));
             break;
-         case ItemType.Weapon:
+         case ItemType.Harpoon:
             currentItem = Items.Find(d => d.CompareTag("Weapon"));
             break;
          case ItemType.Engine:
@@ -546,7 +601,6 @@ public class TradeHutManager : MonoBehaviour
 
       return;
    }
-
 
    /* Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel           */
    public void RequestTradeHutPanel(int buttonID) 

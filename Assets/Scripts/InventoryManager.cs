@@ -1,6 +1,8 @@
 /* Libraries and references                                                         */
 using System;                                                                       
+
 using TMPro;                                                                        
+
 using UnityEngine;                                                                  
 using UnityEngine.UI;                                                               
                                                                                     
@@ -10,60 +12,72 @@ public class InventoryManager : MonoBehaviour
    public static InventoryManager Instance { get; private set; }                   
                                                                                     
    /* Inspector variables for UI elements. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½              */
-   [SerializeField] private Transform InventoryPanel;
-   [SerializeField] private Transform ResourcePanel;
-   [SerializeField] private Transform ResourceWindow;
-   [SerializeField] private Transform CraftsPanel;
-   [SerializeField] private Transform ResourceContainer;                                             
-   [SerializeField] private Transform ResourceTemplate;                                              
-   [SerializeField] private Transform CraftContainer;                                             
-   [SerializeField] private Transform CraftTemplate;                                             
-   [SerializeField] private Transform ResourceWindowContainer;                                             
-   [SerializeField] private Transform ResourceWindowTemplate;                                             
-   [SerializeField] private Transform CraftWindow;                                             
-   [SerializeField] private Transform CraftWindowContainer;                                             
-   [SerializeField] private Transform CraftWindowTemplate;                                             
+   [SerializeField] private Transform InventoryPanel,
+                                      ResourcePanel,
+                                      ResourceWindow,
+                                      CraftsPanel,
+                                      ResourceContainer,
+                                      ResourceTemplate,                                           
+                                      CraftContainer,                                    
+                                      CraftTemplate,                                      
+                                      ResourceWindowContainer,                                             
+                                      ResourceWindowTemplate,
+                                      CraftWindow,                                  
+                                      CraftWindowContainer,                                          
+                                      CraftWindowTemplate;                                         
                                                                                    
-   private TextMeshProUGUI PearlCountText;                                         
-   private TextMeshProUGUI CrystalCountText;
-   private TextMeshProUGUI OreCountText;
-   private TextMeshProUGUI CrudeToolCountText;                                       
-   private TextMeshProUGUI RefinedToolCountText;                                       
-   private TextMeshProUGUI ArtifactCountText;                                       
-                                                                                   
+   private TextMeshProUGUI PearlCountText,                      
+                           CrystalCountText,
+                           OreCountText,
+                           PressureValveCountText,                                  
+                           CrudeToolCountText,                                       
+                           HarpoonCountText,
+                           EngineCountText;
+   
    /* Constants                                                                     */
-   const int MIN_PEARL_COUNT        = 0;                                                
-   const int MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT;
-   const int MIN_ORE_COUNT          = MIN_PEARL_COUNT;
+   const int MIN_PEARL_COUNT        = 0,                                              
+             MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT,
+             MIN_ORE_COUNT          = MIN_PEARL_COUNT,
+             MAX_PEARL_COUNT        = 1000,
+             MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT,
+             MAX_ORE_COUNT          = MAX_PEARL_COUNT;
 
-   const int MAX_CRUDE_TOOL_COUNT   = 100;
-   const int MAX_REFINED_TOOL_COUNT = 100;
-   const int MAX_ARTIFACT_COUNT     = 100;
-   const int MIN_CRUDE_TOOL_COUNT   = 0;
-   const int MIN_REFINED_TOOL_COUNT = 0;
-   const int MIN_ARTIFACT_COUNT     = 0;
-   const int MAX_PEARL_COUNT        = 1000;                                             
-   const int MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT;
-   const int MAX_ORE_COUNT          = MAX_PEARL_COUNT;
-   const int RESOURCE_SPACING       = 30;
-   const int PEARL_POSITION         = 0;
-   const int CRYSTAL_POSITION       = PEARL_POSITION + 10;
-   const int ORE_POSITION           = CRYSTAL_POSITION + 10;
-   const int CRUDE_TOOL_POSITION    = 0;
-   const int REFINED_TOOL_POSITION  = CRUDE_TOOL_POSITION+ 10;
-   const int ARTIFACT_POSITION      = REFINED_TOOL_POSITION + 10;
+   const int MAX_CRUDE_TOOL_COUNT     = 100,
+             MAX_HARPOON_COUNT        = 100,
+             MAX_PRESSURE_VALVE_COUNT = 100,
+             MAX_ENGINE_COUNT         = 100,
+             MIN_CRUDE_TOOL_COUNT     = 0,
+             MIN_HARPOON_COUNT        = 0,
+             MIN_PRESSURE_VALVE_COUNT = 0,
+             MIN_ENGINE_COUNT         = 0;
+
+
+   const int RESOURCE_SPACING    = 30,
+             PEARL_POSITION      = 0,
+             CRYSTAL_POSITION    = PEARL_POSITION + 10,
+             ORE_POSITION        = CRYSTAL_POSITION + 10,
+             CRUDE_TOOL_POSITION = 0,
+             HARPOON_POSITION    = CRUDE_TOOL_POSITION + 10,
+             ENGINE_POSITION     = HARPOON_POSITION + 10;
+
+   const string CRUDE_TOOL_TAG     =  "Crude Tool",
+                HARPOON_TAG        =  "Harpoon",
+                PRESSURE_VALVE_TAG =  "Pressure Valve",
+                ENGINE_TAG         =  "Engine";
+
 
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
-   public int pearlCount       { get; private set;  }
-   public int crystalCount     { get; private set;  }
-   public int oreCount         { get; private set;  }
-   public int crudeToolCount   { get; private set;  }
-   public int refinedToolCount { get; private set;  }
-   public int artifactCount    { get; private set;  }
+   public int pearlCount         { get; private set; }
+   public int crystalCount       { get; private set; }
+   public int oreCount           { get; private set; }
+   public int crudeToolCount     { get; private set; }
+   public int harpoonCount       { get; private set; }
+   public int pressureValveCount { get; private set; }
+   public int engineCount        { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
-   private Transform currentResource;  
-   private Transform currentCraft;
+   private Transform currentResource,  
+                     currentCraft;
    
    /* Delegate for when the pearl count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnPearlCountChanged;                                         
@@ -126,17 +140,17 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindowTemplate.gameObject.SetActive(false);
 
-      if(CraftWindow == null) 
+      if(CraftWindow == null)
          Debug.Log("Craft window is ont assigned in the inspector");
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount       = MIN_PEARL_COUNT;
-      crystalCount     = MIN_CRYSTAL_COUNT;
-      oreCount         = MIN_ORE_COUNT;
-      crudeToolCount   = MIN_CRUDE_TOOL_COUNT;
-      refinedToolCount = MIN_REFINED_TOOL_COUNT;
-      artifactCount    = MIN_ARTIFACT_COUNT;
+      pearlCount     = MIN_PEARL_COUNT;
+      crystalCount   = MIN_CRYSTAL_COUNT;
+      oreCount       = MIN_ORE_COUNT;
+      crudeToolCount = MIN_CRUDE_TOOL_COUNT;
+      harpoonCount   = MIN_HARPOON_COUNT;
+      engineCount    = MIN_ENGINE_COUNT;
    }
    
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
@@ -147,8 +161,8 @@ public class InventoryManager : MonoBehaviour
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, "Ore");
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Weapon), REFINED_TOOL_POSITION, "Weapon");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ARTIFACT_POSITION, "Engine");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, "Harpoon");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, "Engine");
    }
    
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
@@ -220,16 +234,20 @@ public class InventoryManager : MonoBehaviour
    {                                                                                
       int    craftCount;
       Button craftWindowButton;
+
       switch (craftTag) 
       {
-         case "Crude Tool":
+         case CRUDE_TOOL_TAG:
             craftCount = crudeToolCount;
             break;
-         case "Weapon":
-            craftCount = crystalCount;
+         case HARPOON_TAG:
+            craftCount = harpoonCount;
             break;
-         case "Engine":
-            craftCount = artifactCount;
+         case PRESSURE_VALVE_TAG:
+            craftCount = pressureValveCount;
+            break;
+         case ENGINE_TAG:
+            craftCount = engineCount;
             break;
          default:
             craftCount = 0;
@@ -256,23 +274,25 @@ public class InventoryManager : MonoBehaviour
 
       switch (craftTag)
       { 
-         case "Crude Tool":
-            CrudeToolCountText   = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+         case CRUDE_TOOL_TAG:
+            CrudeToolCountText     = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
-         case "Weapon":
-            RefinedToolCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+         case HARPOON_TAG:
+            HarpoonCountText       = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
-         case "Engine":
-            ArtifactCountText    = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+         case PRESSURE_VALVE_TAG:
+            PressureValveCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            break;
+         case ENGINE_TAG:
+            EngineCountText        = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
-            Debug.LogError("Unkown craft");
+            Debug.LogError("Unknown craft");
             break;
       }
 
       /* Dynamically add listeners to the buttons, which creates the craft window  */
-      craftWindowButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); } );
-     
+      craftWindowButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); });
       craftTransform.gameObject.SetActive(true);
    }
 
@@ -283,7 +303,7 @@ public class InventoryManager : MonoBehaviour
       string resourceInfo  = "";
 
       /* Instantiate the resource template and set its position in the container.  */
-      /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
+      /* Transform of the newly created resource UI element.                       */
       Transform     resourceTransform     = Instantiate(ResourceWindowTemplate, ResourceWindowContainer);
       RectTransform resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
 
@@ -346,16 +366,20 @@ public class InventoryManager : MonoBehaviour
 
       switch (craftTag) 
       {
-         case "Crude Tool":
-            craftCount = pearlCount;
+         case CRUDE_TOOL_TAG:
+            craftCount = crudeToolCount;
             craftInfo  = Item.GetItemDescription(Item.ItemType.CrudeTool);
             break;
-         case "Refined Tool":
-            craftCount = crystalCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.Weapon);
+         case HARPOON_TAG:
+            craftCount = harpoonCount;
+            craftInfo  = Item.GetItemDescription(Item.ItemType.Harpoon);
             break;
-         case "Artifact":
-            craftCount = artifactCount;
+         case PRESSURE_VALVE_TAG:
+            craftCount = pressureValveCount;
+            craftInfo  = Item.GetItemDescription(Item.ItemType.PressureValve);
+            break;
+         case ENGINE_TAG:
+            craftCount = engineCount;
             craftInfo  = Item.GetItemDescription(Item.ItemType.Engine);
             break;
          default:
@@ -534,78 +558,78 @@ public class InventoryManager : MonoBehaviour
       return;
    }
 
-   public void TryAddRefinedTool(int refinedToolAmount)
+   public void TryAddHarpoon(int refinedToolAmount)
    {
-      if (refinedToolCount >= MAX_REFINED_TOOL_COUNT)
+      if (harpoonCount >= MAX_HARPOON_COUNT)
       {
          Debug.LogError("Refined tool count is at minimum!");
          return;
       }
       else
-         if ((refinedToolCount + refinedToolAmount) > MAX_REFINED_TOOL_COUNT)
+         if ((harpoonCount + refinedToolAmount) > MAX_HARPOON_COUNT)
             Debug.LogError("Refined Tool count is at maximum!");
          else
-            refinedToolCount += refinedToolAmount;
+            harpoonCount += refinedToolAmount;
 
-      RefinedToolCountText.text = " x" + refinedToolCount.ToString();
+      HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return;
    }
-   public void TryUseRefinedTool(int refinedToolAmount)
+   public void TryUseHarpoon(int refinedToolAmount)
    {
-      if (refinedToolCount < MIN_REFINED_TOOL_COUNT)
+      if (harpoonCount < MIN_HARPOON_COUNT)
       {
          Debug.LogError("Refined tool count is at minimum!");
          return;
       }
       else
-         if (refinedToolCount < refinedToolAmount)
+         if (harpoonCount < refinedToolAmount)
          {
             Debug.LogError("Not enough refined tools!");
             return;
          }
          else
-         refinedToolCount -= refinedToolAmount;
+         harpoonCount -= refinedToolAmount;
 
-      RefinedToolCountText.text = " x" + refinedToolCount.ToString();
+      HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return;
    }
 
-   public void TryAddArtifact(int artifactAmount)
+   public void TryAddEngine(int artifactAmount)
    {
-      if (artifactCount >= MAX_ARTIFACT_COUNT)
+      if (engineCount >= MAX_ENGINE_COUNT)
       {
          Debug.LogError("Artifact count is at minimum!");
          return;
       }
       else
-         if ((artifactCount + artifactAmount) > MAX_ARTIFACT_COUNT)
+         if ((engineCount + artifactAmount) > MAX_ENGINE_COUNT)
             Debug.LogError("Refined Tool count is at maximum!");
          else
-            artifactCount += artifactAmount;
+            engineCount += artifactAmount;
 
-      ArtifactCountText.text = " x" + artifactCount.ToString();
+      EngineCountText.text = " x" + engineCount.ToString();
 
       return;
    }
-   public void TryUseArtifacts(int artifactAmount)
+   public void TryUseEngine(int artifactAmount)
    {
-      if (artifactCount < MIN_ARTIFACT_COUNT)
+      if (engineCount < MIN_ENGINE_COUNT)
       {
          Debug.LogError("Artifact count is at minimum!");
          return;
       }
       else
-         if (artifactCount < artifactAmount)
+         if (engineCount < artifactAmount)
          {
             Debug.LogError("Not enough artifacts!");
             return;
          }
          else
-         artifactCount -= artifactAmount;
+         engineCount -= artifactAmount;
 
-      ArtifactCountText.text = " x" + artifactCount.ToString();
+      EngineCountText.text = " x" + engineCount.ToString();
 
       return;
    }

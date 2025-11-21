@@ -289,10 +289,10 @@ public class CraftingController : MonoBehaviour
                  inv.TryAddCrudeTool(1);
                  break;
               case "Refined Tool":
-                 inv.TryAddRefinedTool(1);
+                 inv.TryAddHarpoon(1);
                  break;
               case "Artifact":
-                 inv.TryAddArtifact(1);
+                 inv.TryAddEngine(1);
                  break;
               default:
                  Debug.LogError("Unkown Item");
