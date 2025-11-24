@@ -10,7 +10,9 @@ public class ItemSprites : MonoBehaviour {
     public Sprite harpoon;
     public Sprite pressureValve;
     public Sprite engine;
-    public Sprite sword;
+    public Sprite rareOre;
+    public Sprite industrialBluePrint;
+    public Sprite clockworkBlueprint;
 
     private void Awake() {
         if (itemSprites != null && itemSprites != this) {
@@ -30,9 +32,13 @@ public class ItemSprites : MonoBehaviour {
                return pressureValve;
             case ItemType.Engine:
                return engine;
-            case ItemType.Sword:
-               return sword;
-            default:
+            case ItemType.RareOre:
+               return rareOre;
+            case ItemType.IndustrialBluePrint:
+               return industrialBluePrint;
+            case ItemType.ClockworkBlueprint:
+               return clockworkBlueprint;
+         default:
                Debug.LogError("ItemSprites: GetSprite received unknown ItemType: " + itemType);
                return null;
         }
