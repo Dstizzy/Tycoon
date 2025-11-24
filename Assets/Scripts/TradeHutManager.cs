@@ -75,7 +75,7 @@ public class TradeHutManager : MonoBehaviour
       tradeHutLevel = STARTING_LEVEL;
       Items = new();
 
-      Item.OnItemValueChange = ChangeItemValueText;
+      OnItemValueChange = ChangeItemValueText;
 
       if (Instance != null && Instance != this)
          Destroy(this.gameObject);
@@ -608,15 +608,19 @@ public class TradeHutManager : MonoBehaviour
    public void ChangeItemValueText(int newAmount, ItemType itemType) {
       Transform currentItem;
 
-      switch (itemType) {
+      switch (itemType) 
+      {
          case ItemType.CrudeTool:
-            currentItem = Items.Find(d => d.CompareTag("Crude Tool"));
+            currentItem = Items.Find(d => d.CompareTag(CRUDE_TOOL_TAG));
             break;
          case ItemType.Harpoon:
-            currentItem = Items.Find(d => d.CompareTag("Weapon"));
+            currentItem = Items.Find(d => d.CompareTag(HARPOON_TAG));
+            break;
+         case ItemType.PressureValve:
+            currentItem = Items.Find(d => d.CompareTag(PRESSURE_VALVE_TAG));
             break;
          case ItemType.Engine:
-            currentItem = Items.Find(d => d.CompareTag("Engine"));
+            currentItem = Items.Find(d => d.CompareTag(CLOCKWORK_BLUEPRINT_TAG));
             break;
          default:
             currentItem = null;
