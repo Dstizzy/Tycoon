@@ -4842,19 +4842,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
   TradePanels: {fileID: 1113495824}
   BuyPanel: {fileID: 774743807}
-  BuyItemContainer: {fileID: 503412917}
-  BuyItemTemplate: {fileID: 1005397177}
   BuyWindow: {fileID: 1881885378}
-  BuyWindowContainer: {fileID: 726172463}
-  BuyWindowTemplate: {fileID: 250659509}
   SellPanel: {fileID: 1024672991}
   SellWindow: {fileID: 644685944}
-  SellWindowContainer: {fileID: 1958255415}
-  SellWindowTemplate: {fileID: 65785624}
   InfoPanel: {fileID: 1779872260}
   UpgradePanel: {fileID: 470639710}
   MysteryBoxPanel: {fileID: 1903676444}
   tradeHutLevelText: {fileID: 1104922258}
+  marketShiftMax: 2
+  marketShiftMin: 1
 --- !u!1 &179619869
 GameObject:
   m_ObjectHideFlags: 0
@@ -9913,9 +9909,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   crudeTool: {fileID: -8254774734701108926, guid: cdb9953a25f627e4ca1a6fe7f1105deb, type: 3}
-  refinedTool: {fileID: -5522804451313515585, guid: be6adfb1c9923ea4f9291ea62b12f3b2, type: 3}
-  artifact: {fileID: -5853448795988058721, guid: 828e13d9bd7ecd5408cefc3170891e23, type: 3}
-  sword: {fileID: -3753825769889500098, guid: f7c64bf4be2d58041945076ac55450bf, type: 3}
+  harpoon: {fileID: 0}
+  pressureValve: {fileID: 0}
+  engine: {fileID: 0}
+  rareOre: {fileID: 0}
+  industrialBluePrint: {fileID: 0}
+  clockworkBlueprint: {fileID: 0}
 --- !u!1 &429457364
 GameObject:
   m_ObjectHideFlags: 0
@@ -16433,7 +16432,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &752180592
 RectTransform:
   m_ObjectHideFlags: 0
