@@ -36,9 +36,9 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
 
         // --- ADDED: Subscribe to the TurnManager's event ---
-        TurnManager.OnTurnEnded += ProduceOres;
+        //TurnManager.OnTurnEnded += ProduceOres;
 
-        CalculateRefineryValues();
+        //CalculateRefineryValues();
 
         if (oreRefineryLevelText == null) {
             Debug.LogError("Ore Refinery Level Text is not assigned");
@@ -58,7 +58,7 @@ public class OreRefinery_Manager : MonoBehaviour {
                 break;
             case UPGRADE_BUTTON:
                 ShowUpgradePanel();
-                upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
+                //upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
                 upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
                 break;
             default:
