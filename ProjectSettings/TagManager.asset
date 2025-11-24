@@ -7,8 +7,6 @@ TagManager:
   - Trade Hut
   - Lab
   - Crude Tool
-  - Artifact
-  - Refined Tool
   - Ore Refinery
   - Forge
   - Exploration Unit
@@ -19,6 +17,12 @@ TagManager:
   - BuildingButton
   - BuildingButtonPopUp
   - Ore
+  - Engine
+  - Harpoon
+  - Pressure Valve
+  - Rare Ore
+  - Industrial Blue Print
+  - Clockwork Blue Print
   layers:
   - Default
   - TransparentFX
