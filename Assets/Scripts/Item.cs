@@ -66,6 +66,7 @@ public class Item {
          case ItemType.Sword:
             return swordPrice;
          default:
+            Debug.LogError("Unknown Item");
             return 0;
       }
    }
@@ -76,6 +77,8 @@ public class Item {
             return CRUDE_TOOL_DESCRIPTION;
          case ItemType.Harpoon:
             return HARPOON_DESCRIPTION;
+         case ItemType.PressureValve:
+            return PRESSURE_VALVE_DESCRIPTION;
          case ItemType.Engine:
             return ENGINE_DESCRIPTION;
          default:

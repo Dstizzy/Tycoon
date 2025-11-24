@@ -7,8 +7,9 @@ public class ItemSprites : MonoBehaviour {
     
     [Header("Item Sprites")]
     public Sprite crudeTool;
-    public Sprite refinedTool;
-    public Sprite artifact;
+    public Sprite harpoon;
+    public Sprite pressureValve;
+    public Sprite engine;
     public Sprite sword;
 
     private void Awake() {
@@ -22,15 +23,18 @@ public class ItemSprites : MonoBehaviour {
     public Sprite GetSprite(ItemType itemType) {
         switch (itemType) {
             case ItemType.CrudeTool:
-                return crudeTool;
+               return crudeTool;
             case ItemType.Harpoon:
-                return refinedTool;
+               return harpoon;
+            case ItemType.PressureValve:
+               return pressureValve;
             case ItemType.Engine:
-                return artifact;
+               return engine;
             case ItemType.Sword:
-                return sword;
+               return sword;
             default:
-                return null;
+               Debug.LogError("ItemSprites: GetSprite received unknown ItemType: " + itemType);
+               return null;
         }
     }
 }

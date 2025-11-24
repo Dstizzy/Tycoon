@@ -7,7 +7,6 @@ TagManager:
   - Trade Hut
   - Lab
   - Crude Tool
-  - Artifact
   - Ore Refinery
   - Forge
   - Exploration Unit
@@ -18,6 +17,9 @@ TagManager:
   - BuildingButton
   - BuildingButtonPopUp
   - Ore
+  - Engine
+  - Harpoon
+  - Pressure Valve
   layers:
   - Default
   - TransparentFX

@@ -218,7 +218,10 @@ public class LabManager : MonoBehaviour
     {
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
-            Console.WriteLine();
+        { 
+           TradeHutManager.Instance.marketShiftMin = 1;
+           TradeHutManager.Instance.marketShiftMax = 2;
+        }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
         {
@@ -240,6 +243,9 @@ public class LabManager : MonoBehaviour
         /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
         if (tabType == commerceTab)
         {
+            TradeHutManager.Instance.marketShiftMin = 3;
+            TradeHutManager.Instance.marketShiftMax = 5;
+            
             Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
             Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
 
@@ -271,6 +277,8 @@ public class LabManager : MonoBehaviour
         /* Allows all items in storage to be sold for 5x multiplier                              */
         if (tabType == commerceTab)
         {
+            TradeHutManager.Instance.marketShiftMin = 5;
+            TradeHutManager.Instance.marketShiftMax = 10;
             Debug.Log("All items in storage sold for 5x");
         }
         /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */

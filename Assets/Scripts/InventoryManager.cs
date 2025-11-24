@@ -1,5 +1,5 @@
 /* Libraries and references                                                         */
-using System;                                                                       
+using System;
 
 using TMPro;                                                                        
 
@@ -52,15 +52,19 @@ public class InventoryManager : MonoBehaviour
              MIN_ENGINE_COUNT         = 0;
 
 
-   const int RESOURCE_SPACING    = 30,
-             PEARL_POSITION      = 0,
-             CRYSTAL_POSITION    = PEARL_POSITION + 10,
-             ORE_POSITION        = CRYSTAL_POSITION + 10,
-             CRUDE_TOOL_POSITION = 0,
-             HARPOON_POSITION    = CRUDE_TOOL_POSITION + 10,
-             ENGINE_POSITION     = HARPOON_POSITION + 10;
+   const int RESOURCE_SPACING        = 30,
+             PEARL_POSITION          = 0,
+             CRYSTAL_POSITION        = PEARL_POSITION + 10,
+             ORE_POSITION            = CRYSTAL_POSITION + 10,
+             CRUDE_TOOL_POSITION     = 0,
+             HARPOON_POSITION        = CRUDE_TOOL_POSITION + 10,
+             PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
+             ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10;
 
-   const string CRUDE_TOOL_TAG     =  "Crude Tool",
+   const string PEARL_TAG         =  "Pearl",
+                CRYSTAL_TAG       =  "Crystal",
+                ORE_TAG           =  "Ore",
+                CRUDE_TOOL_TAG     =  "Crude Tool",
                 HARPOON_TAG        =  "Harpoon",
                 PRESSURE_VALVE_TAG =  "Pressure Valve",
                 ENGINE_TAG         =  "Engine";
@@ -156,13 +160,14 @@ public class InventoryManager : MonoBehaviour
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
    private void Start() 
    {
-      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, "Pearl");
-      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, "Crystal");
-      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, "Ore");
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
+      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
 
-      CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, "Crude Tool");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, "Harpoon");
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, "Engine");
+      CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
    }
    
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
@@ -213,13 +218,13 @@ public class InventoryManager : MonoBehaviour
 
       switch (resourceTag) 
       { 
-          case "Pearl":
+          case PEARL_TAG:
              PearlCountText   = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
-          case "Crystal":
+          case CRYSTAL_TAG:
              CrystalCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
-          case "Ore":
+          case ORE_TAG:
              OreCountText     = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
          default:
@@ -317,15 +322,15 @@ public class InventoryManager : MonoBehaviour
       resourceTransform.tag = resourceTag;
 
       switch (resourceTag) {
-         case "Pearl":
+         case PEARL_TAG:
             resourceCount = pearlCount;
             resourceInfo  = Resources.GetResourceDescription(Resources.ResourceType.Pearl);
             break;
-         case "Crystal":
+         case CRYSTAL_TAG:
             resourceCount = crystalCount;
             resourceInfo  = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
             break;
-         case "Ore":
+         case ORE_TAG:
             resourceCount = oreCount;
             resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
             break;
@@ -520,118 +525,200 @@ public class InventoryManager : MonoBehaviour
 
       return;
    }
-   public void TryAddCrudeTool(int crudeToolAmount)
+   public bool TryAddCrudeTool(int crudeToolAmount)
    {
+      bool isSuccess = false;
+
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT)
       {
          Debug.LogError("Crude tool count is at minimum!");
-         return;
+         return isSuccess;
       }
       else
-          if ((crudeToolCount + crudeToolAmount) > MAX_CRUDE_TOOL_COUNT)
+          if ((crudeToolCount + crudeToolAmount) > MAX_CRUDE_TOOL_COUNT) 
+          {
              Debug.LogError("Crystal count is at maximum!");
-          else
-             crudeToolCount += crudeToolAmount;
+             return isSuccess;
+          }
+          else 
+              isSuccess = true;
+      
+      crudeToolCount += crudeToolAmount;
       
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
-      return;
+      return isSuccess;
    }
-   public void TryUseCrudeTool(int crudeToolAmount)
+
+   public bool TryUseCrudeTool(int crudeToolAmount)
    {
-      if (crudeToolCount < MIN_CRUDE_TOOL_COUNT)
+      bool isSuccess = false;
+
+      if (crudeToolCount <= MIN_CRUDE_TOOL_COUNT)
       {
          Debug.LogError("Crude tool count is at minimum!");
-         return;
+         return isSuccess;
       }
       else
          if (crudeToolCount < crudeToolAmount)
          {
             Debug.LogError("Not enough crude tools!");
-            return;
-         }
-         else
-            crudeToolCount -= crudeToolAmount;
-        
-         CrudeToolCountText.text = " x" + crudeToolCount.ToString();
+            return isSuccess;
+         } 
+         else 
+            isSuccess = true;
 
-      return;
+      crudeToolCount -= crudeToolAmount;
+
+      CrudeToolCountText.text = " x" + crudeToolCount.ToString();
+
+      return isSuccess;
    }
 
-   public void TryAddHarpoon(int refinedToolAmount)
+   public bool TryAddHarpoon(int harpoonAmount)
    {
+      bool isSuccess = false;
+
       if (harpoonCount >= MAX_HARPOON_COUNT)
       {
          Debug.LogError("Refined tool count is at minimum!");
-         return;
+         return isSuccess;
       }
       else
-         if ((harpoonCount + refinedToolAmount) > MAX_HARPOON_COUNT)
+         if ((harpoonCount + harpoonAmount) > MAX_HARPOON_COUNT)
+         {    
             Debug.LogError("Refined Tool count is at maximum!");
-         else
-            harpoonCount += refinedToolAmount;
+            return isSuccess;
+         } 
+         else 
+            isSuccess = true;
+            
+      harpoonCount += harpoonAmount;
 
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
-      return;
+      return isSuccess;
    }
-   public void TryUseHarpoon(int refinedToolAmount)
+   public bool TryUseHarpoon(int harpoonAmount)
    {
-      if (harpoonCount < MIN_HARPOON_COUNT)
+      bool isSuccess = false;
+
+      if (harpoonCount <= MIN_HARPOON_COUNT)
       {
          Debug.LogError("Refined tool count is at minimum!");
-         return;
+         return isSuccess;
       }
       else
-         if (harpoonCount < refinedToolAmount)
+         if (harpoonCount < harpoonAmount)
          {
             Debug.LogError("Not enough refined tools!");
-            return;
-         }
-         else
-         harpoonCount -= refinedToolAmount;
-
+            return isSuccess;
+         } 
+         else 
+            harpoonCount -= harpoonAmount;
+      
+      isSuccess = true;
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
-      return;
+      return isSuccess;
    }
 
-   public void TryAddEngine(int artifactAmount)
+   public bool TryAddPressureValve(int pressureValveAmount)
    {
+      bool isSuccess = false;
+
+      if (pressureValveCount >= MAX_PRESSURE_VALVE_COUNT)
+      {
+         Debug.LogError("Pressure valve count is at minimum!");
+         return isSuccess;
+      }
+      else
+         if ((pressureValveCount + pressureValveAmount) > MAX_PRESSURE_VALVE_COUNT)
+         {
+            isSuccess = false;
+            Debug.LogError("Refined Tool count is at maximum!");
+         }
+         else 
+            isSuccess = true;
+       
+      pressureValveCount += pressureValveAmount;
+
+      PressureValveCountText.text = " x" + pressureValveCount.ToString();
+      
+      return isSuccess;
+   }
+
+   public bool TryUsePressureValve(int pressureValveAmount) 
+   {
+      bool isSuccess = false;
+
+      if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT) 
+      {
+         Debug.LogError("Pressure valve count is at minimum!");
+         return isSuccess;
+      }
+      else 
+         if (pressureValveCount < pressureValveAmount)
+         {
+            Debug.LogError("Not enough pressure valves!");
+            return isSuccess;
+         }
+         else
+            isSuccess = true;
+      
+      pressureValveCount -= pressureValveAmount;
+
+      PressureValveCountText.text = " x" + pressureValveCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryAddEngine(int artifactAmount)
+   {
+      bool isSuccess = false;
+
       if (engineCount >= MAX_ENGINE_COUNT)
       {
          Debug.LogError("Artifact count is at minimum!");
-         return;
+         return isSuccess;
       }
       else
          if ((engineCount + artifactAmount) > MAX_ENGINE_COUNT)
-            Debug.LogError("Refined Tool count is at maximum!");
-         else
-            engineCount += artifactAmount;
-
-      EngineCountText.text = " x" + engineCount.ToString();
-
-      return;
-   }
-   public void TryUseEngine(int artifactAmount)
-   {
-      if (engineCount < MIN_ENGINE_COUNT)
-      {
-         Debug.LogError("Artifact count is at minimum!");
-         return;
-      }
-      else
-         if (engineCount < artifactAmount)
-         {
-            Debug.LogError("Not enough artifacts!");
-            return;
+         { 
+            Debug.LogError("Refined Tool count is at maximum!"); 
+            return isSuccess;
          }
          else
-         engineCount -= artifactAmount;
+           isSuccess = true;
+
+      engineCount += artifactAmount;
+      EngineCountText.text = " x" + engineCount.ToString();
+
+      return isSuccess;
+   }
+   public bool TryUseEngine(int engineAmount)
+   {
+      bool isSuccess = false;
+
+      if (engineCount <= MIN_ENGINE_COUNT)
+      {
+         Debug.LogError("Engine count is at minimum!");
+         return isSuccess;
+      }
+      else
+         if (engineCount < engineAmount)
+         {
+            Debug.LogError("Not enough engines!");
+            return isSuccess;
+         }
+         else
+            isSuccess = true;
+
+      engineCount -= engineAmount;
 
       EngineCountText.text = " x" + engineCount.ToString();
 
-      return;
+      return isSuccess;
    }
 
    public void ShowInventoryPanel() 
