@@ -30,7 +30,7 @@ public class InventoryManager : MonoBehaviour
    const int MIN_PEARL_COUNT        = 0,                                              
              MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT,
              MIN_ORE_COUNT          = MIN_PEARL_COUNT,
-             MAX_PEARL_COUNT        = 1000,
+             MAX_PEARL_COUNT        = 10000,
              MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT,
              MAX_ORE_COUNT          = MAX_PEARL_COUNT;
 
@@ -53,9 +53,9 @@ public class InventoryManager : MonoBehaviour
              PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
              ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10;
 
-   const string PEARL_TAG         =  "Pearl",
-                CRYSTAL_TAG       =  "Crystal",
-                ORE_TAG           =  "Ore",
+   const string PEARL_TAG          =  "Pearl",
+                CRYSTAL_TAG        =  "Crystal",
+                ORE_TAG            =  "Ore",
                 CRUDE_TOOL_TAG     =  "Crude Tool",
                 HARPOON_TAG        =  "Harpoon",
                 PRESSURE_VALVE_TAG =  "Pressure Valve",
@@ -279,7 +279,7 @@ public class InventoryManager : MonoBehaviour
    /* Creates and populates the resource information window                        */
    private void CreateResourceWindow(Sprite resourceSprite, string resourceTag) 
    {
-      Transform resourceWindowContainer = ResourceWindow.Find("ResourceContainer").GetComponent<Transform>(),
+      Transform resourceWindowContainer = ResourceWindow.Find("ResourceWindowContainer").GetComponent<Transform>(),
                 resourceWindowTemplate  = resourceWindowContainer.Find("ResourceWindowTemplate").GetComponent<Transform>();
       int       resourceCount           = 0;
       string    resourceInfo            = "";
@@ -330,7 +330,7 @@ public class InventoryManager : MonoBehaviour
    /* Creates and populates the craft information window                           */
    private void CreateCraftWindow(Sprite crafteSprite, string craftTag) 
    {
-      Transform craftWindowContainer = CraftWindow.Find("CraftContainer").GetComponent<Transform>(),
+      Transform craftWindowContainer = CraftWindow.Find("CraftWindowContainer").GetComponent<Transform>(),
                 craftWindowTemplate  = craftWindowContainer.Find("CraftWindowTemplate").GetComponent<Transform>();
       int       craftCount           = 0;
       string    craftInfo            = "";
@@ -341,7 +341,8 @@ public class InventoryManager : MonoBehaviour
       RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
 
       /* Destroys the current craft in the window if it exists.                    */
-      if (currentCraft != null) {
+      if (currentCraft != null) 
+      {
          Destroy(currentCraft.gameObject);
          currentCraft = null;
       }

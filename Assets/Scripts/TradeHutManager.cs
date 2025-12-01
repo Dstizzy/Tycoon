@@ -1,10 +1,6 @@
-
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using TMPro;
 
-using Unity.VisualScripting;
+using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,7 +35,11 @@ public class TradeHutManager : MonoBehaviour
                harpoonSellCount   = 0, 
                pressureValveCount = 0, 
                engineSellCount    = 0, 
-               rareOreCount      = 0;
+
+               rareOreCount             = 0,
+               industrialBluePrintCount = 0,
+               clockworkBluePrintCount  = 0;
+               
 
    /* Public variables                                                                                */
    public int marketShiftMax = 2,
@@ -349,12 +349,23 @@ public class TradeHutManager : MonoBehaviour
    public void BuyItem() 
    {
       if (rareOreCount > MIN_BUY_ITEM_COUNT)
-         InventoryManager.Instance.TrySpendPearl(rareOreCount * GetItemValue(ItemType.RareOre));
+         InventoryManager.Instance.TrySpendPearl(rareOreCount * GetItemPrice(ItemType.RareOre));
 
-      rareOreCount = MIN_BUY_ITEM_COUNT;
+      if(industrialBluePrintCount > MIN_BUY_ITEM_COUNT)
+         InventoryManager.Instance.TrySpendPearl(industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint));
 
-      Destroy(currentBuyItem.gameObject);
-      currentBuyItem = null;
+      if(clockworkBluePrintCount > MIN_BUY_ITEM_COUNT)
+         InventoryManager.Instance.TrySpendPearl(clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint));
+
+      rareOreCount             = MIN_BUY_ITEM_COUNT;
+      industrialBluePrintCount = MIN_BUY_ITEM_COUNT;
+      clockworkBluePrintCount  = MIN_BUY_ITEM_COUNT;
+
+      if(currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
 
       CloseBuyWindow();
 
@@ -441,13 +452,14 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
 
    /* Increments the count for the item being bought and updates the UI                               */
-   public void IncreaseBuyItemsCount(Transform item) {
+   public void IncreaseBuyItemsCount(Transform item) 
+   {
       switch (item.tag) 
       {
          case RARE_ORE:
@@ -458,8 +470,24 @@ public class TradeHutManager : MonoBehaviour
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreCount * GetItemPrice(ItemType.RareOre)).ToString();
             }
             break;
+         case INDUSTRIAL_BLUE_PRINT_TAG:
+            if (industrialBluePrintCount < MAX_BUY_ITEM_COUNT) 
+            {
+               industrialBluePrintCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + industrialBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
+            }
+            break;
+         case CLOCKWORK_BLUEPRINT_TAG:
+            if (clockworkBluePrintCount < MAX_BUY_ITEM_COUNT) 
+            {
+               clockworkBluePrintCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + clockworkBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
+            }
+            break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
@@ -477,8 +505,24 @@ public class TradeHutManager : MonoBehaviour
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreCount * GetItemPrice(ItemType.RareOre)).ToString();
             }
             break;
+         case INDUSTRIAL_BLUE_PRINT_TAG:
+            if (industrialBluePrintCount > MIN_BUY_ITEM_COUNT) 
+            {
+               industrialBluePrintCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + industrialBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
+            }
+            break;
+         case CLOCKWORK_BLUEPRINT_TAG:
+            if(clockworkBluePrintCount  > MIN_BUY_ITEM_COUNT)
+            { 
+               clockworkBluePrintCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + clockworkBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
+            }
+            break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
@@ -517,7 +561,8 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   public void MarketFluctuate() {
+   public void MarketFluctuate() 
+   {
       //float fluctuationPercent;
       int crudeToolValue      = GetItemValue(ItemType.CrudeTool),
           harpoonValue        = GetItemValue(ItemType.Harpoon),
@@ -531,7 +576,6 @@ public class TradeHutManager : MonoBehaviour
 
       if (crudeToolChance <= 30) 
       {
-         
          //fluctuationPercent =  (.01f * Rng.Next(50, 101));
          //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
          pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
@@ -605,7 +649,8 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-   public void ChangeItemValueText(int newAmount, ItemType itemType) {
+   public void ChangeItemValueText(int newAmount, ItemType itemType) 
+   {
       Transform currentItem;
 
       switch (itemType) 
@@ -620,7 +665,7 @@ public class TradeHutManager : MonoBehaviour
             currentItem = Items.Find(d => d.CompareTag(PRESSURE_VALVE_TAG));
             break;
          case ItemType.Engine:
-            currentItem = Items.Find(d => d.CompareTag(CLOCKWORK_BLUEPRINT_TAG));
+            currentItem = Items.Find(d => d.CompareTag(ENGINE_TAG));
             break;
          default:
             currentItem = null;
