@@ -12,7 +12,7 @@ public class Item {
    
    public static int rareOrePrice                 { get; private set; } = 100;
    public static int industrialBluePrintSellValue { get; private set; } = 500;
-   public static int clockworkBlueprintSellValue  { get; private set; } = 2000;
+   public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
@@ -87,7 +87,7 @@ public class Item {
          case ItemType.IndustrialBluePrint:
             return industrialBluePrintSellValue;
          case ItemType.ClockworkBlueprint:
-            return clockworkBlueprintSellValue;
+            return clockworkBluePrintSellValue;
          default:
             Debug.LogError("Unknown Item");
             return 0;
