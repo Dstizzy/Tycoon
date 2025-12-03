@@ -178,7 +178,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierOneButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierOneCost").gameObject.SetActive(false);
-                ImplementTierOneInnovation(tab);
+                tab.transform.Find("costContainer/tierOneImages").gameObject.SetActive(false);
                 break;
             case TIER_TWO:
                 PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
@@ -190,7 +190,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierTwoButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierTwoCost").gameObject.SetActive(false);
-                ImplementTierTwoInnovation(tab);
+                tab.transform.Find("costContainer/tierTwoImages").gameObject.SetActive(false);
                 break;
             case TIER_THREE:
                 PerformBuy(TIER_THREE_PEARL_COST, TIER_THREE_ITEM_COST);
@@ -201,7 +201,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierThreeButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
-                ImplementTierThreeInnovation(tab);
+                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
                 break;
         };
     }
@@ -317,6 +317,7 @@ public class LabManager : MonoBehaviour
             currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
             currentColor.a = 1.0f;
             tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+            
         }
         /* Get ride of the tier 3 lock and turn on buttons and text                              */
         else
