@@ -13329,7 +13329,7 @@ GameObject:
   - component: {fileID: 544102625}
   - component: {fileID: 544102624}
   m_Layer: 5
-  m_Name: Crystal UI
+  m_Name: Ore UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32479,7 +32479,7 @@ MonoBehaviour:
   - {fileID: 1808862285}
   InventoryButton: {fileID: 1785740535}
   pearCountText: {fileID: 1212134053}
-  crystalCountText: {fileID: 1861217835}
+  oreCountText: {fileID: 1861217835}
 --- !u!1 &1438102152
 GameObject:
   m_ObjectHideFlags: 0
@@ -41936,7 +41936,7 @@ GameObject:
   - component: {fileID: 1861217836}
   - component: {fileID: 1861217835}
   m_Layer: 5
-  m_Name: CrystalCountText
+  m_Name: oreCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

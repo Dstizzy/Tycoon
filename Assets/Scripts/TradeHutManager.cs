@@ -579,7 +579,7 @@ public class TradeHutManager : MonoBehaviour
          //fluctuationPercent =  (.01f * Rng.Next(50, 101));
          //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
          pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("Pearl Amount +" + pearlAmount);
+         Debug.Log("crude tool amount +" + pearlAmount);
          TryIncreaseCrudeToolSellValue(pearlAmount);
       }
       else 
@@ -588,7 +588,7 @@ public class TradeHutManager : MonoBehaviour
             //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
             //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
             pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("Pearl Amount +" + pearlAmount);
+            Debug.Log("crude tool amount -" + pearlAmount);
             TryDecreaseCrudeToolSellValue(pearlAmount);
          }
 
@@ -597,7 +597,7 @@ public class TradeHutManager : MonoBehaviour
          //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
          //pearlAmount = (int) (weaponValue * fluctuationPercent);
          pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("Pearl Amount +" + pearlAmount);
+         Debug.Log("harpoon amount +" + pearlAmount);
          TryIncreaseWeaponsSellValue(pearlAmount);
       }
       else 
@@ -606,7 +606,7 @@ public class TradeHutManager : MonoBehaviour
             //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
             //pearlAmount = (int) (weaponValue * fluctuationPercent);
             pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("Pearl Amount -" + pearlAmount);
+            Debug.Log("harpoon amount -" + pearlAmount);
             TryDecreaseWeaponsSellValue(pearlAmount);
          }
 
@@ -615,7 +615,7 @@ public class TradeHutManager : MonoBehaviour
          //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
          //pearlAmount = (int) (weaponValue * fluctuationPercent);
          pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("Pearl Amount +" + pearlAmount);
+         Debug.Log("pressure valve amount +" + pearlAmount);
          TryIncreaseWeaponsSellValue(pearlAmount);
       }
       else 
@@ -624,7 +624,7 @@ public class TradeHutManager : MonoBehaviour
             //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
             //pearlAmount = (int) (weaponValue * fluctuationPercent);
             pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("Pearl Amount -" + pearlAmount);
+            Debug.Log("pressure valve amount  -" + pearlAmount);
             TryDecreaseWeaponsSellValue(pearlAmount);
          }
 
@@ -633,7 +633,7 @@ public class TradeHutManager : MonoBehaviour
          //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
          //pearlAmount = (int) (engineValue * fluctuationPercent);
          pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("Pearl Amount +" + pearlAmount);
+         Debug.Log("engine amount +" + pearlAmount);
          TryIncreaseEnginesSellValue(pearlAmount);
       }
       else 
@@ -642,7 +642,7 @@ public class TradeHutManager : MonoBehaviour
             //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
             //pearlAmount = (int) (engineValue * fluctuationPercent);
             pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("Pearl Amount +" + pearlAmount);
+            Debug.Log("engine amount -" + pearlAmount);
             TryDecreaseEnginesSellValue(pearlAmount);
          }
 

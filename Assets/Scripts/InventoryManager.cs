@@ -482,6 +482,7 @@ public class InventoryManager : MonoBehaviour
       else
          oreCount += oreAmount;
 
+
       OnOreCountChanged?.Invoke(oreCount);
       OreCountText.text = " x" + oreCount.ToString();
 

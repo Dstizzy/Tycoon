@@ -79,7 +79,6 @@ public class TurnManager : MonoBehaviour
          // enemy turn, reset unit actions, etc.)
 
          OnTurnEnded?.Invoke();
-         InventoryManager.Instance.TryAddOre(15);
       }
    }
 
