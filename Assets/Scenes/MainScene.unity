@@ -16432,7 +16432,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &752180592
 RectTransform:
   m_ObjectHideFlags: 0
@@ -38550,7 +38550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
   currentTurn: 1
-  maxTurns: 20
+  maxTurns: 50
   turnText: {fileID: 921050911}
   endTurnButton: {fileID: 1400022290}
 --- !u!224 &1876231671
