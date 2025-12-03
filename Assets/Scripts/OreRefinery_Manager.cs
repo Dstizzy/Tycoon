@@ -6,9 +6,8 @@ public class OreRefinery_Manager : MonoBehaviour {
 
     public static OreRefinery_Manager Instance { get; private set; }
 
-    const int REFINE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
+    const int INFO_BUTTON = 1;
+    const int UPGRADE_BUTTON = 2;
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
@@ -49,9 +48,6 @@ public class OreRefinery_Manager : MonoBehaviour {
 
     public void RequestOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
-            case REFINE_BUTTON:
-                Debug.Log("Ore Refinery Panel: Refine requested.");
-                break;
             case INFO_BUTTON:
                 ShowInfoPanel();
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
@@ -70,8 +66,6 @@ public class OreRefinery_Manager : MonoBehaviour {
     public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) 
         {
-            case REFINE_BUTTON:
-                break;
             case INFO_BUTTON:
                 CloseInfoPanel();
                 break;

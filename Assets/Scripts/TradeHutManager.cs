@@ -40,7 +40,6 @@ public class TradeHutManager : MonoBehaviour
                industrialBluePrintCount = 0,
                clockworkBluePrintCount  = 0;
                
-
    /* Public variables                                                                                */
    public int marketShiftMax = 2,
               marketShiftMin = 1;
@@ -564,10 +563,11 @@ public class TradeHutManager : MonoBehaviour
    public void MarketFluctuate() 
    {
       //float fluctuationPercent;
-      int crudeToolValue      = GetItemValue(ItemType.CrudeTool),
-          harpoonValue        = GetItemValue(ItemType.Harpoon),
-          pressureValveValue  = GetItemValue(ItemType.PressureValve),
-          engineValue         = GetItemValue(ItemType.Engine),
+      int crudeToolValue     = GetItemValue(ItemType.CrudeTool),
+          harpoonValue       = GetItemValue(ItemType.Harpoon),
+          pressureValveValue = GetItemValue(ItemType.PressureValve),
+          engineValue        = GetItemValue(ItemType.Engine),
+
           crudeToolChance     = Rng.Next(1, 101),
           harpoonChance       = Rng.Next(1, 101),
           pressureValveChance = Rng.Next(1, 101),
@@ -643,10 +643,16 @@ public class TradeHutManager : MonoBehaviour
             //pearlAmount = (int) (engineValue * fluctuationPercent);
             pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
             Debug.Log("Pearl Amount +" + pearlAmount);
-            Item.TryDecreaseEnginesSellValue(pearlAmount);
+            TryDecreaseEnginesSellValue(pearlAmount);
          }
 
       return;
+   }
+
+
+   public void IncreaseCraftsSellValue() 
+   {
+
    }
 
    public void ChangeItemValueText(int newAmount, ItemType itemType) 
