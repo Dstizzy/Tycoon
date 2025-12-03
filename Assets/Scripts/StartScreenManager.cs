@@ -12,7 +12,7 @@ public class MainMenuManager : MonoBehaviour
    // Called by the START button.
    public void OnStartButtonClick()
    {
-      // Change "MainScene" to your actual game scene name.
+      // Change "MainScene" to your actual game scene name. 
       StartCoroutine(FadeAndLoadScene("MainScene"));
    }
 
