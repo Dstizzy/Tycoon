@@ -72,12 +72,14 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
+         TradeHutManager.Instance.MarketFluctuate();
          Debug.Log("Turn" + currentTurn + "Start");
 
          // Add logic for the next turn here (e.g., start
          // enemy turn, reset unit actions, etc.)
 
          OnTurnEnded?.Invoke();
+         InventoryManager.Instance.TryAddOre(15);
       }
    }
 

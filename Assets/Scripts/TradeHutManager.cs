@@ -1,63 +1,81 @@
+using System.Collections.Generic;
 
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
+using static Item;
 using static Resources;
 
 public class TradeHutManager : MonoBehaviour 
 {
    /* Inspector variables                                                                             */
    [SerializeField] private Transform TradePanels;            
-                    public  Transform BuyPanel;               
-   [SerializeField] private Transform BuyItemContainer;       
-   [SerializeField] private Transform BuyItemTemplate;        
-   [SerializeField] private Transform BuyWindow;              
-   [SerializeField] private Transform BuyWindowContainer;     
-   [SerializeField] private Transform BuyWindowTemplate;      
+                    public  Transform BuyPanel;       
+   [SerializeField] private Transform BuyWindow;    
    [SerializeField] private Transform SellPanel;              
-   [SerializeField] private Transform SellWindow;
-   [SerializeField] private Transform SellWindowContainer;
-   [SerializeField] private Transform SellWindowTemplate;     
+   [SerializeField] private Transform SellWindow;     
    [SerializeField] private Transform InfoPanel;                   
    [SerializeField] private Transform UpgradePanel;           
-   [SerializeField] private Transform MysteryBoxPanel;        
-
+   [SerializeField] private Transform MysteryBoxPanel; 
+   
+   public List<Transform> Items { get; private set; }
    public TextMeshProUGUI tradeHutLevelText;
 
    private readonly static System.Random Rng = new System.Random();
 
+   /* Transforms                                                                                      */
+   private Transform       currentBuyItem,    
+                           currentSellItem,
+                           currentMysteryBoxResult;
 
    /* Private variables                                                                               */
-   private int artifactSellCount     = 0; 
-   private int crudeToolSellCount    = 0; 
-   private int refinedToolSellCount  = 0; 
-   private int swordBuyCount         = 0;
+   private int crudeToolSellCount = 0,
+               harpoonSellCount   = 0, 
+               pressureValveCount = 0, 
+               engineSellCount    = 0, 
 
-   /* Transform                                                                                       */
-   private Transform currentBuyItem;      
-   private Transform currentSellItem;
-   private Transform currentMysteryBoxResult;
+               rareOreCount             = 0,
+               industrialBluePrintCount = 0,
+               clockworkBluePrintCount  = 0;
+               
+
+   /* Public variables                                                                                */
+   public int marketShiftMax = 2,
+              marketShiftMin = 1;
 
    /* Constants                                                                                       */
-   const int ENDING_LEVEL        = 5;     
-   const int INFO_BUTTON         = 2;     
-   const int MAX_BUY_ITEM_COUNT  = 100;   
-   const int MAX_SELL_ITEM_COUNT = 100;   
-   const int MIN_BUY_ITEM_COUNT  = 0;     
-   const int MIN_SELL_ITEM_COUNT = 0;     
-   const int STARTING_LEVEL      = 1;     
-   const int TRADE_BUTTON        = 1;     
-   const int BUY_ITEM_SPACING    = 30;    
-   const int UPGRADE_BUTTON      = 3;     
+   const int ENDING_LEVEL        = 5,  
+             INFO_BUTTON         = 2,     
+             MAX_BUY_ITEM_COUNT  = 100,   
+             MAX_SELL_ITEM_COUNT = 100,   
+             MIN_BUY_ITEM_COUNT  = 0,   
+             MIN_SELL_ITEM_COUNT = 0,     
+             STARTING_LEVEL      = 1,     
+             TRADE_BUTTON        = 1,     
+             BUY_ITEM_SPACING    = 30,    
+             UPGRADE_BUTTON      = 3;
+
+   const string CRUDE_TOOL_TAG            = "Crude Tool",
+                HARPOON_TAG               = "Harpoon",
+                PRESSURE_VALVE_TAG        = "Pressure Valve",
+                ENGINE_TAG                = "Engine",
+                RARE_ORE                  = "Rare Ore",
+                INDUSTRIAL_BLUE_PRINT_TAG = "Industrial Blue Print",
+                CLOCKWORK_BLUEPRINT_TAG   = "Clockwork Blue Print";
 
    public static int tradeHutLevel;
+
+
    public static TradeHutManager Instance;
 
    private void Awake() 
    {
       tradeHutLevel = STARTING_LEVEL;
+      Items = new();
+
+      OnItemValueChange = ChangeItemValueText;
 
       if (Instance != null && Instance != this)
          Destroy(this.gameObject);
@@ -92,11 +110,6 @@ public class TradeHutManager : MonoBehaviour
       else
          CloseSellWindow();
 
-      if (SellWindowTemplate == null)
-         Debug.LogError("Sell window template is not assigned in the Inspector");
-      else
-         SellWindowTemplate.gameObject.SetActive(false);
-
       if (SellPanel == null)
          Debug.LogError("Sell Panel is not assigned in the Inspector!");
       else
@@ -107,24 +120,11 @@ public class TradeHutManager : MonoBehaviour
       else
          CloseBuyPanel();
 
-      if (BuyWindowTemplate == null)
-         Debug.LogError("Buy Item Template is not assigned in the Inspector!");
-      else
-         BuyWindowTemplate.gameObject.SetActive(false);
-
-      if (BuyItemContainer == null)
-         Debug.LogError("Buy Container is not assigned in the Inspector!");
-
       if (BuyWindow == null)
          Debug.LogError("Buy Window is not assigned in the Inspector!");
       else
          BuyWindow.gameObject.SetActive(false);
-
-      if (BuyItemTemplate == null)
-         Debug.LogError("Buy Item Template is not assigned in the Inspector!");
-      else
-         BuyItemTemplate.gameObject.SetActive(false);
-
+      
       if(MysteryBoxPanel == null)
          Debug.LogError("Mystery Box Panel is not assigned in the Inspector!");
       else
@@ -133,44 +133,61 @@ public class TradeHutManager : MonoBehaviour
 
    private void Start() 
    {
-      CreateSellItem(Item.GetItemSprite(Item.ItemType.CrudeTool), Item.GetItemValue(Item.ItemType.CrudeTool), -1.0f, "Crude Tool");
-      CreateSellItem(Item.GetItemSprite(Item.ItemType.RefinedTool), Item.GetItemValue(Item.ItemType.RefinedTool), 0.0f, "Refined Tool");
-      CreateSellItem(Item.GetItemSprite(Item.ItemType.Artifact), Item.GetItemValue(Item.ItemType.Artifact), 1.0f, "Artifact");
+      CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
 
-      CreateBuyItem(Item.GetItemSprite(Item.ItemType.Sword), Item.GetItemPrice(Item.ItemType.Sword), 0, "Sword");
+      CreateBuyItem(GetItemSprite(ItemType.RareOre), GetItemPrice(ItemType.RareOre), 0.0f, RARE_ORE);
+      CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
+      CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 2.0f, CLOCKWORK_BLUEPRINT_TAG);
    }
 
    private void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
-      Transform SellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
-                SellItemTemplate  = SellItemContainer.Find("SellItemTemplate").GetComponent<Transform>();
-      
-      SellItemTemplate.gameObject.SetActive(false);
+      Transform       sellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
+                      sellItemTemplate  = sellItemContainer.Find("SellItemTemplate").GetComponent<Transform>(),
+                      tradeItemTransform;
+      TextMeshProUGUI sellValueText;
+      RectTransform   tradeItemRectTransform;
+      Button          itemButton;
+
+      sellItemTemplate.gameObject.SetActive(false);
 
       /* Instantiate the template and set its position in the container                               */
-      Transform     tradeItemTransform     = Instantiate(SellItemTemplate, SellItemContainer);
-      RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+      tradeItemTransform     = Instantiate(sellItemTemplate, sellItemContainer);
+      tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
       tradeItemTransform.tag = itemTag;
       tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
 
-      /* Populate the the item properties                                                             */
-      tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
-      tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals("Artifact") ? "   Artifact" : itemTag;
-      Button itemButton       = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
+      /* Populate the the item properties                                                           */
+      sellValueText = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      sellValueText.text = itemValue.ToString();
+      Items.Add(tradeItemTransform);
+
+      tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals(ENGINE_TAG) ? "   " + ENGINE_TAG : itemTag;
+      itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
       itemButton.image.sprite = itemSprite;
 
       /* Dynamically add a listener to the button, which creates a sell window when clicked           */
-      itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, Resources.GetResourceSprite(Resources.ResourceType.Pearl), itemValue, itemTag));
+      itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
 
       tradeItemTransform.gameObject.SetActive(true);
    }
 
    private void CreateBuyItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
+      Transform     buyItemContainer = BuyPanel.Find("BuyItemContainer").GetComponent<Transform>(),
+                    buyItemTemplate  = buyItemContainer.Find("BuyItemTemplate").GetComponent<Transform>(),
+                    tradeItemTransform;
+      RectTransform tradeItemRectTransform;
+
       /* Instantiate the template and set its position in the container                               */
-      Transform     tradeItemTransform     = Instantiate(BuyItemTemplate, BuyItemContainer);
-      RectTransform tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+      tradeItemTransform     = Instantiate(buyItemTemplate, buyItemContainer);
+      tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
+
+      buyItemTemplate.gameObject.SetActive(false);
 
       tradeItemTransform.tag = itemTag;
 
@@ -183,54 +200,20 @@ public class TradeHutManager : MonoBehaviour
       itemButton.image.sprite = itemSprite;
 
       /* Dynamically add a listener to the button, which creates the buy window                       */
-      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, Resources.GetResourceSprite(Resources.ResourceType.Pearl), itemValue, itemTag));
+      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
 
       tradeItemTransform.gameObject.SetActive(true);
    }
 
    /* Creates and populates the single buy transaction window                                         */
-   private void CreateBuyWindow(Sprite itemSprite, Sprite currencySprite, int itemValue, string itemTag) 
-   {
-      int itemCount = 0;
-
-      /* Destroy the previously opened buy window instance before creating a new one                  */
-      if (currentBuyItem != null) 
-      {
-         Destroy(currentBuyItem.gameObject);
-         currentBuyItem = null;
-      }
-
-      Transform     buyItemTransfrom              = Instantiate(BuyWindowTemplate, BuyWindowContainer);
-      RectTransform buyItemTransfromRectTransform = buyItemTransfrom.GetComponent<RectTransform>();
-
-      buyItemTransfrom.tag = itemTag;
-
-      //buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
-
-      /* Populate item properties                                                                     */
-      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
-      buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
-      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
-      buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
-
-      /* Get references to the increase and decrease buttons                                          */
-      Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
-      Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
-
-      /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
-      increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
-      decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
-
-      /* Store the reference to the newly created buy window instance                                 */
-      currentBuyItem = buyItemTransfrom;
-      buyItemTransfrom.gameObject.SetActive(true);
-      ShowBuyWindow();
-   }
-
    /* Creates and populates the single sell transaction window                                        */
    private void CreateSellWindow(Sprite itemSprite, Sprite currencySprite, int itemValue, string itemTag) 
    {
-      int itemCount = 0;
+      Transform sellWindowContainer = SellWindow.Find("SellWindowContainer").GetComponent<Transform>(),
+                sellWindowTemplate  = sellWindowContainer.Find("SellWindowTemplate").GetComponent<Transform>();
+      int       itemCount           = 0;
+
+      sellWindowTemplate.gameObject.SetActive(false);
 
       /* Destroy the previously opened sell window instance before creating a new one                 */
       if (currentSellItem != null) 
@@ -239,7 +222,7 @@ public class TradeHutManager : MonoBehaviour
          currentSellItem = null;
       }
 
-      Transform     sellItemTransform     = Instantiate(SellWindowTemplate, SellWindowContainer);
+      Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
       RectTransform sellItemRectTransform = sellItemTransform.GetComponent<RectTransform>();
 
       sellItemTransform.tag = itemTag;
@@ -266,28 +249,97 @@ public class TradeHutManager : MonoBehaviour
       ShowSellWindow();
    }
 
+   private void CreateBuyWindow(Sprite itemSprite, Sprite currencySprite, int itemValue, string itemTag) 
+   {
+      Transform buyWindowContainer = BuyWindow.Find("BuyWindowContainer").GetComponent<Transform>(),
+                buyWindowTemplate  = buyWindowContainer.Find("BuyWindowTemplate").GetComponent<Transform>();
+      int       itemCount          = 0;
+
+      buyWindowTemplate.gameObject.SetActive(false);
+
+      /* Destroy the previously opened buy window instance before creating a new one                  */
+      if (currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
+
+      Transform     buyItemTransfrom              = Instantiate(buyWindowTemplate, buyWindowContainer);
+      RectTransform buyItemTransfromRectTransform = buyItemTransfrom.GetComponent<RectTransform>();
+
+      buyItemTransfrom.tag = itemTag;
+
+      //buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
+
+      /* Populate item properties                                                                     */
+      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
+      buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
+      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
+      buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+
+      /* Get references to the increase and decrease buttons                                          */
+      Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
+      Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
+
+      /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
+      increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
+      decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
+
+      /* Store the reference to the newly created buy window instance                                 */
+      currentBuyItem = buyItemTransfrom;
+      buyItemTransfrom.gameObject.SetActive(true);
+      ShowBuyWindow();
+   }
+
    public void SellItem() 
    {
-      int totalSellValue = 0;
+      int totalSellValue  = 0;
 
-      if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
-         totalSellValue += crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool);
+      if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+      {
+         if(InventoryManager.Instance.TryUseCrudeTool(crudeToolSellCount))
+            totalSellValue += crudeToolSellCount * GetItemValue(ItemType.CrudeTool);
+         else
+            crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+      }
 
-      if (refinedToolSellCount > MIN_SELL_ITEM_COUNT)
-         totalSellValue += refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool);
+      if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
+      {
+         if(InventoryManager.Instance.TryUseHarpoon(harpoonSellCount))
+            totalSellValue += harpoonSellCount * GetItemValue(ItemType.Harpoon);
+         else
+            harpoonSellCount = MIN_SELL_ITEM_COUNT;
+      }
 
-      if (artifactSellCount > MIN_SELL_ITEM_COUNT)
-         totalSellValue += artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact);
+      if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
+      {
+         if(InventoryManager.Instance.TryUseHarpoon(pressureValveCount))
+            totalSellValue += pressureValveCount * GetItemValue(ItemType.PressureValve);
+         else
+            pressureValveCount = MIN_SELL_ITEM_COUNT;
+      }
 
-      crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
-      refinedToolSellCount = MIN_SELL_ITEM_COUNT;
-      artifactSellCount    = MIN_SELL_ITEM_COUNT;
-
-      /* Destroy the instantiated sell window and remove the reference                                */
-      Destroy(currentSellItem.gameObject);
-      currentSellItem = null;
+      if (engineSellCount > MIN_SELL_ITEM_COUNT) 
+      {
+         if(InventoryManager.Instance.TryUseEngine(engineSellCount))
+            totalSellValue += engineSellCount * GetItemValue(ItemType.Engine);
+         else
+            engineSellCount = MIN_SELL_ITEM_COUNT;
+      }
 
       InventoryManager.Instance.TryAddPearl(totalSellValue);
+
+      crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+      harpoonSellCount   = MIN_SELL_ITEM_COUNT;
+      pressureValveCount = MIN_SELL_ITEM_COUNT;
+      engineSellCount    = MIN_SELL_ITEM_COUNT;
+
+      /* Destroy the instantiated sell window and remove the reference                                */
+      if (currentSellItem != null) 
+      {
+         Destroy(currentSellItem.gameObject);
+         currentSellItem = null;
+      }
 
       CloseSellWindow();
 
@@ -296,13 +348,24 @@ public class TradeHutManager : MonoBehaviour
 
    public void BuyItem() 
    {
-      if (swordBuyCount > MIN_BUY_ITEM_COUNT)
-         InventoryManager.Instance.TrySpendPearl(swordBuyCount * Item.GetItemValue(Item.ItemType.Sword));
+      if (rareOreCount > MIN_BUY_ITEM_COUNT)
+         InventoryManager.Instance.TrySpendPearl(rareOreCount * GetItemPrice(ItemType.RareOre));
 
-      swordBuyCount = MIN_BUY_ITEM_COUNT;
+      if(industrialBluePrintCount > MIN_BUY_ITEM_COUNT)
+         InventoryManager.Instance.TrySpendPearl(industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint));
 
-      Destroy(currentBuyItem.gameObject);
-      currentBuyItem = null;
+      if(clockworkBluePrintCount > MIN_BUY_ITEM_COUNT)
+         InventoryManager.Instance.TrySpendPearl(clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint));
+
+      rareOreCount             = MIN_BUY_ITEM_COUNT;
+      industrialBluePrintCount = MIN_BUY_ITEM_COUNT;
+      clockworkBluePrintCount  = MIN_BUY_ITEM_COUNT;
+
+      if(currentBuyItem != null) 
+      {
+         Destroy(currentBuyItem.gameObject);
+         currentBuyItem = null;
+      }
 
       CloseBuyWindow();
 
@@ -314,32 +377,40 @@ public class TradeHutManager : MonoBehaviour
    {
       switch (item.tag) 
       {
-         case "Crude Tool":
+         case CRUDE_TOOL_TAG:
             if (crudeToolSellCount < MAX_SELL_ITEM_COUNT) 
             {
                crudeToolSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool)).ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
             }
             break;
-         case "Refined Tool":
-            if (refinedToolSellCount < MAX_SELL_ITEM_COUNT) 
+         case HARPOON_TAG:
+            if (harpoonSellCount < MAX_SELL_ITEM_COUNT) 
             {
-               refinedToolSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + refinedToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (refinedToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
+               harpoonSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (harpoonSellCount * GetItemValue(ItemType.Harpoon)).ToString();
             }
             break;
-         case "Artifact":
-            if (artifactSellCount < MAX_SELL_ITEM_COUNT) 
+         case PRESSURE_VALVE_TAG:
+            if (pressureValveCount < MAX_SELL_ITEM_COUNT) 
             {
-               artifactSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + artifactSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
+               pressureValveCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
+            }
+            break;
+         case ENGINE_TAG:
+            if (engineSellCount < MAX_SELL_ITEM_COUNT) 
+            {
+               engineSellCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
             }
             break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
@@ -348,50 +419,75 @@ public class TradeHutManager : MonoBehaviour
    public void DecreaseSellItemCount(Transform item) 
    {
       switch (item.tag) {
-         case "Crude Tool":
+         case CRUDE_TOOL_TAG:
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
             {
                crudeToolSellCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + crudeToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.CrudeTool)).ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
             }
             break;
-         case "Refined Tool":
-            if (refinedToolSellCount > MIN_SELL_ITEM_COUNT) 
+         case HARPOON_TAG:
+            if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               refinedToolSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + refinedToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * Item.GetItemValue(Item.ItemType.RefinedTool)).ToString();
+               harpoonSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + harpoonSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.Harpoon)).ToString();
             }
             break;
-         case "Artifact":
-            if (artifactSellCount > MIN_SELL_ITEM_COUNT) 
+         case PRESSURE_VALVE_TAG:
+            if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
-               artifactSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + artifactSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (artifactSellCount * Item.GetItemValue(Item.ItemType.Artifact)).ToString();
+               pressureValveCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + pressureValveCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
+            }
+            break;
+         case ENGINE_TAG:
+            if (engineSellCount > MIN_SELL_ITEM_COUNT) 
+            {
+               engineSellCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + engineSellCount.ToString();
+               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
             }
             break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
 
    /* Increments the count for the item being bought and updates the UI                               */
-   public void IncreaseBuyItemsCount(Transform item) {
+   public void IncreaseBuyItemsCount(Transform item) 
+   {
       switch (item.tag) 
       {
-         case "Sword":
-            if (swordBuyCount < MAX_BUY_ITEM_COUNT) 
+         case RARE_ORE:
+            if (rareOreCount < MAX_BUY_ITEM_COUNT) 
             {
-               swordBuyCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + swordBuyCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (swordBuyCount * Item.GetItemPrice(Item.ItemType.Sword)).ToString();
+               rareOreCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rareOreCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreCount * GetItemPrice(ItemType.RareOre)).ToString();
+            }
+            break;
+         case INDUSTRIAL_BLUE_PRINT_TAG:
+            if (industrialBluePrintCount < MAX_BUY_ITEM_COUNT) 
+            {
+               industrialBluePrintCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + industrialBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
+            }
+            break;
+         case CLOCKWORK_BLUEPRINT_TAG:
+            if (clockworkBluePrintCount < MAX_BUY_ITEM_COUNT) 
+            {
+               clockworkBluePrintCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + clockworkBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
             }
             break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
@@ -401,16 +497,32 @@ public class TradeHutManager : MonoBehaviour
    {
       switch (item.tag) 
       {
-         case "Sword":
-            if (swordBuyCount > MIN_BUY_ITEM_COUNT) 
+         case RARE_ORE:
+            if (rareOreCount > MIN_BUY_ITEM_COUNT) 
             {
-               swordBuyCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + swordBuyCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (swordBuyCount * Item.GetItemPrice(Item.ItemType.Sword)).ToString();
+               rareOreCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rareOreCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreCount * GetItemPrice(ItemType.RareOre)).ToString();
+            }
+            break;
+         case INDUSTRIAL_BLUE_PRINT_TAG:
+            if (industrialBluePrintCount > MIN_BUY_ITEM_COUNT) 
+            {
+               industrialBluePrintCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + industrialBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
+            }
+            break;
+         case CLOCKWORK_BLUEPRINT_TAG:
+            if(clockworkBluePrintCount  > MIN_BUY_ITEM_COUNT)
+            { 
+               clockworkBluePrintCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + clockworkBluePrintCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
             }
             break;
          default:
-            Debug.Log("Unknown item tag: " + item.tag);
+            Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
@@ -423,7 +535,7 @@ public class TradeHutManager : MonoBehaviour
       Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
       Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
 
-      ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = Resources.GetResourceSprite(resource);
+      ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = GetResourceSprite(resource);
       ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
 
       currentMysteryBoxResult = ResultTransform;
@@ -449,6 +561,123 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
+   public void MarketFluctuate() 
+   {
+      //float fluctuationPercent;
+      int crudeToolValue      = GetItemValue(ItemType.CrudeTool),
+          harpoonValue        = GetItemValue(ItemType.Harpoon),
+          pressureValveValue  = GetItemValue(ItemType.PressureValve),
+          engineValue         = GetItemValue(ItemType.Engine),
+          crudeToolChance     = Rng.Next(1, 101),
+          harpoonChance       = Rng.Next(1, 101),
+          pressureValveChance = Rng.Next(1, 101),
+          engineChance        = Rng.Next(1, 101),
+          pearlAmount;
+
+      if (crudeToolChance <= 30) 
+      {
+         //fluctuationPercent =  (.01f * Rng.Next(50, 101));
+         //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
+         TryIncreaseCrudeToolSellValue(pearlAmount);
+      }
+      else 
+         if(crudeToolChance <= 60) 
+         {
+            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+            //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount +" + pearlAmount);
+            TryDecreaseCrudeToolSellValue(pearlAmount);
+         }
+
+      if (harpoonChance <= 30) 
+      {
+         //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+         //pearlAmount = (int) (weaponValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
+         TryIncreaseWeaponsSellValue(pearlAmount);
+      }
+      else 
+         if(harpoonChance <= 60) 
+         {
+            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+            //pearlAmount = (int) (weaponValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount -" + pearlAmount);
+            TryDecreaseWeaponsSellValue(pearlAmount);
+         }
+
+      if (pressureValveChance <= 30) 
+      {
+         //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+         //pearlAmount = (int) (weaponValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
+         TryIncreaseWeaponsSellValue(pearlAmount);
+      }
+      else 
+         if(pressureValveChance <= 60) 
+         {
+            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+            //pearlAmount = (int) (weaponValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount -" + pearlAmount);
+            TryDecreaseWeaponsSellValue(pearlAmount);
+         }
+
+      if (engineChance <= 30) 
+      {
+         //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
+         //pearlAmount = (int) (engineValue * fluctuationPercent);
+         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+         Debug.Log("Pearl Amount +" + pearlAmount);
+         TryIncreaseEnginesSellValue(pearlAmount);
+      }
+      else 
+         if(engineChance <= 60) 
+         {
+            //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
+            //pearlAmount = (int) (engineValue * fluctuationPercent);
+            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
+            Debug.Log("Pearl Amount +" + pearlAmount);
+            Item.TryDecreaseEnginesSellValue(pearlAmount);
+         }
+
+      return;
+   }
+
+   public void ChangeItemValueText(int newAmount, ItemType itemType) 
+   {
+      Transform currentItem;
+
+      switch (itemType) 
+      {
+         case ItemType.CrudeTool:
+            currentItem = Items.Find(d => d.CompareTag(CRUDE_TOOL_TAG));
+            break;
+         case ItemType.Harpoon:
+            currentItem = Items.Find(d => d.CompareTag(HARPOON_TAG));
+            break;
+         case ItemType.PressureValve:
+            currentItem = Items.Find(d => d.CompareTag(PRESSURE_VALVE_TAG));
+            break;
+         case ItemType.Engine:
+            currentItem = Items.Find(d => d.CompareTag(ENGINE_TAG));
+            break;
+         default:
+            currentItem = null;
+            Debug.LogError("Unkown item");
+            break;
+      }
+
+      if (currentItem != null)
+         currentItem.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = newAmount.ToString();
+
+      return;
+   }
 
    /* Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel           */
    public void RequestTradeHutPanel(int buttonID) 
@@ -603,9 +832,9 @@ public class TradeHutManager : MonoBehaviour
       }
 
       crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
-      refinedToolSellCount = MIN_SELL_ITEM_COUNT;
-      artifactSellCount    = MIN_SELL_ITEM_COUNT;
-      swordBuyCount        = MIN_BUY_ITEM_COUNT;
+      harpoonSellCount = MIN_SELL_ITEM_COUNT;
+      engineSellCount    = MIN_SELL_ITEM_COUNT;
+      rareOreCount        = MIN_BUY_ITEM_COUNT;
 
       if (SellWindow.gameObject.activeSelf)
          CloseSellWindow();
