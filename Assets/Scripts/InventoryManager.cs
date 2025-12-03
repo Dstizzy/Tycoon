@@ -284,6 +284,8 @@ public class InventoryManager : MonoBehaviour
       int       resourceCount           = 0;
       string    resourceInfo            = "";
 
+      resourceWindowTemplate.gameObject.SetActive(false);
+
       /* Instantiate the resource template and set its position in the container.  */
       /* Transform of the newly created resource UI element.                       */
       Transform     resourceTransform     = Instantiate(resourceWindowTemplate, resourceWindowContainer);
@@ -334,6 +336,8 @@ public class InventoryManager : MonoBehaviour
                 craftWindowTemplate  = craftWindowContainer.Find("CraftWindowTemplate").GetComponent<Transform>();
       int       craftCount           = 0;
       string    craftInfo            = "";
+
+      craftWindowTemplate.gameObject.SetActive(false);
 
       /* Instantiate the resource template and set its position in the container.  */
       /* Transform of the newly created resource UI element.                       */
