@@ -114,7 +114,7 @@ public class PopUpManager : MonoBehaviour {
 
         popUps = new();
 
-        int buttonCount = (buildingTransform.CompareTag("Lab")) ? 2 : buildingButtonsPreFab.Length;
+        int buttonCount = (buildingTransform.CompareTag("Lab") || buildingTransform.CompareTag("Ore Refinery")) ? 2 : buildingButtonsPreFab.Length;
 
         for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++) {
 
@@ -127,17 +127,27 @@ public class PopUpManager : MonoBehaviour {
             string uniqueButtonName = buildingTransform.tag switch {
                 "Trade Hut" => "Trade",
                 "Lab" => "Research",
-                "Ore Refinery" => "Refine",
                 "Exploration Unit" => "Explore",
                 "Forge" => "Craft",
                 _ => "BuildingButton"
             };
 
-            string buttonText = buttonIndex switch {
-                0 => uniqueButtonName,
-                1 => "Info",
-                2 => "Upgrade",
-                _ => "Button"
+            string buttonText;
+         
+            switch(buttonIndex) 
+            {
+               case 0:
+                  buttonText = buildingTransform.CompareTag("Ore Refinery") ? "Info" : uniqueButtonName;
+                  break;
+               case 1:
+                  buttonText = buildingTransform.CompareTag("Ore Refinery") ? "Upgrade" : "Info";
+                  break;
+               case 2:
+                  buttonText = "Upgrade";
+                  break;
+               default:
+                  buttonText = "Button";
+                  break;
             };
 
             int buttonId = buttonIndex + 1;

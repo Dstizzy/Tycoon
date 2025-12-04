@@ -9,7 +9,7 @@ public class MainUIManager : MonoBehaviour {
     public Button InventoryButton;
 
     [SerializeField] private TextMeshProUGUI pearCountText;
-    [SerializeField] private TextMeshProUGUI crystalCountText;
+    [SerializeField] private TextMeshProUGUI oreCountText;
 
     private bool isVisible = false;
 
@@ -35,9 +35,9 @@ public class MainUIManager : MonoBehaviour {
         });
 
         ChangePearlCountText(InventoryManager.Instance.pearlCount);
-        ChangeCrystalCountText(InventoryManager.Instance.crystalCount);
-        InventoryManager.Instance.OnPearlCountChanged   += ChangePearlCountText;
-        InventoryManager.Instance.OnCrystalCountChanged += ChangeCrystalCountText;
+        ChangeOreCountText(InventoryManager.Instance.oreCount);
+        InventoryManager.Instance.OnOreCountChanged   += ChangeOreCountText;
+        InventoryManager.Instance.OnPearlCountChanged += ChangePearlCountText;
     }
     public void ToggleMenu() {
         isVisible = !isVisible;
@@ -49,8 +49,10 @@ public class MainUIManager : MonoBehaviour {
         if (pearCountText != null)
             pearCountText.text = newPearlCount.ToString();
     }
-    public void ChangeCrystalCountText(int newCrystalCount) {
-        if (crystalCountText != null)
-            crystalCountText.text = newCrystalCount.ToString();
+   
+    public void ChangeOreCountText(int newOreCount) {
+        if (oreCountText != null)
+         oreCountText.text = newOreCount.ToString();
     }
+
 }

@@ -1,12 +1,14 @@
 /* Libraries                                                                                     */
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     /* Inspector Variables                                                                       */
     [SerializeField] private GameObject tierInfoPopUp; /* Panel that gets activated upon hover   */
+
 
     /* Implements interface function for entering the game object with mouse                     */
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
