@@ -66,7 +66,7 @@ public class CraftingController : MonoBehaviour
       PlayerPrefs.SetInt("Unlocked_Artifact", 0);
       PlayerPrefs.Save();
 
-      refinedUnlocked = false;
+      refinedUnlocked  = false;
       artifactUnlocked = false;
 
       /* Set all craft confirmation panels to inactive at start                                 */

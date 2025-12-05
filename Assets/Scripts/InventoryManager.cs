@@ -70,6 +70,7 @@ public class InventoryManager : MonoBehaviour
    public int pearlCount         { get; private set; }
    public int crystalCount       { get; private set; }
    public int oreCount           { get; private set; }
+
    public int crudeToolCount     { get; private set; }
    public int harpoonCount       { get; private set; }
    public int pressureValveCount { get; private set; }
@@ -153,6 +154,7 @@ public class InventoryManager : MonoBehaviour
       Transform     resourceTransform,
                     resourceContainer = ResourcePanel.Find("ResourceContainer").GetComponent<Transform>(),
                     resourceTemplate  = resourceContainer.Find("ResourceTemplate").GetComponent<Transform>();
+      
       Button        resourceWindowButton;
       RectTransform resourceRectTransform;
       int           resourceCount;

@@ -26,9 +26,9 @@ public class TradeHutManager : MonoBehaviour
    private readonly static System.Random Rng = new System.Random();
 
    /* Transforms                                                                                      */
-   private Transform       currentBuyItem,    
-                           currentSellItem,
-                           currentMysteryBoxResult;
+   private Transform currentBuyItem,    
+                     currentSellItem,
+                     currentMysteryBoxResult;
 
    /* Private variables                                                                               */
    private int crudeToolSellCount = 0,
@@ -162,7 +162,7 @@ public class TradeHutManager : MonoBehaviour
       tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
 
       /* Populate the the item properties                                                           */
-      sellValueText = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
       sellValueText.text = itemValue.ToString();
       Items.Add(tradeItemTransform);
 
@@ -181,6 +181,7 @@ public class TradeHutManager : MonoBehaviour
       Transform     buyItemContainer = BuyPanel.Find("BuyItemContainer").GetComponent<Transform>(),
                     buyItemTemplate  = buyItemContainer.Find("BuyItemTemplate").GetComponent<Transform>(),
                     tradeItemTransform;
+      
       RectTransform tradeItemRectTransform;
 
       /* Instantiate the template and set its position in the container                               */
@@ -418,7 +419,8 @@ public class TradeHutManager : MonoBehaviour
    /* Decrements the count for the item being sold and updates the UI                                 */
    public void DecreaseSellItemCount(Transform item) 
    {
-      switch (item.tag) {
+      switch (item.tag) 
+      {
          case CRUDE_TOOL_TAG:
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
             {
@@ -650,12 +652,6 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-
-   public void IncreaseCraftsSellValue() 
-   {
-
-   }
-
    public void ChangeItemValueText(int newAmount, ItemType itemType) 
    {
       Transform currentItem;
@@ -838,10 +834,10 @@ public class TradeHutManager : MonoBehaviour
          currentBuyItem = null;
       }
 
-      crudeToolSellCount   = MIN_SELL_ITEM_COUNT;
-      harpoonSellCount = MIN_SELL_ITEM_COUNT;
+      crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+      harpoonSellCount   = MIN_SELL_ITEM_COUNT;
       engineSellCount    = MIN_SELL_ITEM_COUNT;
-      rareOreCount        = MIN_BUY_ITEM_COUNT;
+      rareOreCount       = MIN_BUY_ITEM_COUNT;
 
       if (SellWindow.gameObject.activeSelf)
          CloseSellWindow();
