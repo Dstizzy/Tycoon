@@ -1,11 +1,11 @@
 /* Libraries and references                                                         */
 using System;
 
-using TMPro;                                                                        
+using TMPro;
 
-using UnityEngine;                                                                  
-using UnityEngine.UI;                                                               
-                                                                                    
+using UnityEngine;
+using UnityEngine.UI;
+
 public class InventoryManager : MonoBehaviour 
 {                                     
    /* Holds a reference to the singleton instance of this class. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
@@ -24,52 +24,58 @@ public class InventoryManager : MonoBehaviour
                            PressureValveCountText,                                  
                            CrudeToolCountText,                                       
                            HarpoonCountText,
-                           EngineCountText;
+                           EngineCountText,
+                           RareOreCountText;
    
    /* Constants                                                                     */
-   const int MIN_PEARL_COUNT        = 0,                                              
-             MIN_CRYSTAL_COUNT      = MIN_PEARL_COUNT,
-             MIN_ORE_COUNT          = MIN_PEARL_COUNT,
-             MAX_PEARL_COUNT        = 10000,
-             MAX_CRYSTAL_COUNT      = MAX_PEARL_COUNT,
-             MAX_ORE_COUNT          = MAX_PEARL_COUNT;
+   public const int MIN_PEARL_COUNT        = 0,                                              
+                    MIN_CRYSTAL_COUNT      = 0,
+                    MIN_ORE_COUNT          = 0,
+                    MAX_PEARL_COUNT        = 10000,
+                    MAX_CRYSTAL_COUNT      = 10000,
+                    MAX_ORE_COUNT          = 10000;
 
-   const int MAX_CRUDE_TOOL_COUNT     = 100,
-             MAX_HARPOON_COUNT        = 100,
-             MAX_PRESSURE_VALVE_COUNT = 100,
-             MAX_ENGINE_COUNT         = 100,
-             MIN_CRUDE_TOOL_COUNT     = 0,
-             MIN_HARPOON_COUNT        = 0,
-             MIN_PRESSURE_VALVE_COUNT = 0,
-             MIN_ENGINE_COUNT         = 0;
+   public const int MAX_CRUDE_TOOL_COUNT     = 100,
+                    MAX_HARPOON_COUNT        = 100,
+                    MAX_PRESSURE_VALVE_COUNT = 100,
+                    MAX_ENGINE_COUNT         = 100,
+                    MAX_RARE_ORE_COUNt       = 100,
+                    MIN_CRUDE_TOOL_COUNT     = 0,
+                    MIN_HARPOON_COUNT        = 0,
+                    MIN_PRESSURE_VALVE_COUNT = 0,
+                    MIN_ENGINE_COUNT         = 0,
+                    MIN_RARE_ORE_COUNT       = 0;
 
 
-   const int RESOURCE_SPACING        = 30,
-             PEARL_POSITION          = 0,
-             CRYSTAL_POSITION        = PEARL_POSITION + 10,
-             ORE_POSITION            = CRYSTAL_POSITION + 10,
-             CRUDE_TOOL_POSITION     = 0,
-             HARPOON_POSITION        = CRUDE_TOOL_POSITION + 10,
-             PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
-             ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10;
+   public const int RESOURCE_SPACING        = 30,
+                    PEARL_POSITION          = 0,
+                    CRYSTAL_POSITION        = PEARL_POSITION + 10,
+                    ORE_POSITION            = CRYSTAL_POSITION + 10,
+                    CRUDE_TOOL_POSITION     = 0,
+                    HARPOON_POSITION        = CRUDE_TOOL_POSITION + 10,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
+                    ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10;
 
-   const string PEARL_TAG          =  "Pearl",
-                CRYSTAL_TAG        =  "Crystal",
-                ORE_TAG            =  "Ore",
-                CRUDE_TOOL_TAG     =  "Crude Tool",
-                HARPOON_TAG        =  "Harpoon",
-                PRESSURE_VALVE_TAG =  "Pressure Valve",
-                ENGINE_TAG         =  "Engine";
+   public const string PEARL_TAG          =  "Pearl",
+                       CRYSTAL_TAG        =  "Crystal",
+                       ORE_TAG            =  "Ore",
+                       CRUDE_TOOL_TAG     =  "Crude Tool",
+                       HARPOON_TAG        =  "Harpoon",
+                       PRESSURE_VALVE_TAG =  "Pressure Valve",
+                       ENGINE_TAG         =  "Engine",
+                       RARE_ORE_TAG       =  "Rare Ore";
 
 
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
    public int pearlCount         { get; private set; }
    public int crystalCount       { get; private set; }
    public int oreCount           { get; private set; }
+
    public int crudeToolCount     { get; private set; }
    public int harpoonCount       { get; private set; }
    public int pressureValveCount { get; private set; }
    public int engineCount        { get; private set; }
+   public int rareOreCount       { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource,  
@@ -134,33 +140,38 @@ public class InventoryManager : MonoBehaviour
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
+      CreateResource(Item.GetItemSprite(Item.ItemType.RareOre), ORE_POSITION + 10, RARE_ORE_TAG); 
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
    }
    
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
-   private void CreateResource(Sprite resourceSprite, float positionIndex,  string resourceTag)           
+   public void CreateResource(Sprite resourceSprite, int positionIndex,  string resourceTag)           
    {                                                                                
       Transform     resourceTransform,
                     resourceContainer = ResourcePanel.Find("ResourceContainer").GetComponent<Transform>(),
                     resourceTemplate  = resourceContainer.Find("ResourceTemplate").GetComponent<Transform>();
+      
       Button        resourceWindowButton;
       RectTransform resourceRectTransform;
       int           resourceCount;
 
       switch (resourceTag) 
       {
-         case "Pearl":
+         case PEARL_TAG:
             resourceCount = pearlCount;
             break;
-         case "Crystal":
+         case CRYSTAL_TAG:
             resourceCount = crystalCount;
             break;
-         case "Ore":
+         case ORE_TAG:
             resourceCount = oreCount;
+            break;
+         case RARE_ORE_TAG:
+            resourceCount = rareOreCount;
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
@@ -200,6 +211,9 @@ public class InventoryManager : MonoBehaviour
           case ORE_TAG:
              OreCountText     = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
+         case RARE_ORE_TAG:
+            RareOreCountText  = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+            break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
             break;
@@ -208,7 +222,7 @@ public class InventoryManager : MonoBehaviour
       resourceTransform.gameObject.SetActive(true);
    }
 
-   private void CreateCraft(Sprite craftSprite, float positionIndex, string craftTag)           
+   public void CreateCraft(Sprite craftSprite, float positionIndex, string craftTag)           
    {                           
       Transform craftsContainer = CraftsPanel.Find("CraftContainer").GetComponent<Transform>(),
                 craftTemplate   = craftsContainer.Find("CraftTemplate").GetComponent<Transform>();
@@ -311,10 +325,14 @@ public class InventoryManager : MonoBehaviour
             break;
          case ORE_TAG:
             resourceCount = oreCount;
-            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
+            resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
+            break;
+         case RARE_ORE_TAG:
+            resourceCount = rareOreCount;
+            resourceInfo = Item.GetItemDescription(Item.ItemType.RareOre);
             break;
          default: 
-            Debug.Log("Unknown item tag for resource window.");
+            Debug.LogError("Unknown item tag for resource window.");
             break;
       }
 
@@ -371,8 +389,12 @@ public class InventoryManager : MonoBehaviour
             craftCount = engineCount;
             craftInfo  = Item.GetItemDescription(Item.ItemType.Engine);
             break;
+         case RARE_ORE_TAG:
+            craftCount = rareOreCount;
+            craftInfo = Item.GetItemDescription (Item.ItemType.RareOre);
+            break;
          default:
-            Debug.Log("Unknown item tag for resource window.");
+            Debug.LogError("Unknown item tag for resource window.");
             break;
       }
 
@@ -590,13 +612,13 @@ public class InventoryManager : MonoBehaviour
 
       if (harpoonCount <= MIN_HARPOON_COUNT)
       {
-         Debug.LogError("Refined tool count is at minimum!");
+         Debug.LogError("Harpon count is at minimum!");
          return isSuccess;
       }
       else
          if (harpoonCount < harpoonAmount)
          {
-            Debug.LogError("Not enough refined tools!");
+            Debug.LogError("Not enough harpoons!");
             return isSuccess;
          } 
          else 
@@ -621,7 +643,7 @@ public class InventoryManager : MonoBehaviour
          if ((pressureValveCount + pressureValveAmount) > MAX_PRESSURE_VALVE_COUNT)
          {
             isSuccess = false;
-            Debug.LogError("Refined Tool count is at maximum!");
+            Debug.LogError("Pressure valve count is at maximum!");
          }
          else 
             isSuccess = true;
@@ -658,25 +680,25 @@ public class InventoryManager : MonoBehaviour
       return isSuccess;
    }
 
-   public bool TryAddEngine(int artifactAmount)
+   public bool TryAddEngine(int enginetAmount)
    {
       bool isSuccess = false;
 
       if (engineCount >= MAX_ENGINE_COUNT)
       {
-         Debug.LogError("Artifact count is at minimum!");
+         Debug.LogError("Engine count is at minimum!");
          return isSuccess;
       }
       else
-         if ((engineCount + artifactAmount) > MAX_ENGINE_COUNT)
+         if ((engineCount + enginetAmount) > MAX_ENGINE_COUNT)
          { 
-            Debug.LogError("Refined Tool count is at maximum!"); 
+            Debug.LogError("Engine count is at maximum!"); 
             return isSuccess;
          }
          else
            isSuccess = true;
 
-      engineCount += artifactAmount;
+      engineCount += enginetAmount;
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;
