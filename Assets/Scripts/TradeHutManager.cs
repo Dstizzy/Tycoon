@@ -45,24 +45,24 @@ public class TradeHutManager : MonoBehaviour
               marketShiftMin = 1;
 
    /* Constants                                                                                       */
-   const int ENDING_LEVEL        = 5,  
-             INFO_BUTTON         = 2,     
-             MAX_BUY_ITEM_COUNT  = 100,   
-             MAX_SELL_ITEM_COUNT = 100,   
-             MIN_BUY_ITEM_COUNT  = 0,   
-             MIN_SELL_ITEM_COUNT = 0,     
-             STARTING_LEVEL      = 1,     
-             TRADE_BUTTON        = 1,     
-             BUY_ITEM_SPACING    = 30,    
-             UPGRADE_BUTTON      = 3;
+   public const int ENDING_LEVEL        = 5,  
+                    INFO_BUTTON         = 2,     
+                    MAX_BUY_ITEM_COUNT  = 100,   
+                    MAX_SELL_ITEM_COUNT = 100,   
+                    MIN_BUY_ITEM_COUNT  = 0,   
+                    MIN_SELL_ITEM_COUNT = 0,     
+                    STARTING_LEVEL      = 1,     
+                    TRADE_BUTTON        = 1,     
+                    BUY_ITEM_SPACING    = 30,    
+                    UPGRADE_BUTTON      = 3;
 
-   const string CRUDE_TOOL_TAG            = "Crude Tool",
-                HARPOON_TAG               = "Harpoon",
-                PRESSURE_VALVE_TAG        = "Pressure Valve",
-                ENGINE_TAG                = "Engine",
-                RARE_ORE                  = "Rare Ore",
-                INDUSTRIAL_BLUE_PRINT_TAG = "Industrial Blue Print",
-                CLOCKWORK_BLUEPRINT_TAG   = "Clockwork Blue Print";
+   public const string CRUDE_TOOL_TAG            = "Crude Tool",
+                       HARPOON_TAG               = "Harpoon",
+                       PRESSURE_VALVE_TAG        = "Pressure Valve",
+                       ENGINE_TAG                = "Engine",
+                       RARE_ORE                  = "Rare Ore",
+                       INDUSTRIAL_BLUE_PRINT_TAG = "Industrial Blue Print",
+                       CLOCKWORK_BLUEPRINT_TAG   = "Clockwork Blue Print";
 
    public static int tradeHutLevel;
 
@@ -134,19 +134,20 @@ public class TradeHutManager : MonoBehaviour
    {
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
-      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
+      //CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
+      //CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
 
       CreateBuyItem(GetItemSprite(ItemType.RareOre), GetItemPrice(ItemType.RareOre), 0.0f, RARE_ORE);
-      CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 2.0f, CLOCKWORK_BLUEPRINT_TAG);
+      //CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
+      //CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 2.0f, CLOCKWORK_BLUEPRINT_TAG);
    }
 
-   private void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
+   public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
       Transform       sellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
                       sellItemTemplate  = sellItemContainer.Find("SellItemTemplate").GetComponent<Transform>(),
                       tradeItemTransform;
+
       TextMeshProUGUI sellValueText;
       RectTransform   tradeItemRectTransform;
       Button          itemButton;
@@ -175,7 +176,7 @@ public class TradeHutManager : MonoBehaviour
       tradeItemTransform.gameObject.SetActive(true);
    }
 
-   private void CreateBuyItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
+   public void CreateBuyItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
    {
       Transform     buyItemContainer = BuyPanel.Find("BuyItemContainer").GetComponent<Transform>(),
                     buyItemTemplate  = buyItemContainer.Find("BuyItemTemplate").GetComponent<Transform>(),
@@ -422,7 +423,7 @@ public class TradeHutManager : MonoBehaviour
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
             {
                crudeToolSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + crudeToolSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
             }
             break;
@@ -430,7 +431,7 @@ public class TradeHutManager : MonoBehaviour
             if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
             {
                harpoonSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + harpoonSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.Harpoon)).ToString();
             }
             break;
@@ -438,7 +439,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
                pressureValveCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + pressureValveCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
             }
             break;
@@ -446,7 +447,7 @@ public class TradeHutManager : MonoBehaviour
             if (engineSellCount > MIN_SELL_ITEM_COUNT) 
             {
                engineSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + engineSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
             }
             break;
@@ -508,7 +509,7 @@ public class TradeHutManager : MonoBehaviour
             if (industrialBluePrintCount > MIN_BUY_ITEM_COUNT) 
             {
                industrialBluePrintCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + industrialBluePrintCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + industrialBluePrintCount.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
             }
             break;
@@ -516,7 +517,7 @@ public class TradeHutManager : MonoBehaviour
             if(clockworkBluePrintCount  > MIN_BUY_ITEM_COUNT)
             { 
                clockworkBluePrintCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = "   " + clockworkBluePrintCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + clockworkBluePrintCount.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
             }
             break;

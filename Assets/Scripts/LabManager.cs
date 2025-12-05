@@ -6,6 +6,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+using static Item;
+
 public class LabManager : MonoBehaviour
 {
     /* Symbolic Constants                                                                        */
@@ -252,7 +254,10 @@ public class LabManager : MonoBehaviour
             chainImage.gameObject.SetActive(false);
             
             mysteryBox.interactable = true;
+
+            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, TradeHutManager.INDUSTRIAL_BLUE_PRINT_TAG);
         }
+
         /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
         /*    bonus item upon crafting a single item                                             */
         else if (tabType == productionTab)
@@ -279,6 +284,8 @@ public class LabManager : MonoBehaviour
         {
             TradeHutManager.Instance.marketShiftMin = 5;
             TradeHutManager.Instance.marketShiftMax = 10;
+
+            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 1.0f, TradeHutManager.CLOCKWORK_BLUEPRINT_TAG);
             Debug.Log("All items in storage sold for 5x");
         }
         /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
