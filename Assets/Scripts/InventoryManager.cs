@@ -126,7 +126,7 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = MIN_PEARL_COUNT;
+      pearlCount     = 150;
       crystalCount   = MIN_CRYSTAL_COUNT;
       oreCount       = MIN_ORE_COUNT;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
@@ -438,6 +438,7 @@ public class InventoryManager : MonoBehaviour
       else
          if (pearlCount < pearlAmount) 
          {
+            Debug.Log("Log Amount: " + pearlAmount.ToString());
             Debug.LogError("Not enough pearls to spend!");
             return;
          } 
@@ -559,7 +560,8 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUseCrudeTool(int crudeToolAmount)
    {
-      bool isSuccess = false;
+      TextMeshProUGUI crudeToolValue = new();
+      bool            isSuccess      = false;
 
       if (crudeToolCount <= MIN_CRUDE_TOOL_COUNT)
       {
@@ -576,6 +578,9 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
 
       crudeToolCount -= crudeToolAmount;
+
+      crudeToolValue = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      crudeToolValue.text = crudeToolCount.ToString();
 
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 

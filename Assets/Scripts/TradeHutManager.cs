@@ -21,7 +21,8 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform MysteryBoxPanel; 
    
    public List<Transform> Items { get; private set; }
-   public TextMeshProUGUI tradeHutLevelText;
+
+   [SerializeField] private TextMeshProUGUI tradeHutLevelText;
 
    private readonly static System.Random Rng = new System.Random();
 
@@ -38,13 +39,23 @@ public class TradeHutManager : MonoBehaviour
 
                rareOreCount             = 0,
                industrialBluePrintCount = 0,
-               clockworkBluePrintCount  = 0;
-               
-   /* Public variables                                                                                */
+               clockworkBluePrintCount  = 0,
+       
+               crudeToolFluctuation,
+               harpoonFluctuation,
+               pressureValveFluctuation,
+               engineFluctuation,
+
+               crudeToolChance,
+               harpoonChance,
+               pressureValveChance,
+               engineChance;
+
+   /* Public variables                                                                                 */
    public int marketShiftMax = 2,
               marketShiftMin = 1;
-
-   /* Constants                                                                                       */
+               
+   /* Constants                                                                                        */
    public const int ENDING_LEVEL        = 5,  
                     INFO_BUTTON         = 2,     
                     MAX_BUY_ITEM_COUNT  = 100,   
@@ -65,14 +76,14 @@ public class TradeHutManager : MonoBehaviour
                        CLOCKWORK_BLUEPRINT_TAG   = "Clockwork Blue Print";
 
    public static int tradeHutLevel;
-
+   private InventoryManager inv;
 
    public static TradeHutManager Instance;
 
    private void Awake() 
    {
       tradeHutLevel = STARTING_LEVEL;
-      Items = new();
+      Items         = new();
 
       OnItemValueChange = ChangeItemValueText;
 
@@ -130,8 +141,10 @@ public class TradeHutManager : MonoBehaviour
          MysteryBoxPanel.gameObject.SetActive(false);
    }
 
-   private void Start() 
+   private void Start()
    {
+      inv = InventoryManager.Instance;
+
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
       //CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
@@ -164,11 +177,37 @@ public class TradeHutManager : MonoBehaviour
       /* Populate the the item properties                                                           */
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
       sellValueText.text = itemValue.ToString();
-      Items.Add(tradeItemTransform);
-
+      
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals(ENGINE_TAG) ? "   " + ENGINE_TAG : itemTag;
       itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
       itemButton.image.sprite = itemSprite;
+
+      switch (itemTag) 
+      {
+         case CRUDE_TOOL_TAG:
+            if(tradeItemTransform.Find("ItemCount") == null)
+               Debug.LogError("Item count not found");
+            else
+               tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.crudeToolCount.ToString();
+            break;
+         case HARPOON_TAG:
+            tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.harpoonCount.ToString();
+            break;
+         case PRESSURE_VALVE_TAG:
+            tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.pressureValveCount.ToString();
+            break;
+         case ENGINE_TAG:
+            tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.engineCount.ToString();
+            break;
+         default:
+            Debug.LogError("Unkown item: " +  itemTag);
+            break;
+      }
+
+      if (LabManager.currentCommerceTier < LabManager.TIER_ONE)
+         tradeItemTransform.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(false);
+
+      Items.Add(tradeItemTransform);
 
       /* Dynamically add a listener to the button, which creates a sell window when clicked           */
       itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
@@ -298,7 +337,7 @@ public class TradeHutManager : MonoBehaviour
 
       if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
       {
-         if(InventoryManager.Instance.TryUseCrudeTool(crudeToolSellCount))
+         if(inv.TryUseCrudeTool(crudeToolSellCount))
             totalSellValue += crudeToolSellCount * GetItemValue(ItemType.CrudeTool);
          else
             crudeToolSellCount = MIN_SELL_ITEM_COUNT;
@@ -306,7 +345,7 @@ public class TradeHutManager : MonoBehaviour
 
       if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
       {
-         if(InventoryManager.Instance.TryUseHarpoon(harpoonSellCount))
+         if(inv.TryUseHarpoon(harpoonSellCount))
             totalSellValue += harpoonSellCount * GetItemValue(ItemType.Harpoon);
          else
             harpoonSellCount = MIN_SELL_ITEM_COUNT;
@@ -314,7 +353,7 @@ public class TradeHutManager : MonoBehaviour
 
       if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
       {
-         if(InventoryManager.Instance.TryUseHarpoon(pressureValveCount))
+         if(inv.TryUseHarpoon(pressureValveCount))
             totalSellValue += pressureValveCount * GetItemValue(ItemType.PressureValve);
          else
             pressureValveCount = MIN_SELL_ITEM_COUNT;
@@ -322,13 +361,13 @@ public class TradeHutManager : MonoBehaviour
 
       if (engineSellCount > MIN_SELL_ITEM_COUNT) 
       {
-         if(InventoryManager.Instance.TryUseEngine(engineSellCount))
+         if(inv.TryUseEngine(engineSellCount))
             totalSellValue += engineSellCount * GetItemValue(ItemType.Engine);
          else
             engineSellCount = MIN_SELL_ITEM_COUNT;
       }
 
-      InventoryManager.Instance.TryAddPearl(totalSellValue);
+      inv.TryAddPearl(totalSellValue);
 
       crudeToolSellCount = MIN_SELL_ITEM_COUNT;
       harpoonSellCount   = MIN_SELL_ITEM_COUNT;
@@ -563,93 +602,146 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
+   public void CraftValueFluctuation() 
+   {
+      crudeToolChance     = Rng.Next(1, 101);
+      harpoonChance       = Rng.Next(1, 101);
+      pressureValveChance = Rng.Next(1, 101);
+      engineChance        = Rng.Next(1, 101);
+
+      crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
+      harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
+      pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
+      engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
+
+      TextMeshProUGUI crudeToolValueText     = Items.Find(d => d.CompareTag(CRUDE_TOOL_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
+                      harpoonValueText       = Items.Find(d => d.CompareTag(HARPOON_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>();
+                      //pressureValveValueText = Items.Find(d => d.CompareTag(PRESSURE_VALVE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
+                      //engineValueText        = Items.Find(d => d.CompareTag(ENGINE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>();
+
+
+      if (crudeToolChance <= 30) 
+      {
+         if((crudeToolSellValue + crudeToolFluctuation) <= MAX_CRUDE_TOOL_VALUE)
+            crudeToolValueText.text = "Next Value: " + (crudeToolSellValue + crudeToolFluctuation).ToString();
+      }
+      else
+         if(crudeToolChance <= 60) 
+         {
+            if((crudeToolSellValue - crudeToolFluctuation) >= MIN_CRUDE_TOOL_VALUE)
+               crudeToolValueText.text = "Next Value: " + (crudeToolSellValue - crudeToolFluctuation).ToString();
+         }
+
+      if(harpoonChance <= 30) 
+      {
+         if((harpoonSellValue + harpoonFluctuation) <= MAX_HARPOON_VALUE)
+           harpoonValueText.text = "Next Value: " + (harpoonSellValue + harpoonFluctuation).ToString();
+      }
+      else
+         if(harpoonChance <= 60) 
+         {
+            if((harpoonSellValue - harpoonFluctuation) >= MIN_HARPOON_VALUE)
+               harpoonValueText.text = "Next Value: " + (harpoonSellValue - harpoonFluctuation).ToString();
+         }
+
+      //if(pressureValveChance <= 30) 
+      //{
+         //if((pressureValveSellValue + pressureValveFluctuation) <= MAX_PRESSURE_VALVE_VALUE)
+            //pressureValveValueText.text = "Next Value: " + (pressureValveSellValue + pressureValveFluctuation).ToString();
+      //}
+         
+      //else
+         //if(pressureValveChance <= 60) 
+         //{
+            //if((pressureValveSellValue - pressureValveFluctuation) >= MIN_PRESSURE_VALVE_VALUE)
+               //pressureValveValueText.text = "Next Value: " + (pressureValveSellValue - pressureValveFluctuation).ToString();
+         //}
+      
+      //if(engineChance <= 30) 
+      //{
+         //if((engineSellValue + engineFluctuation) <= MAX_ENGINE_VALUE)
+            //engineValueText.text = "Next Value: " + (engineSellValue + engineFluctuation).ToString();
+      //}
+      //else
+         //if(engineChance <= 60) 
+          //{
+            //if((engineSellValue - engineFluctuation) >= MIN_ENGINE_VALUE)
+               //engineValueText.text = "Next Value: " + (engineSellValue - engineFluctuation).ToString();
+          //}
+   }
+
    public void MarketFluctuate() 
    {
       //float fluctuationPercent;
-      int crudeToolValue     = GetItemValue(ItemType.CrudeTool),
-          harpoonValue       = GetItemValue(ItemType.Harpoon),
-          pressureValveValue = GetItemValue(ItemType.PressureValve),
-          engineValue        = GetItemValue(ItemType.Engine),
-
-          crudeToolChance     = Rng.Next(1, 101),
-          harpoonChance       = Rng.Next(1, 101),
-          pressureValveChance = Rng.Next(1, 101),
-          engineChance        = Rng.Next(1, 101),
-          pearlAmount;
+      //int crudeToolValue     = GetItemValue(ItemType.CrudeTool),
+      //    harpoonValue       = GetItemValue(ItemType.Harpoon),
+      //    pressureValveValue = GetItemValue(ItemType.PressureValve),
+      //    engineValue        = GetItemValue(ItemType.Engine);
 
       if (crudeToolChance <= 30) 
       {
          //fluctuationPercent =  (.01f * Rng.Next(50, 101));
          //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
-         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("crude tool amount +" + pearlAmount);
-         TryIncreaseCrudeToolSellValue(pearlAmount);
+         Debug.Log("crude tool amount +" + crudeToolFluctuation);
+         TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
       }
       else 
          if(crudeToolChance <= 60) 
          {
             //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
             //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
-            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("crude tool amount -" + pearlAmount);
-            TryDecreaseCrudeToolSellValue(pearlAmount);
+            Debug.Log("crude tool amount -" + crudeToolFluctuation);
+            TryDecreaseCrudeToolSellValue(crudeToolFluctuation);
          }
 
       if (harpoonChance <= 30) 
       {
          //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
          //pearlAmount = (int) (weaponValue * fluctuationPercent);
-         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("harpoon amount +" + pearlAmount);
-         TryIncreaseWeaponsSellValue(pearlAmount);
+         Debug.Log("harpoon amount +" + harpoonFluctuation);
+         TryIncreaseHarpoonSellValue(harpoonFluctuation);
       }
       else 
          if(harpoonChance <= 60) 
          {
             //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
             //pearlAmount = (int) (weaponValue * fluctuationPercent);
-            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("harpoon amount -" + pearlAmount);
-            TryDecreaseWeaponsSellValue(pearlAmount);
+            Debug.Log("harpoon amount -" + harpoonFluctuation);
+            TryDecreaseHarpoonSellValue(harpoonFluctuation);
          }
 
-      if (pressureValveChance <= 30) 
-      {
-         //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-         //pearlAmount = (int) (weaponValue * fluctuationPercent);
-         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("pressure valve amount +" + pearlAmount);
-         TryIncreaseWeaponsSellValue(pearlAmount);
-      }
-      else 
-         if(pressureValveChance <= 60) 
-         {
-            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-            //pearlAmount = (int) (weaponValue * fluctuationPercent);
-            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("pressure valve amount  -" + pearlAmount);
-            TryDecreaseWeaponsSellValue(pearlAmount);
-         }
+      //if (pressureValveChance <= 30) 
+      //{
+      //   //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+      //   //pearlAmount = (int) (weaponValue * fluctuationPercent);
+      //   Debug.Log("pressure valve amount +" + pressureValveFluctuation);
+      //   TryIncreasePressureValveValue(pressureValveFluctuation);
+      //}
+      //else 
+      //   if(pressureValveChance <= 60) 
+      //   {
+      //      //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
+      //      //pearlAmount = (int) (weaponValue * fluctuationPercent);
+      //      Debug.Log("pressure valve amount  -" + pressureValveFluctuation);
+      //      TryDecreasePressureValveValue(pressureValveFluctuation);
+      //   }
 
-      if (engineChance <= 30) 
-      {
-         //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
-         //pearlAmount = (int) (engineValue * fluctuationPercent);
-         pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-         Debug.Log("engine amount +" + pearlAmount);
-         TryIncreaseEnginesSellValue(pearlAmount);
-      }
-      else 
-         if(engineChance <= 60) 
-         {
-            //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
-            //pearlAmount = (int) (engineValue * fluctuationPercent);
-            pearlAmount = Rng.Next(marketShiftMin, marketShiftMax + 1);
-            Debug.Log("engine amount -" + pearlAmount);
-            TryDecreaseEnginesSellValue(pearlAmount);
-         }
-
-      return;
+      //if (engineChance <= 30) 
+      //{
+      //   //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
+      //   //pearlAmount = (int) (engineValue * fluctuationPercent);
+      //   Debug.Log("engine amount +" + engineFluctuation);
+      //   TryIncreaseEnginesSellValue(engineFluctuation);
+      //}
+      //else 
+      //   if(engineChance <= 60) 
+      //   {
+      //      //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
+      //      //pearlAmount = (int) (engineValue * fluctuationPercent);
+      //      Debug.Log("engine amount -" + engineFluctuation);
+      //      TryDecreaseEnginesSellValue(engineFluctuation);
+      //   }
+      //return;
    }
 
    public void ChangeItemValueText(int newAmount, ItemType itemType) 

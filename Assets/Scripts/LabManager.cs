@@ -9,18 +9,18 @@ using static Item;
 public class LabManager : MonoBehaviour
 {
     /* Symbolic Constants                                                                        */
-    const int INNOVATE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
-    const int TIER_ONE = 1;
-    const int TIER_TWO = 2;
-    const int TIER_THREE = 3;
-    const int TIER_ONE_PEARL_COST = 100;
-    const int TIER_ONE_ITEM_COST = 10;
-    const int TIER_TWO_PEARL_COST = 350;
-    const int TIER_TWO_ITEM_COST = 25;
-    const int TIER_THREE_PEARL_COST = 700;
-    const int TIER_THREE_ITEM_COST = 50;
+    public const int INNOVATE_BUTTON = 1;
+    public const int INFO_BUTTON = 2;
+    public const int UPGRADE_BUTTON = 3;
+    public const int TIER_ONE = 1;
+    public const int TIER_TWO = 2;
+    public const int TIER_THREE = 3;
+    public const int TIER_ONE_PEARL_COST = 100;
+    public const int TIER_ONE_ITEM_COST = 10;
+    public const int TIER_TWO_PEARL_COST = 350;
+    public const int TIER_TWO_ITEM_COST = 25;
+    public const int TIER_THREE_PEARL_COST = 700;
+    public const int TIER_THREE_ITEM_COST = 50;
 
     /* Inspector Variables                                                                       */
     [SerializeField] private Transform innovatePanel;
@@ -32,7 +32,11 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
     [SerializeField] private CraftingController craftingController;
-   
+
+   /* Public variables                                                                          */
+   public static int currentCommerceTier { get; private set; }
+
+
     TradeHutManager tradeHutManager;
 
     /* Check if all required game objects exist and are in there required states                 */
@@ -219,8 +223,12 @@ public class LabManager : MonoBehaviour
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
         { 
-           TradeHutManager.Instance.marketShiftMin = 1;
-           TradeHutManager.Instance.marketShiftMax = 2;
+           currentCommerceTier = TIER_ONE;
+           tradeHutManager.marketShiftMin = 1;
+           tradeHutManager.marketShiftMax = 2;
+           
+            foreach(Transform item in tradeHutManager.Items)
+              item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
         }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
