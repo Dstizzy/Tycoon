@@ -147,8 +147,8 @@ public class TradeHutManager : MonoBehaviour
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
-      //CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
-      //CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
 
       CreateBuyItem(GetItemSprite(ItemType.RareOre), GetItemPrice(ItemType.RareOre), 0.0f, RARE_ORE);
       //CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
@@ -179,33 +179,46 @@ public class TradeHutManager : MonoBehaviour
       sellValueText.text = itemValue.ToString();
       
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals(ENGINE_TAG) ? "   " + ENGINE_TAG : itemTag;
+      tradeItemTransform.Find("ItemShadow").GetComponent<Image>().sprite = itemSprite;
+      tradeItemTransform.Find("ItemShadow").gameObject.SetActive(false);
+
       itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
       itemButton.image.sprite = itemSprite;
 
-      switch (itemTag) 
-      {
-         case CRUDE_TOOL_TAG:
-            if(tradeItemTransform.Find("ItemCount") == null)
-               Debug.LogError("Item count not found");
-            else
+      if (tradeItemTransform.Find("ItemCount") == null)
+         Debug.LogError("Item count not found");
+      else
+         switch (itemTag) 
+         {
+            case CRUDE_TOOL_TAG:
                tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.crudeToolCount.ToString();
-            break;
-         case HARPOON_TAG:
-            tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.harpoonCount.ToString();
-            break;
-         case PRESSURE_VALVE_TAG:
-            tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.pressureValveCount.ToString();
-            break;
-         case ENGINE_TAG:
-            tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.engineCount.ToString();
-            break;
-         default:
-            Debug.LogError("Unkown item: " +  itemTag);
-            break;
-      }
+               break;
+            case HARPOON_TAG:
+               tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.harpoonCount.ToString();
+               break;
+            case PRESSURE_VALVE_TAG:
+               tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.pressureValveCount.ToString();
+               break;
+            case ENGINE_TAG:
+               tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.engineCount.ToString();
+               break;
+            default:
+               Debug.LogError("Unkown item: " +  itemTag);
+               break;
+         }
 
       if (LabManager.currentCommerceTier < LabManager.TIER_ONE)
          tradeItemTransform.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(false);
+
+     if(itemTag != CRUDE_TOOL_TAG && itemTag != HARPOON_TAG) 
+     {
+         tradeItemTransform.Find("ItemButton").gameObject.SetActive(false);
+         tradeItemTransform.Find("ItemName").gameObject.SetActive(false);
+         tradeItemTransform.Find("ItemCount").gameObject.SetActive(false);
+         tradeItemTransform.Find("ItemValue").gameObject.SetActive(false);
+         tradeItemTransform.Find("Pearl_Icon").gameObject.SetActive(false);
+         tradeItemTransform.Find("ItemShadow").gameObject.SetActive(true);
+     }
 
       Items.Add(tradeItemTransform);
 
@@ -225,15 +238,13 @@ public class TradeHutManager : MonoBehaviour
 
       /* Instantiate the template and set its position in the container                               */
       tradeItemTransform     = Instantiate(buyItemTemplate, buyItemContainer);
-      tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
-
       buyItemTemplate.gameObject.SetActive(false);
-
-      tradeItemTransform.tag = itemTag;
-
+      tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
       tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);     
 
       /* Populate the item properties                                                                 */
+      tradeItemTransform.tag = itemTag;
+      tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemTag.ToString();
       tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
       Button itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
 

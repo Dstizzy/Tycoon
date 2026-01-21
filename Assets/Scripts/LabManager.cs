@@ -45,7 +45,7 @@ public class LabManager : MonoBehaviour
       tradeHutManager = TradeHutManager.Instance;
 
       if (tradeHutManager == null)
-            Debug.LogError("Insance is not initialized");
+          Debug.LogError("Insance is not initialized");
 
 
         /* Set the info panel to inactive if it exists                                           */
