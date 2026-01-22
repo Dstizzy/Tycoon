@@ -23,10 +23,13 @@ public class InventoryManager : MonoBehaviour
    private TextMeshProUGUI PearlCountText,                      
                            CrystalCountText,
                            OreCountText,
-                           PressureValveCountText,                                  
                            CrudeToolCountText,                                       
                            HarpoonCountText,
+                           PatchKitCountText,
+                           PressureValveCountText,
+                           DivingBellCountText,
                            EngineCountText,
+                           PrecisionLensCountText,
                            RareOreCountText;
    
    /* Constants                                                                     */
@@ -56,7 +59,7 @@ public class InventoryManager : MonoBehaviour
                     CRUDE_TOOL_POSITION     = 0,
                     HARPOON_POSITION        = CRUDE_TOOL_POSITION + 10,
                     PATCH_KIT_POSITION      = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
                     DIVING_BELL_POSITION    = CRUDE_TOOL_POSITION + 10,
                     ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10,
                     PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION;
@@ -155,8 +158,8 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
       CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
       CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
       CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
@@ -264,7 +267,7 @@ public class InventoryManager : MonoBehaviour
             craftCount = engineCount;
             break;
          case PRECISION_LENS_TAG:
-            craftCount = engineCount;
+            craftCount = precisionLensCount;
             break;
          default:
             craftCount = 0;
@@ -297,11 +300,20 @@ public class InventoryManager : MonoBehaviour
          case HARPOON_TAG:
             HarpoonCountText       = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
+         case PATCH_KIT_TAG:
+            PatchKitCountText      = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            break;
          case PRESSURE_VALVE_TAG:
             PressureValveCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
+         case DIVING_BELL_TAG:
+            DivingBellCountText    = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            break;
          case ENGINE_TAG:
             EngineCountText        = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            break;
+         case PRECISION_LENS_TAG:
+            PrecisionLensCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
             Debug.LogError("Unknown craft");

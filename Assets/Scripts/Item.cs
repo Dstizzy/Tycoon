@@ -84,7 +84,7 @@ public class Item {
    public static int GetItemPrice(ItemType itemType) 
    {
       switch (itemType) 
-       {
+      {
          case ItemType.RareOre:
             return rareOrePrice;
          case ItemType.IndustrialBluePrint:
