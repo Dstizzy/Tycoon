@@ -8,8 +8,11 @@ public class ItemSprites : MonoBehaviour {
     [Header("Item Sprites")]
     public Sprite crudeTool;
     public Sprite harpoon;
+    public Sprite patchKit;
     public Sprite pressureValve;
+    public Sprite divingBells;
     public Sprite engine;
+    public Sprite precisionLens;
     public Sprite rareOre;
     public Sprite industrialBluePrint;
     public Sprite clockworkBlueprint;
@@ -28,12 +31,18 @@ public class ItemSprites : MonoBehaviour {
                return crudeTool;
             case ItemType.Harpoon:
                return harpoon;
+            case ItemType.PatchKit:
+               return patchKit;
             case ItemType.PressureValve:
                return pressureValve;
+            case ItemType.DivingBell: 
+               return divingBells;
             case ItemType.Engine:
                return engine;
             case ItemType.RareOre:
                return rareOre;
+            case ItemType.PrecisionLens:
+               return precisionLens;
             case ItemType.IndustrialBluePrint:
                return industrialBluePrint;
             case ItemType.ClockworkBlueprint:

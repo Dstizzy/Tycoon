@@ -3,6 +3,8 @@ using System;
 
 using TMPro;
 
+using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,16 +55,22 @@ public class InventoryManager : MonoBehaviour
                     ORE_POSITION            = CRYSTAL_POSITION + 10,
                     CRUDE_TOOL_POSITION     = 0,
                     HARPOON_POSITION        = CRUDE_TOOL_POSITION + 10,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
-                    ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10;
+                    PATCH_KIT_POSITION      = CRUDE_TOOL_POSITION,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION,
+                    DIVING_BELL_POSITION    = CRUDE_TOOL_POSITION + 10,
+                    ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10,
+                    PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION;
 
    public const string PEARL_TAG          =  "Pearl",
                        CRYSTAL_TAG        =  "Crystal",
                        ORE_TAG            =  "Ore",
                        CRUDE_TOOL_TAG     =  "Crude Tool",
                        HARPOON_TAG        =  "Harpoon",
+                       PATCH_KIT_TAG      =  "Patch Kit",
                        PRESSURE_VALVE_TAG =  "Pressure Valve",
+                       DIVING_BELL_TAG    =  "Diving Bell",
                        ENGINE_TAG         =  "Engine",
+                       PRECISION_LENS_TAG =  "Precision Lens",
                        RARE_ORE_TAG       =  "Rare Ore";
 
 
@@ -73,8 +81,11 @@ public class InventoryManager : MonoBehaviour
 
    public int crudeToolCount     { get; private set; }
    public int harpoonCount       { get; private set; }
+   public int patchKitCount      { get; private set; }
    public int pressureValveCount { get; private set; }
+   public int divingBellCount    { get; private set; }
    public int engineCount        { get; private set; }
+   public int precisionLensCount { get; private set; }
    public int rareOreCount       { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
@@ -146,8 +157,11 @@ public class InventoryManager : MonoBehaviour
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
    }
-   
+
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
    public void CreateResource(Sprite resourceSprite, int positionIndex,  string resourceTag)           
    {                                                                                
@@ -222,7 +236,7 @@ public class InventoryManager : MonoBehaviour
       resourceTransform.gameObject.SetActive(true);
    }
 
-   public void CreateCraft(Sprite craftSprite, float positionIndex, string craftTag)           
+   public void CreateCraft(Sprite craftSprite, float positionIndex, string craftTag, int verticalIndex = 0)           
    {                           
       Transform craftsContainer = CraftsPanel.Find("CraftContainer").GetComponent<Transform>(),
                 craftTemplate   = craftsContainer.Find("CraftTemplate").GetComponent<Transform>();
@@ -237,10 +251,19 @@ public class InventoryManager : MonoBehaviour
          case HARPOON_TAG:
             craftCount = harpoonCount;
             break;
+         case PATCH_KIT_TAG:
+            craftCount = patchKitCount;
+            break;
          case PRESSURE_VALVE_TAG:
             craftCount = pressureValveCount;
             break;
+         case DIVING_BELL_TAG:
+            craftCount = divingBellCount;
+            break;
          case ENGINE_TAG:
+            craftCount = engineCount;
+            break;
+         case PRECISION_LENS_TAG:
             craftCount = engineCount;
             break;
          default:
@@ -259,7 +282,7 @@ public class InventoryManager : MonoBehaviour
       craftTransform.tag = craftTag;
       
       /* Places the new resource entry in a horizontal row inside the inventory    */
-      craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
+      craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, verticalIndex);
       
       /* Populate the resource components with item-specific data                  */
       craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
@@ -381,13 +404,25 @@ public class InventoryManager : MonoBehaviour
             craftCount = harpoonCount;
             craftInfo  = Item.GetItemDescription(Item.ItemType.Harpoon);
             break;
+         case PATCH_KIT_TAG:
+            craftCount = patchKitCount;
+            craftInfo  = "";
+            break;
          case PRESSURE_VALVE_TAG:
             craftCount = pressureValveCount;
             craftInfo  = Item.GetItemDescription(Item.ItemType.PressureValve);
             break;
+         case DIVING_BELL_TAG:
+            craftCount = divingBellCount;
+            craftInfo = "";
+            break;
          case ENGINE_TAG:
             craftCount = engineCount;
             craftInfo  = Item.GetItemDescription(Item.ItemType.Engine);
+            break;
+         case PRECISION_LENS_TAG:
+            craftCount = precisionLensCount;
+            craftInfo  = "";
             break;
          case RARE_ORE_TAG:
             craftCount = rareOreCount;

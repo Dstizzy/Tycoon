@@ -52,8 +52,11 @@ public class Item {
    public enum ItemType {
         CrudeTool,
         Harpoon,
+        PatchKit,
         PressureValve,
+        DivingBell,
         Engine,
+        PrecisionLens,
         RareOre,
         IndustrialBluePrint,
         ClockworkBlueprint
