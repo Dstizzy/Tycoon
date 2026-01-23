@@ -1,26 +1,26 @@
 /* libraries                                                                                     */
-using System;
-using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.UI;
+
+using static Item;
 
 public class LabManager : MonoBehaviour
 {
     /* Symbolic Constants                                                                        */
-    const int INNOVATE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
-    const int TIER_ONE = 1;
-    const int TIER_TWO = 2;
-    const int TIER_THREE = 3;
-    const int TIER_ONE_PEARL_COST = 100;
-    const int TIER_ONE_ITEM_COST = 10;
-    const int TIER_TWO_PEARL_COST = 350;
-    const int TIER_TWO_ITEM_COST = 25;
-    const int TIER_THREE_PEARL_COST = 700;
-    const int TIER_THREE_ITEM_COST = 50;
+    public const int INNOVATE_BUTTON = 1;
+    public const int INFO_BUTTON = 2;
+    public const int UPGRADE_BUTTON = 3;
+    public const int TIER_ONE = 1;
+    public const int TIER_TWO = 2;
+    public const int TIER_THREE = 3;
+    public const int TIER_ONE_PEARL_COST = 100;
+    public const int TIER_ONE_ITEM_COST = 10;
+    public const int TIER_TWO_PEARL_COST = 350;
+    public const int TIER_TWO_ITEM_COST = 25;
+    public const int TIER_THREE_PEARL_COST = 700;
+    public const int TIER_THREE_ITEM_COST = 50;
 
     /* Inspector Variables                                                                       */
     [SerializeField] private Transform innovatePanel;
@@ -32,7 +32,11 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
     [SerializeField] private CraftingController craftingController;
-   
+
+   /* Public variables                                                                          */
+   public static int currentCommerceTier { get; private set; }
+
+
     TradeHutManager tradeHutManager;
 
     /* Check if all required game objects exist and are in there required states                 */
@@ -41,7 +45,7 @@ public class LabManager : MonoBehaviour
       tradeHutManager = TradeHutManager.Instance;
 
       if (tradeHutManager == null)
-            Debug.LogError("Insance is not initialized");
+          Debug.LogError("Insance is not initialized");
 
 
         /* Set the info panel to inactive if it exists                                           */
@@ -219,8 +223,12 @@ public class LabManager : MonoBehaviour
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
         { 
-           TradeHutManager.Instance.marketShiftMin = 1;
-           TradeHutManager.Instance.marketShiftMax = 2;
+           currentCommerceTier = TIER_ONE;
+           tradeHutManager.marketShiftMin = 1;
+           tradeHutManager.marketShiftMax = 2;
+           
+            foreach(Transform item in tradeHutManager.Items)
+              item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
         }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
@@ -252,7 +260,10 @@ public class LabManager : MonoBehaviour
             chainImage.gameObject.SetActive(false);
             
             mysteryBox.interactable = true;
+
+            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, TradeHutManager.INDUSTRIAL_BLUE_PRINT_TAG);
         }
+
         /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
         /*    bonus item upon crafting a single item                                             */
         else if (tabType == productionTab)
@@ -279,6 +290,8 @@ public class LabManager : MonoBehaviour
         {
             TradeHutManager.Instance.marketShiftMin = 5;
             TradeHutManager.Instance.marketShiftMax = 10;
+
+            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 1.0f, TradeHutManager.CLOCKWORK_BLUEPRINT_TAG);
             Debug.Log("All items in storage sold for 5x");
         }
         /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */

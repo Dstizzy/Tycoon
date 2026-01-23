@@ -5,10 +5,10 @@ using UnityEngine;
 public class Item {
 
    /* Public static properties                                          */
-   public static int crudeToolSellValue    { get; private set; } = 15;
-   public static int harpoonSellValue      { get; private set; } = 20;
-   public static int pressureValveValue    { get; private set; } = 60;
-   public static int engineSellValue       { get; private set; } = 200;
+   public static int crudeToolSellValue     { get; private set; } = 15;
+   public static int harpoonSellValue       { get; private set; } = 20;
+   public static int pressureValveSellValue { get; private set; } = 60;
+   public static int engineSellValue        { get; private set; } = 200;
    
    public static int rareOrePrice                 { get; private set; } = 100;
    public static int industrialBluePrintSellValue { get; private set; } = 500;
@@ -16,14 +16,14 @@ public class Item {
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-   private const int MIN_CRUDE_TOOL_VALUE     = 10;
-   private const int MAX_CRUDE_TOOL_VALUE     = 25;
-   private const int MIN_HARPOON_VALUE        = 12;
-   private const int MAX_HARPOON_VALUE        = 40;
-   private const int MIN_PRESSURE_VALVE_VALUE = 35;
-   private const int MAX_PRESSURE_VALVE_VALUE = 100;
-   private const int MIN_ENGINE_VALUE         = 80;
-   private const int MAX_ENGINE_VALUE         = 450;
+    public const int MIN_CRUDE_TOOL_VALUE     = 10;
+    public const int MAX_CRUDE_TOOL_VALUE     = 25;
+    public const int MIN_HARPOON_VALUE        = 12;
+    public const int MAX_HARPOON_VALUE        = 40;
+    public const int MIN_PRESSURE_VALVE_VALUE = 35;
+    public const int MAX_PRESSURE_VALVE_VALUE = 100;
+    public const int MIN_ENGINE_VALUE         = 80;
+    public const int MAX_ENGINE_VALUE         = 450;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -52,8 +52,11 @@ public class Item {
    public enum ItemType {
         CrudeTool,
         Harpoon,
+        PatchKit,
         PressureValve,
+        DivingBell,
         Engine,
+        PrecisionLens,
         RareOre,
         IndustrialBluePrint,
         ClockworkBlueprint
@@ -68,7 +71,7 @@ public class Item {
            case ItemType.Harpoon:
                return harpoonSellValue;
            case ItemType.PressureValve:
-              return pressureValveValue;
+              return pressureValveSellValue;
            case ItemType.Engine:
                return engineSellValue;
            
@@ -179,7 +182,7 @@ public class Item {
    public static void TryIncreasePressureValveValue(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (pressureValveValue >= MAX_PRESSURE_VALVE_VALUE) 
+      if (pressureValveSellValue >= MAX_PRESSURE_VALVE_VALUE) 
       {
          Debug.LogError("Crude Tool Sell Value is already at maximum!");
          return;
@@ -187,16 +190,16 @@ public class Item {
 
       // 2. Check if the *new* value would exceed the maximum.
       // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (pressureValveValue + amount > MAX_PRESSURE_VALVE_VALUE) 
+      if (pressureValveSellValue + amount > MAX_PRESSURE_VALVE_VALUE) 
       {
          Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_PRESSURE_VALVE_VALUE}.");
          return;
       }
 
       // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      pressureValveValue += amount;
+      pressureValveSellValue += amount;
 
-      OnItemValueChange?.Invoke(pressureValveValue, ItemType.PressureValve);
+      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
 
       return;
    }
@@ -204,33 +207,33 @@ public class Item {
    public static void TryDecreasePressureValveValue(int amount) 
    {
       // 1. Check if the value is already at the MIN_VALUE
-      if (pressureValveValue <= MIN_PRESSURE_VALVE_VALUE) 
+      if (pressureValveSellValue <= MIN_PRESSURE_VALVE_VALUE) 
       { 
          Debug.LogError("Crude Tool Sell Value is already at minimum!");
          return;
       }
 
       // 2. Check if subtracting the amount would drop below the minimum.
-      if (pressureValveValue - amount < MIN_PRESSURE_VALVE_VALUE) 
+      if (pressureValveSellValue - amount < MIN_PRESSURE_VALVE_VALUE) 
       {
          Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_PRESSURE_VALVE_VALUE}.");
          return;
       }
 
       // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      pressureValveValue -= amount;
+      pressureValveSellValue -= amount;
 
-      OnItemValueChange?.Invoke(pressureValveValue, ItemType.PressureValve);
+      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
 
       return;
    }
 
-   public static void TryIncreaseWeaponsSellValue(int amount) 
+   public static void TryIncreaseHarpoonSellValue(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
       if (harpoonSellValue >= MAX_HARPOON_VALUE) 
       {
-         Debug.LogError("Crude Tool Sell Value is already at maximum!");
+         Debug.LogError("Harpoon Sell Value is already at maximum!");
          return;
       }
 
@@ -238,7 +241,7 @@ public class Item {
       // We use Math.Max to see what the new value will be if clamped, and compare it.
       if (harpoonSellValue + amount > MAX_HARPOON_VALUE) 
       {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_CRUDE_TOOL_VALUE}.");
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_HARPOON_VALUE}.");
          return;
       }
 
@@ -250,7 +253,7 @@ public class Item {
       return;
    }
 
-   public static void TryDecreaseWeaponsSellValue(int amount) 
+   public static void TryDecreaseHarpoonSellValue(int amount) 
    {
       // 1. Check if the value is already at the MIN_VALUE
       if (harpoonSellValue <= MIN_HARPOON_VALUE)

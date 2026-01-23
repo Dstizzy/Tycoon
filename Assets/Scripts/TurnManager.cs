@@ -75,7 +75,11 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
+         if(currentTurn == 2)
+            TradeHutManager.Instance.CraftValueFluctuation();
+
          TradeHutManager.Instance.MarketFluctuate();
+         TradeHutManager.Instance.CraftValueFluctuation();
          Debug.Log("Turn" + currentTurn + "Start");
          
          progressBar.SetActive(true);

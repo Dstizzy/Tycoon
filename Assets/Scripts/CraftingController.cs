@@ -2,10 +2,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using static Item;
+using static InventoryManager;
+
 public class CraftingController : MonoBehaviour
 {
    /* Holds reference to the singleton instance of this class                                    */
    public static CraftingController Instance { get; private set; }
+
+   private InventoryManager inv;
+   private TradeHutManager  tm;
 
    [Header("Craft Buttons")] 
    public Button craftTool1Button; /* Button for Crude tool   */
@@ -47,6 +53,8 @@ public class CraftingController : MonoBehaviour
    {
       Instance = this;
 
+      inv = InventoryManager.Instance;
+      tm  = TradeHutManager.Instance;
       refinedUnlocked  = PlayerPrefs.GetInt("Unlocked_Refined", 0)  == 1;
       artifactUnlocked = PlayerPrefs.GetInt("Unlocked_Artifact", 0) == 1;
    }
@@ -59,7 +67,7 @@ public class CraftingController : MonoBehaviour
       PlayerPrefs.SetInt("Unlocked_Artifact", 0);
       PlayerPrefs.Save();
 
-      refinedUnlocked = false;
+      refinedUnlocked  = false;
       artifactUnlocked = false;
 
       /* Set all craft confirmation panels to inactive at start                                 */
@@ -131,9 +139,18 @@ public class CraftingController : MonoBehaviour
       if (TrySpendPearls(refinedUnlockCost))
       {
          refinedUnlocked = true;
-         PlayerPrefs.SetInt("Unlocked_Refined", 1);
+         PlayerPrefs.SetInt("Unlocked_PressueValve", 1);
          PlayerPrefs.Save();
          ApplyLockStateToUI();
+         inv.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemButton").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemName").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemValue").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+
          Debug.Log("Refined Tool unlocked!");
       }
       else
@@ -154,6 +171,15 @@ public class CraftingController : MonoBehaviour
          PlayerPrefs.SetInt("Unlocked_Artifact", 1);
          PlayerPrefs.Save();
          ApplyLockStateToUI();
+         inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemButton").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemName").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemValue").gameObject.SetActive(true);
+         TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+
          Debug.Log("Artifact unlocked!");
       }
       else
@@ -254,12 +280,14 @@ public class CraftingController : MonoBehaviour
    }
 
    /* Unlock refined tool from Lab tier 2 production path                                        */
-   public void UnlockRefinedToolFromLab()
+   public void UnlockRefinedToolFromLab() 
    {
       refinedUnlocked = true;
-      PlayerPrefs.SetInt("Unlocked_Refined", 1);
+      PlayerPrefs.SetInt("Unlocked_PressureValve", 1);
       PlayerPrefs.Save();
       ApplyLockStateToUI();
+      inv.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+     
       Debug.Log("Refined Tool unlocked by Lab Tier 2!");
    }
 
@@ -267,17 +295,16 @@ public class CraftingController : MonoBehaviour
    public void UnlockArtifactToolFromLab()
    {
       artifactUnlocked = true;
-      PlayerPrefs.SetInt("Unlocked_Artifact", 1);
+      PlayerPrefs.SetInt("Unlocked_ClockworkEngine", 1);
       PlayerPrefs.Save();
       ApplyLockStateToUI();
+      inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
       Debug.Log("Artifact Tool unlocked by Lab Tier 3!");
    }
 
    /* Craft the selected item and updated the corresponding count in inventory                   */
    private void CraftItem(int oreCost, string toolName)
    {
-      var inv = InventoryManager.Instance;
-
         if (inv.oreCount >= oreCost)
         {
            // code added for OreRefinery_Manager.cs scripts by Juyoung
