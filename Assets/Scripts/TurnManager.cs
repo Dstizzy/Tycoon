@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Threading.Tasks;
 
 public class TurnManager : MonoBehaviour
 {
@@ -38,16 +39,18 @@ public class TurnManager : MonoBehaviour
    public TextMeshProUGUI turnText; // The UI text element to display the current turn.
 
    [Header("UI/Game Status")]
-   public Button endTurnButton;       // The button to disable when the game ends.
-   private bool _isGameActive = true; // Tracks if the game is currently in progress.
+   public Button endTurnButton;                     // The button to disable when the game ends.
+   private bool _isGameActive = true;               // Tracks if the game is currently in progress.
+   [SerializeField] private GameObject progressBar; // Progress bar UI element
 
-   /*************************************************/
-   /* Initializes the UI elements with the starting */
-   /* values when the game begins.                  */
-   /*************************************************/
-   void Start()
+    /*************************************************/
+    /* Initializes the UI elements with the starting */
+    /* values when the game begins.                  */
+    /*************************************************/
+    void Start()
    {
       UpdateTurnUI();
+      progressBar.GetComponent<Animator>().SetTrigger("StartProgressBar");
    }
 
    /***************************************************/
@@ -55,7 +58,7 @@ public class TurnManager : MonoBehaviour
    /* It processes the end-of-turn logic, including   */
    /* resource gains and advancing the turn counter.  */
    /***************************************************/
-   public void EndTurn()
+   public async void EndTurn()
    {
       Debug.Log("### TurnManager Start() ###");
 
@@ -74,10 +77,13 @@ public class TurnManager : MonoBehaviour
          UpdateTurnUI();
          TradeHutManager.Instance.MarketFluctuate();
          Debug.Log("Turn" + currentTurn + "Start");
+         
+         progressBar.SetActive(true);
+         await Task.Delay(3800);
+         progressBar.SetActive(false);
 
          // Add logic for the next turn here (e.g., start
          // enemy turn, reset unit actions, etc.)
-
          OnTurnEnded?.Invoke();
       }
    }
