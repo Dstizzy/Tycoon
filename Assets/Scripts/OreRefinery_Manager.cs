@@ -6,9 +6,8 @@ public class OreRefinery_Manager : MonoBehaviour {
 
     public static OreRefinery_Manager Instance { get; private set; }
 
-    const int REFINE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
+    const int INFO_BUTTON = 1;
+    const int UPGRADE_BUTTON = 2;
     const int STARTING_LEVEL = 1;
     const int ENDING_LEVEL = 5;
 
@@ -35,7 +34,6 @@ public class OreRefinery_Manager : MonoBehaviour {
             infoPanel.gameObject.SetActive(false);
         }
 
-        // --- ADDED: Subscribe to the TurnManager's event ---
         TurnManager.OnTurnEnded += ProduceOres;
 
         CalculateRefineryValues();
@@ -47,80 +45,8 @@ public class OreRefinery_Manager : MonoBehaviour {
         }
     }
 
-    // Unsubscribe from event when this object is destroyed
-    private void OnDestroy()
-    {
-        // Check if TurnManager instance still exists before unsubscribing
-        if (TurnManager.Instance != null)
-        {
-            TurnManager.OnTurnEnded -= ProduceOres;
-        }
-    }
-
-   // Calculates the current ore production and next upgrade cost
-   private void CalculateRefineryValues()
-   {
-      // Ore production logic
-      CurrentOreProduction = 10 + (5 * oreLevel);
-
-      // Pearl consumption logic (temporary for now)
-      NextUpgradeCostInPearls = 50 * oreLevel;
-   }
-
-   // This function is called by the TurnManager's OnTurnEnded event
-   private void ProduceOres()
-   {
-      // Adds produced ore to InventoryManager's oreCount
-      InventoryManager.Instance.TryAddOre(CurrentOreProduction);
-
-      // Invokes the OnOreCountChanged event to update UI or other listeners
-      InventoryManager.Instance.OnOreCountChanged?.Invoke(InventoryManager.Instance.oreCount);
-
-      Debug.Log("OreRefinery produced " + CurrentOreProduction + " Ore. Total Ore: " + InventoryManager.Instance.oreCount);
-   }
-
-   // Handles upgrading the Ore Refinery level and spending Pearls
-   public void UpgradeOreRefinory()
-   {
-
-      if (oreLevel < ENDING_LEVEL)
-      {
-
-         // Attempt to pay Pearls using InventoryManager's TrySpendPearl function
-         // Check if enough pearls are available
-         if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls)
-         {
-            // If successful, spend Pearls
-            InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
-
-            oreLevel += 1;
-            CalculateRefineryValues(); // Recalculate production/cost for the new level
-            Debug.Log("Upgrade successful to Level " + oreLevel);
-         }
-         else
-         {
-            // If failed, not enough Pearls
-            Debug.Log("UPGRADE FAILED: Not enough Pearls. Need " + NextUpgradeCostInPearls);
-         }
-      }
-      else
-      {
-         Debug.Log("Ore Refinery is already at max level.");
-      }
-
-      // Update UI and clean up upgrade panel
-      oreRefineryLevelText.text = "Level " + oreLevel.ToString();
-      upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
-      upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
-      CloseUpgradePanel();
-      PopUpManager.Instance.EnablePlayerInput();
-   }
-
-   public void RequestOreRefinoryPanel(int buttonID) {
+    public void RequestOreRefinoryPanel(int buttonID) {
         switch (buttonID) {
-            case REFINE_BUTTON:
-                Debug.Log("Ore Refinery Panel: Refine requested.");
-                break;
             case INFO_BUTTON:
                 ShowInfoPanel();
                 infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
@@ -139,8 +65,6 @@ public class OreRefinery_Manager : MonoBehaviour {
     public void CloseOreRefinoryPanel(int buttonID) {
         switch (buttonID) 
         {
-            case REFINE_BUTTON:
-                break;
             case INFO_BUTTON:
                 CloseInfoPanel();
                 break;
@@ -175,4 +99,72 @@ public class OreRefinery_Manager : MonoBehaviour {
     {
         upgradePanel.gameObject.SetActive(false);
     }
+
+   // --- ADDED: Unsubscribe when destroyed ---
+   private void OnDestroy()
+   {
+      if (TurnManager.Instance != null)
+      {
+         TurnManager.OnTurnEnded -= ProduceOres;
+      }
+   }
+
+   // --- MODIFIED: Calculation Function ---
+   private void CalculateRefineryValues()
+   {
+      // Ore production logic
+      CurrentOreProduction = 10 + (5 * oreLevel);
+
+      // Pearl consumption logic
+      NextUpgradeCostInPearls = 50 * oreLevel;
+   }
+
+   // --- ADDED: This function is called by the TurnManager's event ---
+   private void ProduceOres()
+   {
+      // Use InventoryManager.Instance.TryAddOre to add ore.
+      InventoryManager.Instance.TryAddOre(CurrentOreProduction);
+
+      // Notify UI (or other scripts) that oreCount has changed.
+      InventoryManager.Instance.OnOreCountChanged?.Invoke(InventoryManager.Instance.oreCount);
+
+      Debug.Log("OreRefinery produced " + CurrentOreProduction + " Ore. Total Ore: " + InventoryManager.Instance.oreCount);
+   }
+
+   // --- MODIFIED: Now spends Pearls using InventoryManager ---
+   public void UpgradeOreRefinory()
+   {
+
+      if (oreLevel < ENDING_LEVEL)
+      {
+
+         // 1. Attempt to pay Pearls using InventoryManager.
+         if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls)
+         {
+            // 2. (Success) Enough Pearls, so spend them.
+            InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
+
+            oreLevel += 1;
+            CalculateRefineryValues(); // Recalculate production/cost for the next level.
+            Debug.Log("Upgrade successful to Level " + oreLevel);
+         }
+         else
+         {
+            // 3. (Failure) Not enough Pearls.
+            Debug.Log("UPGRADE FAILED: Not enough Pearls. Need " + NextUpgradeCostInPearls);
+         }
+
+      }
+      else
+      {
+         Debug.Log("Ore Refinery is already at max level.");
+      }
+
+      // (Existing Panel/UI update logic)
+      oreRefineryLevelText.text = "Level " + oreLevel.ToString();
+      upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      CloseUpgradePanel();
+      PopUpManager.Instance.EnablePlayerInput();
+   }
 }

@@ -1,25 +1,26 @@
 /* libraries                                                                                     */
-using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.UI;
+
+using static Item;
 
 public class LabManager : MonoBehaviour
 {
     /* Symbolic Constants                                                                        */
-    const int INNOVATE_BUTTON = 1;
-    const int INFO_BUTTON = 2;
-    const int UPGRADE_BUTTON = 3;
-    const int TIER_ONE = 1;
-    const int TIER_TWO = 2;
-    const int TIER_THREE = 3;
-    const int TIER_ONE_PEARL_COST = 100;
-    const int TIER_ONE_ITEM_COST = 10;
-    const int TIER_TWO_PEARL_COST = 350;
-    const int TIER_TWO_ITEM_COST = 25;
-    const int TIER_THREE_PEARL_COST = 700;
-    const int TIER_THREE_ITEM_COST = 50;
+    public const int INNOVATE_BUTTON = 1;
+    public const int INFO_BUTTON = 2;
+    public const int UPGRADE_BUTTON = 3;
+    public const int TIER_ONE = 1;
+    public const int TIER_TWO = 2;
+    public const int TIER_THREE = 3;
+    public const int TIER_ONE_PEARL_COST = 100;
+    public const int TIER_ONE_ITEM_COST = 10;
+    public const int TIER_TWO_PEARL_COST = 350;
+    public const int TIER_TWO_ITEM_COST = 25;
+    public const int TIER_THREE_PEARL_COST = 700;
+    public const int TIER_THREE_ITEM_COST = 50;
 
     /* Inspector Variables                                                                       */
     [SerializeField] private Transform innovatePanel;
@@ -30,7 +31,12 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject commerceTab;
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
-   
+    [SerializeField] private CraftingController craftingController;
+
+   /* Public variables                                                                          */
+   public static int currentCommerceTier { get; private set; }
+
+
     TradeHutManager tradeHutManager;
 
     /* Check if all required game objects exist and are in there required states                 */
@@ -39,7 +45,7 @@ public class LabManager : MonoBehaviour
       tradeHutManager = TradeHutManager.Instance;
 
       if (tradeHutManager == null)
-            Debug.LogError("Insance is not initialized");
+          Debug.LogError("Insance is not initialized");
 
 
         /* Set the info panel to inactive if it exists                                           */
@@ -176,7 +182,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierOneButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierOneCost").gameObject.SetActive(false);
-                ImplementTierOneInnovation(tab);
+                tab.transform.Find("costContainer/tierOneImages").gameObject.SetActive(false);
                 break;
             case TIER_TWO:
                 PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
@@ -188,7 +194,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierTwoButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierTwoCost").gameObject.SetActive(false);
-                ImplementTierTwoInnovation(tab);
+                tab.transform.Find("costContainer/tierTwoImages").gameObject.SetActive(false);
                 break;
             case TIER_THREE:
                 PerformBuy(TIER_THREE_PEARL_COST, TIER_THREE_ITEM_COST);
@@ -199,7 +205,7 @@ public class LabManager : MonoBehaviour
                 tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeFilled").gameObject.SetActive(true);
                 tab.transform.Find("buttonContainer/tierThreeButton").gameObject.SetActive(false);
                 tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
-                ImplementTierThreeInnovation(tab);
+                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
                 break;
         };
     }
@@ -216,7 +222,14 @@ public class LabManager : MonoBehaviour
     {
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
-            Item.IncreaseItemsSellValue();
+        { 
+           currentCommerceTier = TIER_ONE;
+           tradeHutManager.marketShiftMin = 1;
+           tradeHutManager.marketShiftMax = 2;
+           
+            foreach(Transform item in tradeHutManager.Items)
+              item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
+        }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
         {
@@ -238,19 +251,26 @@ public class LabManager : MonoBehaviour
         /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
         if (tabType == commerceTab)
         {
+            TradeHutManager.Instance.marketShiftMin = 3;
+            TradeHutManager.Instance.marketShiftMax = 5;
+            
             Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
             Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
 
             chainImage.gameObject.SetActive(false);
             
             mysteryBox.interactable = true;
+
+            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, TradeHutManager.INDUSTRIAL_BLUE_PRINT_TAG);
         }
+
         /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
         /*    bonus item upon crafting a single item                                             */
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
-
+            craftingController.UnlockRefinedToolFromLab();
+            craftingController.ApplyLockStateToUI();
         }
         /* Permanently increase gold by +15 per turn                                             */
         else if (tabType == explorationTab)
@@ -268,13 +288,18 @@ public class LabManager : MonoBehaviour
         /* Allows all items in storage to be sold for 5x multiplier                              */
         if (tabType == commerceTab)
         {
+            TradeHutManager.Instance.marketShiftMin = 5;
+            TradeHutManager.Instance.marketShiftMax = 10;
+
+            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 1.0f, TradeHutManager.CLOCKWORK_BLUEPRINT_TAG);
             Debug.Log("All items in storage sold for 5x");
         }
         /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock Artifact and crafting results in double item");
-
+            craftingController.UnlockArtifactToolFromLab();
+            craftingController.ApplyLockStateToUI();
         }
         /* Decrease search costs by 50%                                                          */
         else if (tabType == explorationTab)
@@ -305,6 +330,7 @@ public class LabManager : MonoBehaviour
             currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
             currentColor.a = 1.0f;
             tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+            
         }
         /* Get ride of the tier 3 lock and turn on buttons and text                              */
         else

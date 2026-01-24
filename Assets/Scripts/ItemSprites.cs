@@ -7,9 +7,15 @@ public class ItemSprites : MonoBehaviour {
     
     [Header("Item Sprites")]
     public Sprite crudeTool;
-    public Sprite refinedTool;
-    public Sprite artifact;
-    public Sprite sword;
+    public Sprite harpoon;
+    public Sprite patchKit;
+    public Sprite pressureValve;
+    public Sprite divingBells;
+    public Sprite engine;
+    public Sprite precisionLens;
+    public Sprite rareOre;
+    public Sprite industrialBluePrint;
+    public Sprite clockworkBlueprint;
 
     private void Awake() {
         if (itemSprites != null && itemSprites != this) {
@@ -22,15 +28,28 @@ public class ItemSprites : MonoBehaviour {
     public Sprite GetSprite(ItemType itemType) {
         switch (itemType) {
             case ItemType.CrudeTool:
-                return crudeTool;
-            case ItemType.RefinedTool:
-                return refinedTool;
-            case ItemType.Artifact:
-                return artifact;
-            case ItemType.Sword:
-                return sword;
-            default:
-                return null;
+               return crudeTool;
+            case ItemType.Harpoon:
+               return harpoon;
+            case ItemType.PatchKit:
+               return patchKit;
+            case ItemType.PressureValve:
+               return pressureValve;
+            case ItemType.DivingBell: 
+               return divingBells;
+            case ItemType.Engine:
+               return engine;
+            case ItemType.RareOre:
+               return rareOre;
+            case ItemType.PrecisionLens:
+               return precisionLens;
+            case ItemType.IndustrialBluePrint:
+               return industrialBluePrint;
+            case ItemType.ClockworkBlueprint:
+               return clockworkBlueprint;
+         default:
+               Debug.LogError("ItemSprites: GetSprite received unknown ItemType: " + itemType);
+               return null;
         }
     }
 }
