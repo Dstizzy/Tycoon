@@ -301,12 +301,12 @@ public class CraftingController : MonoBehaviour
             case "Crude Tool":
                inv.TryAddCrudeTool(1);
                break;
-            case "Refined Tool":
-               inv.TryAddRefinedTool(1);
-               break;
-            case "Artifact":
-               inv.TryAddArtifact(1);
-               break;
+            //case "Refined Tool":
+            //   inv.TryAddRefinedTool(1);
+            //   break;
+            //case "Artifact":
+            //   inv.TryAddArtifact(1);
+            //   break;
             default:
                Debug.LogError("Unkown Item");
                break;

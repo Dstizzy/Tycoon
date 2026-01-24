@@ -207,13 +207,13 @@ public class ForgeManager : MonoBehaviour
                costPerItem = 15;
                break;
 
-            case Item.ItemType.RefinedTool:
-               costPerItem = 25;
-               break;
+            //case Item.ItemType.RefinedTool:
+            //   costPerItem = 25;
+            //   break;
 
-            case Item.ItemType.Artifact:
-               costPerItem = 50;
-               break;
+            //case Item.ItemType.Artifact:
+            //   costPerItem = 50;
+            //   break;
          }
 
          totalCost = selectedCraftAmount * costPerItem;
@@ -230,13 +230,13 @@ public class ForgeManager : MonoBehaviour
             InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
             break;
 
-         case Item.ItemType.RefinedTool:
-            InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
-            break;
+         //case Item.ItemType.RefinedTool:
+         //   InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
+         //   break;
 
-         case Item.ItemType.Artifact:
-            InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
-            break;
+         //case Item.ItemType.Artifact:
+         //   InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
+         //   break;
       }
    }
 
