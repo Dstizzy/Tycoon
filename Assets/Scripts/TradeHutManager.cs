@@ -399,14 +399,17 @@ public class TradeHutManager : MonoBehaviour
 
    public void BuyItem() 
    {
-      if (rareOreCount > MIN_BUY_ITEM_COUNT)
-         InventoryManager.Instance.TrySpendPearl(rareOreCount * GetItemPrice(ItemType.RareOre));
+      if (rareOreCount > MIN_BUY_ITEM_COUNT) 
+      { 
+         inv.TrySpendPearl(rareOreCount * GetItemPrice(ItemType.RareOre));
+         inv.TryAddRareOre(rareOreCount);
+      }
 
       if(industrialBluePrintCount > MIN_BUY_ITEM_COUNT)
-         InventoryManager.Instance.TrySpendPearl(industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint));
+         inv.TrySpendPearl(industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint));
 
       if(clockworkBluePrintCount > MIN_BUY_ITEM_COUNT)
-         InventoryManager.Instance.TrySpendPearl(clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint));
+         inv.TrySpendPearl(clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint));
 
       rareOreCount             = MIN_BUY_ITEM_COUNT;
       industrialBluePrintCount = MIN_BUY_ITEM_COUNT;
