@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TransactionMsgManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class TransactionMsgManager : MonoBehaviour
    public GameObject failPanel;
 
    [Header("Messages")]
-   public Text successText;
-   public Text failText;
+   public TextMeshProUGUI successText;
+   public TextMeshProUGUI failText;
 
    private void Awake()
    {

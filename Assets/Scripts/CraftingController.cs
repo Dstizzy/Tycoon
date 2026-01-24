@@ -7,7 +7,7 @@ public class CraftingController : MonoBehaviour
    /* Holds reference to the singleton instance of this class                                    */
    public static CraftingController Instance { get; private set; }
 
-   [Header("Craft Buttons")] 
+   [Header("Craft Buttons")]
    public Button craftTool1Button; /* Button for Crude tool   */
    public Button craftTool2Button; /* Button for Refined tool */
    public Button craftTool3Button; /* Button for Artfact tool */
@@ -26,7 +26,7 @@ public class CraftingController : MonoBehaviour
    public int tool3OreCost = 50; /* Ore cost for artifact tool */
 
    [Header("Unlock Settings (in Pearls)")]
-   public int refinedUnlockCost  = 100; /* Pearl cost for unlocking refined tool  */
+   public int refinedUnlockCost = 100; /* Pearl cost for unlocking refined tool  */
    public int artifactUnlockCost = 200; /* Pearl cost for unlocking artifact tool */
 
    [Header("Lock Overlays")]
@@ -36,8 +36,8 @@ public class CraftingController : MonoBehaviour
    [Header("Unlock Panels (Popups)")]
    public GameObject refinedUnlockPanel;    /* Unlock panel for refined tool    */
    public GameObject artifactUnlockPanel;   /* Unlock panel for artifact tool   */
-   public Text       refinedUnlockMessage;  /* Text for refined unlock message  */
-   public Text       artifactUnlockMessage; /* Text for artifact unlock message */
+   public Text refinedUnlockMessage;  /* Text for refined unlock message  */
+   public Text artifactUnlockMessage; /* Text for artifact unlock message */
 
    private bool refinedUnlocked;
    private bool artifactUnlocked;
@@ -47,7 +47,7 @@ public class CraftingController : MonoBehaviour
    {
       Instance = this;
 
-      refinedUnlocked  = PlayerPrefs.GetInt("Unlocked_Refined", 0)  == 1;
+      refinedUnlocked = PlayerPrefs.GetInt("Unlocked_Refined", 0) == 1;
       artifactUnlocked = PlayerPrefs.GetInt("Unlocked_Artifact", 0) == 1;
    }
 
@@ -63,8 +63,8 @@ public class CraftingController : MonoBehaviour
       artifactUnlocked = false;
 
       /* Set all craft confirmation panels to inactive at start                                 */
-      crudeConfirmation.   SetActive(false);
-      refinedConfirmation. SetActive(false);
+      crudeConfirmation.SetActive(false);
+      refinedConfirmation.SetActive(false);
       artifactConfirmation.SetActive(false);
 
       craftTool1Button.onClick.AddListener(() => ShowConfirmation(crudeConfirmation));
@@ -103,7 +103,7 @@ public class CraftingController : MonoBehaviour
    public void OpenUnlockRefined()
    {
       if (refinedUnlocked)
-         return; 
+         return;
 
       if (refinedUnlockMessage)
          refinedUnlockMessage.text = $"Unlock Refined Tool for {refinedUnlockCost} pearls?";
@@ -111,10 +111,10 @@ public class CraftingController : MonoBehaviour
       if (refinedUnlockPanel)
          refinedUnlockPanel.SetActive(true);
    }
-    
+
    /* Open Unlock panel for artifact tool when lock is clicked                                   */
    public void OpenUnlockArtifact()
-    {
+   {
       if (artifactUnlocked)
          return;
 
@@ -181,20 +181,33 @@ public class CraftingController : MonoBehaviour
       if (craftPanel != null)
          craftPanel.SetActive(false);
 
-      crudeConfirmation.   SetActive(false);
-      refinedConfirmation. SetActive(false);
+      crudeConfirmation.SetActive(false);
+      refinedConfirmation.SetActive(false);
       artifactConfirmation.SetActive(false);
-      confirmationPanel.   SetActive(true);
+      confirmationPanel.SetActive(true);
    }
 
    /* Show crafting confirmation for crude tool                                                  */
    public void ConfirmCraftCrude()
    {
-      CraftItem(tool1OreCost, "Crude Tool");
-      crudeConfirmation.SetActive(false);
+      if (InventoryManager.Instance.oreCount >= tool1OreCost)
+      {
+         CraftItem(tool1OreCost, "Crude Tool");
+         crudeConfirmation.SetActive(false);
 
-      if (craftPanel != null)
-         craftPanel.SetActive(true);
+         if (craftPanel)
+            craftPanel.SetActive(false);
+
+         TransactionMsgManager.Instance.ShowSuccess("Crude Tool crafted!");
+      }
+      else
+      {
+         crudeConfirmation.SetActive(false);
+
+         if (craftPanel)
+            craftPanel.SetActive(false);
+         TransactionMsgManager.Instance.ShowFailure($"Not enough ore for Crude Tool. Need {tool1OreCost}");
+      }
    }
 
    /* Show crafting confirmation for refined tool                                                */
@@ -205,9 +218,9 @@ public class CraftingController : MonoBehaviour
          Debug.Log("Refined Tool is locked!");
          return;
       }
-
-      CraftItem(tool2OreCost, "Refined Tool");
       refinedConfirmation.SetActive(false);
+      TransactionMsgManager.Instance.ShowSuccess("Refined Tool crafted!");
+
 
       if (craftPanel != null)
          craftPanel.SetActive(true);
@@ -222,8 +235,8 @@ public class CraftingController : MonoBehaviour
          return;
       }
 
-      CraftItem(tool3OreCost, "Artifact");
       artifactConfirmation.SetActive(false);
+      TransactionMsgManager.Instance.ShowSuccess("Artifact Tool crafted!");
 
       if (craftPanel != null)
          craftPanel.SetActive(true);
@@ -250,7 +263,7 @@ public class CraftingController : MonoBehaviour
    {
       artifactConfirmation.SetActive(false);
       if (craftPanel != null)
-      craftPanel.SetActive(true);
+         craftPanel.SetActive(true);
    }
 
    /* Unlock refined tool from Lab tier 2 production path                                        */
@@ -278,34 +291,34 @@ public class CraftingController : MonoBehaviour
    {
       var inv = InventoryManager.Instance;
 
-        if (inv.oreCount >= oreCost)
-        {
-           // code added for OreRefinery_Manager.cs scripts by Juyoung
-           inv.TrySpendOre(oreCost);
+      if (inv.oreCount >= oreCost)
+      {
+         // code added for OreRefinery_Manager.cs scripts by Juyoung
+         inv.TrySpendOre(oreCost);
 
-           switch (toolName) 
-           { 
-              case "Crude Tool":
-                 inv.TryAddCrudeTool(1);
-                 break;
-              case "Refined Tool":
-                 inv.TryAddRefinedTool(1);
-                 break;
-              case "Artifact":
-                 inv.TryAddArtifact(1);
-                 break;
-              default:
-                 Debug.LogError("Unkown Item");
-                 break;
-           }
-           Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
-           TransactionMsgManager.Instance.ShowSuccess($"{toolName} crafted successfully! (-{oreCost} ore)");
-         }
-         else
+         switch (toolName)
          {
-            Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
-            TransactionMsgManager.Instance.ShowFailure($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+            case "Crude Tool":
+               inv.TryAddCrudeTool(1);
+               break;
+            case "Refined Tool":
+               inv.TryAddRefinedTool(1);
+               break;
+            case "Artifact":
+               inv.TryAddArtifact(1);
+               break;
+            default:
+               Debug.LogError("Unkown Item");
+               break;
          }
+         Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
+         TransactionMsgManager.Instance.ShowSuccess($"{toolName} crafted successfully! (-{oreCost} ore)");
+      }
+      else
+      {
+         Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+         TransactionMsgManager.Instance.ShowFailure($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+      }
    }
 
    /* Spend pearl if there is enoguh pearl in the inventory                                      */
@@ -320,7 +333,7 @@ public class CraftingController : MonoBehaviour
       }
 
       if (inv.pearlCount < pearls)
-      { 
+      {
          Debug.Log($"Not enough pearls to unlock. Need {pearls}, have {inv.pearlCount}.");
          return false;
       }

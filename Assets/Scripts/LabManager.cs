@@ -30,7 +30,6 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject commerceTab;
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
-    [SerializeField] private CraftingController craftingController;
    
     TradeHutManager tradeHutManager;
 
@@ -251,8 +250,7 @@ public class LabManager : MonoBehaviour
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
-            craftingController.UnlockRefinedToolFromLab();
-            craftingController.ApplyLockStateToUI();
+
         }
         /* Permanently increase gold by +15 per turn                                             */
         else if (tabType == explorationTab)
@@ -276,8 +274,7 @@ public class LabManager : MonoBehaviour
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock Artifact and crafting results in double item");
-            craftingController.UnlockArtifactToolFromLab();
-            craftingController.ApplyLockStateToUI();
+
         }
         /* Decrease search costs by 50%                                                          */
         else if (tabType == explorationTab)

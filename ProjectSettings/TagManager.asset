@@ -19,6 +19,8 @@ TagManager:
   - BuildingButton
   - BuildingButtonPopUp
   - Ore
+  - CraftItem
+  - ItemUI
   layers:
   - Default
   - TransparentFX
