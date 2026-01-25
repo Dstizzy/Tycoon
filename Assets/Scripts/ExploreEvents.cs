@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ExploreEvents", menuName = "Scriptable Objects/ExploreEvents")]
+[CreateAssetMenu(fileName = "New Event", menuName = "Exploration/Event")]
 public class ExploreEvents : ScriptableObject
 {
    public string description;
