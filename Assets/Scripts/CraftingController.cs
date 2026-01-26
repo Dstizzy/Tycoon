@@ -296,30 +296,28 @@ public class CraftingController : MonoBehaviour
          // code added for OreRefinery_Manager.cs scripts by Juyoung
          inv.TrySpendOre(oreCost);
 
-         switch (toolName)
-         {
-            case "Crude Tool":
-               inv.TryAddCrudeTool(1);
-               break;
-            //case "Refined Tool":
-            //   inv.TryAddRefinedTool(1);
-            //   break;
-            //case "Artifact":
-            //   inv.TryAddArtifact(1);
-            //   break;
-            default:
-               Debug.LogError("Unkown Item");
-               break;
-         }
-         Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
-         TransactionMsgManager.Instance.ShowSuccess($"{toolName} crafted successfully! (-{oreCost} ore)");
-      }
-      else
-      {
-         Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
-         TransactionMsgManager.Instance.ShowFailure($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
-      }
-   }
+           switch (toolName) 
+           { 
+              case CRUDE_TOOL_TAG:
+                 inv.TryAddCrudeTool(1);
+                 break;
+              case HARPOON_TAG:
+                 inv.TryAddHarpoon(1);
+                 break;
+              case ENGINE_TAG:
+                 inv.TryAddEngine(1);
+                 break;
+              default:
+                 Debug.LogError("Unkown Item");
+                 break;
+           }
+           Debug.Log($"{toolName} crafted successfully! Used {oreCost} ore.");
+        }
+        else
+        {
+            Debug.Log($"Not enough ore to craft {toolName}. Need {oreCost}, have {inv.oreCount}.");
+        }
+    }
 
    /* Spend pearl if there is enoguh pearl in the inventory                                      */
    private bool TrySpendPearls(int pearls)
