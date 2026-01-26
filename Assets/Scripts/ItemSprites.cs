@@ -40,7 +40,7 @@ public class ItemSprites : MonoBehaviour {
                return divingBells;
             case ItemType.Engine:
                return engine;
-            case ItemType.RareOre:
+            case ItemType.RawOreChunk:
                return rareOre;
             case ItemType.PrecisionLens:
                return precisionLens;

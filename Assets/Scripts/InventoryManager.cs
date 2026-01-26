@@ -30,7 +30,7 @@ public class InventoryManager : MonoBehaviour
                            DivingBellCountText,
                            EngineCountText,
                            PrecisionLensCountText,
-                           RareOreCountText;
+                           RaWOreChunkCountText;
    
    /* Constants                                                                     */
    public const int MIN_PEARL_COUNT          = 0,                                              
@@ -45,7 +45,7 @@ public class InventoryManager : MonoBehaviour
                     MAX_HARPOON_COUNT        = 100,
                     MAX_PRESSURE_VALVE_COUNT = 100,
                     MAX_ENGINE_COUNT         = 100,
-                    MAX_RARE_ORE_COUNt       = 100,
+                    MAX_RAW_ORE_COUNT        = 100,
                     MAX_PATCH_KIT_COUNT      = 100,
                     MAX_DIVING_BELL_COUNT    = 100,
                     MAX_PRECISION_LENS_COUNT = 100,
@@ -53,7 +53,7 @@ public class InventoryManager : MonoBehaviour
                     MIN_HARPOON_COUNT        = 0,
                     MIN_PRESSURE_VALVE_COUNT = 0,
                     MIN_ENGINE_COUNT         = 0,
-                    MIN_RARE_ORE_COUNT       = 0,
+                    MIN_RARE_ORE_CHUNK_COUNT = 0,
                     MIN_PATCH_KIT_COUNT      = 0,
                     MIN_DIVING_BELL_COUNT    = 0,
                     MIN_PRECISION_LENS_COUNT = 0;
@@ -81,7 +81,7 @@ public class InventoryManager : MonoBehaviour
                        DIVING_BELL_TAG    =  "Diving Bell",
                        ENGINE_TAG         =  "Engine",
                        PRECISION_LENS_TAG =  "Precision Lens",
-                       RARE_ORE_TAG       =  "Rare Ore";
+                       RAW_ORE_CHUNK_TAG  =  "Raw Ore Chunk";
 
 
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
@@ -96,7 +96,7 @@ public class InventoryManager : MonoBehaviour
    public int divingBellCount    { get; private set; }
    public int engineCount        { get; private set; }
    public int precisionLensCount { get; private set; }
-   public int rareOreCount       { get; private set; }
+   public int rawOreChunkCount   { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource,  
@@ -194,8 +194,8 @@ public class InventoryManager : MonoBehaviour
          case ORE_TAG:
             resourceCount = oreCount;
             break;
-         case RARE_ORE_TAG:
-            resourceCount = rareOreCount;
+         case RAW_ORE_CHUNK_TAG:
+            resourceCount = rawOreChunkCount;
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
@@ -235,8 +235,8 @@ public class InventoryManager : MonoBehaviour
           case ORE_TAG:
              OreCountText     = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
              break;
-         case RARE_ORE_TAG:
-            RareOreCountText  = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+         case RAW_ORE_CHUNK_TAG:
+            RaWOreChunkCountText  = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
@@ -369,9 +369,9 @@ public class InventoryManager : MonoBehaviour
             resourceCount = oreCount;
             resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
             break;
-         case RARE_ORE_TAG:
-            resourceCount = rareOreCount;
-            resourceInfo = Item.GetItemDescription(Item.ItemType.RareOre);
+         case RAW_ORE_CHUNK_TAG:
+            resourceCount = rawOreChunkCount;
+            resourceInfo = Item.GetItemDescription(Item.ItemType.RawOreChunk);
             break;
          default: 
             Debug.LogError("Unknown item tag for resource window.");
@@ -443,9 +443,9 @@ public class InventoryManager : MonoBehaviour
             craftCount = precisionLensCount;
             craftInfo  = "";
             break;
-         case RARE_ORE_TAG:
-            craftCount = rareOreCount;
-            craftInfo = Item.GetItemDescription (Item.ItemType.RareOre);
+         case RAW_ORE_CHUNK_TAG:
+            craftCount = rawOreChunkCount;
+            craftInfo = Item.GetItemDescription (Item.ItemType.RawOreChunk);
             break;
          default:
             Debug.LogError("Unknown item tag for resource window.");
@@ -588,18 +588,18 @@ public class InventoryManager : MonoBehaviour
       return;
    }
 
-   public bool TryUseRareOre(int rareOreAmount) 
+   public bool TryUseRawOreChunk(int rareOreAmount) 
    {
       TextMeshProUGUI rareOreValue = new();
       bool isSuccess               = false;
 
-      if (rareOreCount <= MIN_CRUDE_TOOL_COUNT) 
+      if (rawOreChunkCount <= MIN_CRUDE_TOOL_COUNT) 
       {
          Debug.LogError("Rare ore count is at minimum!");
          return isSuccess;
       }
       else
-         if (rareOreCount < rareOreAmount) 
+         if (rawOreChunkCount < rareOreAmount) 
          {
             Debug.LogError("Not enough rare ores!");
             return isSuccess;
@@ -610,14 +610,14 @@ public class InventoryManager : MonoBehaviour
             crudeToolCount -= rareOreAmount;
          }
 
-      rareOreValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(RARE_ORE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      rareOreValue.text     = rareOreCount.ToString();
-      RareOreCountText.text = " x" + rareOreCount.ToString();
+      rareOreValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      rareOreValue.text     = rawOreChunkCount.ToString();
+      RaWOreChunkCountText.text = " x" + rawOreChunkCount.ToString();
 
       return isSuccess;
    }
 
-   public bool TryAddRareOre(int rareOreAmount) 
+   public bool TryAddRawOreChunk(int rareOreAmount) 
    {
       TextMeshProUGUI rareOreValue = new();
       bool isSuccess              = false;
@@ -636,12 +636,12 @@ public class InventoryManager : MonoBehaviour
          else 
          {
             isSuccess = true;
-            rareOreCount += rareOreAmount;
+            rawOreChunkCount += rareOreAmount;
          }
 
-      rareOreValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(RARE_ORE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      rareOreValue.text     = rareOreCount.ToString();
-      RareOreCountText.text = " x" + rareOreCount.ToString();
+      rareOreValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      rareOreValue.text     = rawOreChunkCount.ToString();
+      RaWOreChunkCountText.text = " x" + rawOreChunkCount.ToString();
 
       return isSuccess;
    }

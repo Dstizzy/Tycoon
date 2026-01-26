@@ -7,7 +7,6 @@ public class WorldEvents {
    const int TURN_3 = 3,
              TURN_4 = 4,
              TURN_5 = 5;
-              
 
    public enum WorldEventTypes {
       CrudeToolEvent,

@@ -8,16 +8,16 @@ public class Item {
    public static int crudeToolSellValue     { get; private set; } = 15;
    public static int harpoonSellValue       { get; private set; } = 20;
    public static int pressureValveSellValue { get; private set; } = 60;
-   public static int engineSellValue        { get; private set; } = 200;
+   public static int engineSellValue        { get; private set; } = 150;
    
-   public static int rareOrePrice                 { get; private set; } = 100;
+   public static int rawOrePrice                 { get; private set; } = 1;
    public static int mercenaryEngineerSellValue   { get; private set; } = 100;
    public static int industrialBluePrintSellValue { get; private set; } = 500;
    public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-    public const int MIN_CRUDE_TOOL_VALUE     = 10;
+    public const int MIN_CRUDE_TOOL_VALUE     = 5;
     public const int MAX_CRUDE_TOOL_VALUE     = 25;
     public const int MIN_HARPOON_VALUE        = 12;
     public const int MAX_HARPOON_VALUE        = 40;
@@ -38,7 +38,7 @@ public class Item {
    const string ENGINE_DESCRIPTION               = 
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
-   const string RARE_ORE_DESCRIPTION             = 
+   const string RAW_ORE_CHUNK_DESCRIPTION             = 
       "A rare and valuable ore found in deep underwater caves. " +
       "Highly sought after for its unique properties and worth a significant amount.";
    const string INDUSTRIAL_BLUEPRINT_DESCRIPTION =
@@ -58,7 +58,7 @@ public class Item {
         DivingBell,
         Engine,
         PrecisionLens,
-        RareOre,
+        RawOreChunk,
         IndustrialBluePrint,
         ClockworkBlueprint,
         MercenaryEngineer
@@ -87,8 +87,8 @@ public class Item {
    {
       switch (itemType) 
       {
-         case ItemType.RareOre:
-            return rareOrePrice;
+         case ItemType.RawOreChunk:
+            return rawOrePrice;
          case ItemType.IndustrialBluePrint:
             return industrialBluePrintSellValue;
          case ItemType.ClockworkBlueprint:
@@ -113,8 +113,8 @@ public class Item {
             return PRESSURE_VALVE_DESCRIPTION;
          case ItemType.Engine:
             return ENGINE_DESCRIPTION;
-         case ItemType.RareOre:
-            return RARE_ORE_DESCRIPTION;
+         case ItemType.RawOreChunk:
+            return RAW_ORE_CHUNK_DESCRIPTION;
          case ItemType.IndustrialBluePrint:
             return INDUSTRIAL_BLUEPRINT_DESCRIPTION;
          case ItemType.ClockworkBlueprint:

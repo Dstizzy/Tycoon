@@ -38,7 +38,7 @@ public class TradeHutManager : MonoBehaviour
                pressureValveCount = 0, 
                engineSellCount    = 0, 
 
-               rareOreCount             = 0,
+               rareOreExchange             = 0,
                industrialBluePrintCount = 0,
                clockworkBluePrintCount  = 0,
                mercenaryEngineerCount   = 0,
@@ -79,7 +79,7 @@ public class TradeHutManager : MonoBehaviour
                        HARPOON_TAG               = "Harpoon",
                        PRESSURE_VALVE_TAG        = "Pressure Valve",
                        ENGINE_TAG                = "Engine",
-                       RARE_ORE                  = "Rare Ore",
+                       RAW_ORE_CHUNK_TAG         = "Rare Ore",
                        INDUSTRIAL_BLUE_PRINT_TAG = "Industrial Blue Print",
                        CLOCKWORK_BLUEPRINT_TAG   = "Clockwork Blue Print",
                        MERCENARY_ENGINEER_TAG    = "Mercenary Engineer";
@@ -161,7 +161,7 @@ public class TradeHutManager : MonoBehaviour
       CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
       CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
 
-      CreateBuyItem(GetItemSprite(ItemType.RareOre), GetItemPrice(ItemType.RareOre), 0.0f, RARE_ORE);
+      CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 2.0f, CLOCKWORK_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 0.0f, MERCENARY_ENGINEER_TAG, -35);
@@ -248,6 +248,8 @@ public class TradeHutManager : MonoBehaviour
       
       RectTransform tradeItemRectTransform;
 
+      Sprite currencySprite;
+
       /* Instantiate the template and set its position in the container                               */
       tradeItemTransform     = Instantiate(buyItemTemplate, buyItemContainer);
       buyItemTemplate.gameObject.SetActive(false);
@@ -262,8 +264,10 @@ public class TradeHutManager : MonoBehaviour
 
       itemButton.image.sprite = itemSprite;
 
+      currencySprite = itemTag == RAW_ORE_CHUNK_TAG ? GetResourceSprite(ResourceType.Ore) : GetResourceSprite(ResourceType.Pearl);
+
       /* Dynamically add a listener to the button, which creates the buy window                       */
-      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
+      itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, currencySprite, itemValue, itemTag));
 
       tradeItemTransform.gameObject.SetActive(true);
    }
@@ -411,10 +415,10 @@ public class TradeHutManager : MonoBehaviour
 
    public void BuyItem() 
    {
-      if (rareOreCount > MIN_BUY_ITEM_COUNT) 
+      if (rareOreExchange > MIN_BUY_ITEM_COUNT) 
       { 
-         inv.TrySpendPearl(rareOreCount * GetItemPrice(ItemType.RareOre));
-         inv.TryAddRareOre(rareOreCount);
+         inv.TrySpendPearl(rareOreExchange);
+         inv.TryAddOre(rareOreExchange);
       }
 
       if(industrialBluePrintCount > MIN_BUY_ITEM_COUNT)
@@ -426,7 +430,7 @@ public class TradeHutManager : MonoBehaviour
       if(mercenaryEngineerCount > MIN_BUY_ITEM_COUNT)
          inv.TrySpendPearl(mercenaryEngineerCount * GetItemPrice(ItemType.MercenaryEngineer));
 
-      rareOreCount             = MIN_BUY_ITEM_COUNT;
+      rareOreExchange          = MIN_BUY_ITEM_COUNT;
       industrialBluePrintCount = MIN_BUY_ITEM_COUNT;
       clockworkBluePrintCount  = MIN_BUY_ITEM_COUNT;
 
@@ -532,12 +536,12 @@ public class TradeHutManager : MonoBehaviour
    {
       switch (item.tag) 
       {
-         case RARE_ORE:
-            if (rareOreCount < MAX_BUY_ITEM_COUNT) 
+         case RAW_ORE_CHUNK_TAG:
+            if (rareOreExchange < MAX_BUY_ITEM_COUNT) 
             {
-               rareOreCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rareOreCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreCount * GetItemPrice(ItemType.RareOre)).ToString();
+               rareOreExchange += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rareOreExchange.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
             }
             break;
          case INDUSTRIAL_BLUE_PRINT_TAG:
@@ -575,12 +579,12 @@ public class TradeHutManager : MonoBehaviour
    {
       switch (item.tag) 
       {
-         case RARE_ORE:
-            if (rareOreCount > MIN_BUY_ITEM_COUNT) 
+         case RAW_ORE_CHUNK_TAG:
+            if (rareOreExchange > MIN_BUY_ITEM_COUNT) 
             {
-               rareOreCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rareOreCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreCount * GetItemPrice(ItemType.RareOre)).ToString();
+               rareOreExchange -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rareOreExchange.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rareOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
             }
             break;
          case INDUSTRIAL_BLUE_PRINT_TAG:
@@ -1069,7 +1073,7 @@ public class TradeHutManager : MonoBehaviour
       crudeToolSellCount = MIN_SELL_ITEM_COUNT;
       harpoonSellCount   = MIN_SELL_ITEM_COUNT;
       engineSellCount    = MIN_SELL_ITEM_COUNT;
-      rareOreCount       = MIN_BUY_ITEM_COUNT;
+      rareOreExchange       = MIN_BUY_ITEM_COUNT;
 
       if (SellWindow.gameObject.activeSelf)
          CloseSellWindow();
