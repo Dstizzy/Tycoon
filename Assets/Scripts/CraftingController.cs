@@ -312,13 +312,13 @@ public class CraftingController : MonoBehaviour
 
            switch (toolName) 
            { 
-              case "Crude Tool":
+              case CRUDE_TOOL_TAG:
                  inv.TryAddCrudeTool(1);
                  break;
-              case "Refined Tool":
+              case HARPOON_TAG:
                  inv.TryAddHarpoon(1);
                  break;
-              case "Artifact":
+              case ENGINE_TAG:
                  inv.TryAddEngine(1);
                  break;
               default:

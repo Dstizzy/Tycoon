@@ -624,13 +624,13 @@ public class InventoryManager : MonoBehaviour
 
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
       {
-         Debug.LogError("Crude tool count is at minimum!");
+         Debug.LogError("Rare ore count is at maximum!");
          return isSuccess;
       } 
       else
          if ((crudeToolCount + rareOreAmount) > MAX_CRUDE_TOOL_COUNT) 
          {
-            Debug.LogError("Crystal count is at maximum!");
+            Debug.LogError("Rare ore count is at maximum!");
             return isSuccess;
          } 
          else 
@@ -712,13 +712,13 @@ public class InventoryManager : MonoBehaviour
 
       if (harpoonCount >= MAX_HARPOON_COUNT)
       {
-         Debug.LogError("Refined tool count is at minimum!");
+         Debug.LogError("Harpoon count is at maximum!");
          return isSuccess;
       }
       else
          if ((harpoonCount + harpoonAmount) > MAX_HARPOON_COUNT)
          {    
-            Debug.LogError("Refined Tool count is at maximum!");
+            Debug.LogError("Harpoon count is at maximum!");
             return isSuccess;
          } 
          else 
@@ -740,7 +740,7 @@ public class InventoryManager : MonoBehaviour
 
       if (harpoonCount <= MIN_HARPOON_COUNT)
       {
-         Debug.LogError("Harpon count is at minimum!");
+         Debug.LogError("Harpoon count is at minimum!");
          return isSuccess;
       }
       else
@@ -769,13 +769,13 @@ public class InventoryManager : MonoBehaviour
 
       if (divingBellCount >= MAX_DIVING_BELL_COUNT)
       {
-         Debug.LogError("Refined tool count is at minimum!");
+         Debug.LogError("Diving Bell count is at maximum!");
          return isSuccess;
       }
       else
          if ((divingBellCount + divingBellAmount) > MAX_DIVING_BELL_COUNT)
          {    
-            Debug.LogError("Refined Tool count is at maximum!");
+            Debug.LogError("Diving Bell count is at maximum!");
             return isSuccess;
          } 
          else 
@@ -795,20 +795,20 @@ public class InventoryManager : MonoBehaviour
 
       if (divingBellCount <= MIN_DIVING_BELL_COUNT) 
       {
-         Debug.LogError("Crude tool count is at minimum!");
+         Debug.LogError("Diving Bell count is at minimum!");
          return isSuccess;
       } 
       else
          if (divingBellCount < divingBellAmount) 
          {
-            Debug.LogError("Not enough crude tools!");
+            Debug.LogError("Not enough diving bells!");
             return isSuccess;
          } 
-      else
-      {
-         isSuccess       = true;
-         divingBellCount -= divingBellAmount;
-      }
+         else
+         {
+            isSuccess       = true;
+            divingBellCount -= divingBellAmount;
+         }
 
       DivingBellCountText.text = " x" + divingBellCount.ToString();
 
@@ -820,19 +820,19 @@ public class InventoryManager : MonoBehaviour
 
       if (patchKitCount >= MAX_PATCH_KIT_COUNT)
       {
-         Debug.LogError("Refined tool count is at minimum!");
+         Debug.LogError("patch kit count is at maximum!");
          return isSuccess;
       }
       else
          if ((patchKitCount + patchKitAmount) > MAX_PATCH_KIT_COUNT)
          {    
-            Debug.LogError("Refined Tool count is at maximum!");
+            Debug.LogError("Patch Kit count is at maximum!");
             return isSuccess;
          } 
          else 
          {
             isSuccess   = true;
-         patchKitCount += patchKitAmount;
+            patchKitCount += patchKitAmount;
          }
             
       PatchKitCountText.text = " x" + patchKitCount.ToString();
@@ -846,13 +846,13 @@ public class InventoryManager : MonoBehaviour
 
       if (patchKitCount <= MIN_PATCH_KIT_COUNT) 
       {
-         Debug.LogError("Crude tool count is at minimum!");
+         Debug.LogError("Patch Kit count is at minimum!");
          return isSuccess;
       } 
       else
          if (patchKitCount < patchKitAmount) 
          {
-            Debug.LogError("Not enough crude tools!");
+            Debug.LogError("Not enough Patch Kit!");
             return isSuccess;
          } 
       else
@@ -871,13 +871,13 @@ public class InventoryManager : MonoBehaviour
 
       if (precisionLensCount >= MAX_PRECISION_LENS_COUNT)
       {
-         Debug.LogError("Refined tool count is at minimum!");
+         Debug.LogError("Precision Lens count is at minimum!");
          return isSuccess;
       }
       else
          if ((precisionLensCount + precisionLensAmount) > MAX_PRECISION_LENS_COUNT)
          {    
-            Debug.LogError("Refined Tool count is at maximum!");
+            Debug.LogError("Precision Lens count is at maximum!");
             return isSuccess;
          } 
          else 
@@ -897,13 +897,13 @@ public class InventoryManager : MonoBehaviour
 
       if (precisionLensCount <= MIN_PRECISION_LENS_COUNT) 
       {
-         Debug.LogError("Crude tool count is at minimum!");
+         Debug.LogError("Precision Lensl count is at minimum!");
          return isSuccess;
       } 
       else
          if (precisionLensCount < precisionLensAmount) 
          {
-            Debug.LogError("Not enough crude tools!");
+            Debug.LogError("Not enough Precision Lens!");
             return isSuccess;
          } 
       else
@@ -925,13 +925,13 @@ public class InventoryManager : MonoBehaviour
 
       if (pressureValveCount >= MAX_PRESSURE_VALVE_COUNT)
       {
-         Debug.LogError("Refined tool count is at minimum!");
+         Debug.LogError("Pressure valve count is at minimum!");
          return isSuccess;
       }
       else
          if ((pressureValveCount+ pressureValveAmount) > MAX_PRESSURE_VALVE_COUNT)
          {    
-            Debug.LogError("Refined Tool count is at maximum!");
+            Debug.LogError("Pressure valve count is at maximum!");
             return isSuccess;
          } 
          else 

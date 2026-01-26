@@ -11,6 +11,7 @@ public class Item {
    public static int engineSellValue        { get; private set; } = 200;
    
    public static int rareOrePrice                 { get; private set; } = 100;
+   public static int mercenaryEngineerSellValue   { get; private set; } = 100;
    public static int industrialBluePrintSellValue { get; private set; } = 500;
    public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
 
@@ -59,7 +60,8 @@ public class Item {
         PrecisionLens,
         RareOre,
         IndustrialBluePrint,
-        ClockworkBlueprint
+        ClockworkBlueprint,
+        MercenaryEngineer
    }
 
     public static int GetItemValue(ItemType itemType) 
@@ -91,6 +93,8 @@ public class Item {
             return industrialBluePrintSellValue;
          case ItemType.ClockworkBlueprint:
             return clockworkBluePrintSellValue;
+         case ItemType.MercenaryEngineer:
+            return mercenaryEngineerSellValue;
          default:
             Debug.LogError("Unknown Item");
             return 0;
