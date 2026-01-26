@@ -1,10 +1,46 @@
 fileFormatVersion: 2
-guid: e4d1bf6aead7440e5baaca1d34ed9190
+guid: da4d54cd98e06419faf0e6ca3774d3e4
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: -7694624537641252786
     second: blue panel_0
+  - first:
+      213: -4071440072331612842
+    second: blue panel_1
+  - first:
+      213: -2066357929764420762
+    second: blue panel_2
+  - first:
+      213: 1616357499799628960
+    second: blue panel_3
+  - first:
+      213: 3275736062842348307
+    second: blue panel_4
+  - first:
+      213: 1522209147985069292
+    second: blue panel_5
+  - first:
+      213: -8371293861229916153
+    second: blue panel_6
+  - first:
+      213: 5225974070320440640
+    second: blue panel_7
+  - first:
+      213: -2378386302445575231
+    second: blue panel_8
+  - first:
+      213: 4612957629488724111
+    second: blue panel_9
+  - first:
+      213: -3291485525522686390
+    second: blue panel_10
+  - first:
+      213: 7956524667191059636
+    second: blue panel_11
+  - first:
+      213: 2661941138072012911
+    second: blue panel_12
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -142,10 +178,10 @@ TextureImporter:
       name: blue panel_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1
-        width: 986
-        height: 937
+        x: 15
+        y: 0
+        width: 1502
+        height: 1005
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,6 +192,270 @@ TextureImporter:
       bones: []
       spriteID: e4883e930c3373590800000000000000
       internalID: -7694624537641252786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_1
+      rect:
+        serializedVersion: 2
+        x: 1345
+        y: 994
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d226c53d65f77c0800000000000000
+      internalID: -4071440072331612842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_2
+      rect:
+        serializedVersion: 2
+        x: 1347
+        y: 991
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66384913962d253e0800000000000000
+      internalID: -2066357929764420762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_3
+      rect:
+        serializedVersion: 2
+        x: 1361
+        y: 985
+        width: 12
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ac689d05947e6610800000000000000
+      internalID: 1616357499799628960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_4
+      rect:
+        serializedVersion: 2
+        x: 1385
+        y: 993
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 313a7a3f790c57d20800000000000000
+      internalID: 3275736062842348307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_5
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 994
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce40083b729ff1510800000000000000
+      internalID: 1522209147985069292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_6
+      rect:
+        serializedVersion: 2
+        x: 1418
+        y: 993
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7009bf2169033db80800000000000000
+      internalID: -8371293861229916153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_7
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 875
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0452ad28ab3668840800000000000000
+      internalID: 5225974070320440640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_8
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 890
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c3a31852464efed0800000000000000
+      internalID: -2378386302445575231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_9
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 868
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f887a950684840040800000000000000
+      internalID: 4612957629488724111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_10
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 847
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4e51e38a5b4252d0800000000000000
+      internalID: -3291485525522686390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_11
+      rect:
+        serializedVersion: 2
+        x: 1507
+        y: 235
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b46e8287014b6e60800000000000000
+      internalID: 7956524667191059636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blue panel_12
+      rect:
+        serializedVersion: 2
+        x: 1135
+        y: 0
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6808cb8c5d11f420800000000000000
+      internalID: 2661941138072012911
       vertices: []
       indices: 
       edges: []
@@ -175,6 +475,18 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       blue panel_0: -7694624537641252786
+      blue panel_1: -4071440072331612842
+      blue panel_10: -3291485525522686390
+      blue panel_11: 7956524667191059636
+      blue panel_12: 2661941138072012911
+      blue panel_2: -2066357929764420762
+      blue panel_3: 1616357499799628960
+      blue panel_4: 3275736062842348307
+      blue panel_5: 1522209147985069292
+      blue panel_6: -8371293861229916153
+      blue panel_7: 5225974070320440640
+      blue panel_8: -2378386302445575231
+      blue panel_9: 4612957629488724111
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
