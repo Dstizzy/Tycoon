@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: New Event
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: A corroded pipe is leaking infront of you!
   choiceA:
-    buttonText: 
+    buttonText: Weld ore over the leak (-20 ore)
     goldChange: 0
-    oreChange: 0
+    oreChange: -20
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
@@ -32,10 +32,10 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
+    buttonText: Speed through (-15 health)
     goldChange: 0
     oreChange: 0
-    healthChange: 0
+    healthChange: -15
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0

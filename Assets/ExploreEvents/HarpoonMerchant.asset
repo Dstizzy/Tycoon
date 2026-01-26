@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: HarpoonMerchant
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: You've come across a travelling merchant.
   choiceA:
-    buttonText: 
-    goldChange: 0
+    buttonText: Purchase one harpoon for 15 gold.
+    goldChange: -15
     oreChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
-    harpoonChange: 0
+    harpoonChange: 1
     artifactChange: 0
     waitTurn: 0
     minGold: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
+    buttonText: Make no trades.
     goldChange: 0
     oreChange: 0
     healthChange: 0

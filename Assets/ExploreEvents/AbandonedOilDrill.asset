@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: AbandonedOilDrill
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: You have discovered an abandoned oil drilling site.
   choiceA:
-    buttonText: 
+    buttonText: Search for fuel, but risk damage
     goldChange: 0
     oreChange: 0
     healthChange: 0
@@ -27,10 +27,10 @@ MonoBehaviour:
     maxGold: 0
     minOre: 0
     maxOre: 0
-    fuelChance: 0
-    fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    fuelChance: 0.8
+    fuelGain: 1
+    damageChance: 0.4
+    healthDamage: -20
   choiceB:
     buttonText: 
     goldChange: 0

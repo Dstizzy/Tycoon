@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: OreBarrel
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: You have come across an unmarked floating barrel.
   choiceA:
-    buttonText: 
+    buttonText: Open barrel.
     goldChange: 0
-    oreChange: 0
+    oreChange: 15
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0

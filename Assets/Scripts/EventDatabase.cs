@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class EventDatabse : MonoBehaviour
+public class EventDatabase : MonoBehaviour
 {
    [Header("Regions")]
    public List<ExploreEvents> shallowsEvents;

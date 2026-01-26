@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: SeaWeedTangle
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: Your vessel has gotten tangled up in some sea weed.
   choiceA:
-    buttonText: 
+    buttonText: Wait one turn for crew to cut the vessel loose
     goldChange: 0
     oreChange: 0
     healthChange: 0
@@ -22,7 +22,7 @@ MonoBehaviour:
     inventoryChange: 0
     harpoonChange: 0
     artifactChange: 0
-    waitTurn: 0
+    waitTurn: 1
     minGold: 0
     maxGold: 0
     minOre: 0
@@ -32,11 +32,11 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
+    buttonText: Use fuel to burn the sea weed (-1 fuel)
     goldChange: 0
     oreChange: 0
     healthChange: 0
-    fuelChange: 0
+    fuelChange: -1
     inventoryChange: 0
     harpoonChange: 0
     artifactChange: 0

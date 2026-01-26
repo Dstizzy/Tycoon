@@ -14785,15 +14785,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   crudeTool: {fileID: -8254774734701108926, guid: cdb9953a25f627e4ca1a6fe7f1105deb, type: 3}
-  harpoon: {fileID: 4337179028517637788, guid: cbb4033e5fcf6564ca03fc4d791b06c0, type: 3}
-  patchKit: {fileID: -3214554770905276775, guid: 965d4707cd3e6744d9e91435b51785b6, type: 3}
-  pressureValve: {fileID: -8888510947865834279, guid: d7234527c1263ea4e967ff5fe18200c3, type: 3}
-  divingBells: {fileID: 3556195580251485124, guid: 745c2b352cd55604b853b44362284093, type: 3}
-  engine: {fileID: 7258802640479471264, guid: ee6abe2cdc1603d438286ed84611533d, type: 3}
-  precisionLens: {fileID: 2870322122652898633, guid: 4917f840ee489cd40a9516c12789732f, type: 3}
-  rareOre: {fileID: 2391746665116380106, guid: f363c704e4fb0d64a9d6f5d50866e1c1, type: 3}
-  industrialBluePrint: {fileID: -1646138214832153251, guid: 3068f515cedeb5f4fb8a38459fbc6113, type: 3}
-  clockworkBlueprint: {fileID: 7444199029921566949, guid: ab626fe708164d349b14a9bd1b6f57ae, type: 3}
+  harpoon: {fileID: 0}
+  patchKit: {fileID: 0}
+  pressureValve: {fileID: 0}
+  divingBells: {fileID: 0}
+  engine: {fileID: 0}
+  precisionLens: {fileID: 0}
+  rareOre: {fileID: 0}
+  industrialBluePrint: {fileID: 0}
+  clockworkBlueprint: {fileID: 0}
 --- !u!1 &641885165
 GameObject:
   m_ObjectHideFlags: 0
@@ -18795,6 +18795,13 @@ MonoBehaviour:
   craftPanel: {fileID: 1911261354}
   infoPanel: {fileID: 392331395}
   upgradePanel: {fileID: 68508588}
+  tier1Panel: {fileID: 0}
+  tier2Panel: {fileID: 0}
+  tier3Panel: {fileID: 0}
+  tier1Container: {fileID: 0}
+  tier2Container: {fileID: 0}
+  tier3Container: {fileID: 0}
+  craftWindowTemplate: {fileID: 0}
   forgeLevelText: {fileID: 1370257073}
 --- !u!1 &794681280
 GameObject:
@@ -32416,7 +32423,7 @@ MonoBehaviour:
   - {fileID: 1808862285}
   InventoryButton: {fileID: 1785740535}
   pearCountText: {fileID: 1212134053}
-  oreCountText: {fileID: 1861217835}
+  oreCountText: {fileID: 0}
 --- !u!1 &1438102152
 GameObject:
   m_ObjectHideFlags: 0
@@ -44651,7 +44658,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   Pearl: {fileID: 8686295293490032475, guid: b0f977259d7670d4188c7db0fd7772f8, type: 3}
   Crystal: {fileID: -2857888365972879962, guid: 4b9a14b1b1beeda42ba8913d4627e20a, type: 3}
-  Ore: {fileID: -3215638422625849363, guid: 6e08e0ee8f105d94f9fba630398baa74, type: 3}
+  Ore: {fileID: 0}
 --- !u!1 &2063496627
 GameObject:
   m_ObjectHideFlags: 0
