@@ -8,8 +8,8 @@ public class CraftItemSprites : MonoBehaviour
 
    [Header("Item Sprites")]
    public Sprite crudeTool;
-   public Sprite refinedTool;
-   public Sprite artifact;
+   public Sprite pressureValve;
+   public Sprite clockworkBlueprint;
 
    private void Awake()
    {
@@ -29,10 +29,10 @@ public class CraftItemSprites : MonoBehaviour
       {
          case ItemType.CrudeTool:
             return crudeTool;
-         case ItemType.RefinedTool:
-            return refinedTool;
-         case ItemType.Artifact:
-            return artifact;
+         case ItemType.PressureValve:
+            return pressureValve;
+         case ItemType.ClockworkBlueprint:
+            return clockworkBlueprint;
          default:
             return null;
       }
