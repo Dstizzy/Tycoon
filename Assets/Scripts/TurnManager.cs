@@ -18,6 +18,8 @@ public class TurnManager : MonoBehaviour
    /* when the EndTurn() function is called. */
    public static event Action OnTurnEnded;
 
+   public TradeHutManager tradeHutManager;
+
    // Enforces the Singleton pattern to ensure only one 
    // instance of TurnManager exists. 
    void Awake()
@@ -39,6 +41,7 @@ public class TurnManager : MonoBehaviour
    public int currentTurn = 1;      // The current turn number, starting from 1.
    public int maxTurns    = 20;     // The maximum number of turns before the game ends.
    public TextMeshProUGUI turnText; // The UI text element to display the current turn.
+   public int eventCountdown = 1;   // Turn countdown until next world event
 
    [Header("UI/Game Status")]
    public Button endTurnButton;       // The button to disable when the game ends.
@@ -50,6 +53,7 @@ public class TurnManager : MonoBehaviour
    /*************************************************/
    void Start()
    {
+      tradeHutManager = TradeHutManager.Instance;
       UpdateTurnUI();
    }
 
@@ -66,6 +70,22 @@ public class TurnManager : MonoBehaviour
       if (!_isGameActive) return;
 
       currentTurn++;
+      if ((eventCountdown % 5) == 0) 
+      {
+         tradeHutManager.WorldEventNewsTickerText();
+         tradeHutManager.WorldEvent();
+         tradeHutManager.WorldEventChance();
+
+         eventCountdown = 0;
+      }
+      else 
+      {
+         if(eventCountdown >= 3)
+            tradeHutManager.WorldEventNewsTickerText();
+
+         eventCountdown++;
+      }
+
 
       // Check if the game should end
       if (currentTurn > maxTurns)
@@ -75,11 +95,12 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
+
          if(currentTurn == 2)
-            TradeHutManager.Instance.CraftValueFluctuation();
+            TradeHutManager.Instance.CraftMarketForesight();
 
          TradeHutManager.Instance.MarketFluctuate();
-         TradeHutManager.Instance.CraftValueFluctuation();
+         TradeHutManager.Instance.CraftMarketForesight();
          Debug.Log("Turn" + currentTurn + "Start");
 
          randomNumber = random.Next(1,100);
