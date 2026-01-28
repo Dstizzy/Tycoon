@@ -156,7 +156,7 @@ public class InventoryManager : MonoBehaviour
    }
    
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
-   private void Start() 
+   private void Start()
    {
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
