@@ -1,6 +1,7 @@
 /* Libraries and references                                                                      */
 using UnityEngine;
 using UnityEngine.UI;
+using static InventoryManager;
 
 public class CraftingController : MonoBehaviour
 {
