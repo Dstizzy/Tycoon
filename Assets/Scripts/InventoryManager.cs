@@ -1028,8 +1028,8 @@ public class InventoryManager : MonoBehaviour
          }
 
 
-      engineValue = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      engineValue.text = engineCount.ToString();
+      engineValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      engineValue.text     = engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;

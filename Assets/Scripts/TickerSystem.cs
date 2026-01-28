@@ -8,7 +8,7 @@ public class TickerSystem : MonoBehaviour {
    [SerializeField] private CanvasGroup     canvasGroup;
 
    [Header("Settings")]
-   [SerializeField] private float timeVisible = 3.0f;
+   [SerializeField] private float timeVisible  = 5.0f;
    [SerializeField] private float fadeDuration = .5f; // Used for both Fade In and Fade Out
 
    private Coroutine activeRoutine;
