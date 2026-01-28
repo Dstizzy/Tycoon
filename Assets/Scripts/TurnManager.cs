@@ -5,10 +5,13 @@ using System;
 
 public class TurnManager : MonoBehaviour
 {
-   // A public static instance of this class, following the 
-   // Singleton pattern. This allows other scripts to access
-   // it easily via 'TurnManager.Instance'.
-   public static TurnManager Instance { get; private set; }
+
+   public static System.Random random = new System.Random();
+   public static int randomNumber;
+    // A public static instance of this class, following the 
+    // Singleton pattern. This allows other scripts to access
+    // it easily via 'TurnManager.Instance'.
+    public static TurnManager Instance { get; private set; }
 
    // --- ADDED: Event System ---
    /* This event is broadcast to all other scripts */
@@ -64,7 +67,7 @@ public class TurnManager : MonoBehaviour
 
       currentTurn++;
 
-      // Check if the game should end                 */
+      // Check if the game should end
       if (currentTurn > maxTurns)
       {
          EndGame();
@@ -78,6 +81,13 @@ public class TurnManager : MonoBehaviour
          TradeHutManager.Instance.MarketFluctuate();
          TradeHutManager.Instance.CraftValueFluctuation();
          Debug.Log("Turn" + currentTurn + "Start");
+
+         randomNumber = random.Next(1,100);
+         if(randomNumber < OreRefinery_Manager.Instance.JammingPercentage)
+         {
+            OreRefinery_Manager.Instance.IsBlocked = true;
+            OreRefinery_Manager.Instance.ActivateJamSymbol();
+         }
 
          // Add logic for the next turn here (e.g., start
          // enemy turn, reset unit actions, etc.)
