@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: New Event
+  m_Name: CorrodedPipe
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: A corroded pipe is leaking infront of you!
   choiceA:
