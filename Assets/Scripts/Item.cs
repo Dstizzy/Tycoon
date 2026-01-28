@@ -10,21 +10,21 @@ public class Item {
    public static int pressureValveSellValue { get; private set; } = 60;
    public static int engineSellValue        { get; private set; } = 150;
    
-   public static int rawOrePrice                 { get; private set; } = 1;
+   public static int rawOrePrice                 { get; private set; }  = 1;
    public static int mercenaryEngineerSellValue   { get; private set; } = 100;
    public static int industrialBluePrintSellValue { get; private set; } = 500;
    public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-    public const int MIN_CRUDE_TOOL_VALUE     = 5;
-    public const int MAX_CRUDE_TOOL_VALUE     = 25;
-    public const int MIN_HARPOON_VALUE        = 12;
-    public const int MAX_HARPOON_VALUE        = 40;
-    public const int MIN_PRESSURE_VALVE_VALUE = 35;
-    public const int MAX_PRESSURE_VALVE_VALUE = 100;
-    public const int MIN_ENGINE_VALUE         = 80;
-    public const int MAX_ENGINE_VALUE         = 450;
+    public const int MIN_CRUDE_TOOL_VALUE     = 0;
+    public const int MAX_CRUDE_TOOL_VALUE     = 40;
+    public const int MIN_HARPOON_VALUE        = 0;
+    public const int MAX_HARPOON_VALUE        = 50;
+    public const int MIN_PRESSURE_VALVE_VALUE = 0;
+    public const int MAX_PRESSURE_VALVE_VALUE = 130;
+    public const int MIN_ENGINE_VALUE         = 0;
+    public const int MAX_ENGINE_VALUE         = 310;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -76,7 +76,6 @@ public class Item {
               return pressureValveSellValue;
            case ItemType.Engine:
                return engineSellValue;
-           
            default:
                Debug.LogError("Unkown Item");
                return 0;
@@ -96,7 +95,7 @@ public class Item {
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerSellValue;
          default:
-            Debug.LogError("Unknown Item");
+            Debug.LogError($"Unknown Item: `{itemType}`");
             return 0;
       }
    }
