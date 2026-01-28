@@ -12,7 +12,7 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
-   const int ENDING_LEVEL = 5;
+   const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
 
@@ -254,15 +254,15 @@ public class ForgeManager : MonoBehaviour
 
          // Tier 2 items
          case Item.ItemType.PressureValve:
-            InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
+            InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount);
             break;
          case Item.ItemType.DivingBell:
             InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount);
             break;
 
          // Tier 3 items
-         case Item.ItemType.ClockworkBlueprint:
-            InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
+         case Item.ItemType.Engine:
+            InventoryManager.Instance.TryAddEngine(selectedCraftAmount);
             break;
          case Item.ItemType.PrecisionLens:
             InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount);
@@ -336,7 +336,7 @@ public class ForgeManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
+            upgradePanel.transform.Find("YesButton").   GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
             break;
          default:
@@ -347,13 +347,48 @@ public class ForgeManager : MonoBehaviour
 
    public void UpgradeForge()
    {
-      // Check if the forge can be upgraded
-      if (forgeLevel < ENDING_LEVEL)
-         forgeLevel += 1;
+      int upgradeCost = 0;
 
-      forgeLevelText.text = "Level " + forgeLevel.ToString();
-      CloseUpgradePanel();
-      PopUpManager.Instance.EnablePlayerInput();
+      // Determine the cost needed for current level be upgraded
+      if (forgeLevel == 1)
+      {
+         upgradeCost = 500;
+      }
+      else if (forgeLevel == 2)
+      {
+         upgradeCost = 800;
+      }
+
+      // Check if there is sufficient pearls to upgrade
+      if (InventoryManager.Instance.pearlCount >= upgradeCost)
+      {
+         // Enough pearls, deduct the required amount
+         InventoryManager.Instance.TrySpendPearl(upgradeCost);
+
+         // Perform the upgrade
+         if (forgeLevel < ENDING_LEVEL)
+         {
+            forgeLevel += 1;
+         }
+         forgeLevelText.text = "Level " + forgeLevel.ToString();
+         CloseUpgradePanel();
+         PopUpManager.Instance.EnablePlayerInput();
+      }
+      else
+      {
+         TextMeshProUGUI upgradeText = upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
+
+         if (upgradeText != null)
+         {
+            // Display the fail message
+            upgradeText.text = $"Not enough pearls to upgrade!\nYou need {upgradeCost} pearls.";
+            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
+         }
+         Debug.Log("Not enough pearls to upgrade!");
+
+         
+      }
+
    }
 
    public void CloseForgePanel(int buttonID)
@@ -412,7 +447,33 @@ public class ForgeManager : MonoBehaviour
    }
    private void ShowUpgradePanel()
    {
+      int upgradeCost = 0,
+          nextLevel = forgeLevel + 1;
+
       upgradePanel.gameObject.SetActive(true);
+      TextMeshProUGUI upgradeText = upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
+
+      if (upgradeText != null)
+      {
+         if (forgeLevel == 1)
+         {
+            upgradeCost = 500;
+         }
+         else if (forgeLevel == 2)
+         {
+            upgradeCost = 800;
+         }
+
+         if (forgeLevel < ENDING_LEVEL)
+         {
+            upgradeText.text = $"Would you like to upgrade\nto next level for {upgradeCost}\npearls?";
+         }
+         else
+         {
+            upgradeText.text = "Max Level Reached!";
+            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
+         }
+      }
    }
    private void CloseCraftPanel()
    {
