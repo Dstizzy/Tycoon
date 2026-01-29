@@ -20,7 +20,6 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform InfoPanel;                   
    [SerializeField] private Transform UpgradePanel;           
    [SerializeField] private Transform MysteryBoxPanel;
-   [SerializeField] private Transform NewsPanel;
    
    public List<Transform> Items { get; private set; }
 
@@ -153,15 +152,10 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Mystery Box Panel is not assigned in the Inspector!");
       else
          MysteryBoxPanel.gameObject.SetActive(false);
-
-      if(NewsPanel == null)
-         Debug.LogError("News Panel is not assigned in the Inspector!");
-      else
-         NewsPanel.gameObject.SetActive(false);
    }
 
    private void Start()
-   {/*
+   {
       inv = InventoryManager.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
@@ -172,7 +166,7 @@ public class TradeHutManager : MonoBehaviour
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 2.0f, CLOCKWORK_BLUEPRINT_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 0.0f, MERCENARY_ENGINEER_TAG, -35);*/
+      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 0.0f, MERCENARY_ENGINEER_TAG, -35);
    }
 
    public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
@@ -255,6 +249,7 @@ public class TradeHutManager : MonoBehaviour
                     tradeItemTransform;
       
       RectTransform tradeItemRectTransform;
+      Button        itemButton;
 
       /* Instantiate the template and set its position in the container                               */
       tradeItemTransform     = Instantiate(buyItemTemplate, buyItemContainer);
@@ -266,7 +261,7 @@ public class TradeHutManager : MonoBehaviour
       tradeItemTransform.tag = itemTag;
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.ToString();
       tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
-      Button itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
+      itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
 
       itemButton.image.sprite = itemSprite;
 
@@ -474,7 +469,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount < MAX_SELL_ITEM_COUNT) 
             {
                pressureValveCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + pressureValveCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
             }
             break;
@@ -482,7 +477,7 @@ public class TradeHutManager : MonoBehaviour
             if (engineSellCount < MAX_SELL_ITEM_COUNT) 
             {
                engineSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + engineSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
             }
             break;
@@ -501,7 +496,7 @@ public class TradeHutManager : MonoBehaviour
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
             {
                crudeToolSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + crudeToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
             }
             break;
@@ -509,7 +504,7 @@ public class TradeHutManager : MonoBehaviour
             if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
             {
                harpoonSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + harpoonSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.Harpoon)).ToString();
             }
             break;
@@ -517,7 +512,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
                pressureValveCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + pressureValveCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
             }
             break;
