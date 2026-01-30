@@ -17,6 +17,8 @@ public class ExplorationUnitManager : MonoBehaviour
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
 
+   public bool isExploring = false;
+
    //
    private void Awake()
    {
@@ -55,7 +57,9 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               exploreButton.onClick.AddListener(() => StartExploration());
+               exploreButton.interactable = !isExploring;
+               if (!isExploring)
+                  exploreButton.onClick.AddListener(() => StartExploration());
             }
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
             break;
@@ -81,8 +85,9 @@ public class ExplorationUnitManager : MonoBehaviour
 
    public void StartExploration()
    {
-      // set isExploring boolean to true
-      // activate ship icon???
+      isExploring = true;
+      vesselIcon.gameObject.SetActive(true);
+      CloseExplorationPanel();
    }
 
    public void ConfirmUpgrade()
@@ -98,7 +103,42 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    public void HandleNewTurn()
    {
-      decisionPanel.GameObject().SetActive(true);
+      if (isExploring)
+      {
+         int currentZone = shipManager.GetDepth();
+
+         ExploreEvents randomEvent = eventDatabase.GetRandomEvent(currentZone);
+
+         if (randomEvent != null)
+         {
+            decisionPanel.gameObject.SetActive(true);
+
+            eventController.SetEventPanel(randomEvent);
+
+            Button choice1 = decisionPanel.Find("Choice1").GetComponent<Button>();
+            Button choice2 = decisionPanel.Find("Choice2").GetComponent<Button>();
+
+            if (choice1 != null)
+            {
+               choice1.onClick.RemoveAllListeners();
+               choice1.onClick.AddListener(() =>
+               {
+                  shipManager.ApplyEventResult(randomEvent.choiceA);
+                  CloseDecisionPanel();
+               });
+            }
+
+            if (choice2 != null)
+            {
+               choice2.onClick.RemoveAllListeners();
+               choice2.onClick.AddListener(() =>
+               {
+                  shipManager.ApplyEventResult(randomEvent.choiceB);
+                  CloseDecisionPanel();
+               });
+            }
+         }
+      }
    }
 
    //
@@ -135,5 +175,11 @@ public class ExplorationUnitManager : MonoBehaviour
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+   }
+
+   //
+   private void CloseDecisionPanel()
+   {
+      decisionPanel.gameObject.SetActive(false);
    }
 }

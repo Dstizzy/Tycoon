@@ -26221,7 +26221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1245422807
 RectTransform:
   m_ObjectHideFlags: 0
@@ -39666,6 +39666,7 @@ GameObject:
   - component: {fileID: 1841321752}
   - component: {fileID: 1841321751}
   - component: {fileID: 1841321750}
+  - component: {fileID: 1841321753}
   m_Layer: 5
   m_Name: UI_ExplorationUnit
   m_TagString: Untagged
@@ -39724,7 +39725,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventDatabase
   shallowsEvents:
-  - {fileID: 0}
   - {fileID: 11400000, guid: 2fcd690ae7e603c409331d0e9155c641, type: 2}
   - {fileID: 11400000, guid: 6fbec615a70b2864e80e237cd2834e23, type: 2}
   - {fileID: 11400000, guid: 9f171c6117742eb4f816084aa4ef1764, type: 2}
@@ -39747,14 +39747,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationUnitManager
-  eventDatabase: {fileID: 0}
-  eventController: {fileID: 0}
+  eventDatabase: {fileID: 1841321751}
+  eventController: {fileID: 1841321753}
   shipManager: {fileID: 1841321750}
   explorePanel: {fileID: 974792980}
   upgradePanel: {fileID: 536215631}
   infoPanel: {fileID: 227574172}
   decisionPanel: {fileID: 1358883668}
   vesselIcon: {fileID: 1245422806}
+  isExploring: 0
+--- !u!114 &1841321753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841321747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92c8efbc96f6b60498a36ca61cf78a84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventUIController
+  scenarioText: {fileID: 1586411135}
+  choiceAText: {fileID: 438758002}
+  choiceBText: {fileID: 1255980102}
+  buttonA: {fileID: 1906248344}
+  buttonB: {fileID: 1316487369}
 --- !u!1 &1845484426
 GameObject:
   m_ObjectHideFlags: 0
