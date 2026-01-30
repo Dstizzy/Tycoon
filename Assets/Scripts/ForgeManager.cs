@@ -5,10 +5,17 @@ using UnityEngine.UI;
 public class ForgeManager : MonoBehaviour
 {
    /* Constants */
-   const int CRAFT_BUTTON = 1;
-   const int INFO_BUTTON = 2;
-   const int UPGRADE_BUTTON = 3;
-   const int STARTING_LEVEL = 1;
+   const int CRAFT_BUTTON         = 1;
+   const int INFO_BUTTON          = 2;
+   const int UPGRADE_BUTTON       = 3;
+   const int STARTING_LEVEL       = 1;
+   const int CRUDE_TOOL_COST      = 10;
+   const int HARPOON_COST         = 25;
+   const int PATCH_KIT_COST       = 15;
+   const int PRESSUREV_VALVE_COST = 50;
+   const int DIVING_BELL_COST     = 75;
+   const int ENGINE_COST          = 150;
+   const int PRECISION_LENS_COST  = 200;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
@@ -207,29 +214,29 @@ public class ForgeManager : MonoBehaviour
          {
             /* Tier 1 items */
             case Item.ItemType.CrudeTool:
-               costPerItem = 10;
+               costPerItem = CRUDE_TOOL_COST;
                break;
             case Item.ItemType.Harpoon:
-               costPerItem = 25;
+               costPerItem = HARPOON_COST;
                break;
             case Item.ItemType.PatchKit:
-               costPerItem = 15;
+               costPerItem = PATCH_KIT_COST;
                break;
 
             /* Tier 2 items */
             case Item.ItemType.PressureValve:
-               costPerItem = 50;
+               costPerItem = PRESSUREV_VALVE_COST;
                break;
             case Item.ItemType.DivingBell:
-               costPerItem = 75;
+               costPerItem = DIVING_BELL_COST;
                break;
 
             /* Tier 3 items */
             case Item.ItemType.Engine:
-               costPerItem = 150;
+               costPerItem = ENGINE_COST;
                break;
             case Item.ItemType.PrecisionLens:
-               costPerItem = 200;
+               costPerItem = PRECISION_LENS_COST;
                break;
          }
 
@@ -241,32 +248,40 @@ public class ForgeManager : MonoBehaviour
 
    public void CraftSelectedItem()
    {
+      Debug.Log("Craft");
       switch (selectedItemType)
       {
          /* Tier 1 items */
          case Item.ItemType.CrudeTool:
+            InventoryManager.Instance.TrySpendOre(CRUDE_TOOL_COST);
             InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
             break;
          case Item.ItemType.Harpoon:
+            InventoryManager.Instance.TrySpendOre(HARPOON_COST);
             InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount);
             break;
          case Item.ItemType.PatchKit:
+            InventoryManager.Instance.TrySpendOre(PATCH_KIT_COST);
             InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount);
             break;
 
          // Tier 2 items
          case Item.ItemType.PressureValve:
+            InventoryManager.Instance.TrySpendOre(PRESSUREV_VALVE_COST);
             InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount);
             break;
          case Item.ItemType.DivingBell:
+            InventoryManager.Instance.TrySpendOre(DIVING_BELL_COST);
             InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount);
             break;
 
          // Tier 3 items
          case Item.ItemType.Engine:
+            InventoryManager.Instance.TrySpendOre(ENGINE_COST);
             InventoryManager.Instance.TryAddEngine(selectedCraftAmount);
             break;
          case Item.ItemType.PrecisionLens:
+            InventoryManager.Instance.TrySpendOre(PRECISION_LENS_COST);
             InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount);
             break;
       }
