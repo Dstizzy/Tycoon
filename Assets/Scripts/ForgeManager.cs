@@ -22,6 +22,8 @@ public class ForgeManager : MonoBehaviour
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
+   public bool hasClockworkBlueprint = false;
+   public bool hasIndustrialBlueprint = false;
 
 
    /* Inspector Variables */
@@ -434,6 +436,10 @@ public class ForgeManager : MonoBehaviour
       Transform t2 = craftPanel.transform.Find("TierButtons/Tier2");
       Transform t3 = craftPanel.transform.Find("TierButtons/Tier3");
 
+      UpdateTierButtonState(t1, TIER_1, true);
+      UpdateTierButtonState(t2, TIER_2, hasClockworkBlueprint);
+      UpdateTierButtonState(t3, TIER_3, hasIndustrialBlueprint);
+
       if (t1 != null)
       {
          t1.GetComponent<Button>().onClick.RemoveAllListeners(); // Clean up old clicks
@@ -454,6 +460,27 @@ public class ForgeManager : MonoBehaviour
          t3.GetComponent<Button>().onClick.AddListener(() => OpenTierPanel(3));
       }
       else Debug.LogError("Could not find button 'Tier3' inside TierButtons!");
+   }
+
+   private void UpdateTierButtonState(Transform btnTransform, int requiredLevel, bool isUnlocked)
+   {
+      Button btn = btnTransform.GetComponent<Button>();
+      Transform overlay = btnTransform.Find("Overlay");
+
+      btn.interactable = isUnlocked;
+
+
+      if (overlay != null)
+      {
+         overlay.gameObject.SetActive(!isUnlocked);
+      }
+
+      btn.onClick.RemoveAllListeners();
+      if (isUnlocked)
+      {
+         btn.onClick.AddListener(() => OpenTierPanel(requiredLevel));
+      }
+
    }
 
    private void ShowInfoPanel()
@@ -537,5 +564,7 @@ public class ForgeManager : MonoBehaviour
             break;
       }
    }
+
+   
 }
    
