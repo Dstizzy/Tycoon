@@ -5626,6 +5626,7 @@ MonoBehaviour:
   UpgradePanel: {fileID: 470639710}
   MysteryBoxPanel: {fileID: 1903676444}
   tradeHutLevelText: {fileID: 1104922258}
+  currrentNewsTickerMessage: 
   marketShiftMax: 2
   marketShiftMin: 1
 --- !u!1 &178665758
@@ -44437,11 +44438,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccbabee0dc87d348aa98bb7d43b8980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
-  tradeHutManager: {fileID: 0}
+  newsTicker: {fileID: 1582231918}
   currentTurn: 1
   maxTurns: 50
-  turnText: {fileID: 921050911}
   eventCountdown: 1
+  turnText: {fileID: 921050911}
   endTurnButton: {fileID: 1400022290}
 --- !u!224 &1876231671
 RectTransform:
