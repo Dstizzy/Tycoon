@@ -285,6 +285,8 @@ public class InventoryManager : MonoBehaviour
       /* Instantiate the craft template and set its position in the container.     */
       /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
       Transform craftTransform = Instantiate(craftTemplate, craftsContainer);
+
+      craftTemplate.gameObject.SetActive(false);
       
       /* RectTransform for positioning the new resource UI element.                */
        RectTransform craftRectTransform = craftTransform.GetComponent<RectTransform>();
@@ -590,8 +592,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUseRawOreChunk(int rareOreAmount) 
    {
-      TextMeshProUGUI rareOreValue = new();
-      bool isSuccess               = false;
+      bool isSuccess = false;
 
       if (rawOreChunkCount <= MIN_CRUDE_TOOL_COUNT) 
       {
@@ -610,8 +611,6 @@ public class InventoryManager : MonoBehaviour
             crudeToolCount -= rareOreAmount;
          }
 
-      rareOreValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      rareOreValue.text     = rawOreChunkCount.ToString();
       RaWOreChunkCountText.text = " x" + rawOreChunkCount.ToString();
 
       return isSuccess;
@@ -619,8 +618,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddRawOreChunk(int rareOreAmount) 
    {
-      TextMeshProUGUI rareOreValue = new();
-      bool isSuccess              = false;
+      bool isSuccess = false;
 
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
       {
@@ -639,8 +637,6 @@ public class InventoryManager : MonoBehaviour
             rawOreChunkCount += rareOreAmount;
          }
 
-      rareOreValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      rareOreValue.text     = rawOreChunkCount.ToString();
       RaWOreChunkCountText.text = " x" + rawOreChunkCount.ToString();
 
       return isSuccess;
@@ -648,8 +644,8 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddCrudeTool(int crudeToolAmount) 
    {
-      TextMeshProUGUI crudeToolValue = new();
-      bool isSuccess                 = false;
+      TextMeshProUGUI newCrudeToolCount = new();
+      bool            isSuccess         = false;
 
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
       {
@@ -667,8 +663,8 @@ public class InventoryManager : MonoBehaviour
               crudeToolCount += crudeToolAmount;
            }
 
-      crudeToolValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      crudeToolValue.text     = crudeToolCount.ToString();
+      newCrudeToolCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newCrudeToolCount.text  = " x" + crudeToolCount.ToString();
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
       return isSuccess;
@@ -676,8 +672,8 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUseCrudeTool(int crudeToolAmount)
    {
-      TextMeshProUGUI crudeToolValue = new();
-      bool            isSuccess      = false;
+      TextMeshProUGUI newCrudeToolCount = new();
+      bool            isSuccess         = false;
 
       if (crudeToolCount <= MIN_CRUDE_TOOL_COUNT)
       {
@@ -697,8 +693,8 @@ public class InventoryManager : MonoBehaviour
 
          }
 
-      crudeToolValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      crudeToolValue.text     = crudeToolCount.ToString();
+      newCrudeToolCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newCrudeToolCount.text  = " x" + crudeToolCount.ToString();
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
       return isSuccess;
@@ -706,8 +702,8 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddHarpoon(int harpoonAmount)
    {
-      TextMeshProUGUI harpoonValue = new();
-      bool            isSuccess    = false;
+      TextMeshProUGUI newHarpoonCount = new();
+      bool            isSuccess       = false;
 
 
       if (harpoonCount >= MAX_HARPOON_COUNT)
@@ -727,15 +723,15 @@ public class InventoryManager : MonoBehaviour
             harpoonCount += harpoonAmount;
          }
             
-      harpoonValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      harpoonValue.text     = harpoonCount.ToString();
+      newHarpoonCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
    }
    public bool TryUseHarpoon(int harpoonAmount)
    {
-      TextMeshProUGUI harpoonValue = new();
+      TextMeshProUGUI newHarpoonCount = new();
       bool            isSuccess    = false;
 
       if (harpoonCount <= MIN_HARPOON_COUNT)
@@ -755,8 +751,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-      harpoonValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      harpoonValue.text     = harpoonCount.ToString();
+      newHarpoonCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newHarpoonCount.text  = harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
@@ -764,7 +760,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddDivingBell(int divingBellAmount)
    {
-      bool isSuccess    = false;
+      bool isSuccess = false;
 
 
       if (divingBellCount >= MAX_DIVING_BELL_COUNT)
@@ -1028,8 +1024,8 @@ public class InventoryManager : MonoBehaviour
          }
 
 
-      engineValue = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      engineValue.text = engineCount.ToString();
+      engineValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      engineValue.text     = engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;
