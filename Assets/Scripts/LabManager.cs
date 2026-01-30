@@ -34,7 +34,7 @@ public class LabManager : MonoBehaviour
  
 
    /* Public variables                                                                          */
-   public static int currentCommerceTier { get; private set; }
+   public static int currentCommerceTier { get; private set; } = 0;
 
 
     TradeHutManager tradeHutManager;
