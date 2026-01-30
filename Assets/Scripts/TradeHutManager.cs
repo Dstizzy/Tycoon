@@ -426,8 +426,11 @@ public class TradeHutManager : MonoBehaviour
       if(clockworkBluePrintCount > MIN_BUY_ITEM_COUNT)
          inv.TrySpendPearl(clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint));
 
-      if(mercenaryEngineerCount > MIN_BUY_ITEM_COUNT)
+      if(mercenaryEngineerCount > MIN_BUY_ITEM_COUNT) 
+      {
          inv.TrySpendPearl(mercenaryEngineerCount * GetItemPrice(ItemType.MercenaryEngineer));
+         ForgeManager.Instance.isMercenaryEngineerActive = true;
+      }
 
       rawOreExchange           = MIN_BUY_ITEM_COUNT;
       industrialBluePrintCount = MIN_BUY_ITEM_COUNT;

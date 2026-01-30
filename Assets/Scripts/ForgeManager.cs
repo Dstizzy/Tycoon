@@ -45,12 +45,15 @@ public class ForgeManager : MonoBehaviour
 
 
    public TextMeshProUGUI forgeLevelText;
+   public bool isMercenaryEngineerActive;
 
    /* Private state variables */
    private Transform currentCraftWindow;
    private int selectedCraftAmount = 0;
    private Item.ItemType selectedItemType;
    private static int forgeLevel = STARTING_LEVEL;
+
+   public static ForgeManager Instance { get; private set; }
 
    private void Start()
    {
@@ -62,6 +65,14 @@ public class ForgeManager : MonoBehaviour
 
    private void Awake()
    {
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
       upgradePanel.gameObject.SetActive(false);
