@@ -654,6 +654,7 @@ public class TradeHutManager : MonoBehaviour
    /* Shows market shifts for next turn */
    public void CraftMarketForesight() 
    {
+  
       crudeToolChance     = Rng.Next(1, 101);
       harpoonChance       = Rng.Next(1, 101);
       pressureValveChance = Rng.Next(1, 101);
