@@ -59,8 +59,8 @@ public class Item {
         Engine,
         PrecisionLens,
         RawOreChunk,
-        IndustrialBluePrint,
-        ClockworkBlueprint,
+        Tier2BluePrint,
+        Tier3BluePrint,
         MercenaryEngineer
    }
 
@@ -88,9 +88,9 @@ public class Item {
       {
          case ItemType.RawOreChunk:
             return rawOrePrice;
-         case ItemType.IndustrialBluePrint:
+         case ItemType.Tier2BluePrint:
             return industrialBluePrintSellValue;
-         case ItemType.ClockworkBlueprint:
+         case ItemType.Tier3BluePrint:
             return clockworkBluePrintSellValue;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerSellValue;
@@ -114,9 +114,9 @@ public class Item {
             return ENGINE_DESCRIPTION;
          case ItemType.RawOreChunk:
             return RAW_ORE_CHUNK_DESCRIPTION;
-         case ItemType.IndustrialBluePrint:
+         case ItemType.Tier2BluePrint:
             return INDUSTRIAL_BLUEPRINT_DESCRIPTION;
-         case ItemType.ClockworkBlueprint:
+         case ItemType.Tier3BluePrint:
             return CLOCKWORK_BLUEPRINT_DESCRIPTION;
          default:
             return "No description available.";

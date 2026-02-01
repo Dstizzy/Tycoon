@@ -147,9 +147,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 500;
+      pearlCount     = 3000;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = MIN_ORE_COUNT;
+      oreCount       = 1000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -752,7 +752,7 @@ public class InventoryManager : MonoBehaviour
          }
 
       newHarpoonCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newHarpoonCount.text  = harpoonCount.ToString();
+      newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
@@ -937,7 +937,7 @@ public class InventoryManager : MonoBehaviour
          }
             
       pressureValveValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      pressureValveValue.text     = pressureValveCount.ToString();
+      pressureValveValue.text     = " x" + pressureValveCount.ToString();
       PressureValveCountText.text = " x" + pressureValveCount.ToString();
 
       return isSuccess;
@@ -966,7 +966,7 @@ public class InventoryManager : MonoBehaviour
          }
 
       pressureValveValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      pressureValveValue.text     = pressureValveCount.ToString();
+      pressureValveValue.text     = " x" + pressureValveCount.ToString();
       PressureValveCountText.text = " x" + pressureValveCount.ToString();
 
       return isSuccess;
@@ -996,7 +996,7 @@ public class InventoryManager : MonoBehaviour
 
 
       engineValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      engineValue.text     = engineCount.ToString();
+      engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;
@@ -1025,7 +1025,7 @@ public class InventoryManager : MonoBehaviour
 
 
       engineValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      engineValue.text     = engineCount.ToString();
+      engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;
