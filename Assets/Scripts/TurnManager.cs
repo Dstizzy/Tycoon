@@ -17,7 +17,7 @@ public class TurnManager : MonoBehaviour
    public static event Action OnTurnEnded;
 
    private TradeHutManager tradeHutManager; // Trade hut manager instance 
-   public TickerSystem     newsTicker;      // The wolrd event news ticker panel
+   public  TickerSystem    newsTicker;      // The wolrd event news ticker panel
 
    // Enforces the Singleton pattern to ensure only one 
    // instance of TurnManager exists. 
@@ -34,6 +34,9 @@ public class TurnManager : MonoBehaviour
          // (Optional) Uncomment this to make the manager persist across scenes
          // DontDestroyOnLoad(gameObject); 
       }
+
+      if(newsTicker == null)
+         Debug.Log("Ticker is not assigned in the Inspector");
    }
 
    [Header("Turn Setting")]

@@ -124,7 +124,7 @@ public class InventoryManager : MonoBehaviour
           Instance = this;
           DontDestroyOnLoad(this.gameObject);
       }
-      
+
       if (InventoryPanel == null) 
           Debug.LogError("Inventory Panel is not assigned in the Inspector!");
       else 
@@ -150,7 +150,7 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 3000;
+      pearlCount     = 0;
       crystalCount   = MIN_CRYSTAL_COUNT;
       oreCount       = 1000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
@@ -161,8 +161,6 @@ public class InventoryManager : MonoBehaviour
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
    private void Start()
    {
-      ticker = TickerSystem.Instance;
-
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
@@ -170,14 +168,21 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      //CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+      //CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+
+      if (TickerSystem.Instance) {
+         Debug.Log("Instance is set");
+         ticker = TickerSystem.Instance;
+      }
+      else 
+         Debug.LogError("No ticker");
    }
 
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
