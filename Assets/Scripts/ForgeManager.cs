@@ -5,16 +5,25 @@ using UnityEngine.UI;
 public class ForgeManager : MonoBehaviour
 {
    /* Constants */
-   const int CRAFT_BUTTON = 1;
-   const int INFO_BUTTON = 2;
-   const int UPGRADE_BUTTON = 3;
-   const int STARTING_LEVEL = 1;
+   const int CRAFT_BUTTON         = 1;
+   const int INFO_BUTTON          = 2;
+   const int UPGRADE_BUTTON       = 3;
+   const int STARTING_LEVEL       = 1;
+   const int CRUDE_TOOL_COST      = 10;
+   const int HARPOON_COST         = 25;
+   const int PATCH_KIT_COST       = 15;
+   const int PRESSUREV_VALVE_COST = 50;
+   const int DIVING_BELL_COST     = 75;
+   const int ENGINE_COST          = 150;
+   const int PRECISION_LENS_COST  = 200;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
-   const int ENDING_LEVEL = 5;
+   const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
+   public bool hasClockworkBlueprint = false;
+   public bool hasIndustrialBlueprint = false;
 
 
    /* Inspector Variables */
@@ -98,7 +107,7 @@ public class ForgeManager : MonoBehaviour
       windowTransform.localPosition = Vector3.zero;
       windowTransform.localScale = Vector3.one;
 
-      selectedItemType = itemType;
+      selectedItemType = itemType; 
       selectedCraftAmount = 0;
 
       // ---------------------------------------------------------
@@ -203,17 +212,32 @@ public class ForgeManager : MonoBehaviour
          
          switch (selectedItemType)
          {
+            /* Tier 1 items */
             case Item.ItemType.CrudeTool:
-               costPerItem = 15;
+               costPerItem = CRUDE_TOOL_COST;
+               break;
+            case Item.ItemType.Harpoon:
+               costPerItem = HARPOON_COST;
+               break;
+            case Item.ItemType.PatchKit:
+               costPerItem = PATCH_KIT_COST;
                break;
 
-            //case Item.ItemType.RefinedTool:
-            //   costPerItem = 25;
-            //   break;
+            /* Tier 2 items */
+            case Item.ItemType.PressureValve:
+               costPerItem = PRESSUREV_VALVE_COST;
+               break;
+            case Item.ItemType.DivingBell:
+               costPerItem = DIVING_BELL_COST;
+               break;
 
-            //case Item.ItemType.Artifact:
-            //   costPerItem = 50;
-            //   break;
+            /* Tier 3 items */
+            case Item.ItemType.Engine:
+               costPerItem = ENGINE_COST;
+               break;
+            case Item.ItemType.PrecisionLens:
+               costPerItem = PRECISION_LENS_COST;
+               break;
          }
 
          totalCost = selectedCraftAmount * costPerItem;
@@ -224,19 +248,42 @@ public class ForgeManager : MonoBehaviour
 
    public void CraftSelectedItem()
    {
+      Debug.Log("Craft");
       switch (selectedItemType)
       {
+         /* Tier 1 items */
          case Item.ItemType.CrudeTool:
+            InventoryManager.Instance.TrySpendOre(CRUDE_TOOL_COST);
             InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
             break;
+         case Item.ItemType.Harpoon:
+            InventoryManager.Instance.TrySpendOre(HARPOON_COST);
+            InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount);
+            break;
+         case Item.ItemType.PatchKit:
+            InventoryManager.Instance.TrySpendOre(PATCH_KIT_COST);
+            InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount);
+            break;
 
-         //case Item.ItemType.RefinedTool:
-         //   InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
-         //   break;
+         // Tier 2 items
+         case Item.ItemType.PressureValve:
+            InventoryManager.Instance.TrySpendOre(PRESSUREV_VALVE_COST);
+            InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount);
+            break;
+         case Item.ItemType.DivingBell:
+            InventoryManager.Instance.TrySpendOre(DIVING_BELL_COST);
+            InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount);
+            break;
 
-         //case Item.ItemType.Artifact:
-         //   InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
-         //   break;
+         // Tier 3 items
+         case Item.ItemType.Engine:
+            InventoryManager.Instance.TrySpendOre(ENGINE_COST);
+            InventoryManager.Instance.TryAddEngine(selectedCraftAmount);
+            break;
+         case Item.ItemType.PrecisionLens:
+            InventoryManager.Instance.TrySpendOre(PRECISION_LENS_COST);
+            InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount);
+            break;
       }
    }
 
@@ -261,7 +308,7 @@ public class ForgeManager : MonoBehaviour
       {
          if (btn.name.Contains("ItemButton"))
          {
-            Debug.Log($"-- Found ItemButton: {btn.name}"); // Spy 1: Did we find it?
+            Debug.Log($"-- Found ItemButton: {btn.name}"); 
 
             btn.onClick.RemoveAllListeners();
             ItemUI itemUI = btn.GetComponent<ItemUI>();
@@ -276,7 +323,7 @@ public class ForgeManager : MonoBehaviour
 
             // Wire up the click
             btn.onClick.AddListener(() => {
-               Debug.Log($"CLICKED: {type} in Tier {tier}"); // Spy 2: Did the click happen?
+               Debug.Log($"CLICKED: {type} in Tier {tier}"); 
                OnCraftItemSelected(tier, type);
             });
          }
@@ -306,7 +353,7 @@ public class ForgeManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
+            upgradePanel.transform.Find("YesButton").   GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
             break;
          default:
@@ -317,13 +364,48 @@ public class ForgeManager : MonoBehaviour
 
    public void UpgradeForge()
    {
-      // Check if the forge can be upgraded
-      if (forgeLevel < ENDING_LEVEL)
-         forgeLevel += 1;
+      int upgradeCost = 0;
 
-      forgeLevelText.text = "Level " + forgeLevel.ToString();
-      CloseUpgradePanel();
-      PopUpManager.Instance.EnablePlayerInput();
+      // Determine the cost needed for current level be upgraded
+      if (forgeLevel == 1)
+      {
+         upgradeCost = 500;
+      }
+      else if (forgeLevel == 2)
+      {
+         upgradeCost = 800;
+      }
+
+      // Check if there is sufficient pearls to upgrade
+      if (InventoryManager.Instance.pearlCount >= upgradeCost)
+      {
+         // Enough pearls, deduct the required amount
+         InventoryManager.Instance.TrySpendPearl(upgradeCost);
+
+         // Perform the upgrade
+         if (forgeLevel < ENDING_LEVEL)
+         {
+            forgeLevel += 1;
+         }
+         forgeLevelText.text = "Level " + forgeLevel.ToString();
+         CloseUpgradePanel();
+         PopUpManager.Instance.EnablePlayerInput();
+      }
+      else
+      {
+         TextMeshProUGUI upgradeText = upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
+
+         if (upgradeText != null)
+         {
+            // Display the fail message
+            upgradeText.text = $"Not enough pearls to upgrade!\nYou need {upgradeCost} pearls.";
+            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
+         }
+         Debug.Log("Not enough pearls to upgrade!");
+
+         
+      }
+
    }
 
    public void CloseForgePanel(int buttonID)
@@ -354,6 +436,10 @@ public class ForgeManager : MonoBehaviour
       Transform t2 = craftPanel.transform.Find("TierButtons/Tier2");
       Transform t3 = craftPanel.transform.Find("TierButtons/Tier3");
 
+      UpdateTierButtonState(t1, TIER_1, true);
+      UpdateTierButtonState(t2, TIER_2, hasClockworkBlueprint);
+      UpdateTierButtonState(t3, TIER_3, hasIndustrialBlueprint);
+
       if (t1 != null)
       {
          t1.GetComponent<Button>().onClick.RemoveAllListeners(); // Clean up old clicks
@@ -376,13 +462,60 @@ public class ForgeManager : MonoBehaviour
       else Debug.LogError("Could not find button 'Tier3' inside TierButtons!");
    }
 
+   private void UpdateTierButtonState(Transform btnTransform, int requiredLevel, bool isUnlocked)
+   {
+      Button btn = btnTransform.GetComponent<Button>();
+      Transform overlay = btnTransform.Find("Overlay");
+
+      btn.interactable = isUnlocked;
+
+
+      if (overlay != null)
+      {
+         overlay.gameObject.SetActive(!isUnlocked);
+      }
+
+      btn.onClick.RemoveAllListeners();
+      if (isUnlocked)
+      {
+         btn.onClick.AddListener(() => OpenTierPanel(requiredLevel));
+      }
+
+   }
+
    private void ShowInfoPanel()
    {
       infoPanel.gameObject.SetActive(true);
    }
    private void ShowUpgradePanel()
    {
+      int upgradeCost = 0,
+          nextLevel = forgeLevel + 1;
+
       upgradePanel.gameObject.SetActive(true);
+      TextMeshProUGUI upgradeText = upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
+
+      if (upgradeText != null)
+      {
+         if (forgeLevel == 1)
+         {
+            upgradeCost = 500;
+         }
+         else if (forgeLevel == 2)
+         {
+            upgradeCost = 800;
+         }
+
+         if (forgeLevel < ENDING_LEVEL)
+         {
+            upgradeText.text = $"Would you like to upgrade\nto next level for {upgradeCost}\npearls?";
+         }
+         else
+         {
+            upgradeText.text = "Max Level Reached!";
+            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
+         }
+      }
    }
    private void CloseCraftPanel()
    {
@@ -431,5 +564,7 @@ public class ForgeManager : MonoBehaviour
             break;
       }
    }
+
+   
 }
    

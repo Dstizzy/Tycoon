@@ -883,6 +883,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea54b18dfe33cf44f9aaee7b0325d1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  hasClockworkBlueprint: 0
+  hasIndustrialBlueprint: 0
   craftPanel: {fileID: 724393313}
   infoPanel: {fileID: 1513537679}
   upgradePanel: {fileID: 1636761558}
@@ -14535,6 +14537,7 @@ MonoBehaviour:
   tradeHutManager: {fileID: 0}
   currentTurn: 1
   maxTurns: 50
+  eventCountdown: 1
   turnText: {fileID: 1056878813}
   eventCountdown: 1
   endTurnButton: {fileID: 1148995347}
@@ -32391,6 +32394,7 @@ MonoBehaviour:
   UpgradePanel: {fileID: 24327634}
   MysteryBoxPanel: {fileID: 1331592561}
   tradeHutLevelText: {fileID: 1196488203}
+  currrentNewsTickerMessage: 
   marketShiftMax: 2
   marketShiftMin: 1
 --- !u!222 &1420476661

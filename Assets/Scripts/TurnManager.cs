@@ -25,7 +25,8 @@ public class TurnManager : MonoBehaviour
    /* when the EndTurn() function is called. */
    public static event Action OnTurnEnded;
 
-   public TradeHutManager tradeHutManager;
+   private TradeHutManager tradeHutManager; // Trade hut manager instance 
+   public TickerSystem     newsTicker;      // The wolrd event news ticker panel
 
    [Header("Turn Setting")]
    public int currentTurn = 1;      // The current turn number, starting from 1.
@@ -71,6 +72,7 @@ public class TurnManager : MonoBehaviour
    {
       tradeHutManager = TradeHutManager.Instance;
       UpdateTurnUI();
+      tradeHutManager.WorldEventChance();
    }
 
    // Advances the game to the next turn and updates the UI,
@@ -82,20 +84,30 @@ public class TurnManager : MonoBehaviour
       if (!_isGameActive) return;
 
       currentTurn++;
+      eventCountdown++;
+
       if ((eventCountdown % 5) == 0) 
       {
          tradeHutManager.WorldEventNewsTickerText();
          tradeHutManager.WorldEvent();
-         tradeHutManager.WorldEventChance();
+         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white);
 
          eventCountdown = 0;
       }
       else 
       {
-         if(eventCountdown >= 3)
-            tradeHutManager.WorldEventNewsTickerText();
+         if (eventCountdown == 1) 
+         {
+            tradeHutManager.ResetWorldEventShifts();
+            tradeHutManager.WorldEventChance();
+         }
 
-         eventCountdown++;
+         if (eventCountdown >= 3 && eventCountdown <= 5) 
+         {
+            newsTicker.gameObject.SetActive(true);
+            tradeHutManager.WorldEventNewsTickerText();
+            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white);
+         }
       }
 
       HandleJamming();
