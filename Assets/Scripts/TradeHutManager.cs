@@ -6,7 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using static Item;
+using static InventoryManager;
 using static Resources;
+using static UnityEditor.Progress;
 using static WorldEvents;
 
 public class TradeHutManager : MonoBehaviour 
@@ -21,7 +23,8 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform UpgradePanel;           
    [SerializeField] private Transform MysteryBoxPanel;
    
-   public List<Transform> Items { get; private set; }
+   public List<Transform> SellItems { get; private set; }
+   public List<Transform> BuyItems  { get; private set; }
 
    [SerializeField] private TextMeshProUGUI tradeHutLevelText;
 
@@ -40,10 +43,7 @@ public class TradeHutManager : MonoBehaviour
                pressureValveCount = 0, 
                engineSellCount    = 0, 
 
-               rawOreExchange           = 0,
-               industrialBluePrintCount = 0,
-               clockworkBluePrintCount  = 0,
-               mercenaryEngineerCount   = 0,
+               rawOreExchange     = 0,
        
                crudeToolFluctuation,
                harpoonFluctuation,
@@ -77,14 +77,10 @@ public class TradeHutManager : MonoBehaviour
 
                     BUY_ITEM_SPACING = 30;
       
-   public const string CRUDE_TOOL_TAG            = "Crude Tool",
-                       HARPOON_TAG               = "Harpoon",
-                       PRESSURE_VALVE_TAG        = "Pressure Valve",
-                       ENGINE_TAG                = "Engine",
-                       RAW_ORE_CHUNK_TAG         = "Raw Ore Chunk",
-                       INDUSTRIAL_BLUE_PRINT_TAG = "Industrial Blue Print",
-                       CLOCKWORK_BLUEPRINT_TAG   = "Clockwork Blue Print",
-                       MERCENARY_ENGINEER_TAG    = "Mercenary Engineer";
+   public const string RAW_ORE_CHUNK_TAG      = "Raw Ore Chunk",
+                       TIER_2_BLUEPRINT       = "Tier 2 Blueprint",
+                       TIER_3_BLUEPRINT       = "Tier 3 Blueprint",
+                       MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
 
 
 
@@ -96,7 +92,8 @@ public class TradeHutManager : MonoBehaviour
    private void Awake() 
    {
       tradeHutLevel = STARTING_LEVEL;
-      Items         = new();
+      SellItems     = new();
+      BuyItems      = new();
 
       OnItemValueChange = ChangeItemValueText;
 
@@ -160,12 +157,12 @@ public class TradeHutManager : MonoBehaviour
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
-      //CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
-      //CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, INDUSTRIAL_BLUE_PRINT_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 2.0f, CLOCKWORK_BLUEPRINT_TAG);
+      CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.0f, TIER_2_BLUEPRINT);
+      CreateBuyItem(GetItemSprite(ItemType.Tier3BluePrint), GetItemPrice(ItemType.Tier3BluePrint), 2.0f, TIER_3_BLUEPRINT);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 0.0f, MERCENARY_ENGINEER_TAG, -35);
    }
 
@@ -234,7 +231,7 @@ public class TradeHutManager : MonoBehaviour
          tradeItemTransform.Find("ItemShadow").gameObject.SetActive(true);
      }
 
-      Items.Add(tradeItemTransform);
+      SellItems.Add(tradeItemTransform);
 
       // Dynamically add a listener to the button, which creates a sell window when clicked         
       itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
@@ -264,6 +261,8 @@ public class TradeHutManager : MonoBehaviour
       itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
 
       itemButton.image.sprite = itemSprite;
+
+      BuyItems.Add(tradeItemTransform);
 
       /* Dynamically add a listener to the button, which creates the buy window                       */
       itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
@@ -335,21 +334,48 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-      //buyItemTransfromRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
-
       /* Populate item properties                                                                     */
       buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
-      buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
+      buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = (itemCount + 1).ToString();
       buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
-      buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
 
-      /* Get references to the increase and decrease buttons                                          */
-      Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
-      Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
+      switch (itemTag) 
+      {
+         case TIER_2_BLUEPRINT:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.Tier2BluePrint).ToString();
+            break;
+         case TIER_3_BLUEPRINT:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.Tier3BluePrint).ToString();
+            break;
+         case MERCENARY_ENGINEER_TAG:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.MercenaryEngineer).ToString();
+            break;
+         case RAW_ORE_CHUNK_TAG:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+            break;
+         default:
+            Debug.LogError("Unkown item: " + itemTag);
+            break;
+      }
 
-      /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
-      increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
-      decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
+      buyItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(false);
+      buyItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(false);
+
+      if (itemTag  == RAW_ORE_CHUNK_TAG) 
+      {
+         buyItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(true);
+         buyItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(true);
+
+         buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
+
+         /* Get references to the increase and decrease buttons                                          */
+         Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
+         Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
+         
+         /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
+         increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
+         decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
+      }
 
       /* Store the reference to the newly created buy window instance                                 */
       currentBuyItem = buyItemTransfrom;
@@ -361,36 +387,50 @@ public class TradeHutManager : MonoBehaviour
    {
       int totalSellValue  = 0;
 
-      if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+      switch (currentSellItem.tag) 
       {
-         if(inv.TryUseCrudeTool(crudeToolSellCount))
-            totalSellValue += crudeToolSellCount * GetItemValue(ItemType.CrudeTool);
-         else
-            crudeToolSellCount = MIN_SELL_ITEM_COUNT;
-      }
+         // Tier 1 items
+         case CRUDE_TOOL_TAG:
+            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+            {
+               if(inv.TryUseCrudeTool(crudeToolSellCount))
+                  totalSellValue += crudeToolSellCount * GetItemValue(ItemType.CrudeTool);
+               else
+                  crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+            }
+            break;
 
-      if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
-      {
-         if(inv.TryUseHarpoon(harpoonSellCount))
-            totalSellValue += harpoonSellCount * GetItemValue(ItemType.Harpoon);
-         else
-            harpoonSellCount = MIN_SELL_ITEM_COUNT;
-      }
+         case HARPOON_TAG:
+            if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
+            {
+               if(inv.TryUseHarpoon(harpoonSellCount))
+                  totalSellValue += harpoonSellCount * GetItemValue(ItemType.Harpoon);
+               else
+                  harpoonSellCount = MIN_SELL_ITEM_COUNT;
+            }
+            break;
 
-      if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
-      {
-         if(inv.TryUseHarpoon(pressureValveCount))
-            totalSellValue += pressureValveCount * GetItemValue(ItemType.PressureValve);
-         else
-            pressureValveCount = MIN_SELL_ITEM_COUNT;
-      }
+         // Tier 2 item
+         case PRESSURE_VALVE_TAG:
+            if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
+            {
+               if(inv.TryUseHarpoon(pressureValveCount))
+                  totalSellValue += pressureValveCount * GetItemValue(ItemType.PressureValve);
+               else
+                  pressureValveCount = MIN_SELL_ITEM_COUNT;
+            }
+            break;
 
-      if (engineSellCount > MIN_SELL_ITEM_COUNT) 
-      {
-         if(inv.TryUseEngine(engineSellCount))
-            totalSellValue += engineSellCount * GetItemValue(ItemType.Engine);
-         else
-            engineSellCount = MIN_SELL_ITEM_COUNT;
+         // Tier 3 item
+         case ENGINE_TAG:
+            if (engineSellCount > MIN_SELL_ITEM_COUNT) 
+            {
+               if(inv.TryUseEngine(engineSellCount))
+                  totalSellValue += engineSellCount * GetItemValue(ItemType.Engine);
+               else
+                  engineSellCount = MIN_SELL_ITEM_COUNT;
+            }
+            break;
       }
 
       inv.TryAddPearl(totalSellValue);
@@ -418,20 +458,50 @@ public class TradeHutManager : MonoBehaviour
       { 
          inv.TrySpendPearl(rawOreExchange);
          inv.TryAddOre(rawOreExchange);
+         rawOreExchange = MIN_BUY_ITEM_COUNT;
       }
 
-      if(industrialBluePrintCount > MIN_BUY_ITEM_COUNT)
-         inv.TrySpendPearl(industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint));
+      if (currentBuyItem != null) 
+      {
 
-      if(clockworkBluePrintCount > MIN_BUY_ITEM_COUNT)
-         inv.TrySpendPearl(clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint));
+         if (currentBuyItem.CompareTag(TIER_2_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier2BluePrint))) 
+         {
 
-      if(mercenaryEngineerCount > MIN_BUY_ITEM_COUNT)
-         inv.TrySpendPearl(mercenaryEngineerCount * GetItemPrice(ItemType.MercenaryEngineer));
+            ForgeManager.Instance.hasTier2Blueprint = true;
+            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+         
+            BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).gameObject.SetActive(false);
 
-      rawOreExchange           = MIN_BUY_ITEM_COUNT;
-      industrialBluePrintCount = MIN_BUY_ITEM_COUNT;
-      clockworkBluePrintCount  = MIN_BUY_ITEM_COUNT;
+            SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemButton").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemName").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemValue").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+         }
+         
+         if (currentBuyItem.CompareTag(TIER_3_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier3BluePrint)))
+         {
+            ForgeManager.Instance.hasTier3Blueprint = true;
+
+            BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).gameObject.SetActive(false);
+
+            inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+            inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+         
+            SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemButton").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemName").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemValue").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+         }
+            
+         if (currentBuyItem.CompareTag(MERCENARY_ENGINEER_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.MercenaryEngineer))) 
+            ForgeManager.Instance.hasMercenaryEngineer = true;
+      }
+
 
       if(currentBuyItem != null) 
       {
@@ -469,7 +539,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount < MAX_SELL_ITEM_COUNT) 
             {
                pressureValveCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + pressureValveCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
             }
             break;
@@ -477,7 +547,7 @@ public class TradeHutManager : MonoBehaviour
             if (engineSellCount < MAX_SELL_ITEM_COUNT) 
             {
                engineSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + engineSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
             }
             break;
@@ -496,7 +566,7 @@ public class TradeHutManager : MonoBehaviour
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
             {
                crudeToolSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + crudeToolSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
             }
             break;
@@ -504,7 +574,7 @@ public class TradeHutManager : MonoBehaviour
             if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
             {
                harpoonSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + harpoonSellCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.Harpoon)).ToString();
             }
             break;
@@ -512,7 +582,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
                pressureValveCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   x" + pressureValveCount.ToString();
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveCount * GetItemValue(ItemType.PressureValve)).ToString();
             }
             break;
@@ -543,31 +613,7 @@ public class TradeHutManager : MonoBehaviour
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rawOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
             }
             break;
-         case INDUSTRIAL_BLUE_PRINT_TAG:
-            if (industrialBluePrintCount < MAX_BUY_ITEM_COUNT) 
-            {
-               industrialBluePrintCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + industrialBluePrintCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
-            }
-            break;
-         case CLOCKWORK_BLUEPRINT_TAG:
-            if (clockworkBluePrintCount < MAX_BUY_ITEM_COUNT) 
-            {
-               clockworkBluePrintCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + clockworkBluePrintCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
-            }
-            break;
-         case MERCENARY_ENGINEER_TAG:
-            if (mercenaryEngineerCount < MAX_BUY_ITEM_COUNT) 
-            {
-               mercenaryEngineerCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (mercenaryEngineerCount * GetItemPrice(ItemType.MercenaryEngineer)).ToString();
-            }
-            break;
-         default:
+          default:
             Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
@@ -584,30 +630,6 @@ public class TradeHutManager : MonoBehaviour
                rawOreExchange -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rawOreExchange.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rawOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
-            }
-            break;
-         case INDUSTRIAL_BLUE_PRINT_TAG:
-            if (industrialBluePrintCount > MIN_BUY_ITEM_COUNT) 
-            {
-               industrialBluePrintCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + industrialBluePrintCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (industrialBluePrintCount * GetItemPrice(ItemType.IndustrialBluePrint)).ToString();
-            }
-            break;
-         case CLOCKWORK_BLUEPRINT_TAG:
-            if(clockworkBluePrintCount  > MIN_BUY_ITEM_COUNT)
-            { 
-               clockworkBluePrintCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + clockworkBluePrintCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (clockworkBluePrintCount * GetItemPrice(ItemType.ClockworkBlueprint)).ToString();
-            }
-            break;
-         case MERCENARY_ENGINEER_TAG:
-            if(mercenaryEngineerCount  > MIN_BUY_ITEM_COUNT)
-            { 
-               mercenaryEngineerCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerCount.ToString();
-               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (mercenaryEngineerCount * GetItemPrice(ItemType.MercenaryEngineer)).ToString();
             }
             break;
          default:
@@ -662,10 +684,10 @@ public class TradeHutManager : MonoBehaviour
       pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
       engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
 
-      TextMeshProUGUI crudeToolValueText     = Items.Find(d => d.CompareTag(CRUDE_TOOL_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      harpoonValueText       = Items.Find(d => d.CompareTag(HARPOON_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>();
-                      //pressureValveValueText = Items.Find(d => d.CompareTag(PRESSURE_VALVE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      //engineValueText        = Items.Find(d => d.CompareTag(ENGINE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>();
+      TextMeshProUGUI crudeToolValueText     = SellItems.Find(d => d.CompareTag(CRUDE_TOOL_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
+                      harpoonValueText       = SellItems.Find(d => d.CompareTag(HARPOON_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
+                      pressureValveValueText = SellItems.Find(d => d.CompareTag(PRESSURE_VALVE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
+                      engineValueText        = SellItems.Find(d => d.CompareTag(ENGINE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>();
 
 
       if (crudeToolChance <= 30) 
@@ -692,105 +714,100 @@ public class TradeHutManager : MonoBehaviour
                harpoonValueText.text = "Next Value: " + (harpoonSellValue - harpoonFluctuation).ToString();
          }
 
-      //if(pressureValveChance <= 30) 
-      //{
-         //if((pressureValveSellValue + pressureValveFluctuation) <= MAX_PRESSURE_VALVE_VALUE)
-            //pressureValveValueText.text = "Next Value: " + (pressureValveSellValue + pressureValveFluctuation).ToString();
-      //}
+      if (ForgeManager.Instance.hasTier2Blueprint) 
+      {
+         if(pressureValveChance <= 30) 
+         {
+            if((pressureValveSellValue + pressureValveFluctuation) <= MAX_PRESSURE_VALVE_VALUE)
+               pressureValveValueText.text = "Next Value: " + (pressureValveSellValue + pressureValveFluctuation).ToString();
+         }
+          
+         else
+          if(pressureValveChance <= 60) 
+          {
+           if((pressureValveSellValue - pressureValveFluctuation) >= MIN_PRESSURE_VALVE_VALUE)
+              pressureValveValueText.text = "Next Value: " + (pressureValveSellValue - pressureValveFluctuation).ToString();
+          }
+      }
+
+      if (ForgeManager.Instance.hasTier3Blueprint) 
+      {
+         if (engineChance <= 30) 
+         {
+             if((engineSellValue + engineFluctuation) <= MAX_ENGINE_VALUE)
+                engineValueText.text = "Next Value: " + (engineSellValue + engineFluctuation).ToString();
+         } 
+         else 
+         {
+            if(engineChance <= 60) 
+            {
+               if((engineSellValue - engineFluctuation) >= MIN_ENGINE_VALUE)
+                  engineValueText.text = "Next Value: " + (engineSellValue - engineFluctuation).ToString();
+            }
          
-      //else
-         //if(pressureValveChance <= 60) 
-         //{
-            //if((pressureValveSellValue - pressureValveFluctuation) >= MIN_PRESSURE_VALVE_VALUE)
-               //pressureValveValueText.text = "Next Value: " + (pressureValveSellValue - pressureValveFluctuation).ToString();
-         //}
-      
-      //if(engineChance <= 30) 
-      //{
-         //if((engineSellValue + engineFluctuation) <= MAX_ENGINE_VALUE)
-            //engineValueText.text = "Next Value: " + (engineSellValue + engineFluctuation).ToString();
-      //}
-      //else
-         //if(engineChance <= 60) 
-          //{
-            //if((engineSellValue - engineFluctuation) >= MIN_ENGINE_VALUE)
-               //engineValueText.text = "Next Value: " + (engineSellValue - engineFluctuation).ToString();
-          //}
+         }
+      }
+
    }
 
    /* Shifts the sell market each turn.  */
    public void MarketFluctuate() 
    {
-      //float fluctuationPercent;
-      //int crudeToolValue     = GetItemValue(ItemType.CrudeTool),
-      //    harpoonValue       = GetItemValue(ItemType.Harpoon),
-      //    pressureValveValue = GetItemValue(ItemType.PressureValve),
-      //    engineValue        = GetItemValue(ItemType.Engine);
-
       if (crudeToolChance <= 30) 
       {
-         //fluctuationPercent =  (.01f * Rng.Next(50, 101));
-         //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
          Debug.Log("crude tool amount +" + crudeToolFluctuation);
          TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
       }
       else 
          if(crudeToolChance <= 60) 
          {
-            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-            //pearlAmount = (int) (crudeToolValue * fluctuationPercent);
             Debug.Log("crude tool amount -" + crudeToolFluctuation);
             TryDecreaseCrudeToolSellValue(crudeToolFluctuation);
          }
 
       if (harpoonChance <= 30) 
       {
-         //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-         //pearlAmount = (int) (weaponValue * fluctuationPercent);
          Debug.Log("harpoon amount +" + harpoonFluctuation);
          TryIncreaseHarpoonSellValue(harpoonFluctuation);
       }
       else 
          if(harpoonChance <= 60) 
          {
-            //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-            //pearlAmount = (int) (weaponValue * fluctuationPercent);
             Debug.Log("harpoon amount -" + harpoonFluctuation);
             TryDecreaseHarpoonSellValue(harpoonFluctuation);
          }
 
-      //if (pressureValveChance <= 30) 
-      //{
-      //   //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-      //   //pearlAmount = (int) (weaponValue * fluctuationPercent);
-      //   Debug.Log("pressure valve amount +" + pressureValveFluctuation);
-      //   TryIncreasePressureValveValue(pressureValveFluctuation);
-      //}
-      //else 
-      //   if(pressureValveChance <= 60) 
-      //   {
-      //      //fluctuationPercent =  (.01f *  (float) Math.Round((double) Rng.Next(50, 101)));
-      //      //pearlAmount = (int) (weaponValue * fluctuationPercent);
-      //      Debug.Log("pressure valve amount  -" + pressureValveFluctuation);
-      //      TryDecreasePressureValveValue(pressureValveFluctuation);
-      //   }
+      if (ForgeManager.Instance.hasTier2Blueprint) 
+      {
 
-      //if (engineChance <= 30) 
-      //{
-      //   //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
-      //   //pearlAmount = (int) (engineValue * fluctuationPercent);
-      //   Debug.Log("engine amount +" + engineFluctuation);
-      //   TryIncreaseEnginesSellValue(engineFluctuation);
-      //}
-      //else 
-      //   if(engineChance <= 60) 
-      //   {
-      //      //fluctuationPercent = (.01f * (float)Math.Round((float)Rng.Next(50, 101)));
-      //      //pearlAmount = (int) (engineValue * fluctuationPercent);
-      //      Debug.Log("engine amount -" + engineFluctuation);
-      //      TryDecreaseEnginesSellValue(engineFluctuation);
-      //   }
-      //return;
+         if (pressureValveChance <= 30) 
+         {
+            Debug.Log("pressure valve amount +" + pressureValveFluctuation);
+            TryIncreasePressureValveValue(pressureValveFluctuation);
+         }
+         else 
+            if(pressureValveChance <= 60) 
+            {
+               Debug.Log("pressure valve amount  -" + pressureValveFluctuation);
+               TryDecreasePressureValveValue(pressureValveFluctuation);
+            }
+      }
+
+      if (ForgeManager.Instance.hasTier3Blueprint) 
+      {
+         if (engineChance <= 30) 
+         {
+            Debug.Log("engine amount +" + engineFluctuation);
+            TryIncreaseEnginesSellValue(engineFluctuation);
+         }
+         else 
+            if(engineChance <= 60) 
+            {
+               Debug.Log("engine amount -" + engineFluctuation);
+               TryDecreaseEnginesSellValue(engineFluctuation);
+            }
+         return;
+      }
    }
 
    /* Determines world event selection and shift direction for the next cycle. */
@@ -862,41 +879,31 @@ public class TradeHutManager : MonoBehaviour
 
    public void ResetWorldEventShifts() 
    {
-      Debug.Log($"Shift direction: {shiftDirection}");
-      Debug.Log($"World Event: {worldEvent}");
       switch (worldEvent) 
       {
          case (int)WorldEventTypes.CrudeToolEvent:
-            if (shiftDirection <= 50) {
-               Debug.Log("Here - crude");
-               TryDecreaseCrudeToolSellValue(MAX_CRUDE_TOOL_VALUE / 2);
-            }
-            else {
-               Debug.Log("Here + crude");
-               TryIncreaseCrudeToolSellValue(MAX_CRUDE_TOOL_VALUE / 2);
-            }
+            if (shiftDirection <= 50) 
+               TryDecreaseCrudeToolSellValue((int)(MAX_CRUDE_TOOL_VALUE * .5));
+            else 
+               TryIncreaseCrudeToolSellValue((int)(MAX_CRUDE_TOOL_VALUE * .5));
             break;
          case (int)WorldEventTypes.HarpoonEvent:
-            if (shiftDirection <= 50) {
-               Debug.Log("Here - harpoon");
-               TryDecreaseHarpoonSellValue(MAX_HARPOON_VALUE / 2);
-            }
-            else {
-               Debug.Log("Here + harpoon");
-               TryIncreaseHarpoonSellValue(MAX_HARPOON_VALUE / 2);
-            }
+            if (shiftDirection <= 50) 
+               TryDecreaseHarpoonSellValue((int)(MAX_HARPOON_VALUE * .5));
+            else 
+               TryIncreaseHarpoonSellValue((int)(MAX_HARPOON_VALUE * .5));
             break;
          case (int)WorldEventTypes.PressureValveEvent:
             if (shiftDirection <= 50)
-               TryDecreasePressureValveValue(MAX_PRESSURE_VALVE_VALUE / 2);
+               TryDecreasePressureValveValue((int)(MAX_PRESSURE_VALVE_VALUE * .5));
             else
-               TryIncreasePressureValveValue(MAX_PRESSURE_VALVE_VALUE / 2);
+               TryIncreasePressureValveValue((int)(MAX_PRESSURE_VALVE_VALUE * .5));
             break;
          case (int)WorldEventTypes.ClockworkEngineEvent:
             if (shiftDirection <= 50)
-               TryDecreaseEnginesSellValue(MAX_ENGINE_VALUE / 2);
+               TryDecreaseEnginesSellValue((int)(MAX_ENGINE_VALUE * .5));
             else
-               TryIncreaseEnginesSellValue(MAX_ENGINE_VALUE / 2);
+               TryIncreaseEnginesSellValue((int)(MAX_ENGINE_VALUE * .5));
             break;
          default:
             Debug.LogError("Unknown Event");
@@ -911,16 +918,16 @@ public class TradeHutManager : MonoBehaviour
       switch (itemType) 
       {
          case ItemType.CrudeTool:
-            currentItem = Items.Find(d => d.CompareTag(CRUDE_TOOL_TAG));
+            currentItem = SellItems.Find(d => d.CompareTag(CRUDE_TOOL_TAG));
             break;
          case ItemType.Harpoon:
-            currentItem = Items.Find(d => d.CompareTag(HARPOON_TAG));
+            currentItem = SellItems.Find(d => d.CompareTag(HARPOON_TAG));
             break;
          case ItemType.PressureValve:
-            currentItem = Items.Find(d => d.CompareTag(PRESSURE_VALVE_TAG));
+            currentItem = SellItems.Find(d => d.CompareTag(PRESSURE_VALVE_TAG));
             break;
          case ItemType.Engine:
-            currentItem = Items.Find(d => d.CompareTag(ENGINE_TAG));
+            currentItem = SellItems.Find(d => d.CompareTag(ENGINE_TAG));
             break;
          default:
             currentItem = null;

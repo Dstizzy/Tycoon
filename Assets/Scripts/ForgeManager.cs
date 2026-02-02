@@ -22,8 +22,11 @@ public class ForgeManager : MonoBehaviour
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
-   public bool hasClockworkBlueprint = false;
-   public bool hasIndustrialBlueprint = false;
+   public bool hasTier3Blueprint = false;
+   public bool hasTier2Blueprint = false;
+   public bool hasMercenaryEngineer      = false;
+   public bool isMercenaryEngineerActive = false;
+
 
 
    /* Inspector Variables */
@@ -56,6 +59,8 @@ public class ForgeManager : MonoBehaviour
    private Item.ItemType selectedItemType;
    private static int forgeLevel = STARTING_LEVEL;
 
+   public static ForgeManager Instance { get; private set; }
+
    private void Start()
    {
       SetCraftItemButtons();
@@ -66,6 +71,14 @@ public class ForgeManager : MonoBehaviour
 
    private void Awake()
    {
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
       upgradePanel.gameObject.SetActive(false);
@@ -314,7 +327,6 @@ public class ForgeManager : MonoBehaviour
       SetupTierButtons(tier1Panel, TIER_1);
       SetupTierButtons(tier2Panel, TIER_2);
       SetupTierButtons(tier3Panel, TIER_3);
-
    }
 
    private void SetupTierButtons(GameObject tierPanel, int tier)
@@ -459,8 +471,8 @@ public class ForgeManager : MonoBehaviour
       Transform t3 = craftPanel.transform.Find("TierButtons/Tier3");
 
       UpdateTierButtonState(t1, TIER_1, true);
-      UpdateTierButtonState(t2, TIER_2, hasClockworkBlueprint);
-      UpdateTierButtonState(t3, TIER_3, hasIndustrialBlueprint);
+      UpdateTierButtonState(t2, TIER_2, hasTier2Blueprint);
+      UpdateTierButtonState(t3, TIER_3, hasTier3Blueprint);
 
       if (t1 != null)
       {

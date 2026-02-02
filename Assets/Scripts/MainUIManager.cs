@@ -10,6 +10,7 @@ public class MainUIManager : MonoBehaviour {
 
     [SerializeField] private TextMeshProUGUI pearCountText;
     [SerializeField] private TextMeshProUGUI oreCountText;
+    [SerializeField] private Transform       erroPanel;
 
     private bool isVisible = false;
 
