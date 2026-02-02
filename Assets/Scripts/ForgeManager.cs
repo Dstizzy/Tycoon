@@ -47,6 +47,8 @@ public class ForgeManager : MonoBehaviour
 
    [Header("Windw Template")]
    [SerializeField] private Transform craftWindowTemplate;
+   public CraftResultPanel resultPanel;
+
 
 
    public TextMeshProUGUI forgeLevelText;
@@ -261,42 +263,62 @@ public class ForgeManager : MonoBehaviour
 
    public void CraftSelectedItem()
    {
-      Debug.Log("Craft");
+      int    unitCost = 0,  // Cost of one selected item
+             totalCost;     // Total cost required to craft
+      string itemName = ""; // Item name
+
+      // 1. Determine the cost of ONE item
       switch (selectedItemType)
       {
-         /* Tier 1 items */
          case Item.ItemType.CrudeTool:
-            InventoryManager.Instance.TrySpendOre(CRUDE_TOOL_COST);
-            InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
+            unitCost = CRUDE_TOOL_COST; itemName = "Crude Tool";
             break;
          case Item.ItemType.Harpoon:
-            InventoryManager.Instance.TrySpendOre(HARPOON_COST);
-            InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount);
+            unitCost = HARPOON_COST; itemName = "Harpoon";
             break;
          case Item.ItemType.PatchKit:
-            InventoryManager.Instance.TrySpendOre(PATCH_KIT_COST);
-            InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount);
+            unitCost = PATCH_KIT_COST; itemName = "Patch Kit";
             break;
-
-         // Tier 2 items
          case Item.ItemType.PressureValve:
-            InventoryManager.Instance.TrySpendOre(PRESSUREV_VALVE_COST);
-            InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount);
+            unitCost = PRESSUREV_VALVE_COST; itemName = "Pressure Valve";
             break;
          case Item.ItemType.DivingBell:
-            InventoryManager.Instance.TrySpendOre(DIVING_BELL_COST);
-            InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount);
+            unitCost = DIVING_BELL_COST; itemName = "Diving Bell";
             break;
-
-         // Tier 3 items
          case Item.ItemType.Engine:
-            InventoryManager.Instance.TrySpendOre(ENGINE_COST);
-            InventoryManager.Instance.TryAddEngine(selectedCraftAmount);
+            unitCost = ENGINE_COST; itemName = "Engine";
             break;
          case Item.ItemType.PrecisionLens:
-            InventoryManager.Instance.TrySpendOre(PRECISION_LENS_COST);
-            InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount);
+            unitCost = PRECISION_LENS_COST; itemName = "Precision Lens";
             break;
+      }
+
+      // Calculate TOTAL cost 
+      totalCost = unitCost * selectedCraftAmount;
+
+      // Check if there is enough ores to spend
+      if (InventoryManager.Instance.TrySpendOre(totalCost))
+      {
+         // Success, craft the desired items
+         switch (selectedItemType)
+         {
+            case Item.ItemType.CrudeTool: InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount); break;
+            case Item.ItemType.Harpoon: InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount); break;
+            case Item.ItemType.PatchKit: InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount); break;
+            case Item.ItemType.PressureValve: InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount); break;
+            case Item.ItemType.DivingBell: InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount); break;
+            case Item.ItemType.Engine: InventoryManager.Instance.TryAddEngine(selectedCraftAmount); break;
+            case Item.ItemType.PrecisionLens: InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount); break;
+         }
+
+         // Show Success Panel
+         if (resultPanel != null) resultPanel.ShowSuccess(selectedCraftAmount, itemName);
+      }
+      else
+      {
+         // Failure, not enough ore to spend
+         if (resultPanel != null) resultPanel.ShowFailure();
+         Debug.Log("Not enough ore!");
       }
    }
 
@@ -454,7 +476,7 @@ public class ForgeManager : MonoBehaviour
 
       if (t1 != null)
       {
-         t1.GetComponent<Button>().onClick.RemoveAllListeners(); // Clean up old clicks
+         t1.GetComponent<Button>().onClick.RemoveAllListeners(); 
          t1.GetComponent<Button>().onClick.AddListener(() => OpenTierPanel(1));
       }
       else Debug.LogError("Could not find button 'Tier1' inside TierButtons!");
@@ -576,7 +598,5 @@ public class ForgeManager : MonoBehaviour
             break;
       }
    }
-
-   
 }
    

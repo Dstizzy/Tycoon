@@ -172,7 +172,10 @@ public class InventoryManager : MonoBehaviour
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+
+      if (PatchKitCountText != null)
+         PatchKitCountText.transform.parent.gameObject.SetActive(false);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
    }
@@ -612,8 +615,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-      OnOreCountChanged?.Invoke(oreCount);
-      OreCountText.text = " x" + oreCount.ToString();
+         OnOreCountChanged?.Invoke(oreCount);
+         OreCountText.text = " x" + oreCount.ToString();
 
       return isSuccess;
    }
@@ -672,7 +675,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddCrudeTool(int crudeToolAmount) 
    {
-      TextMeshProUGUI newCrudeToolCount = new();
+      TextMeshProUGUI newCrudeToolCount ;
       bool            isSuccess         = false;
 
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
@@ -700,7 +703,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUseCrudeTool(int crudeToolAmount)
    {
-      TextMeshProUGUI newCrudeToolCount = new();
+      TextMeshProUGUI newCrudeToolCount;
       bool            isSuccess         = false;
 
       if (crudeToolCount <= MIN_CRUDE_TOOL_COUNT)
@@ -730,7 +733,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddHarpoon(int harpoonAmount)
    {
-      TextMeshProUGUI newHarpoonCount = new();
+      TextMeshProUGUI newHarpoonCount;
       bool            isSuccess       = false;
 
 
@@ -759,7 +762,7 @@ public class InventoryManager : MonoBehaviour
    }
    public bool TryUseHarpoon(int harpoonAmount)
    {
-      TextMeshProUGUI newHarpoonCount = new();
+      TextMeshProUGUI newHarpoonCount;
       bool            isSuccess    = false;
 
       if (harpoonCount <= MIN_HARPOON_COUNT)
@@ -857,6 +860,11 @@ public class InventoryManager : MonoBehaviour
          {
             isSuccess   = true;
             patchKitCount += patchKitAmount;
+
+            if (PatchKitCountText != null && !PatchKitCountText.transform.parent.gameObject.activeSelf)
+            {
+            PatchKitCountText.transform.parent.gameObject.SetActive(true);
+            }
          }
             
       PatchKitCountText.text = " x" + patchKitCount.ToString();
@@ -943,7 +951,7 @@ public class InventoryManager : MonoBehaviour
   
    public bool TryAddPressureValve(int pressureValveAmount)
    {
-      TextMeshProUGUI pressureValveValue = new();
+      TextMeshProUGUI pressureValveValue;
       bool            isSuccess          = false;
 
 
@@ -973,7 +981,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUsePressureValve(int pressureValveAmount) 
    {
-      TextMeshProUGUI pressureValveValue = new();
+      TextMeshProUGUI pressureValveValue;
       bool isSuccess                     = false;
 
       if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT) 
@@ -1002,7 +1010,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddEngine(int engineAmount)
    {
-      TextMeshProUGUI engineValue = new();
+      TextMeshProUGUI engineValue;
       bool            isSuccess   = false;
 
       if (engineCount >= MAX_ENGINE_COUNT)
@@ -1031,7 +1039,7 @@ public class InventoryManager : MonoBehaviour
    }
    public bool TryUseEngine(int engineAmount)
    {
-      TextMeshProUGUI engineValue = new();
+      TextMeshProUGUI engineValue;
       bool            isSuccess   = false;
 
       if (engineCount <= MIN_ENGINE_COUNT)
@@ -1123,4 +1131,6 @@ public class InventoryManager : MonoBehaviour
    {
       CraftsPanel.gameObject.SetActive(false);
    }
+
+   
 }
