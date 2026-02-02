@@ -162,7 +162,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1229771824569880569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,9 +192,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edb44d2182d2ccf48806dbd075307920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PopUpManager
-  cam: {fileID: 0}
   buildingButtonsPreFab: []
-  myPanel: {fileID: 7877650846869234419}
+  cam: {fileID: 0}
+  tradeHutManager: {fileID: 0}
+  explorationUnitManager: {fileID: 0}
+  oreRefineryManager: {fileID: 0}
+  forgeManager: {fileID: 0}
+  labManager: {fileID: 0}
 --- !u!222 &3683126965997641183
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -24,6 +24,9 @@ public class ForgeManager : MonoBehaviour
    private const int MAX_CRAFT_AMOUNT = 99;
    public bool hasTier3Blueprint = false;
    public bool hasTier2Blueprint = false;
+   public bool hasMercenaryEngineer      = false;
+   public bool isMercenaryEngineerActive = false;
+
 
 
    /* Inspector Variables */
@@ -47,7 +50,6 @@ public class ForgeManager : MonoBehaviour
 
 
    public TextMeshProUGUI forgeLevelText;
-   public bool isMercenaryEngineerActive;
 
    /* Private state variables */
    private Transform currentCraftWindow;

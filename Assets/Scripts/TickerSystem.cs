@@ -1,11 +1,14 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class TickerSystem : MonoBehaviour {
    [Header("UI References")]
-   [SerializeField] private TextMeshProUGUI messageText;
-   [SerializeField] private CanvasGroup     canvasGroup;
+   [SerializeField] private CanvasGroup     wortldEventCanvasGroup;
+   [SerializeField] private TextMeshProUGUI worldEventMessageText;
+   [SerializeField] private CanvasGroup     errorCanvasGroup;
+   [SerializeField] private TextMeshProUGUI errorMessageText;
 
    [Header("Settings")]
    [SerializeField] private float timeVisible  = 5.0f;
@@ -13,34 +16,73 @@ public class TickerSystem : MonoBehaviour {
 
    private Coroutine activeRoutine;
 
-   private void Awake() {
+   public static TickerSystem Instance;
+
+   public enum MessageTypes {
+      WorldEvent,
+      ErrorMessage
+   }
+
+   private void Awake() 
+   {
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
       // Ensure alpha is 0 when the game boots up
-      if (canvasGroup != null) 
-         canvasGroup.alpha = 0;
+      if (wortldEventCanvasGroup != null) 
+         wortldEventCanvasGroup.alpha = 0;
+
+      if (errorCanvasGroup!= null)
+         errorCanvasGroup.alpha = 0;
      
       gameObject.SetActive(false);
    }
 
-   public void ShowTicker(string message, Color textColor) 
+   public void ShowTicker(string message, Color textColor,  MessageTypes currentMessageType) 
    {
+      CanvasGroup     currentCanvasGroup;
+      TextMeshProUGUI currentText;
+        
+      switch(currentMessageType) 
+      {
+         case MessageTypes.WorldEvent:
+            currentCanvasGroup = wortldEventCanvasGroup;
+            currentText        = worldEventMessageText; 
+            break;
+         case MessageTypes.ErrorMessage:
+            currentCanvasGroup = errorCanvasGroup;
+            currentText        = errorMessageText;
+            break;
+         default:
+            Debug.LogError("Unkown message type: " + currentMessageType);
+            throw new Exception("Unkown message type: " + currentMessageType);
+      }
+
+
       // 1. Force the object on so the coroutine runs
       gameObject.SetActive(true);
 
-      messageText.text  = message;
-      messageText.color = textColor;
+      currentText.text  = message;
+      currentText.color = textColor;
 
       // 2. Start fully invisible
-      canvasGroup.alpha = 0;
+      wortldEventCanvasGroup.alpha = 0;
 
       // 3. Stop existing routines to prevent conflicts
       if (activeRoutine != null)
          StopCoroutine(activeRoutine);
 
       // 4. Start the full sequence (In -> Wait -> Out)
-      activeRoutine = StartCoroutine(FadeSequence());
+      activeRoutine = StartCoroutine(FadeSequence(currentCanvasGroup));
    }
 
-   private IEnumerator FadeSequence() {
+   private IEnumerator FadeSequence(CanvasGroup currentCanvasGroup) 
+   {
       float timer = 0;
 
       // --- STEP 1: FADE IN ---
@@ -49,10 +91,10 @@ public class TickerSystem : MonoBehaviour {
          timer += Time.deltaTime;
 
          // Lerp from 0 to 1
-         canvasGroup.alpha = Mathf.Lerp(0, 1, timer / fadeDuration);
+         currentCanvasGroup.alpha = Mathf.Lerp(0, 1, timer / fadeDuration);
          yield return null;
       }
-      canvasGroup.alpha = 1; // Ensure it ends at exactly 1
+      currentCanvasGroup.alpha = 1; // Ensure it ends at exactly 1
 
       // --- STEP 2: WAIT ---
       yield return new WaitForSeconds(timeVisible);
@@ -64,10 +106,10 @@ public class TickerSystem : MonoBehaviour {
          timer += Time.deltaTime;
 
          // Lerp from 1 to 0
-         canvasGroup.alpha = Mathf.Lerp(1, 0, timer / fadeDuration);
+         currentCanvasGroup.alpha = Mathf.Lerp(1, 0, timer / fadeDuration);
          yield return null;
       }
-      canvasGroup.alpha = 0; // Ensure it ends at exactly 0
+      currentCanvasGroup.alpha = 0; // Ensure it ends at exactly 0
 
       // Optional: Turn object off again
       gameObject.SetActive(false);

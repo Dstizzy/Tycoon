@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System;
+using static TickerSystem;
 
 public class TurnManager : MonoBehaviour
 {
@@ -75,7 +76,7 @@ public class TurnManager : MonoBehaviour
       {
          tradeHutManager.WorldEventNewsTickerText();
          tradeHutManager.WorldEvent();
-         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white);
+         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
 
          eventCountdown = 0;
       }
@@ -91,7 +92,7 @@ public class TurnManager : MonoBehaviour
          {
             newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
-            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white);
+            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
          }
       }
 
