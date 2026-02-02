@@ -232,37 +232,43 @@ public class OreRefinery_Manager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
+   // Activates the jam button and sets up its listener
    public void ActivateJamButton()
    {
       buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(true);
       buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
    }
 
+   // Activates the jam symbol on the building canvas
    public void ActivateJamSymbol()
    {
       buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(true);
    }
 
+   // Opens the jam panel and sets up its listeners
    public void OpenJamPanel()
    {
       jamPanel.SetActive(true);
       jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseJamPanel());
       jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(1));
       jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(2));
+      jamPanel.transform.Find("PayButtons/WaitButton") .GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(3));
 
       PopUpManager.Instance.DisablePlayerInput();
    }
 
+   // Handles payment for unjamming the ore refinery
    public void PayForUnjamming(int paymentType)
    {
       if(paymentType == 1) 
       {
          if(InventoryManager.Instance.patchKitCount >= 1) 
          {
-            //InventoryManager.Instance.TrySpendPatchKit(1);
+            InventoryManager.Instance.TryUsePatchKit(1);
             IsBlocked = false;
-            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+            DeactivateJamSymbol();
             CloseJamPanel();
+            DeactivateJamButton();
             Debug.Log("Ore Refinery unjammed successfully.");
          }
          else 
@@ -270,14 +276,15 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
          }
       }
-      else
+      else if(paymentType == 2)
       {
          if(InventoryManager.Instance.pearlCount >= 100) 
          {
             InventoryManager.Instance.TrySpendPearl(100);
             IsBlocked = false;
-            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+            DeactivateJamSymbol();
             CloseJamPanel();
+            DeactivateJamButton();
             Debug.Log("Ore Refinery unjammed successfully.");
          }
          else 
@@ -285,17 +292,35 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
          }
       }
+      else
+      {
+         TurnManager.Instance.ManualResetUnjam();
+      }
    }
+
+   // 
+
+   // Closes the jam panel and removes its listeners
    public void CloseJamPanel()
    {
       jamPanel.SetActive(false);
       jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.RemoveAllListeners();
       PopUpManager.Instance.EnablePlayerInput();
    }
+
+   // Deactivates the jam button and removes its listener
    public void DeactivateJamButton()
    {
       buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
       buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(false);
 
+   }
+
+   // Deactivates the jam symbol on the building canvas
+   public void DeactivateJamSymbol()
+   {
+      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
    }
 }
