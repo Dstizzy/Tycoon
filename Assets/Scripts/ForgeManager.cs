@@ -125,43 +125,47 @@ public class ForgeManager : MonoBehaviour
       selectedItemType = itemType; 
       selectedCraftAmount = 0;
 
-      // ---------------------------------------------------------
-      //  SAFE FINDING OF UI ELEMENTS
-      // ---------------------------------------------------------
 
-      // CHECK 1: Item Image
+
       Transform imageTrans = windowTransform.Find("ItemImage");
       if (imageTrans != null)
       {
          imageTrans.GetComponent<Image>().sprite = Item.GetItemSprite(itemType);
       }
-      else Debug.LogError("MISSING: Could not find object named 'ItemImage' in prefab!");
+      else
+      {
+         Debug.LogError("MISSING: Could not find object named 'ItemImage' in prefab!");
+      }
 
-      // CHECK 2: Increase Button
       Transform incBtn = windowTransform.Find("QuantityButtons/IncreaseButton");
       if (incBtn != null)
       {
          incBtn.GetComponent<Button>().onClick.AddListener(() => IncreaseCraftAmount(windowTransform));
       }
-      else Debug.LogError("MISSING: Could not find 'QuantityButtons/IncreaseButton' in prefab!");
+      else
+      {
+         Debug.LogError("MISSING: Could not find 'QuantityButtons/IncreaseButton' in prefab!");
+      }
 
-      // CHECK 3: Decrease Button
       Transform decBtn = windowTransform.Find("QuantityButtons/DecreaseButton");
       if (decBtn != null)
       {
          decBtn.GetComponent<Button>().onClick.AddListener(() => DecreaseCraftAmount(windowTransform));
       }
-      else Debug.LogError("MISSING: Could not find 'QuantityButtons/DecreaseButton' in prefab!");
+      else
+      {
+         Debug.LogError("MISSING: Could not find 'QuantityButtons/DecreaseButton' in prefab!");
+      }
 
-      // CHECK 4: Craft Button
       Transform craftBtn = windowTransform.Find("CraftButton");
       if (craftBtn != null)
       {
          craftBtn.GetComponent<Button>().onClick.AddListener(() => CraftSelectedItem());
       }
-      else Debug.LogError("MISSING: Could not find 'CraftButton' in prefab!");
-
-      // ---------------------------------------------------------
+      else
+      {
+         Debug.LogError("MISSING: Could not find 'CraftButton' in prefab!");
+      }
 
       UpdateCraftAmountUI(windowTransform);
       windowTransform.gameObject.SetActive(true);
@@ -312,7 +316,13 @@ public class ForgeManager : MonoBehaviour
          }
 
          // Show Success Panel
-         if (resultPanel != null) resultPanel.ShowSuccess(selectedCraftAmount, itemName);
+         if (resultPanel != null)
+            resultPanel.ShowSuccess(selectedCraftAmount, itemName);
+
+         selectedCraftAmount = 0; // Reset the craft amount to 0
+
+         if (currentCraftWindow != null)
+            UpdateCraftAmountUI(currentCraftWindow); // Refresh UI to show 0
       }
       else
       {
