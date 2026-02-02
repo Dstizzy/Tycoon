@@ -5,7 +5,7 @@ public class ShipManager : MonoBehaviour
    [Header("Ship Level Settings")]
    public  int shipLevel = 1;
    private int[] maxHealthByLevel = { 0, 60, 80, 100 };
-   private int[] maxFuelByLevel = { 7, 10, 15 };
+   private int[] maxFuelByLevel = { 0, 7, 10, 15 };
 
    [Header("Current Stats")]
    int currentFuel;

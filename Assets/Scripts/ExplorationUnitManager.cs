@@ -106,6 +106,8 @@ public class ExplorationUnitManager : MonoBehaviour
       if (isExploring)
       {
          int currentZone = shipManager.GetDepth();
+        
+        // if(MapManager current node is directional...; else...)
 
          ExploreEvents randomEvent = eventDatabase.GetRandomEvent(currentZone);
 
