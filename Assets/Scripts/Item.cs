@@ -1,6 +1,9 @@
 using System;
 
+using TMPro;
+
 using UnityEngine;
+using static TradeHutManager;
 
 public class Item {
 
@@ -10,10 +13,10 @@ public class Item {
    public static int pressureValveSellValue { get; private set; } = 60;
    public static int engineSellValue        { get; private set; } = 150;
    
-   public static int rawOrePrice                 { get; private set; }  = 1;
-   public static int mercenaryEngineerSellValue   { get; private set; } = 100;
-   public static int industrialBluePrintSellValue { get; private set; } = 500;
-   public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
+   public static int rawOrePrice            { get; private set; } = 1;
+   public static int mercenaryEngineerPrice { get; private set; } = 100;
+   public static int Tier2BluePrintPrice    { get; private set; } = 500;
+   public static int Tier3BluePrintPrice    { get; private set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
@@ -89,11 +92,11 @@ public class Item {
          case ItemType.RawOreChunk:
             return rawOrePrice;
          case ItemType.Tier2BluePrint:
-            return industrialBluePrintSellValue;
+            return Tier2BluePrintPrice;
          case ItemType.Tier3BluePrint:
-            return clockworkBluePrintSellValue;
+            return Tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
-            return mercenaryEngineerSellValue;
+            return mercenaryEngineerPrice;
          default:
             Debug.LogError($"Unknown Item: `{itemType}`");
             return 0;
@@ -327,4 +330,76 @@ public class Item {
 
       return;
    }
+   public static void TryIncreaseTier2BlueprintPrice(int amount) 
+   {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if ( Tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
+      {
+         Debug.LogError("Crude Tool Sell Value is already at maximum!");
+         return;
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (engineSellValue + amount > MAX_ENGINE_VALUE) 
+      {
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_ENGINE_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      engineSellValue += amount;
+
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+      return;
+   }
+
+   public static void TryDecreaseTier2BlueprintPrice(int amount) 
+   {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (engineSellValue <= MIN_ENGINE_VALUE) 
+      {
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         return;
+      }
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (engineSellValue - amount < MIN_ENGINE_VALUE) 
+      {
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_ENGINE_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      engineSellValue -= amount;
+
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+
+      return;
+   }
+
+   public static void ApplyDiscountToBuyItems(float percent) 
+   {
+      TextMeshProUGUI rareOrePriceText           = new();
+      TextMeshProUGUI Tier2BluePrintPriceText    = new();
+      TextMeshProUGUI Tier3BluePrintPriceText    = new();
+      TextMeshProUGUI mercenaryEngineerPriceText = new();
+
+      rawOrePrice          -= (int)(rawOrePrice * percent);
+      rareOrePriceText      = Instance.BuyItems.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      rareOrePriceText.text = rawOrePrice.ToString();
+
+      Tier2BluePrintPrice         -= (int)(Tier2BluePrintPrice * percent);
+      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier2BluePrintPriceText.text = Tier2BluePrintPrice.ToString();
+
+      Tier3BluePrintPrice         -= (int)(Tier3BluePrintPrice * percent);
+      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
+
+      mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);
+      mercenaryEngineerPriceText      = Instance.BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      mercenaryEngineerPriceText.text = mercenaryEngineerPrice.ToString();
+   }
+
 }

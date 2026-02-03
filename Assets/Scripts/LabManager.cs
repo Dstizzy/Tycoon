@@ -226,9 +226,11 @@ public class LabManager : MonoBehaviour
            currentCommerceTier = TIER_ONE;
            tradeHutManager.marketShiftMin = 1;
            tradeHutManager.marketShiftMax = 2;
-           
-            foreach(Transform item in tradeHutManager.SellItems)
+
+           foreach(Transform item in tradeHutManager.SellItems)
               item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
+
+           ApplyDiscountToBuyItems(.2f);
         }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
@@ -380,6 +382,4 @@ public class LabManager : MonoBehaviour
     {
         infoPanel.gameObject.SetActive(false);
     }
-
-
 }
