@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81287b6efe0e224f8b87368858d2135, type: 3}
   m_Name: 1_03Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
-  nodeName: 
-  nodeDepth: 0
-  type: 0
-  navigationStory: 
-  choiceAText: 
-  pathA: {fileID: 0}
-  choiceBText: 
-  pathB: {fileID: 0}
+  nodeName: 1_03
+  mapPosition: {x: -57, y: -4}
+  isExplored: 1
+  nodeDepth: 1
+  type: 1
+  navigationStory: You have come to a coral reef, and you must go around it.
+  choiceAText: Go to the left
+  pathA: {fileID: 11400000, guid: bd3d86b077522bb47ac284a063d07531, type: 2}
+  choiceBText: Go to the right
+  pathB: {fileID: 11400000, guid: e4c4230130a10a64fa7cea00d999f17a, type: 2}
   nextNode: {fileID: 0}

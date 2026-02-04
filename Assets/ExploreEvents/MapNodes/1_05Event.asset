@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: 1_05Event
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 
-  mapPosition: {x: 0, y: 0}
-  isExplored: 0
-  nodeDepth: 0
+  mapPosition: {x: -43, y: -4}
+  isExplored: 1
+  nodeDepth: 1
   type: 0
   navigationStory: 
   choiceAText: 
   pathA: {fileID: 0}
   choiceBText: 
   pathB: {fileID: 0}
-  nextNode: {fileID: 0}
+  nextNode: {fileID: 11400000, guid: 72b0e6cd87db6f044a80e861a2964179, type: 2}

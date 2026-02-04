@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81287b6efe0e224f8b87368858d2135, type: 3}
   m_Name: 1_07Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
-  nodeName: 
-  mapPosition: {x: 0, y: 0}
-  isExplored: 0
+  nodeName: 1_07
+  mapPosition: {x: -31, y: -4}
+  isExplored: 1
   nodeDepth: 0
-  type: 0
-  navigationStory: 
-  choiceAText: 
+  type: 1
+  navigationStory: You have come to a massive canyon on the ocean floor.
+  choiceAText: Travel along the left ridge
   pathA: {fileID: 0}
-  choiceBText: 
+  choiceBText: Travel along the right ridge
   pathB: {fileID: 0}
   nextNode: {fileID: 0}

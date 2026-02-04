@@ -11,7 +11,7 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private Transform upgradePanel;
    [SerializeField] private Transform infoPanel;
    [SerializeField] private Transform decisionPanel;
-   [SerializeField] private GameObject vesselIcon;
+   [SerializeField] private GameObject exploreShipIcon;
 
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
@@ -86,7 +86,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
-      vesselIcon.gameObject.SetActive(true);
+      exploreShipIcon.gameObject.SetActive(true);
       CloseExplorationPanel();
    }
 
@@ -105,38 +105,41 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (isExploring)
       {
-         int currentZone = shipManager.GetDepth();
-        
-        // if(MapManager current node is directional...; else...)
+         MapNode current = MapManager.Instance.currentNode;
+         decisionPanel.gameObject.SetActive(true);
 
-         ExploreEvents randomEvent = eventDatabase.GetRandomEvent(currentZone);
+         Button choice1 = decisionPanel.Find("Choice1").GetComponent<Button>();
+         Button choice2 = decisionPanel.Find("Choice2").GetComponent<Button>();
+         choice1.onClick.RemoveAllListeners();
+         choice1.onClick.AddListener(() => CloseDecisionPanel());
+         choice2.onClick.RemoveAllListeners();
+         choice2.onClick.AddListener(() => CloseDecisionPanel());
 
-         if (randomEvent != null)
+         if(current.type == MapNode.NodeType.Directional)
          {
-            decisionPanel.gameObject.SetActive(true);
+            eventController.scenarioText.text = current.navigationStory;
+            eventController.choiceAText.text = current.choiceAText;
+            eventController.choiceBText.text = current.choiceBText;
 
-            eventController.SetEventPanel(randomEvent);
+            choice1.onClick.AddListener(() => MapManager.Instance.MoveToNode(current.pathA));
+            choice2.onClick.AddListener(() => MapManager.Instance.MoveToNode(current.pathB));
+         }
+         else
+         {
+            ExploreEvents randomEvent = eventDatabase.GetRandomEvent(current.nodeDepth);
 
-            Button choice1 = decisionPanel.Find("Choice1").GetComponent<Button>();
-            Button choice2 = decisionPanel.Find("Choice2").GetComponent<Button>();
-
-            if (choice1 != null)
+            if(randomEvent != null)
             {
-               choice1.onClick.RemoveAllListeners();
+               eventController.SetEventPanel(randomEvent);
                choice1.onClick.AddListener(() =>
                {
                   shipManager.ApplyEventResult(randomEvent.choiceA);
-                  CloseDecisionPanel();
+                  MapManager.Instance.MoveToNode(current.nextNode);
                });
-            }
-
-            if (choice2 != null)
-            {
-               choice2.onClick.RemoveAllListeners();
                choice2.onClick.AddListener(() =>
                {
                   shipManager.ApplyEventResult(randomEvent.choiceB);
-                  CloseDecisionPanel();
+                  MapManager.Instance.MoveToNode(current.nextNode);
                });
             }
          }

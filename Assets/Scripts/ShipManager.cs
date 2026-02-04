@@ -25,6 +25,11 @@ public class ShipManager : MonoBehaviour
       currentFuel = maxFuel;
    }
 
+   public void SetDepth(int newDepth)
+   {
+      currentDepth = newDepth;
+   }
+
    public int GetDepth()
    {
       return currentDepth;
