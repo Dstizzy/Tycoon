@@ -1,7 +1,14 @@
 using UnityEngine;
+using TMPro;
 
 public class ShipManager : MonoBehaviour
 {
+   [Header("UI References")]
+   public TextMeshProUGUI decisionFuelText;
+   public TextMeshProUGUI decisionHealthText;
+   public TextMeshProUGUI exploreFuelText;
+   public TextMeshProUGUI exploreHealthText;
+
    [Header("Ship Level Settings")]
    public  int shipLevel = 1;
    private int[] maxHealthByLevel = { 0, 60, 80, 100 };
@@ -23,6 +30,11 @@ public class ShipManager : MonoBehaviour
       UpdateStatsToLevel();
       currentHealth = maxHealth;
       currentFuel = maxFuel;
+   }
+
+   private void Start()
+   {
+      UpdateShipUI();
    }
 
    public void SetDepth(int newDepth)
@@ -48,6 +60,20 @@ public class ShipManager : MonoBehaviour
    {
       maxHealth = maxHealthByLevel[shipLevel];
       maxFuel = maxFuelByLevel[shipLevel];
+
+      UpdateShipUI();
+   }
+
+   private void UpdateShipUI()
+   {
+      if (decisionFuelText != null)
+         decisionFuelText.text = $"{currentFuel}/{maxFuel}";
+      if (decisionHealthText != null)
+         decisionHealthText.text = $"{currentHealth}/{maxHealth}";
+      if (exploreFuelText != null)
+         exploreFuelText.text = $"{currentFuel}/{maxFuel}";
+      if (exploreHealthText != null)
+         exploreHealthText.text = $"{currentHealth}/{maxHealth}";
    }
 
    public void ApplyEventResult(EventChoice results)
@@ -77,6 +103,18 @@ public class ShipManager : MonoBehaviour
       {
          ShipDestruction();
       }
+
+      UpdateShipUI();
+   }
+
+   public void ConsumeFuel()
+   {
+      currentFuel -= 1;
+
+      if (currentFuel <= 0)
+         ShipDestruction();
+
+      UpdateShipUI();
    }
 
    public void ShipDestruction()

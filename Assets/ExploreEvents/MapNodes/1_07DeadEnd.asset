@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e81287b6efe0e224f8b87368858d2135, type: 3}
-  m_Name: 1_07Direction
+  m_Name: 1_07DeadEnd
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_07
-  mapPosition: {x: -31, y: -4}
-  isExplored: 1
-  nodeDepth: 0
-  type: 1
-  navigationStory: You have come to a massive canyon on the ocean floor.
-  choiceAText: Travel along the left ridge
+  mapPosition: {x: -21, y: 63}
+  isExplored: 0
+  nodeDepth: 1
+  type: 0
+  navigationStory: 
+  choiceAText: 
   pathA: {fileID: 0}
-  choiceBText: Travel along the right ridge
+  choiceBText: 
   pathB: {fileID: 0}
   nextNode: {fileID: 0}

@@ -13,6 +13,8 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private Transform decisionPanel;
    [SerializeField] private GameObject exploreShipIcon;
 
+   private MapNode nextTurnDestination;
+
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
@@ -86,7 +88,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
-      exploreShipIcon.gameObject.SetActive(true);
+      nextTurnDestination = MapManager.Instance.startingNode;
       CloseExplorationPanel();
    }
 
@@ -105,6 +107,14 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (isExploring)
       {
+         shipManager.ConsumeFuel();
+
+         if(nextTurnDestination != null)
+         {
+            MapManager.Instance.MoveToNode(nextTurnDestination);
+            nextTurnDestination = null;
+         }
+
          MapNode current = MapManager.Instance.currentNode;
          decisionPanel.gameObject.SetActive(true);
 
@@ -121,8 +131,8 @@ public class ExplorationUnitManager : MonoBehaviour
             eventController.choiceAText.text = current.choiceAText;
             eventController.choiceBText.text = current.choiceBText;
 
-            choice1.onClick.AddListener(() => MapManager.Instance.MoveToNode(current.pathA));
-            choice2.onClick.AddListener(() => MapManager.Instance.MoveToNode(current.pathB));
+            choice1.onClick.AddListener(() => nextTurnDestination = current.pathA);
+            choice2.onClick.AddListener(() => nextTurnDestination = current.pathB);
          }
          else
          {
@@ -134,12 +144,12 @@ public class ExplorationUnitManager : MonoBehaviour
                choice1.onClick.AddListener(() =>
                {
                   shipManager.ApplyEventResult(randomEvent.choiceA);
-                  MapManager.Instance.MoveToNode(current.nextNode);
+                  nextTurnDestination = current.nextNode;
                });
                choice2.onClick.AddListener(() =>
                {
                   shipManager.ApplyEventResult(randomEvent.choiceB);
-                  MapManager.Instance.MoveToNode(current.nextNode);
+                  nextTurnDestination = current.nextNode;
                });
             }
          }

@@ -4,6 +4,7 @@ using UnityEngine;
 public class MapManager : MonoBehaviour
 {
    public static MapManager Instance;
+   public MapNode startingNode;
    public MapNode currentNode;
    public RectTransform exploreShipIcon;
    public RectTransform decisionShipIcon;
