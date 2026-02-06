@@ -16,10 +16,10 @@ MonoBehaviour:
   mapPosition: {x: -35, y: 110}
   isExplored: 0
   nodeDepth: 1
-  type: 0
-  navigationStory: 
-  choiceAText: 
-  pathA: {fileID: 0}
+  type: 1
+  navigationStory: Your path ends at an old abandoned port. You must turn around
+  choiceAText: Return to previous node
+  pathA: {fileID: 11400000, guid: 14bcb5fa9f9aa764081052cc680401bf, type: 2}
   choiceBText: 
   pathB: {fileID: 0}
   nextNode: {fileID: 0}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System;
 
 public class ShipManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class ShipManager : MonoBehaviour
    public TextMeshProUGUI exploreHealthText;
 
    [Header("Ship Level Settings")]
-   public  int shipLevel = 1;
+   public int shipLevel = 1;
    private int[] maxHealthByLevel = { 0, 60, 80, 100 };
    private int[] maxFuelByLevel = { 0, 7, 10, 15 };
 
@@ -24,6 +25,8 @@ public class ShipManager : MonoBehaviour
    int currentHarpoon;
    int currentArtifact;
    int currentDepth = 1;
+
+   public static event Action OnShipDeath;
 
    void Awake()
    {
@@ -49,7 +52,7 @@ public class ShipManager : MonoBehaviour
 
    public void UpgradeShip()
    {
-      if(shipLevel < 3)
+      if (shipLevel < 3)
       {
          shipLevel += 1;
          UpdateStatsToLevel();
@@ -59,7 +62,9 @@ public class ShipManager : MonoBehaviour
    public void UpdateStatsToLevel()
    {
       maxHealth = maxHealthByLevel[shipLevel];
+      currentHealth = maxHealth;
       maxFuel = maxFuelByLevel[shipLevel];
+      currentFuel = maxFuel;
 
       UpdateShipUI();
    }
@@ -92,14 +97,19 @@ public class ShipManager : MonoBehaviour
       Debug.Log("Ship artifact inventory change: " + results.artifactChange);
 
       //handle randomized rewards
-      currentGold += Random.Range(results.minGold, results.maxGold + 1);
-      currentOre  += Random.Range(results.minOre,  results.maxOre  + 1);
+      currentGold += UnityEngine.Random.Range(results.minGold, results.maxGold + 1);
+      currentOre  += UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
 
       Debug.Log($"Current ship status - Health: {currentHealth}, Fuel: {currentFuel}");
       Debug.Log($"Gold: {currentGold}, Ore: {currentOre}");
       Debug.Log($"Harpoons: {currentHarpoon}, Artifacts: {currentArtifact}");
 
-      if(currentHealth > maxHealth)
+      if(currentFuel <= 0)
+      {
+         ShipDestruction();
+      }
+
+      if (currentHealth <= 0)
       {
          ShipDestruction();
       }
@@ -107,18 +117,57 @@ public class ShipManager : MonoBehaviour
       UpdateShipUI();
    }
 
-   public void ConsumeFuel()
+   public void NewTurn()
    {
       currentFuel -= 1;
-
       if (currentFuel <= 0)
          ShipDestruction();
+
+      if (shipLevel == 1 && currentDepth == 2)
+         currentHealth -= 30;
+      if (shipLevel == 1 && currentDepth == 3)
+         currentHealth -= 60;
+      if (shipLevel == 2 && currentDepth == 3)
+         currentHealth -= 40;
 
       UpdateShipUI();
    }
 
+   public void RequestReturn()
+   {
+      if (currentFuel < currentDepth)
+         ShipDestruction();
+      else
+         FinishExploration();
+   }
+
+   // Reset ship health, fuel, depth, inventory, and map location
+   public void ResetShip()
+   {
+      currentFuel = maxFuel;
+      currentHealth = maxHealth;
+      currentDepth = 1;
+      currentGold = 0;
+      currentOre = 0;
+      currentHarpoon = 0;
+      currentArtifact = 0;
+      MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
+
+      UpdateShipUI();
+      OnShipDeath?.Invoke();
+   }
+
    public void ShipDestruction()
    {
+      ResetShip();
       Debug.Log("Your ship has been destroyed.");
+   }
+
+
+   public void FinishExploration()
+   {
+      //ADD TO INVENTORY
+
+      ResetShip();
    }
 }

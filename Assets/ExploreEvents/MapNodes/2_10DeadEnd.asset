@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: 2_10DeadEnd
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 2_10
-  mapPosition: {x: 0, y: 0}
+  mapPosition: {x: 47, y: 31}
   isExplored: 0
   nodeDepth: 2
-  type: 0
-  navigationStory: 
-  choiceAText: 
-  pathA: {fileID: 0}
+  type: 1
+  navigationStory: An old tunnel through the mountain has collapsed. You must turn
+    around.
+  choiceAText: Return to previous node
+  pathA: {fileID: 11400000, guid: 679338c95f452174e8f71a3799ef4c6b, type: 2}
   choiceBText: 
   pathB: {fileID: 0}
   nextNode: {fileID: 0}

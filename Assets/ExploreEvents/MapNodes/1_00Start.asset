@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e81287b6efe0e224f8b87368858d2135, type: 3}
-  m_Name: 2_02Event
+  m_Name: 1_00Start
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
-  nodeName: 2_02
-  mapPosition: {x: 63, y: 90}
+  nodeName: 
+  mapPosition: {x: -168, y: 55}
   isExplored: 0
-  nodeDepth: 2
+  nodeDepth: 0
   type: 0
   navigationStory: 
   choiceAText: 
   pathA: {fileID: 0}
   choiceBText: 
   pathB: {fileID: 0}
-  nextNode: {fileID: 11400000, guid: d95840d5f59bf9840b29f0c40604246b, type: 2}
+  nextNode: {fileID: 11400000, guid: 117d03577374af349a495697f1de55bb, type: 2}

@@ -7595,7 +7595,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21.1, y: 15}
+  m_AnchoredPosition: {x: -167.5, y: 54.6}
   m_SizeDelta: {x: 25, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &282217426
@@ -14744,8 +14744,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -12.5, y: -70.2}
-  m_SizeDelta: {x: 25, y: 20}
+  m_AnchoredPosition: {x: -17.5, y: -70.2}
+  m_SizeDelta: {x: 35, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &691379010
 MonoBehaviour:
@@ -16861,8 +16861,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.2, y: -70.2}
-  m_SizeDelta: {x: 25, y: 20}
+  m_AnchoredPosition: {x: 32.500008, y: -70.2}
+  m_SizeDelta: {x: 35, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &823462456
 MonoBehaviour:
@@ -26882,7 +26882,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1358883668
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37030,7 +37030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f541d3d08ceda4cadc7dff2793ef2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapManager
-  startingNode: {fileID: 11400000, guid: 117d03577374af349a495697f1de55bb, type: 2}
+  startingNode: {fileID: 11400000, guid: bef1dd1c5ff4f124cb5cc50c194e1379, type: 2}
   currentNode: {fileID: 0}
   exploreShipIcon: {fileID: 1245422807}
   decisionShipIcon: {fileID: 282217425}

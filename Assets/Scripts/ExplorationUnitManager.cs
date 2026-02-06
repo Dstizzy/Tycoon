@@ -40,12 +40,14 @@ public class ExplorationUnitManager : MonoBehaviour
    private void OnEnable()
    {
       TurnManager.OnTurnEnded += HandleNewTurn;
+      ShipManager.OnShipDeath += HandleExplorationDone;
    }
 
    //
    private void OnDisable()
    {
       TurnManager.OnTurnEnded -= HandleNewTurn;
+      ShipManager.OnShipDeath -= HandleExplorationDone;
    }
 
    // Activates the requested exploration unit panel
@@ -75,7 +77,9 @@ public class ExplorationUnitManager : MonoBehaviour
             if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
-               yesButton.onClick.AddListener(() => ConfirmUpgrade());
+               yesButton.interactable = !isExploring;
+               if(!isExploring)
+                  yesButton.onClick.AddListener(() => ConfirmUpgrade());
             }
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
@@ -88,7 +92,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
-      nextTurnDestination = MapManager.Instance.startingNode;
+      nextTurnDestination = MapManager.Instance.startingNode.nextNode;
       CloseExplorationPanel();
    }
 
@@ -107,7 +111,9 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (isExploring)
       {
-         shipManager.ConsumeFuel();
+         shipManager.NewTurn();
+
+         if (!isExploring) return;
 
          if(nextTurnDestination != null)
          {
@@ -154,6 +160,12 @@ public class ExplorationUnitManager : MonoBehaviour
             }
          }
       }
+   }
+
+   public void HandleExplorationDone()
+   {
+      isExploring = false;
+      nextTurnDestination = null;
    }
 
    //
