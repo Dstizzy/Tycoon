@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 
 public class ShipManager : MonoBehaviour
 {
    [Header("UI References")]
+   [SerializeField] private ExplorationUnitManager explorationUnitManager;
+   [SerializeField] private Transform fuelPanel;
+   [SerializeField] private Transform healthPanel;
    public TextMeshProUGUI decisionFuelText;
    public TextMeshProUGUI decisionHealthText;
    public TextMeshProUGUI exploreFuelText;
@@ -25,6 +29,14 @@ public class ShipManager : MonoBehaviour
    int currentHarpoon;
    int currentArtifact;
    int currentDepth = 1;
+
+   public struct RoundResults
+   {
+      public int goldChanged;
+      public int oreChanged;
+      public int healthChanged;
+      public int fuelChanged;
+   }
 
    public static event Action OnShipDeath;
 
@@ -81,32 +93,28 @@ public class ShipManager : MonoBehaviour
          exploreHealthText.text = $"{currentHealth}/{maxHealth}";
    }
 
-   public void ApplyEventResult(EventChoice results)
+   public RoundResults ApplyEventResult(EventChoice results)
    {
-      currentGold += results.goldChange;
-      Debug.Log("gold added to ship inventory: " + results.goldChange);
-      currentOre += results.oreChange;
-      Debug.Log("ore added to ship inventory: " + results.oreChange);
+      RoundResults finalResults = new RoundResults();
+
+      int actualGold = results.goldChange + UnityEngine.Random.Range(results.minGold, results.maxGold + 1);
+      int actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
+
+      currentGold += actualGold;
+      currentOre += actualOre;
       currentHealth += results.healthChange;
-      Debug.Log("Change to ships health: " + results.healthChange);
       currentFuel += results.fuelChange;
-      Debug.Log("Change to ship fuel: " + results.fuelChange);
       currentHarpoon += results.harpoonChange;
-      Debug.Log("Ship harpoon inventory change: " + results.harpoonChange);
       currentArtifact += results.artifactChange;
-      Debug.Log("Ship artifact inventory change: " + results.artifactChange);
 
-      //handle randomized rewards
-      currentGold += UnityEngine.Random.Range(results.minGold, results.maxGold + 1);
-      currentOre  += UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
-
-      Debug.Log($"Current ship status - Health: {currentHealth}, Fuel: {currentFuel}");
-      Debug.Log($"Gold: {currentGold}, Ore: {currentOre}");
-      Debug.Log($"Harpoons: {currentHarpoon}, Artifacts: {currentArtifact}");
+      finalResults.goldChanged = actualGold;
+      finalResults.oreChanged = actualOre;
+      finalResults.healthChanged = results.healthChange;
+      finalResults.fuelChanged = results.fuelChange;
 
       if(currentFuel <= 0)
       {
-         ShipDestruction();
+         LowFuel();
       }
 
       if (currentHealth <= 0)
@@ -115,13 +123,15 @@ public class ShipManager : MonoBehaviour
       }
 
       UpdateShipUI();
+
+      return finalResults;
    }
 
    public void NewTurn()
    {
       currentFuel -= 1;
       if (currentFuel <= 0)
-         ShipDestruction();
+         LowFuel();
 
       if (shipLevel == 1 && currentDepth == 2)
          currentHealth -= 30;
@@ -130,13 +140,16 @@ public class ShipManager : MonoBehaviour
       if (shipLevel == 2 && currentDepth == 3)
          currentHealth -= 40;
 
+      if (currentHealth <= 0)
+         ShipDestruction();
+
       UpdateShipUI();
    }
 
    public void RequestReturn()
    {
       if (currentFuel < currentDepth)
-         ShipDestruction();
+         LowFuel();
       else
          FinishExploration();
    }
@@ -157,12 +170,58 @@ public class ShipManager : MonoBehaviour
       OnShipDeath?.Invoke();
    }
 
-   public void ShipDestruction()
+   public void LowFuel()
    {
-      ResetShip();
-      Debug.Log("Your ship has been destroyed.");
+      if(currentFuel <= 0)
+      {
+         OpenFuelPanel();
+         Button confirmFuelButton = fuelPanel.Find("OkButton").GetComponent<Button>();
+         confirmFuelButton.onClick.RemoveAllListeners();
+         confirmFuelButton.onClick.AddListener(() =>
+         {
+            CloseFuelPanel();
+            explorationUnitManager.CloseDecisionPanel();
+            ResetShip();
+         });
+      }
+      if (currentFuel > 0 && currentFuel < currentDepth)
+      {
+         // message fuel insufficient for return
+      }
    }
 
+   public void ShipDestruction()
+   {
+      OpenHealthPanel();
+      Button confirmHealthButton = healthPanel.Find("OkButton").GetComponent<Button>();
+      confirmHealthButton.onClick.RemoveAllListeners();
+      confirmHealthButton.onClick.AddListener(() =>
+      {
+         CloseHealthPanel();
+         explorationUnitManager.CloseDecisionPanel();
+         ResetShip();
+      });
+   }
+
+   private void OpenFuelPanel()
+   {
+      fuelPanel.gameObject.SetActive(true);
+   }
+
+   private void OpenHealthPanel()
+   {
+      healthPanel.gameObject.SetActive(true);
+   }
+
+   private void CloseFuelPanel()
+   {
+      fuelPanel.gameObject?.SetActive(false);
+   }
+
+   private void CloseHealthPanel()
+   {
+      healthPanel.gameObject?.SetActive(false);
+   }
 
    public void FinishExploration()
    {

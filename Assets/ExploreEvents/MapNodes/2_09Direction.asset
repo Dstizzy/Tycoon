@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 2_09
   mapPosition: {x: 37, y: 10}
-  isExplored: 0
+  isExplored: 1
   nodeDepth: 2
   type: 1
-  navigationStory: 
-  choiceAText: 
+  navigationStory: The path ahead splits in two
+  choiceAText: Take the left route
   pathA: {fileID: 11400000, guid: 3a0beeab9da4572499a84fac7121ec15, type: 2}
-  choiceBText: 
+  choiceBText: Take the right route
   pathB: {fileID: 11400000, guid: a2d4720dd029c4343ae6487ccb4e600d, type: 2}
   nextNode: {fileID: 0}

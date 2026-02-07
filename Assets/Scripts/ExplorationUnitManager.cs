@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,8 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private Transform upgradePanel;
    [SerializeField] private Transform infoPanel;
    [SerializeField] private Transform decisionPanel;
+   [SerializeField] private Transform decisionResultsPanel;
+   [SerializeField] private TextMeshProUGUI decisionResults;
    [SerializeField] private GameObject exploreShipIcon;
 
    private MapNode nextTurnDestination;
@@ -106,6 +109,19 @@ public class ExplorationUnitManager : MonoBehaviour
 
    }
 
+   private void ProcessDecision(EventChoice choice, MapNode currentNode)
+   {
+      ShipManager.RoundResults results = shipManager.ApplyEventResult(choice);
+      if (results.goldChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0)
+         ShowResultsPanel(results, currentNode);
+      else
+      {
+         CloseDecisionPanel();
+         if (currentNode != null)
+            nextTurnDestination = currentNode.nextNode;
+      }
+   }
+
    //
    public void HandleNewTurn()
    {
@@ -127,9 +143,7 @@ public class ExplorationUnitManager : MonoBehaviour
          Button choice1 = decisionPanel.Find("Choice1").GetComponent<Button>();
          Button choice2 = decisionPanel.Find("Choice2").GetComponent<Button>();
          choice1.onClick.RemoveAllListeners();
-         choice1.onClick.AddListener(() => CloseDecisionPanel());
          choice2.onClick.RemoveAllListeners();
-         choice2.onClick.AddListener(() => CloseDecisionPanel());
 
          if(current.type == MapNode.NodeType.Directional)
          {
@@ -137,7 +151,9 @@ public class ExplorationUnitManager : MonoBehaviour
             eventController.choiceAText.text = current.choiceAText;
             eventController.choiceBText.text = current.choiceBText;
 
+            choice1.onClick.AddListener(() => CloseDecisionPanel());
             choice1.onClick.AddListener(() => nextTurnDestination = current.pathA);
+            choice2.onClick.AddListener(() => CloseDecisionPanel());
             choice2.onClick.AddListener(() => nextTurnDestination = current.pathB);
          }
          else
@@ -149,13 +165,11 @@ public class ExplorationUnitManager : MonoBehaviour
                eventController.SetEventPanel(randomEvent);
                choice1.onClick.AddListener(() =>
                {
-                  shipManager.ApplyEventResult(randomEvent.choiceA);
-                  nextTurnDestination = current.nextNode;
+                  ProcessDecision(randomEvent.choiceA, current);
                });
                choice2.onClick.AddListener(() =>
                {
-                  shipManager.ApplyEventResult(randomEvent.choiceB);
-                  nextTurnDestination = current.nextNode;
+                  ProcessDecision(randomEvent.choiceB, current);
                });
             }
          }
@@ -186,6 +200,49 @@ public class ExplorationUnitManager : MonoBehaviour
       upgradePanel.gameObject.SetActive(true);
    }
 
+   private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode)
+   {
+      decisionResultsPanel.gameObject.SetActive(true);
+      string resultsText = "";
+
+      if(results.goldChanged != 0)
+      {
+         string sign = results.goldChanged > 0 ? "+" : "";
+         resultsText += $"Gold: {sign}{results.goldChanged}\n";
+      }
+
+      if(results.oreChanged != 0)
+      {
+         string sign = results.oreChanged > 0 ? "+" : "";
+         resultsText += $"Ore: {sign}{results.oreChanged}\n";
+      }
+
+      if(results.healthChanged != 0)
+      {
+         string sign = results.healthChanged > 0 ? "+" : "";
+         resultsText += $"Health: {sign}{results.healthChanged}\n";
+      }
+
+      if(results.fuelChanged != 0)
+      {
+         string sign = results.fuelChanged > 0 ? "+" : "";
+         resultsText += $"Fuel: {sign}{results.fuelChanged}";
+      }
+
+      decisionResults.text = resultsText;
+
+      Button continueButton = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
+      continueButton.onClick.RemoveAllListeners();
+      continueButton.onClick.AddListener(() =>
+      {
+         CloseDecisionPanel();
+         decisionResultsPanel.gameObject.SetActive(false);
+
+         if (currentNode != null)
+            nextTurnDestination = currentNode.nextNode;
+      });
+   }
+
    //
    private void CloseExplorationPanel()
    {
@@ -205,7 +262,7 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    //
-   private void CloseDecisionPanel()
+   public void CloseDecisionPanel()
    {
       decisionPanel.gameObject.SetActive(false);
    }
