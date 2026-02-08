@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using static InventoryManager;
 using static Item;
 using static Resources;
+using static TickerSystem;
 using static UnityEditor.Progress;
 using static WorldEvents;
 
@@ -16,19 +17,19 @@ public class TradeHutManager : MonoBehaviour
 {
    /* Inspector variables                                                                             */
    [SerializeField] private Transform TradePanels;            
-                    public  Transform BuyPanel;       
    [SerializeField] private Transform BuyWindow;    
    [SerializeField] private Transform SellPanel;              
    [SerializeField] private Transform SellWindow;     
    [SerializeField] private Transform InfoPanel;                   
    [SerializeField] private Transform UpgradePanel;           
    [SerializeField] private Transform MysteryBoxPanel;
-   [SerializeField] public  Transform RecycleButton;
-   
+   [SerializeField] private TextMeshProUGUI tradeHutLevelText;
+                    public  Transform BuyPanel;       
+                    public  Transform RecycleButton;
    public List<Transform> SellItems { get; private set; }
    public List<Transform> BuyItems  { get; private set; }
 
-   [SerializeField] private TextMeshProUGUI tradeHutLevelText;
+   private TickerSystem ticker;
 
    public string currrentNewsTickerMessage;
 
@@ -102,6 +103,7 @@ public class TradeHutManager : MonoBehaviour
       tradeHutLevel = STARTING_LEVEL;
       SellItems     = new();
       BuyItems      = new();
+      ticker        = TickerSystem.Instance;
 
       // Initialize lastResetTurn for every ItemType so lookups are safe
       foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
@@ -392,132 +394,194 @@ public class TradeHutManager : MonoBehaviour
 
    public void SellItem() 
    {
-      int totalSellValue  = 0;
-
+      int    totalSellValue = 0,
+             soldCount      = 0;
+      string successMessage = null;
+      
       switch (currentSellItem.tag) 
       {
          // Tier 1 items
          case CRUDE_TOOL_TAG:
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               if(inv.TryUseCrudeTool(crudeToolSellCount))
-                  totalSellValue += crudeToolSellCount * GetItemValue(ItemType.CrudeTool);
-               else
+               soldCount = crudeToolSellCount;
+               
+               if (inv.TryUseCrudeTool(crudeToolSellCount)) 
+               {
+                  totalSellValue += soldCount * GetItemValue(ItemType.CrudeTool);
+                  successMessage = $"Sold {soldCount} Crude Tool{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
+               }
+               else 
                   crudeToolSellCount = MIN_SELL_ITEM_COUNT;
             }
             break;
-
+      
          case HARPOON_TAG:
             if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               if(inv.TryUseHarpoon(harpoonSellCount))
-                  totalSellValue += harpoonSellCount * GetItemValue(ItemType.Harpoon);
+               soldCount = harpoonSellCount;
+               
+               if (inv.TryUseHarpoon(harpoonSellCount))
+               {
+                  totalSellValue += soldCount * GetItemValue(ItemType.Harpoon);
+                  successMessage = $"Sold {soldCount} Harpoon{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
+               }
                else
                   harpoonSellCount = MIN_SELL_ITEM_COUNT;
             }
             break;
-
+      
          // Tier 2 item
          case PRESSURE_VALVE_TAG:
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
-               if(inv.TryUseHarpoon(pressureValveCount))
-                  totalSellValue += pressureValveCount * GetItemValue(ItemType.PressureValve);
+               soldCount = pressureValveCount;
+               
+               if (inv.TryUsePressureValve(pressureValveCount))
+               {
+                  totalSellValue += soldCount * GetItemValue(ItemType.PressureValve);
+                  successMessage = $"Sold {soldCount} Pressure Valve{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
+               }
                else
                   pressureValveCount = MIN_SELL_ITEM_COUNT;
             }
             break;
-
+      
          // Tier 3 item
          case ENGINE_TAG:
             if (engineSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               if(inv.TryUseEngine(engineSellCount))
-                  totalSellValue += engineSellCount * GetItemValue(ItemType.Engine);
+               soldCount = engineSellCount;
+               
+               if (inv.TryUseEngine(engineSellCount))
+               {
+                  totalSellValue += soldCount * GetItemValue(ItemType.Engine);
+                  successMessage = $"Sold {soldCount} Engine{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
+               }
                else
                   engineSellCount = MIN_SELL_ITEM_COUNT;
             }
             break;
       }
-
-      inv.TryAddPearl(totalSellValue);
+      
+      // Credit pearls and show success ticker only if something sold
+      if (totalSellValue > 0)
+      {
+         inv.TryAddPearl(totalSellValue);
+         ticker.ShowTicker(successMessage ?? $"Sold items for {totalSellValue} pearls.", Color.green, MessageTypes.ResultMessage);
+      }
+      else
+         if(soldCount == MIN_SELL_ITEM_COUNT) 
+            ticker.ShowTicker("No items have been selected.", Color.red, MessageTypes.ResultMessage);
+         else
+            soldCount = 0;
 
       crudeToolSellCount = MIN_SELL_ITEM_COUNT;
       harpoonSellCount   = MIN_SELL_ITEM_COUNT;
       pressureValveCount = MIN_SELL_ITEM_COUNT;
       engineSellCount    = MIN_SELL_ITEM_COUNT;
-
-      /* Destroy the instantiated sell window and remove the reference                                */
+      
+      // Destroy the instantiated sell window and remove the reference                                
       if (currentSellItem != null) 
       {
          Destroy(currentSellItem.gameObject);
          currentSellItem = null;
       }
-
+      
       CloseSellWindow();
-
+      
       return;
    }
 
-   public void BuyItem() 
-   {
+  public void BuyItem() 
+  {
+      // Handle raw ore exchange
       if (rawOreExchange > MIN_BUY_ITEM_COUNT) 
       { 
-         inv.TrySpendPearl(rawOreExchange);
-         inv.TryAddOre(rawOreExchange);
+         bool pearlsSpent = inv.TrySpendPearl(rawOreExchange),
+              oreAdded    = false;
+      
+         if (pearlsSpent)
+            oreAdded = inv.TryAddOre(rawOreExchange);
+      
+         if (pearlsSpent && oreAdded)
+            ticker.ShowTicker($"Bought {rawOreExchange} Ore for {rawOreExchange} pearls.", Color.green, MessageTypes.ResultMessage);
+      
          rawOreExchange = MIN_BUY_ITEM_COUNT;
       }
+      else
+         if(currentBuyItem.tag == RAW_ORE_CHUNK_TAG)
+            ticker.ShowTicker("No items have been selected", Color.red, MessageTypes.ResultMessage);
 
+
+      // Handle purchasing blueprint / mercenary items
       if (currentBuyItem != null) 
       {
-
+         // Tier 2 Blueprint purchase flow
          if (currentBuyItem.CompareTag(TIER_2_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier2BluePrint))) 
          {
-
+            // Grant player access to tier 2 blueprint content
             ForgeManager.Instance.hasTier2Blueprint = true;
+
+            // Add new craftable items to the inventory/craft list (pressure valve, diving bell)
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-         
+
+            // Remove the tier 2 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).gameObject.SetActive(false);
 
+            // Reveal the pressure valve on the sell panel and enable its UI controls
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemButton").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemName").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemValue").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+      
+            ticker.ShowTicker("Purchased Tier 2 Blueprint — Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
-         
+
+         // Tier 3 Blueprint purchase flow
          if (currentBuyItem.CompareTag(TIER_3_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier3BluePrint)))
          {
+            // Grant player access to tier 3 blueprint content
             ForgeManager.Instance.hasTier3Blueprint = true;
 
+            // Remove the tier 3 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).gameObject.SetActive(false);
 
+            // Add new craftable items (engine, precision lens) to inventory/craft list
             inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
             inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
-         
+
+            // Reveal the engine on the sell panel and enable its UI controls
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemButton").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemName").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemValue").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+      
+            ticker.ShowTicker("Purchased Tier 3 Blueprint — Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
-            
+
+         // Mercenary Engineer purchase flow
          if (currentBuyItem.CompareTag(MERCENARY_ENGINEER_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.MercenaryEngineer))) 
+         {
             ForgeManager.Instance.hasMercenaryEngineer = true;
+            ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
+         }
       }
 
-
-      if(currentBuyItem != null) 
+      // Clean up the buy window instance if one was open
+      if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
          currentBuyItem = null;
       }
-
+      
       CloseBuyWindow();
-
+      
       return;
    }
 
