@@ -13,15 +13,15 @@ public class OreRefinery_Manager : MonoBehaviour
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL = 4;
 
-   [SerializeField] private Transform  infoPanel;
-   [SerializeField] private Transform  upgradePanel;
-   [SerializeField] private GameObject buildingCanvas;
-   [SerializeField] private GameObject jamPanel;
+   [SerializeField] private Transform       infoPanel;
+   [SerializeField] private Transform       upgradePanel;
+   [SerializeField] private GameObject      buildingCanvas;
+   [SerializeField] private GameObject      jamPanel;
                     public  TextMeshProUGUI oreRefineryLevelText;
 
    public int oreLevel = STARTING_LEVEL;
 
-   public int JammingPercentage = 0;
+   public int JammingPercentage = 15;
 
    public bool IsBlocked = false;
 
@@ -145,7 +145,7 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Ore Refinery Level 2: Produces 25 Ore per turn. Upgrade Cost: 350 pearls + 1 patch kit.");
             CurrentOreProduction = 25;
             NextUpgradeCostInPearls = 350;
-            //NextUpgradeCostInPatchKits = 1; Need to implement Patch Kits in InventoryManager
+            //NextUpgradeCostInPatchKits = 1;
             break;
          case 3:
             Debug.Log("Ore Refinery Level 3: Produces 60 Ore per turn. Upgrade Cost: 1000 pearls + 1 precision lens");
@@ -235,14 +235,14 @@ public class OreRefinery_Manager : MonoBehaviour
    // Activates the jam button and sets up its listener
    public void ActivateJamButton()
    {
-      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(true);
-      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
+      buildingCanvas.transform.Find("JamButton").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JamButton").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
    }
 
    // Activates the jam symbol on the building canvas
    public void ActivateJamSymbol()
    {
-      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(true);
    }
 
    // Opens the jam panel and sets up its listeners
@@ -292,13 +292,27 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
          }
       }
-      else
+      else if(paymentType == 3)
       {
          TurnManager.Instance.ManualResetUnjam();
+         DeactivateJamSymbol();
+         CloseJamPanel();
+         DeactivateJamButton();
       }
    }
 
-   // 
+   // Activates the manual reset counter 
+   public void ActivateManualResetCounter()
+   {
+      buildingCanvas.transform.Find("JamCounter").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JamCounter").GetComponent<TextMeshProUGUI>().text = ($"{TurnManager.jamTurnCounter.ToString()}...");
+   }
+
+   // Deactivates the manual reset counter
+   public void DeactivateManualResetCounter()
+   {
+      buildingCanvas.transform.Find("JamCounter").gameObject.SetActive(false);
+   }
 
    // Closes the jam panel and removes its listeners
    public void CloseJamPanel()
@@ -313,14 +327,14 @@ public class OreRefinery_Manager : MonoBehaviour
    // Deactivates the jam button and removes its listener
    public void DeactivateJamButton()
    {
-      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
-      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(false);
+      buildingCanvas.transform.Find("JamButton").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
+      buildingCanvas.transform.Find("JamButton").gameObject.SetActive(false);
 
    }
 
    // Deactivates the jam symbol on the building canvas
    public void DeactivateJamSymbol()
    {
-      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+      buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
    }
 }

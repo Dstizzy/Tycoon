@@ -93,6 +93,10 @@ public class PopUpManager : MonoBehaviour
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
             OreRefinery_Manager.Instance.DeactivateJamButton();
+         if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
+         {
+            OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+         }
          buildingTransform = null; // Clear the reference to the old building
       }
 

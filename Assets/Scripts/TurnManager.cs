@@ -2,59 +2,59 @@
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.Rendering.UI;
 
 public class TurnManager : MonoBehaviour
 {
 
    // Constants
-   int TRADEHUTCAPTURED = 1;
-   int EXPLORATIONCAPTURED = 2;
-   int FORGECAPTURED = 3;
-   int LABCAPTURED = 4;
-   int OREFINERYCAPTURED = 5;
+   const int MANUALRESETWAIT = 3;
+   const int STARTINGTURN    = 1;
+   const int ENDINGTURN      = 80;
 
-   public static System.Random random = new System.Random();
-   public static int randomNumber;
-    // A public static instance of this class, following the 
-    // Singleton pattern. This allows other scripts to access
-    // it easily via 'TurnManager.Instance'.
-    public static TurnManager Instance { get; private set; }
 
-   // --- ADDED: Event System ---
-   /* This event is broadcast to all other scripts */
-   /* when the EndTurn() function is called. */
-   public static event Action OnTurnEnded;
+   // Static fields
+   public static System.Random random = new System.Random(); // Random number generator
+   public static int       randomNumber;                     // Random number for various calculations
+   public static int       jamTurnCounter;                   // Counter for turns during a jam
+   public static bool      manualResetOption     = false;    // Flag for manual reset option
+   public static int       heatLevel;                        // Current heat level
+   public static int       enemyAttackPercentage = 0;        // Percentage chance of enemy attack each turn
+   public static bool      userDefends;                      // Flag indicating if the user defends against enemy attacks 
+   private TradeHutManager tradeHutManager;                  // Trade hut manager instance 
+   public TickerSystem     newsTicker;                       // The wolrd event news ticker panel
 
-   private TradeHutManager tradeHutManager; // Trade hut manager instance 
-   public TickerSystem     newsTicker;      // The wolrd event news ticker panel
 
+   // Public Unity fields
    [Header("Turn Setting")]
-   public int currentTurn = 1;      // The current turn number, starting from 1.
-   public int maxTurns = 80;     // The maximum number of turns before the game ends.
-   public TextMeshProUGUI turnText; // The UI text element to display the current turn.
-   public int eventCountdown = 1;   // Turn countdown until next world event
+   public int             currentTurn    = STARTINGTURN;   // The current turn number, starting from 1.
+   public int             maxTurns       = ENDINGTURN;     // The maximum number of turns before the game ends.
+   public TextMeshProUGUI turnText;                        // The UI text element to display the current turn.
+   public int             eventCountdown = 1;              // Turn countdown until next world event
 
    [Header("UI/Game Status")]
-   public Button endTurnButton;       // The button to disable when the game ends.
-   private bool _isGameActive = true; // Tracks if the game is currently in progress.
+   public Button          endTurnButton;                   // The button to disable when the game ends.
+   private bool           _isGameActive  = true;           // Tracks if the game is currently in progress.
+
+   [Header("Enemy Settings")]
+   [SerializeField] private GameObject optionalEnemyPanel; // The enemy panel UI element.
+   [SerializeField] private GameObject forcedEnemyPanel;   // The forced enemy panel UI element.
+   [SerializeField] private GameObject heatProgressBar;    // The heat level progress bar UI element.
 
 
-   public static int  jamTurnCounter;                // Counter for turns during a jam
-   public static bool isTradeHutCaptured    = false; // Flag to indicate if the Trade Hut is captured
-   public static bool isOreRefineryCaptured = false; // Flag to indicate if the Ore Refinery is captured
-   public static bool isExplorationCaptured = false; // Flag to indicate if the Exploration Unit is captured
-   public static bool isForgeCaptured       = false; // Flag to indicate if the Forge is captured
-   public static bool isLabCaptured         = false; // Flag to indicate if the Lab is captured
-   public static int  enemyAttackPercentage = 5;     // Percentage chance of enemy attack each turn
-   public static int  whichBuildingCaptured = 0;     // Indicates which building was captured
-   public static bool manualResetOption     = false; // Flag for manual reset option
+   // public propertries
+   public static TurnManager Instance { get; private set; } // Singleton instance
+
+
+   // Events
+   public static event Action OnTurnEnded; // Broadcasts when a turn ends
+
 
 
    // Enforces the Singleton pattern to ensure only one 
    // instance of TurnManager exists. 
    void Awake()
    {
-      // Enforce the singleton pattern
       if (Instance != null && Instance != this)
       {
          Destroy(gameObject);
@@ -138,10 +138,8 @@ public class TurnManager : MonoBehaviour
       }
    }
 
-   /***************************************************/
-   /* Updates the turn text UI element to display the */
-   /* current turn and the maximum turn limit.        */
-   /***************************************************/
+   // Updates the turn text UI element to display the current
+   // turn and the maximum turn limit.        
    void UpdateTurnUI()
    {
       if (turnText != null)
@@ -150,10 +148,7 @@ public class TurnManager : MonoBehaviour
       }
    }
 
-   /***************************************************/
-   /* Called when the 'maxTurns' limit is reached.    */
-   /* It stops the game logic and updates the UI.     */
-   /***************************************************/
+   // Ends the game when the maximum number of turns is reached.
    void EndGame()
    {
       _isGameActive = false;
@@ -178,76 +173,204 @@ public class TurnManager : MonoBehaviour
          randomNumber = random.Next(1, 100);
          if (randomNumber < OreRefinery_Manager.Instance.JammingPercentage)
          {
-            OreRefinery_Manager.Instance.IsBlocked = true;
-            OreRefinery_Manager.Instance.ActivateJamSymbol();
-            jamTurnCounter = 0;
+            JamRefinery();
          }
       }
       else
       {
          if(manualResetOption == true)
          {
-            if(jamTurnCounter <= 3)
-               jamTurnCounter++;
+            if(jamTurnCounter > 0)
+               jamTurnCounter--;
             else
             {
                OreRefinery_Manager.Instance.IsBlocked = false;
                OreRefinery_Manager.Instance.DeactivateJamSymbol();
-               jamTurnCounter = 0;
                manualResetOption = false;
             }
          }      
       }
    }
 
+   // Allows the player to manually reset the jammed Ore Refinery
    public void ManualResetUnjam()
    {
       manualResetOption = true;
-      jamTurnCounter = 0;
    }
 
+   // Jams the Ore Refinery and sets the jam turn counter
+   public void JamRefinery()
+   {
+      OreRefinery_Manager.Instance.IsBlocked = true;
+      OreRefinery_Manager.Instance.ActivateJamSymbol();
+      jamTurnCounter = MANUALRESETWAIT;
+   }
+
+   // Handles enemy attack logic based on the current heat level
    public void HandleEnemy()
    {
-      enemyAttackPercentage += InventoryManager.Instance.pearlCount;
-      if(whichBuildingCaptured == 0)
+
+      HandleHeat();
+      HandleProgressBar();
+      if(heatLevel <= 40)
       {
-         randomNumber = random.Next(1,100);
-         if(randomNumber < enemyAttackPercentage)
+         enemyAttackPercentage = 0;
+      }
+      else if(heatLevel >= 41 && heatLevel < 70)
+      {
+         enemyAttackPercentage = 5;
+      }
+      else if(heatLevel >= 71 && heatLevel < 99)
+      {
+         enemyAttackPercentage = 15;
+      }
+      else
+      {
+         enemyAttackPercentage = 70;
+      }
+
+      randomNumber = random.Next(1, 100);
+      if (randomNumber < enemyAttackPercentage)
+      {
+         PopUpManager.Instance.DisablePlayerInput();
+         if (InventoryManager.Instance.harpoonCount > 0)
          {
-            if(OreRefinery_Manager.Instance.IsBlocked == false)
+            optionalEnemyPanel.SetActive(true);
+            optionalEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>().onClick.AddListener(() => 
             {
-               randomNumber = random.Next(1, 4);
-            }
-            else
+               userDefends = true;
+               optionalEnemyPanel.SetActive(false);
+            });
+            optionalEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>().onClick.AddListener(() => 
             {
-               randomNumber = random.Next(1, 5);
-            }
-            switch(randomNumber)
+               userDefends = false;
+               optionalEnemyPanel.SetActive(false);
+               PopUpManager.Instance.EnablePlayerInput();
+            });
+         }
+         else
+         {
+            forcedEnemyPanel.SetActive(true);
+            forcedEnemyPanel.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => 
             {
-               case 1:
-                  isTradeHutCaptured = true;
-                  whichBuildingCaptured = TRADEHUTCAPTURED;
-                  break;
-               case 2:
-                  isExplorationCaptured = true;
-                  whichBuildingCaptured = EXPLORATIONCAPTURED;
-                  break;
-               case 3:
-                  isForgeCaptured = true;
-                  whichBuildingCaptured = FORGECAPTURED;
-                  break;
-               case 4:
-                  isLabCaptured = true;
-                  whichBuildingCaptured = LABCAPTURED;
-                  break;
-               case 5:
-                  isOreRefineryCaptured = true;
-                  whichBuildingCaptured = OREFINERYCAPTURED;
-                  break;
-               default:
-                  break;
-            }
+               userDefends = false;
+               forcedEnemyPanel.SetActive(false);
+               PopUpManager.Instance.EnablePlayerInput();
+            });
+         }
+         if (userDefends)
+         {
+            heatLevel = 0;
+            DeactivateHeatNodes();
+         }
+         else
+         {
+            InventoryManager.Instance.TrySpendOre((int)(InventoryManager.Instance.oreCount / 2));
+            InventoryManager.Instance.TrySpendPearl((int)(InventoryManager.Instance.pearlCount / 4));
+            JamRefinery();
+            heatLevel = 10;
+            DeactivateHeatNodes();
+            heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);
+         }
+
+
+      }
+   }
+
+   // Increases the heat level each turn
+   public void HandleHeat()
+   {
+      heatLevel += 5;
+      if(OreRefinery_Manager.Instance.IsBlocked || manualResetOption)
+         heatLevel += 10;
+
+      // Active Forge +2 per forge
+      
+      // Exploration Unit + 3
+
+      // Building Count + 2
+
+      // Trade Hut Sale + 5
+
+      // Discovery in Exploration?
+
+   }
+
+   // Updates the heat level progress bar UI element
+   public void HandleProgressBar()
+   {
+      if(heatProgressBar != null)
+      {
+         if (heatLevel >= 8)
+         {
+            heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 16)
+         {
+            heatProgressBar.transform.Find("Node2").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 24)
+         {
+            heatProgressBar.transform.Find("Node3").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 32)
+         {
+            heatProgressBar.transform.Find("Node4").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 40)
+         {
+            heatProgressBar.transform.Find("Node5").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 48)
+         {
+            heatProgressBar.transform.Find("Node6").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 56)
+         {
+            heatProgressBar.transform.Find("Node7").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 64)
+         {
+            heatProgressBar.transform.Find("Node8").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 72)
+         {
+            heatProgressBar.transform.Find("Node9").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 80)
+         {
+            heatProgressBar.transform.Find("Node10").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 88)
+         {
+            heatProgressBar.transform.Find("Node11").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 96)
+         {
+            heatProgressBar.transform.Find("Node12").gameObject.SetActive(true);
+         }
+         if(heatLevel >= 100)
+         {
+            heatProgressBar.transform.Find("Node13").gameObject.SetActive(true);
          }
       }
+   }
+
+   // Deactivates all heat nodes in the progress bar
+   public void DeactivateHeatNodes()
+   {
+      heatProgressBar.transform.Find("Node1").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node2").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node3").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node4").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node5").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node6").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node7").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node8").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node9").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node10").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node11").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node12").gameObject.SetActive(false);
+      heatProgressBar.transform.Find("Node13").gameObject.SetActive(false);
    }
 }
