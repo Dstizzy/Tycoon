@@ -7,11 +7,14 @@ using Unity.VisualScripting;
 
 using UnityEngine;
 using UnityEngine.UI;
+using static TickerSystem;
 
 public class InventoryManager : MonoBehaviour 
 {                                     
    /* Holds a reference to the singleton instance of this class. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
-   public static InventoryManager Instance { get; private set; }                   
+   public static InventoryManager Instance { get; private set; } 
+   
+   private TickerSystem ticker;
                                                                                     
    /* Inspector variables for UI elements. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½              */
    [SerializeField] private Transform InventoryPanel,
@@ -121,7 +124,7 @@ public class InventoryManager : MonoBehaviour
           Instance = this;
           DontDestroyOnLoad(this.gameObject);
       }
-      
+
       if (InventoryPanel == null) 
           Debug.LogError("Inventory Panel is not assigned in the Inspector!");
       else 
@@ -147,9 +150,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 500;
+      pearlCount     = 0;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = MIN_ORE_COUNT;
+      oreCount       = 1000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -165,11 +168,21 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
+      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+
+      if (PatchKitCountText != null)
+         PatchKitCountText.transform.parent.gameObject.SetActive(false);
+
+      if (TickerSystem.Instance) {
+         Debug.Log("Instance is set");
+         ticker = TickerSystem.Instance;
+      }
+      else 
+         Debug.LogError("No ticker");
    }
 
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
@@ -465,129 +478,152 @@ public class InventoryManager : MonoBehaviour
       ShowCraftWindow();
    }
 
-   public void TryAddPearl(int pearlAmount)
+   public bool TryAddPearl(int pearlAmount)
    {
+      bool isSuccess = false;
+
       if (pearlCount > MAX_PEARL_COUNT) 
       {
           Debug.LogError("Pearl count is at maximum!");
-          return;
       } 
       else
          if ((pearlCount + pearlAmount) > MAX_PEARL_COUNT) 
              Debug.LogError("Pearl count is at maximum!");
-         else
-             pearlCount += pearlAmount;
+         else 
+         {
+            pearlCount += pearlAmount;
+            isSuccess = true;
+         }
       
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
-      return;
+      return isSuccess;
    }
    
-   public void TrySpendPearl(int pearlAmount) 
+   public bool TrySpendPearl(int pearlAmount) 
    {
+      bool isSuccess = false;
+
       if (pearlCount <= MIN_PEARL_COUNT)
       {
+         ticker.ShowTicker("Pearl count is at minimum!", Color.white, MessageTypes.ErrorMessage);
          Debug.LogError("Pearl count is at minimum!");
-         return;
       } 
       else
          if (pearlCount < pearlAmount) 
          {
             Debug.Log("Log Amount: " + pearlAmount.ToString());
             Debug.LogError("Not enough pearls to spend!");
-            return;
+            ticker.ShowTicker("Not enough pearls to spend!", Color.white, MessageTypes.ErrorMessage);
          } 
-         else
+         else 
+         {
             pearlCount -= pearlAmount;
+            isSuccess = true;
+         }
       
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
-      return;
+      return isSuccess;
    }
    
-   public void TryAddCrystal(int crystalAmount) 
+   public bool TryAddCrystal(int crystalAmount) 
    {
+      bool isSuccess = false;
+
       if (crystalCount > MAX_CRYSTAL_COUNT) 
       {
           Debug.LogError("Crystal count is at maximum!");
-          return;
       } 
       else
          if ((crystalCount + crystalAmount) > MAX_CRYSTAL_COUNT) 
              Debug.LogError("Crystal count is at maximum!");
-          else
-             crystalCount += crystalAmount;
+         else 
+         {
+            crystalCount += crystalAmount;
+            isSuccess = true;
+         }
       
       OnCrystalCountChanged?.Invoke(crystalCount);
       CrystalCountText.text = " x" + crystalCount.ToString();
       
-      return;
+      return isSuccess;
    }
    
-   public void TrySpendCrystal(int crystalAmount) 
+   public bool TrySpendCrystal(int crystalAmount) 
    {
+      bool isSuccess = false;
+
       if (crystalCount < MIN_CRYSTAL_COUNT) 
       {
          Debug.LogError("Crystal count is at minimum!");
-         return;
       } 
       else
          if (crystalCount < crystalAmount) 
          {
             Debug.LogError("Not enough crystals to spend!");
-            return;
          } 
-         else
+         else 
+         {
             crystalCount -= crystalAmount;
+            isSuccess     = true;
+         }
       
       OnCrystalCountChanged?.Invoke(crystalCount);
       CrystalCountText.text = " x" + crystalCount.ToString();
       
-      return;
+      return isSuccess;
    }
 
-   public void TryAddOre(int oreAmount)
+   public bool TryAddOre(int oreAmount)
    {
+      bool isSuccess = false;
+
       if (oreCount > MAX_ORE_COUNT)
       {
          Debug.LogError("Ore count is at maximum!");
-         return;
       }
       else
          if ((oreCount + oreAmount) > MAX_ORE_COUNT)
-         Debug.LogError("Ore count is at maximum!");
-      else
-         oreCount += oreAmount;
+            Debug.LogError("Ore count is at maximum!");
+         else 
+         {
+            oreCount += oreAmount;
+            isSuccess = true;
+         }
 
 
       OnOreCountChanged?.Invoke(oreCount);
       OreCountText.text = " x" + oreCount.ToString();
 
-      return;
+      return isSuccess;
    }
 
-   public void TrySpendOre(int oreAmount)
+   public bool TrySpendOre(int oreAmount)
    {
+      bool isSuccess = false;
+
       if (oreCount <= MIN_ORE_COUNT)
       {
          Debug.LogError("Ore count is at minimum!");
-         return;
       }
       else
          if (oreCount < oreAmount)
-      {
-         Debug.LogError("Not enough ore to spend!");
-         return;
-      }
-      else
-         oreCount -= oreAmount;
+         {
+            Debug.LogError("Not enough ore to spend!");
+         } 
+         else 
+         {
+            oreCount -= oreAmount;
+            isSuccess = true;
+         }
 
-      OnOreCountChanged?.Invoke(oreCount);
-      OreCountText.text = " x" + oreCount.ToString();
+         OnOreCountChanged?.Invoke(oreCount);
+         OreCountText.text = " x" + oreCount.ToString();
 
-      return;
+      return isSuccess;
    }
 
    public bool TryUseRawOreChunk(int rareOreAmount) 
@@ -644,7 +680,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddCrudeTool(int crudeToolAmount) 
    {
-      TextMeshProUGUI newCrudeToolCount = new();
+      TextMeshProUGUI newCrudeToolCount ;
       bool            isSuccess         = false;
 
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
@@ -663,7 +699,7 @@ public class InventoryManager : MonoBehaviour
               crudeToolCount += crudeToolAmount;
            }
 
-      newCrudeToolCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newCrudeToolCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       newCrudeToolCount.text  = " x" + crudeToolCount.ToString();
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
@@ -672,7 +708,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUseCrudeTool(int crudeToolAmount)
    {
-      TextMeshProUGUI newCrudeToolCount = new();
+      TextMeshProUGUI newCrudeToolCount;
       bool            isSuccess         = false;
 
       if (crudeToolCount <= MIN_CRUDE_TOOL_COUNT)
@@ -693,7 +729,7 @@ public class InventoryManager : MonoBehaviour
 
          }
 
-      newCrudeToolCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newCrudeToolCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       newCrudeToolCount.text  = " x" + crudeToolCount.ToString();
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
@@ -702,7 +738,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddHarpoon(int harpoonAmount)
    {
-      TextMeshProUGUI newHarpoonCount = new();
+      TextMeshProUGUI newHarpoonCount;
       bool            isSuccess       = false;
 
 
@@ -723,7 +759,7 @@ public class InventoryManager : MonoBehaviour
             harpoonCount += harpoonAmount;
          }
             
-      newHarpoonCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newHarpoonCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
@@ -731,7 +767,7 @@ public class InventoryManager : MonoBehaviour
    }
    public bool TryUseHarpoon(int harpoonAmount)
    {
-      TextMeshProUGUI newHarpoonCount = new();
+      TextMeshProUGUI newHarpoonCount;
       bool            isSuccess    = false;
 
       if (harpoonCount <= MIN_HARPOON_COUNT)
@@ -751,8 +787,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-      newHarpoonCount       = TradeHutManager.Instance.Items.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newHarpoonCount.text  = harpoonCount.ToString();
+      newHarpoonCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
@@ -829,6 +865,11 @@ public class InventoryManager : MonoBehaviour
          {
             isSuccess   = true;
             patchKitCount += patchKitAmount;
+
+            if (PatchKitCountText != null && !PatchKitCountText.transform.parent.gameObject.activeSelf)
+            {
+            PatchKitCountText.transform.parent.gameObject.SetActive(true);
+            }
          }
             
       PatchKitCountText.text = " x" + patchKitCount.ToString();
@@ -915,7 +956,7 @@ public class InventoryManager : MonoBehaviour
   
    public bool TryAddPressureValve(int pressureValveAmount)
    {
-      TextMeshProUGUI pressureValveValue = new();
+      TextMeshProUGUI pressureValveValue;
       bool            isSuccess          = false;
 
 
@@ -936,8 +977,8 @@ public class InventoryManager : MonoBehaviour
             pressureValveCount += pressureValveAmount;
          }
             
-      pressureValveValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      pressureValveValue.text     = pressureValveCount.ToString();
+      pressureValveValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      pressureValveValue.text     = " x" + pressureValveCount.ToString();
       PressureValveCountText.text = " x" + pressureValveCount.ToString();
 
       return isSuccess;
@@ -945,7 +986,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUsePressureValve(int pressureValveAmount) 
    {
-      TextMeshProUGUI pressureValveValue = new();
+      TextMeshProUGUI pressureValveValue;
       bool isSuccess                     = false;
 
       if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT) 
@@ -965,8 +1006,8 @@ public class InventoryManager : MonoBehaviour
             pressureValveCount += pressureValveAmount;
          }
 
-      pressureValveValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      pressureValveValue.text     = pressureValveCount.ToString();
+      pressureValveValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      pressureValveValue.text     = " x" + pressureValveCount.ToString();
       PressureValveCountText.text = " x" + pressureValveCount.ToString();
 
       return isSuccess;
@@ -974,7 +1015,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddEngine(int engineAmount)
    {
-      TextMeshProUGUI engineValue = new();
+      TextMeshProUGUI engineValue;
       bool            isSuccess   = false;
 
       if (engineCount >= MAX_ENGINE_COUNT)
@@ -995,15 +1036,15 @@ public class InventoryManager : MonoBehaviour
          }
 
 
-      engineValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      engineValue.text     = engineCount.ToString();
+      engineValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;
    }
    public bool TryUseEngine(int engineAmount)
    {
-      TextMeshProUGUI engineValue = new();
+      TextMeshProUGUI engineValue;
       bool            isSuccess   = false;
 
       if (engineCount <= MIN_ENGINE_COUNT)
@@ -1024,8 +1065,8 @@ public class InventoryManager : MonoBehaviour
          }
 
 
-      engineValue          = TradeHutManager.Instance.Items.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      engineValue.text     = engineCount.ToString();
+      engineValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
 
       return isSuccess;
@@ -1095,4 +1136,6 @@ public class InventoryManager : MonoBehaviour
    {
       CraftsPanel.gameObject.SetActive(false);
    }
+
+   
 }

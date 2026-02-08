@@ -22,8 +22,11 @@ public class ForgeManager : MonoBehaviour
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
-   public bool hasClockworkBlueprint = false;
-   public bool hasIndustrialBlueprint = false;
+   public bool hasTier3Blueprint = false;
+   public bool hasTier2Blueprint = false;
+   public bool hasMercenaryEngineer      = false;
+   public bool isMercenaryEngineerActive = false;
+
 
 
    /* Inspector Variables */
@@ -44,6 +47,8 @@ public class ForgeManager : MonoBehaviour
 
    [Header("Windw Template")]
    [SerializeField] private Transform craftWindowTemplate;
+   public CraftResultPanel resultPanel;
+
 
 
    public TextMeshProUGUI forgeLevelText;
@@ -53,6 +58,8 @@ public class ForgeManager : MonoBehaviour
    private int selectedCraftAmount = 0;
    private Item.ItemType selectedItemType;
    private static int forgeLevel = STARTING_LEVEL;
+
+   public static ForgeManager Instance { get; private set; }
 
    private void Start()
    {
@@ -64,6 +71,14 @@ public class ForgeManager : MonoBehaviour
 
    private void Awake()
    {
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
       upgradePanel.gameObject.SetActive(false);
@@ -110,43 +125,47 @@ public class ForgeManager : MonoBehaviour
       selectedItemType = itemType; 
       selectedCraftAmount = 0;
 
-      // ---------------------------------------------------------
-      //  SAFE FINDING OF UI ELEMENTS
-      // ---------------------------------------------------------
 
-      // CHECK 1: Item Image
+
       Transform imageTrans = windowTransform.Find("ItemImage");
       if (imageTrans != null)
       {
          imageTrans.GetComponent<Image>().sprite = Item.GetItemSprite(itemType);
       }
-      else Debug.LogError("MISSING: Could not find object named 'ItemImage' in prefab!");
+      else
+      {
+         Debug.LogError("MISSING: Could not find object named 'ItemImage' in prefab!");
+      }
 
-      // CHECK 2: Increase Button
       Transform incBtn = windowTransform.Find("QuantityButtons/IncreaseButton");
       if (incBtn != null)
       {
          incBtn.GetComponent<Button>().onClick.AddListener(() => IncreaseCraftAmount(windowTransform));
       }
-      else Debug.LogError("MISSING: Could not find 'QuantityButtons/IncreaseButton' in prefab!");
+      else
+      {
+         Debug.LogError("MISSING: Could not find 'QuantityButtons/IncreaseButton' in prefab!");
+      }
 
-      // CHECK 3: Decrease Button
       Transform decBtn = windowTransform.Find("QuantityButtons/DecreaseButton");
       if (decBtn != null)
       {
          decBtn.GetComponent<Button>().onClick.AddListener(() => DecreaseCraftAmount(windowTransform));
       }
-      else Debug.LogError("MISSING: Could not find 'QuantityButtons/DecreaseButton' in prefab!");
+      else
+      {
+         Debug.LogError("MISSING: Could not find 'QuantityButtons/DecreaseButton' in prefab!");
+      }
 
-      // CHECK 4: Craft Button
       Transform craftBtn = windowTransform.Find("CraftButton");
       if (craftBtn != null)
       {
          craftBtn.GetComponent<Button>().onClick.AddListener(() => CraftSelectedItem());
       }
-      else Debug.LogError("MISSING: Could not find 'CraftButton' in prefab!");
-
-      // ---------------------------------------------------------
+      else
+      {
+         Debug.LogError("MISSING: Could not find 'CraftButton' in prefab!");
+      }
 
       UpdateCraftAmountUI(windowTransform);
       windowTransform.gameObject.SetActive(true);
@@ -248,42 +267,68 @@ public class ForgeManager : MonoBehaviour
 
    public void CraftSelectedItem()
    {
-      Debug.Log("Craft");
+      int    unitCost = 0,  // Cost of one selected item
+             totalCost;     // Total cost required to craft
+      string itemName = ""; // Item name
+
+      // 1. Determine the cost of ONE item
       switch (selectedItemType)
       {
-         /* Tier 1 items */
          case Item.ItemType.CrudeTool:
-            InventoryManager.Instance.TrySpendOre(CRUDE_TOOL_COST);
-            InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount);
+            unitCost = CRUDE_TOOL_COST; itemName = "Crude Tool";
             break;
          case Item.ItemType.Harpoon:
-            InventoryManager.Instance.TrySpendOre(HARPOON_COST);
-            InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount);
+            unitCost = HARPOON_COST; itemName = "Harpoon";
             break;
          case Item.ItemType.PatchKit:
-            InventoryManager.Instance.TrySpendOre(PATCH_KIT_COST);
-            InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount);
+            unitCost = PATCH_KIT_COST; itemName = "Patch Kit";
             break;
-
-         // Tier 2 items
          case Item.ItemType.PressureValve:
-            InventoryManager.Instance.TrySpendOre(PRESSUREV_VALVE_COST);
-            InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount);
+            unitCost = PRESSUREV_VALVE_COST; itemName = "Pressure Valve";
             break;
          case Item.ItemType.DivingBell:
-            InventoryManager.Instance.TrySpendOre(DIVING_BELL_COST);
-            InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount);
+            unitCost = DIVING_BELL_COST; itemName = "Diving Bell";
             break;
-
-         // Tier 3 items
          case Item.ItemType.Engine:
-            InventoryManager.Instance.TrySpendOre(ENGINE_COST);
-            InventoryManager.Instance.TryAddEngine(selectedCraftAmount);
+            unitCost = ENGINE_COST; itemName = "Engine";
             break;
          case Item.ItemType.PrecisionLens:
-            InventoryManager.Instance.TrySpendOre(PRECISION_LENS_COST);
-            InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount);
+            unitCost = PRECISION_LENS_COST; itemName = "Precision Lens";
             break;
+      }
+
+      // Calculate TOTAL cost 
+      totalCost = unitCost * selectedCraftAmount;
+
+      // Check if there is enough ores to spend
+      if (InventoryManager.Instance.TrySpendOre(totalCost))
+      {
+         // Success, craft the desired items
+         switch (selectedItemType)
+         {
+            case Item.ItemType.CrudeTool: InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount); break;
+            case Item.ItemType.Harpoon: InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount); break;
+            case Item.ItemType.PatchKit: InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount); break;
+            case Item.ItemType.PressureValve: InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount); break;
+            case Item.ItemType.DivingBell: InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount); break;
+            case Item.ItemType.Engine: InventoryManager.Instance.TryAddEngine(selectedCraftAmount); break;
+            case Item.ItemType.PrecisionLens: InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount); break;
+         }
+
+         // Show Success Panel
+         if (resultPanel != null)
+            resultPanel.ShowSuccess(selectedCraftAmount, itemName);
+
+         selectedCraftAmount = 0; // Reset the craft amount to 0
+
+         if (currentCraftWindow != null)
+            UpdateCraftAmountUI(currentCraftWindow); // Refresh UI to show 0
+      }
+      else
+      {
+         // Failure, not enough ore to spend
+         if (resultPanel != null) resultPanel.ShowFailure();
+         Debug.Log("Not enough ore!");
       }
    }
 
@@ -292,7 +337,6 @@ public class ForgeManager : MonoBehaviour
       SetupTierButtons(tier1Panel, TIER_1);
       SetupTierButtons(tier2Panel, TIER_2);
       SetupTierButtons(tier3Panel, TIER_3);
-
    }
 
    private void SetupTierButtons(GameObject tierPanel, int tier)
@@ -437,12 +481,12 @@ public class ForgeManager : MonoBehaviour
       Transform t3 = craftPanel.transform.Find("TierButtons/Tier3");
 
       UpdateTierButtonState(t1, TIER_1, true);
-      UpdateTierButtonState(t2, TIER_2, hasClockworkBlueprint);
-      UpdateTierButtonState(t3, TIER_3, hasIndustrialBlueprint);
+      UpdateTierButtonState(t2, TIER_2, hasTier2Blueprint);
+      UpdateTierButtonState(t3, TIER_3, hasTier3Blueprint);
 
       if (t1 != null)
       {
-         t1.GetComponent<Button>().onClick.RemoveAllListeners(); // Clean up old clicks
+         t1.GetComponent<Button>().onClick.RemoveAllListeners(); 
          t1.GetComponent<Button>().onClick.AddListener(() => OpenTierPanel(1));
       }
       else Debug.LogError("Could not find button 'Tier1' inside TierButtons!");
@@ -564,7 +608,5 @@ public class ForgeManager : MonoBehaviour
             break;
       }
    }
-
-   
 }
    

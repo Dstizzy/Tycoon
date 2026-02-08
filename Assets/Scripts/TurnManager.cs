@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.Rendering.UI;
+using static TickerSystem;
 
 public class TurnManager : MonoBehaviour
 {
@@ -65,6 +66,9 @@ public class TurnManager : MonoBehaviour
          // (Optional) Uncomment this to make the manager persist across scenes
          // DontDestroyOnLoad(gameObject); 
       }
+
+      if(newsTicker == null)
+         Debug.Log("Ticker is not assigned in the Inspector");
    }
 
    // Initializes the UI elements with the starting values when the game begins.                  
@@ -90,7 +94,7 @@ public class TurnManager : MonoBehaviour
       {
          tradeHutManager.WorldEventNewsTickerText();
          tradeHutManager.WorldEvent();
-         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white);
+         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
 
          eventCountdown = 0;
       }
@@ -106,7 +110,7 @@ public class TurnManager : MonoBehaviour
          {
             newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
-            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white);
+            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
          }
       }
 

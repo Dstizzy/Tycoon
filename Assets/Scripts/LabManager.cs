@@ -34,7 +34,7 @@ public class LabManager : MonoBehaviour
  
 
    /* Public variables                                                                          */
-   public static int currentCommerceTier { get; private set; }
+   public static int currentCommerceTier { get; private set; } = 0;
 
 
     TradeHutManager tradeHutManager;
@@ -227,7 +227,7 @@ public class LabManager : MonoBehaviour
            tradeHutManager.marketShiftMin = 1;
            tradeHutManager.marketShiftMax = 2;
            
-            foreach(Transform item in tradeHutManager.Items)
+            foreach(Transform item in tradeHutManager.SellItems)
               item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
         }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
