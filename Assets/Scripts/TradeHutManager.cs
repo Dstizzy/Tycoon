@@ -719,7 +719,6 @@ public class TradeHutManager : MonoBehaviour
 
          if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.CrudeToolEvent) 
          {
-            Debug.Log("Here");
             if (shiftDirection <= 50)
                preview = baseVal - ((int)(BASE_CRUDE_TOOL_SELL_VALUE));
             else
@@ -727,7 +726,6 @@ public class TradeHutManager : MonoBehaviour
          } 
          else 
          {
-            Debug.Log("fluctuation: " + crudeToolFluctuation);
             if (crudeToolChance <= 30)
                preview = baseVal + crudeToolFluctuation;
             else
@@ -736,7 +734,6 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // clamp so UI never shows out-of-range values
-         Debug.Log("Next Value: " + preview);
          preview = Mathf.Clamp(preview, MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE);
 
          // always write the UI (avoids leaving stale negative text when conditions skip)
@@ -753,7 +750,6 @@ public class TradeHutManager : MonoBehaviour
 
          if(TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.HarpoonEvent) 
          {
-            Debug.Log("Here");
             if (shiftDirection <= 50)
                preview = baseVal - ((int)(BASE_HARPON_SELL_VALUE));
             else
@@ -761,8 +757,6 @@ public class TradeHutManager : MonoBehaviour
          }
           else 
           {
-            Debug.Log("fluctuation: " + harpoonFluctuation);
-
             if (harpoonChance <= 30)
                    preview = baseVal + harpoonFluctuation;
                 else 
@@ -771,12 +765,8 @@ public class TradeHutManager : MonoBehaviour
           }
           
           // clamp so UI never shows out-of-range values
-          Debug.Log("Next Value: " + preview);
           preview = Mathf.Clamp(preview, MIN_HARPOON_VALUE, MAX_HARPOON_VALUE);
 
-
-         Debug.Log("Turn: " + TurnManager.Instance.eventCountdown);
-         
          // always write the UI (avoids leaving stale negative text when conditions skip)
          harpoonValueText.text = "Next Value: " + preview.ToString();
       }
@@ -791,11 +781,21 @@ public class TradeHutManager : MonoBehaviour
             baseVal = GetItemValue(ItemType.PressureValve);
             preview = baseVal; // default to current
 
-            if (pressureValveChance <= 30)
-               preview = baseVal + pressureValveFluctuation;
-            else
-               if (pressureValveChance <= 60)
-                  preview = baseVal - pressureValveFluctuation;
+            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.PressureValveEvent) 
+            {
+               if (shiftDirection <= 50)
+                  preview = baseVal - ((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
+               else
+                  preview = baseVal + ((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
+            }
+            else 
+            {
+               if (pressureValveChance <= 30)
+                  preview = baseVal + pressureValveFluctuation;
+               else
+                  if (pressureValveChance <= 60)
+                     preview = baseVal - pressureValveFluctuation;
+            }
 
             // clamp so UI never shows out-of-range values
             preview = Mathf.Clamp(preview, MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE);
@@ -814,11 +814,22 @@ public class TradeHutManager : MonoBehaviour
          {
             baseVal = GetItemValue(ItemType.Engine);
             preview = baseVal; // default to current
-            if (engineChance <= 30)
-               preview = baseVal + engineFluctuation;
-            else
-               if (engineChance <= 60)
-                  preview = baseVal - engineFluctuation;
+
+            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.ClockworkEngineEvent) 
+            {
+               if (shiftDirection <= 50)
+                  preview = baseVal - ((int)(BASE_ENGINE_VALUE));
+               else
+                  preview = baseVal + ((int)(BASE_ENGINE_VALUE));
+            } 
+            else 
+            {
+               if (engineChance <= 30)
+                  preview = baseVal + engineFluctuation;
+               else
+                  if (engineChance <= 60)
+                     preview = baseVal - engineFluctuation;
+            }
 
             // clamp so UI never shows out-of-range values
             preview = Mathf.Clamp(preview, MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
@@ -827,7 +838,6 @@ public class TradeHutManager : MonoBehaviour
             engineValueText.text = "Next Value: " + preview.ToString();
          }
       }
-
    }
 
    /* Shifts the sell market each turn.  */
@@ -836,13 +846,10 @@ public class TradeHutManager : MonoBehaviour
       // Crude Tool fluctuations
       if (worldEvent == (int)WorldEventTypes.CrudeToolEvent && TurnManager.Instance.eventCountdown == 5) 
       {
-         if(shiftDirection <= 50) {
-            Debug.Log("crude tool amount +" + crudeToolFluctuation);
+         if(shiftDirection <= 50)
             TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
-         } else {
-            Debug.Log("crude tool amount -" + crudeToolFluctuation);
+         else 
             TryDecreaseCrudeToolSellValue(crudeToolFluctuation);
-         }
       }
       else 
       {
@@ -851,30 +858,20 @@ public class TradeHutManager : MonoBehaviour
          else 
          {
             if (crudeToolChance <= 30)
-            {
-               Debug.Log("crude tool amount +" + crudeToolFluctuation);
                TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
-            }
             else
                if(crudeToolChance <= 60) 
-               {
-                  Debug.Log("crude tool amount -" + crudeToolFluctuation);
                   TryDecreaseCrudeToolSellValue(crudeToolFluctuation);
-               }
-            
          }
       }
 
       // Harpoon fluctuations
       if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == 5) 
       {
-         if (shiftDirection <= 50) {
-            Debug.Log("harpoon amount +" + harpoonFluctuation);
+         if (shiftDirection <= 50)
             TryIncreaseHarpoonSellValue(harpoonFluctuation);
-         } else {
-            Debug.Log("harpoon amount -" + harpoonFluctuation);
+         else
             TryDecreaseHarpoonSellValue(harpoonFluctuation);
-         }
       } 
       else 
       {
@@ -883,16 +880,10 @@ public class TradeHutManager : MonoBehaviour
          else 
          {
             if (harpoonChance <= 30) 
-            {
-               Debug.Log("harpoon amount +" + harpoonFluctuation);
                TryIncreaseHarpoonSellValue(harpoonFluctuation);
-            }
             else 
                if(harpoonChance <= 60) 
-               {
-                  Debug.Log("harpoon amount -" + harpoonFluctuation);
                   TryDecreaseHarpoonSellValue(harpoonFluctuation);
-               }
          }
       }
      
@@ -900,52 +891,38 @@ public class TradeHutManager : MonoBehaviour
       {
          if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == 5) 
          {
-            if (shiftDirection <= 50) {
-               Debug.Log("pressure valve amount +" + pressureValveFluctuation);
+            if (shiftDirection <= 50)
                TryIncreasePressureValveValue(pressureValveFluctuation);
-            } else {
-               Debug.Log("pressure valve amount  -" + pressureValveFluctuation);
+            else
                TryDecreasePressureValveValue(pressureValveFluctuation);
-            }
          } 
-         else
+         else 
+         {
             if (pressureValveChance <= 30) 
-            {
-               Debug.Log("pressure valve amount +" + pressureValveFluctuation);
                TryIncreasePressureValveValue(pressureValveFluctuation);
-            }
             else 
                if(pressureValveChance <= 60) 
-               {
-                  Debug.Log("pressure valve amount  -" + pressureValveFluctuation);
                   TryDecreasePressureValveValue(pressureValveFluctuation);
-               }
+         }
       }
 
       if (ForgeManager.Instance.hasTier3Blueprint) 
       {
          if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == 5) 
          {
-            if (shiftDirection <= 50) {
-               Debug.Log("engine amount +" + engineFluctuation);
+            if (shiftDirection <= 50) 
                TryDecreaseEnginesSellValue(engineFluctuation);
-            } else {
-               Debug.Log("engine amount -" + engineFluctuation);
+            else 
                TryDecreaseEnginesSellValue(engineFluctuation);
-            }
-         }
-         else
+         } 
+         else 
+         {
             if (engineChance <= 30) 
-            {
-               Debug.Log("engine amount +" + engineFluctuation);
                TryIncreaseEngineSellValue(engineFluctuation);
-            }
             else 
                if(engineChance <= 60) 
-               {
-                  Debug.Log("engine amount -" + engineFluctuation);
                   TryDecreaseEnginesSellValue(engineFluctuation);
-               }
+         }
          return;
       }
    }
@@ -996,7 +973,7 @@ public class TradeHutManager : MonoBehaviour
 
       switch (worldEvent) 
       { 
-         // Crude tool world event fluctuations
+         // Crude tool world event foresight
          case (int) WorldEventTypes.CrudeToolEvent:
             crudeToolFluctuation = GetItemValue(ItemType.CrudeTool);
 
@@ -1009,7 +986,7 @@ public class TradeHutManager : MonoBehaviour
             sellValueText.text = "Next Value: " + preview.ToString();
             break;
 
-         // Harpoon world event fluctuations
+         // Harpoon world event foresight
          case (int) WorldEventTypes.HarpoonEvent:
             harpoonFluctuation = GetItemValue(ItemType.Harpoon);
 
@@ -1022,7 +999,7 @@ public class TradeHutManager : MonoBehaviour
             sellValueText.text = "Next Value: " + preview.ToString();
             break;
 
-         // Pressure valve world event fluctuations
+         // Pressure valve world event foresight
          case (int)WorldEventTypes.PressureValveEvent:
             pressureValveFluctuation = GetItemValue(ItemType.PressureValve);
 
@@ -1035,7 +1012,7 @@ public class TradeHutManager : MonoBehaviour
             sellValueText.text = "Next Value: " + preview.ToString();
             break;
 
-         // Engine world event fluctuations
+         // Engine world event foresight
          case (int)WorldEventTypes.ClockworkEngineEvent:
             engineFluctuation = GetItemValue(ItemType.Engine);
 
