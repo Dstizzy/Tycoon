@@ -197,7 +197,7 @@ public class OreRefinery_Manager : MonoBehaviour
             InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
 
             oreLevel += 1;
-            JammingPercentage += 5;
+            jammingChance += 5;
             CalculateRefineryValues(); // Recalculate production/cost for the next level.
             Debug.Log("Upgrade successful to Level " + oreLevel);
          }

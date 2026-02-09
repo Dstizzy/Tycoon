@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using static TickerSystem;
 
 [System.Serializable]
 public class CraftingJob
@@ -12,8 +13,6 @@ public class CraftingJob
    public int turnsRemaining;
    public string itemName;
 }
-
-using static TickerSystem;
 
 public class ForgeManager : MonoBehaviour
 {
@@ -105,7 +104,7 @@ public class ForgeManager : MonoBehaviour
          DontDestroyOnLoad(this.gameObject);
       }
 
-      ticker = TickerSystem.Instance;
+      //ticker = TickerSystem.Instance;
 
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
@@ -303,7 +302,7 @@ public class ForgeManager : MonoBehaviour
 
          forgeLevelText.text = "Level " + forgeLevel.ToString();
 
-         ticker.ShowTicker($"Forge upgraded to Level {forgeLevel}.", Color.green, MessageTypes.ResultMessage);
+         //ticker.ShowTicker($"Forge upgraded to Level {forgeLevel}.", Color.green, MessageTypes.ResultMessage);
 
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
