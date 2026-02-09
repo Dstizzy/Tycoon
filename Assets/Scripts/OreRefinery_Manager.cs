@@ -13,18 +13,14 @@ public class OreRefinery_Manager : MonoBehaviour
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL = 4;
 
-   [SerializeField] private Transform  infoPanel;
-   [SerializeField] private Transform  upgradePanel;
-   [SerializeField] private GameObject buildingCanvas;
-   [SerializeField] private GameObject jamPanel;
+   [SerializeField] private Transform       infoPanel;
+   [SerializeField] private Transform       upgradePanel;
+   [SerializeField] private GameObject      buildingCanvas;
+   [SerializeField] private GameObject      jamPanel;
                     public  TextMeshProUGUI oreRefineryLevelText;
 
    public int oreLevel = STARTING_LEVEL;
-
-   public int JammingPercentage = 0;
-
-   public bool IsBlocked = false;
-
+   public int jammingChance = 15; // Starting percentage for jamming
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
 
@@ -145,7 +141,7 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Ore Refinery Level 2: Produces 25 Ore per turn. Upgrade Cost: 350 pearls + 1 patch kit.");
             CurrentOreProduction = 25;
             NextUpgradeCostInPearls = 350;
-            //NextUpgradeCostInPatchKits = 1; Need to implement Patch Kits in InventoryManager
+            //NextUpgradeCostInPatchKits = 1;
             break;
          case 3:
             Debug.Log("Ore Refinery Level 3: Produces 60 Ore per turn. Upgrade Cost: 1000 pearls + 1 precision lens");
@@ -163,20 +159,27 @@ public class OreRefinery_Manager : MonoBehaviour
       }
    }
 
-   // --- ADDED: This function is called by the TurnManager's event ---
+   // Reduces jamming percentage when user unlocks tier 1 in lab
+   public void ReduceJamming(int oreAmount)
+   {
+      jammingChance -= oreAmount;
+
+      if (jammingChance < 0)
+         jammingChance = 0;
+
+      Debug.Log($"Refinery improved! Jamming chance is now {jammingChance}%");
+   }
+
    private void ProduceOres()
    {
-      // Use InventoryManager.Instance.TryAddOre to add ore.
-      if (!IsBlocked)
+      int roll = Random.Range(0, 100);
+
+      if (roll < jammingChance)
       {
-         InventoryManager.Instance.TryAddOre(CurrentOreProduction);
+         Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
       }
 
-
-      // Notify UI (or other scripts) that oreCount has changed.
-      InventoryManager.Instance.OnOreCountChanged?.Invoke(InventoryManager.Instance.oreCount);
-
-      Debug.Log("OreRefinery produced " + CurrentOreProduction + " Ore. Total Ore: " + InventoryManager.Instance.oreCount);
+      InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }
 
    // --- MODIFIED: Now spends Pearls using InventoryManager ---
@@ -194,7 +197,7 @@ public class OreRefinery_Manager : MonoBehaviour
             InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
 
             oreLevel += 1;
-            JammingPercentage += 5;
+            jammingChance += 5;
             CalculateRefineryValues(); // Recalculate production/cost for the next level.
             Debug.Log("Upgrade successful to Level " + oreLevel);
          }
@@ -232,70 +235,7 @@ public class OreRefinery_Manager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
-   public void ActivateJamButton()
-   {
-      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(true);
-      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
-   }
+   
 
-   public void ActivateJamSymbol()
-   {
-      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(true);
-   }
-
-   public void OpenJamPanel()
-   {
-      jamPanel.SetActive(true);
-      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseJamPanel());
-      jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(1));
-      jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(2));
-
-      PopUpManager.Instance.DisablePlayerInput();
-   }
-
-   public void PayForUnjamming(int paymentType)
-   {
-      if(paymentType == 1) 
-      {
-         if(InventoryManager.Instance.patchKitCount >= 1) 
-         {
-            //InventoryManager.Instance.TrySpendPatchKit(1);
-            IsBlocked = false;
-            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
-            CloseJamPanel();
-            Debug.Log("Ore Refinery unjammed successfully.");
-         }
-         else 
-         {
-            Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
-         }
-      }
-      else
-      {
-         if(InventoryManager.Instance.pearlCount >= 100) 
-         {
-            InventoryManager.Instance.TrySpendPearl(100);
-            IsBlocked = false;
-            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
-            CloseJamPanel();
-            Debug.Log("Ore Refinery unjammed successfully.");
-         }
-         else 
-         {
-            Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
-         }
-      }
-   }
-   public void CloseJamPanel()
-   {
-      jamPanel.SetActive(false);
-      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.RemoveAllListeners();
-      PopUpManager.Instance.EnablePlayerInput();
-   }
-   public void DeactivateJamButton()
-   {
-      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
-      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(false);
-
-   }
+   
 }

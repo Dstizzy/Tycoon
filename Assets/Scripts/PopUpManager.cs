@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -93,6 +93,10 @@ public class PopUpManager : MonoBehaviour
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
             OreRefinery_Manager.Instance.DeactivateJamButton();
+         if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
+         {
+            OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+         }
          buildingTransform = null; // Clear the reference to the old building
       }
 
@@ -102,26 +106,17 @@ public class PopUpManager : MonoBehaviour
          // The mouse is entering a new object. Open the pop-up for the new object.
          // We don't need to call ClosePopUps() here because it was handled in Case A.
          buildingTransform = currentHoverObject;
-         switch (buildingTransform.tag)
+
+         if (OreRefinery_Manager.Instance.IsBlocked && currentHoverObject.tag == "Ore Refinery")
          {
-            case "Trade Hut":
-               break;
-            case "Lab":
-               break;
-            case "Exploration Unit":
-               break;
-            case "Forge":
-               break;
-            case "Ore Refinery":
-               IsBuildingBlocked = OreRefinery_Manager.Instance.IsBlocked;
-               break;
-            default:
-               buildingTransform = null;
-               return;
-         }
-         if (IsBuildingBlocked && currentHoverObject.tag == "Ore Refinery")
-         {
-            OreRefinery_Manager.Instance.ActivateJamButton();
+            if(TurnManager.manualResetOption)
+            {
+               OreRefinery_Manager.Instance.ActivateManualResetCounter();
+            }
+            else
+            {
+               OreRefinery_Manager.Instance.ActivateJamButton();
+            }
          }
          else
          {
