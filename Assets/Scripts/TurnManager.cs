@@ -100,6 +100,9 @@ public class TurnManager : MonoBehaviour
       {
          UpdateTurnUI();
 
+         HandleJamming();
+         HandleEnemy();
+
          if (eventCountdown == 5) 
          {
             tradeHutManager.WorldEventNewsTickerText();

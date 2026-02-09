@@ -23,7 +23,7 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public int oreLevel = STARTING_LEVEL;
 
-   public int jammingChance = 0;
+   public int jammingChance = 10;
 
    public bool IsBlocked = false;
 
@@ -231,6 +231,9 @@ public class OreRefinery_Manager : MonoBehaviour
       if (roll < jammingChance)
       {
          Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
+         IsBlocked = true;
+         ActivateJamButton();
+         ActivateJamSymbol();
       }
 
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
