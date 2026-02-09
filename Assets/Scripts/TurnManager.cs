@@ -4,7 +4,6 @@ using TMPro;
 using System;
 using UnityEngine.Rendering.UI;
 using static TickerSystem;
-using static InventoryManager; 
 
 public class TurnManager : MonoBehaviour
 {
@@ -91,46 +90,32 @@ public class TurnManager : MonoBehaviour
       currentTurn++;
       eventCountdown++;
 
-      // Check if the game should end                 */
-      if (currentTurn > maxTurns)
+      if ((eventCountdown % 5) == 0) 
       {
-         EndGame();
-      }
-      else
-      {
-         UpdateTurnUI();
+         tradeHutManager.WorldEventNewsTickerText();
+         tradeHutManager.WorldEvent();
+         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
 
-         if (eventCountdown == 5) 
+         eventCountdown = 0;
+      }
+      else 
+      {
+         if (eventCountdown == 1) 
          {
+            tradeHutManager.ResetWorldEventShifts();
+            tradeHutManager.WorldEventChance();
+         }
+
+         if (eventCountdown >= 3 && eventCountdown <= 5) 
+         {
+            newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
             newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
-            
-            // World Event fluctuation
-            tradeHutManager.MarketFluctuate();
-
-            eventCountdown = 0;
-         } 
-         else 
-         {
-            if (eventCountdown == 1) 
-            {
-               tradeHutManager.ResetWorldEventShifts();
-               tradeHutManager.WorldEventChance();
-               tradeHutManager.MarketFluctuate();
-            } 
-            else 
-            {
-               if (eventCountdown >= 3 && eventCountdown <= 5) 
-               {
-                  newsTicker.gameObject.SetActive(true);
-                  tradeHutManager.WorldEventNewsTickerText();
-                  newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
-                  tradeHutManager.MarketFluctuate();
-               }
-               else
-                  tradeHutManager.MarketFluctuate();
-            }
          }
+      }
+
+      HandleJamming();
+      HandleEnemy();
 
          tradeHutManager.CraftMarketForesight();
 

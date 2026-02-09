@@ -150,9 +150,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 10000;
+      pearlCount     = 0;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = 0;
+      oreCount       = 1000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -177,8 +177,7 @@ public class InventoryManager : MonoBehaviour
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
 
-      if (TickerSystem.Instance) 
-      {
+      if (TickerSystem.Instance) {
          Debug.Log("Instance is set");
          ticker = TickerSystem.Instance;
       }
@@ -483,24 +482,19 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
-      if (pearlCount >= MAX_PEARL_COUNT) 
+      if (pearlCount > MAX_PEARL_COUNT) 
       {
-         ticker.ShowTicker("Pearl count is at maximum!", Color.red, MessageTypes.ResultMessage);
-         Debug.LogError("Pearl count is at maximum!");
+          Debug.LogError("Pearl count is at maximum!");
       } 
       else 
       {
          if ((pearlCount + pearlAmount) > MAX_PEARL_COUNT) 
-         {
-            ticker.ShowTicker("Cannot add pearls - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
-            Debug.LogError("Pearl count is at maximum!");
-         }
+             Debug.LogError("Pearl count is at maximum!");
          else 
          {
             pearlCount += pearlAmount;
             isSuccess = true;
          }
-      }
       
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
@@ -514,7 +508,7 @@ public class InventoryManager : MonoBehaviour
 
       if (pearlCount <= MIN_PEARL_COUNT)
       {
-         ticker.ShowTicker("Pearl count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker("Pearl count is at minimum!", Color.white, MessageTypes.ErrorMessage);
          Debug.LogError("Pearl count is at minimum!");
       } 
       else 
@@ -522,14 +516,13 @@ public class InventoryManager : MonoBehaviour
          if (pearlCount < pearlAmount)
          {
             Debug.LogError("Not enough pearls to spend!");
-            ticker.ShowTicker($"Cannot spend pearls, only {pearlCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Not enough pearls to spend!", Color.white, MessageTypes.ErrorMessage);
          } 
          else 
          {
             pearlCount -= pearlAmount;
             isSuccess = true;
          }
-      }
       
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
@@ -541,14 +534,13 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
-      if (crystalCount >= MAX_CRYSTAL_COUNT) 
+      if (crystalCount > MAX_CRYSTAL_COUNT) 
       {
-         Debug.LogError("Crystal count is at maximum!");
-         ticker.ShowTicker("CRystal count is at maximum!", Color.red, MessageTypes.ResultMessage);
+          Debug.LogError("Crystal count is at maximum!");
       } 
       else
          if ((crystalCount + crystalAmount) > MAX_CRYSTAL_COUNT) 
-            ticker.ShowTicker("Cannot add crystals - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
+             Debug.LogError("Crystal count is at maximum!");
          else 
          {
             crystalCount += crystalAmount;
@@ -565,7 +557,7 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
-      if (crystalCount <= MIN_CRYSTAL_COUNT) 
+      if (crystalCount < MIN_CRYSTAL_COUNT) 
       {
          ticker.ShowTicker("Crystal count is at minimum", Color.red, MessageTypes.ResultMessage);
          Debug.LogError("Crystal count is at minimum!");
@@ -592,17 +584,13 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
-      if (oreCount >= MAX_ORE_COUNT)
+      if (oreCount > MAX_ORE_COUNT)
       {
-         Debug.LogError("Not enough ore to spend!");
-         ticker.ShowTicker($"Ore count is at maximum!", Color.red, MessageTypes.ResultMessage);
+         Debug.LogError("Ore count is at maximum!");
       }
       else
-         if ((oreCount + oreAmount) > MAX_ORE_COUNT) 
-         {
+         if ((oreCount + oreAmount) > MAX_ORE_COUNT)
             Debug.LogError("Ore count is at maximum!");
-            ticker.ShowTicker($"Cannot add ore - would exceed the maximum!", Color.red, MessageTypes.ResultMessage);
-         }
          else 
          {
             oreCount += oreAmount;
@@ -623,14 +611,11 @@ public class InventoryManager : MonoBehaviour
       if (oreCount <= MIN_ORE_COUNT)
       {
          Debug.LogError("Ore count is at minimum!");
-         ticker.ShowTicker($"Ore count is at minimum!", Color.red, MessageTypes.ResultMessage);
-
-      } 
+      }
       else
          if (oreCount < oreAmount)
          {
             Debug.LogError("Not enough ore to spend!");
-            ticker.ShowTicker($"Cannot spend ore, only {oreCount} avaliable!", Color.red, MessageTypes.ResultMessage);
          } 
          else 
          {
@@ -643,10 +628,63 @@ public class InventoryManager : MonoBehaviour
 
       return isSuccess;
    }
+
+   public bool TryUseRawOreChunk(int rareOreAmount) 
+   {
+      bool isSuccess = false;
+
+      if (rawOreChunkCount <= MIN_CRUDE_TOOL_COUNT) 
+      {
+         Debug.LogError("Rare ore count is at minimum!");
+         return isSuccess;
+      }
+      else
+         if (rawOreChunkCount < rareOreAmount) 
+         {
+            Debug.LogError("Not enough rare ores!");
+            return isSuccess;
+         } 
+         else 
+         {
+            isSuccess       = true;
+            crudeToolCount -= rareOreAmount;
+         }
+
+      RaWOreChunkCountText.text = " x" + rawOreChunkCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryAddRawOreChunk(int rareOreAmount) 
+   {
+      bool isSuccess = false;
+
+      if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
+      {
+         Debug.LogError("Rare ore count is at maximum!");
+         return isSuccess;
+      } 
+      else
+         if ((crudeToolCount + rareOreAmount) > MAX_CRUDE_TOOL_COUNT) 
+         {
+            Debug.LogError("Rare ore count is at maximum!");
+            return isSuccess;
+         } 
+         else 
+         {
+            isSuccess = true;
+            rawOreChunkCount += rareOreAmount;
+         }
+
+      RaWOreChunkCountText.text = " x" + rawOreChunkCount.ToString();
+
+      return isSuccess;
+   }
+
    public bool TryAddCrudeTool(int crudeToolAmount) 
    {
       TextMeshProUGUI newCrudeToolCount ;
-      bool            isSuccess = false;
+      bool            isSuccess         = false;
 
       if (crudeToolCount >= MAX_CRUDE_TOOL_COUNT) 
       {
@@ -711,7 +749,8 @@ public class InventoryManager : MonoBehaviour
    public bool TryAddHarpoon(int harpoonAmount) 
    {
       TextMeshProUGUI newHarpoonCount;
-      bool isSuccess = false;
+      bool            isSuccess       = false;
+
 
       if (harpoonCount >= MAX_HARPOON_COUNT) 
       {
@@ -731,9 +770,9 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
             harpoonCount += harpoonAmount;
          }
-
-      newHarpoonCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newHarpoonCount.text = " x" + harpoonCount.ToString();
+            
+      newHarpoonCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
@@ -742,7 +781,7 @@ public class InventoryManager : MonoBehaviour
    public bool TryUseHarpoon(int harpoonAmount) 
    {
       TextMeshProUGUI newHarpoonCount;
-      bool isSuccess = false;
+      bool            isSuccess    = false;
 
       if (harpoonCount <= MIN_HARPOON_COUNT) 
       {
@@ -763,8 +802,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-      newHarpoonCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newHarpoonCount.text = " x" + harpoonCount.ToString();
+      newHarpoonCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
@@ -850,9 +889,11 @@ public class InventoryManager : MonoBehaviour
          {
             isSuccess = true;
             patchKitCount += patchKitAmount;
-            
+
             if (PatchKitCountText != null && !PatchKitCountText.transform.parent.gameObject.activeSelf)
-               PatchKitCountText.transform.parent.gameObject.SetActive(true);
+            {
+            PatchKitCountText.transform.parent.gameObject.SetActive(true);
+            }
          }
 
       PatchKitCountText.text = " x" + patchKitCount.ToString();
@@ -953,7 +994,8 @@ public class InventoryManager : MonoBehaviour
    public bool TryAddPressureValve(int pressureValveAmount)
    {
       TextMeshProUGUI pressureValveValue;
-      bool            isSuccess = false;
+      bool            isSuccess          = false;
+
 
       if (pressureValveCount >= MAX_PRESSURE_VALVE_COUNT)
       {
@@ -986,7 +1028,7 @@ public class InventoryManager : MonoBehaviour
    public bool TryUsePressureValve(int pressureValveAmount) 
    {
       TextMeshProUGUI pressureValveValue;
-      bool            isSuccess = false;
+      bool isSuccess                     = false;
 
       if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT) 
       {
@@ -1019,8 +1061,8 @@ public class InventoryManager : MonoBehaviour
    public bool TryAddEngine(int engineAmount)
    {
       TextMeshProUGUI engineValue;
-      bool            isSuccess = false;
-      
+      bool            isSuccess   = false;
+
       if (engineCount >= MAX_ENGINE_COUNT)
       {
          Debug.LogError("Engine count is at minimum!");
@@ -1040,8 +1082,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
             engineCount += engineAmount;
          }
-      }
-      
+
+
       engineValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
@@ -1052,7 +1094,7 @@ public class InventoryManager : MonoBehaviour
    public bool TryUseEngine(int engineAmount)
    {
       TextMeshProUGUI engineValue;
-      bool            isSuccess = false;
+      bool            isSuccess   = false;
 
       if (engineCount <= MIN_ENGINE_COUNT)
       {
@@ -1074,6 +1116,7 @@ public class InventoryManager : MonoBehaviour
             engineCount += engineAmount;
          }
       }
+
 
       engineValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       engineValue.text     = " x" + engineCount.ToString();
@@ -1147,40 +1190,5 @@ public class InventoryManager : MonoBehaviour
       CraftsPanel.gameObject.SetActive(false);
    }
 
-   public bool TrySpendItem(string itemName, int amount)
-   {
-      switch (itemName)
-      {
-         // Resources
-         case PEARL_TAG:
-            return TrySpendPearl(amount);
-         case CRYSTAL_TAG:
-            return TrySpendCrystal(amount);
-         case ORE_TAG:
-            return TrySpendOre(amount);
-
-         // Crafted Items
-         case CRUDE_TOOL_TAG:
-            return TryUseCrudeTool(amount);
-         case HARPOON_TAG:
-            return TryUseHarpoon(amount);
-         case PATCH_KIT_TAG:
-            return TryUsePatchKit(amount);
-         case PRESSURE_VALVE_TAG:
-            return TryUsePressureValve(amount);
-         case DIVING_BELL_TAG:
-            return TryUseDivingBell(amount);
-         case ENGINE_TAG:
-            return TryUseEngine(amount);
-         case PRECISION_LENS_TAG:
-            return TryUsePrecisionLens(amount);
-         case RAW_ORE_CHUNK_TAG:
-            return TryUseRawOreChunk(amount);
-
-         default:
-            Debug.LogError($"TrySpendItem: Unknown item type '{itemName}'");
-            return false;
-      }
-   }
    
 }

@@ -8,29 +8,26 @@ using static TradeHutManager;
 public class Item {
 
    /* Public static properties                                          */
-   private static int crudeToolSellValue     { get; set; } = 15;
-   private static int harpoonSellValue       { get; set; } = 20;
-   private static int pressureValveSellValue { get; set; } = 60;
-   private static int engineSellValue        { get; set; } = 150;
-   private static int rawOrePrice            { get; set; } = 1;
-   private static int mercenaryEngineerPrice { get; set; } = 100;
-   private static int Tier2BluePrintPrice    { get; set; } = 500;
-   private static int Tier3BluePrintPrice    { get; set; } = 2000;
+   public static int crudeToolSellValue     { get; private set; } = 15;
+   public static int harpoonSellValue       { get; private set; } = 20;
+   public static int pressureValveSellValue { get; private set; } = 60;
+   public static int engineSellValue        { get; private set; } = 150;
+   
+   public static int rawOrePrice                 { get; private set; }  = 1;
+   public static int mercenaryEngineerSellValue   { get; private set; } = 100;
+   public static int industrialBluePrintSellValue { get; private set; } = 500;
+   public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 15;
-   public const int BASE_HARPON_SELL_VALUE         = 20;
-   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 60;
-   public const int BASE_ENGINE_VALUE              = 150;
-   public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 40;
-   public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 50;
-   public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 130;
-   public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 310;
+    public const int MIN_CRUDE_TOOL_VALUE     = 0;
+    public const int MAX_CRUDE_TOOL_VALUE     = 40;
+    public const int MIN_HARPOON_VALUE        = 0;
+    public const int MAX_HARPOON_VALUE        = 50;
+    public const int MIN_PRESSURE_VALVE_VALUE = 0;
+    public const int MAX_PRESSURE_VALVE_VALUE = 130;
+    public const int MIN_ENGINE_VALUE         = 0;
+    public const int MAX_ENGINE_VALUE         = 310;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -95,9 +92,9 @@ public class Item {
          case ItemType.RawOreChunk:
             return rawOrePrice;
          case ItemType.Tier2BluePrint:
-            return Tier2BluePrintPrice;
+            return industrialBluePrintSellValue;
          case ItemType.Tier3BluePrint:
-            return Tier3BluePrintPrice;
+            return clockworkBluePrintSellValue;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
          default:

@@ -37,12 +37,13 @@ public class LabManager : MonoBehaviour
    [SerializeField] private Transform innovatePanel;
    [SerializeField] private Transform infoPanel;
 
-   [SerializeField] private GameObject pathButtons;
-   [SerializeField] private GameObject initialTab;
-   [SerializeField] private GameObject commerceTab;
-   [SerializeField] private GameObject productionTab;
-   [SerializeField] private GameObject explorationTab;
+    [SerializeField] private GameObject pathButtons;
+    [SerializeField] private GameObject initialTab;
+    [SerializeField] private GameObject commerceTab;
+    [SerializeField] private GameObject productionTab;
+    [SerializeField] private GameObject explorationTab;
  
+
    /* Public variables                                                                          */
    public static int currentCommerceTier { get; private set; } = 0;
 
@@ -320,28 +321,24 @@ public class LabManager : MonoBehaviour
          tradeHutManager.marketShiftMin = 1;
          tradeHutManager.marketShiftMax = 2;
            
-         foreach(Transform item in tradeHutManager.SellItems)
-            item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
-      }
-      /* Permanently reduce gold spent on refinery upkeep by 50%                               */
-      else if (tabType == productionTab)
-      {
-         Debug.Log("Reduce ore jamming percentage by 5%");
-         if (OreRefinery_Manager.Instance != null)
-         {
-            OreRefinery_Manager.Instance.ReduceJamming(5); // Reduces jamming chance by 5%
-         }
-      }
-      /* Tier 1 missions have succession increased by 25%                                      */
-      else if (tabType == explorationTab)
-      {
-         Debug.Log("Tier 1 missions increased by 25%");
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-      }
-   }
+            foreach(Transform item in tradeHutManager.SellItems)
+              item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
+        }
+        /* Permanently reduce gold spent on refinery upkeep by 50%                               */
+        else if (tabType == productionTab)
+        {
+            Debug.Log("Ore upkeep reduced by 50%");
+        }
+        /* Tier 1 missions have succession increased by 25%                                      */
+        else if (tabType == explorationTab)
+        {
+            Debug.Log("Tier 1 missions increased by 25%");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
 
    public void ImplementTierTwoInnovation(GameObject tabType)
    {
@@ -361,30 +358,23 @@ public class LabManager : MonoBehaviour
          //tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, TradeHutManager.INDUSTRIAL_BLUE_PRINT_TAG);
       }
 
-      /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
-      /*    bonus item upon crafting a single item                                             */
-      else if (tabType == productionTab)
-      {
-         ForgeManager forge = FindFirstObjectByType<ForgeManager>();
-         if (forge != null)
-         {
-            forge.UnlockOverclock();
-         }
-         else
-         {
-            Debug.LogError("Could not find Forge manager to unlcok ocerclock.");
-         }
-      }
-      /* Permanently increase gold by +15 per turn                                             */
-      else if (tabType == explorationTab)
-      {
-         Debug.Log("Permanently increase gold by +15 per turn");
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-      }
-   }
+        /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
+        /*    bonus item upon crafting a single item                                             */
+        else if (tabType == productionTab)
+        {
+            Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
+           
+        }
+        /* Permanently increase gold by +15 per turn                                             */
+        else if (tabType == explorationTab)
+        {
+            Debug.Log("Permanently increase gold by +15 per turn");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
 
    public void ImplementTierThreeInnovation(GameObject tabType)
    {
@@ -394,34 +384,25 @@ public class LabManager : MonoBehaviour
          TradeHutManager.Instance.marketShiftMin = 5;
          TradeHutManager.Instance.marketShiftMax = 10;
 
-         //tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 1.0f, TradeHutManager.CLOCKWORK_BLUEPRINT_TAG);
-         Debug.Log("All items in storage sold for 5x");
-      }
-      /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
-      else if (tabType == productionTab)
-      {  
-         Debug.Log("Unlock Artifact and crafting results in double item");
-
-         ForgeManager forge = FindAnyObjectByType<ForgeManager>();
-         if (forge != null)
-         {
-            forge.UnlockReduceCraftingTime();
-         }
-         else
-         {
-            Debug.LogError("LabManager: Could not find ForgeManager!");
-         }
-      }
-      /* Decrease search costs by 50%                                                          */
-      else if (tabType == explorationTab)
-      {
-         Debug.Log("Decrease search costs by 50%");
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-      }
-   }
+            //tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 1.0f, TradeHutManager.CLOCKWORK_BLUEPRINT_TAG);
+            Debug.Log("All items in storage sold for 5x");
+        }
+        /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
+        else if (tabType == productionTab)
+        {
+            Debug.Log("Unlock Artifact and crafting results in double item");
+            
+        }
+        /* Decrease search costs by 50%                                                          */
+        else if (tabType == explorationTab)
+        {
+            Debug.Log("Decrease search costs by 50%");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
 
    /* Unlock the next tier node upon buying the previous tier node                              */
    public void UnlockNextNode(GameObject tab, int tier)

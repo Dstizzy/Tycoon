@@ -20,7 +20,11 @@ public class OreRefinery_Manager : MonoBehaviour
                     public  TextMeshProUGUI oreRefineryLevelText;
 
    public int oreLevel = STARTING_LEVEL;
-   public int jammingChance = 15; // Starting percentage for jamming
+
+   public int JammingPercentage = 15;
+
+   public bool IsBlocked = false;
+
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
 
@@ -235,7 +239,109 @@ public class OreRefinery_Manager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
-   
+   // Activates the jam button and sets up its listener
+   public void ActivateJamButton()
+   {
+      buildingCanvas.transform.Find("JamButton").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JamButton").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
+   }
 
-   
+   // Activates the jam symbol on the building canvas
+   public void ActivateJamSymbol()
+   {
+      buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(true);
+   }
+
+   // Opens the jam panel and sets up its listeners
+   public void OpenJamPanel()
+   {
+      jamPanel.SetActive(true);
+      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseJamPanel());
+      jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(1));
+      jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(2));
+      jamPanel.transform.Find("PayButtons/WaitButton") .GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(3));
+
+      PopUpManager.Instance.DisablePlayerInput();
+   }
+
+   // Handles payment for unjamming the ore refinery
+   public void PayForUnjamming(int paymentType)
+   {
+      if(paymentType == 1) 
+      {
+         if(InventoryManager.Instance.patchKitCount >= 1) 
+         {
+            InventoryManager.Instance.TryUsePatchKit(1);
+            IsBlocked = false;
+            DeactivateJamSymbol();
+            CloseJamPanel();
+            DeactivateJamButton();
+            Debug.Log("Ore Refinery unjammed successfully.");
+         }
+         else 
+         {
+            Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
+         }
+      }
+      else if(paymentType == 2)
+      {
+         if(InventoryManager.Instance.pearlCount >= 100) 
+         {
+            InventoryManager.Instance.TrySpendPearl(100);
+            IsBlocked = false;
+            DeactivateJamSymbol();
+            CloseJamPanel();
+            DeactivateJamButton();
+            Debug.Log("Ore Refinery unjammed successfully.");
+         }
+         else 
+         {
+            Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
+         }
+      }
+      else if(paymentType == 3)
+      {
+         TurnManager.Instance.ManualResetUnjam();
+         DeactivateJamSymbol();
+         CloseJamPanel();
+         DeactivateJamButton();
+      }
+   }
+
+   // Activates the manual reset counter 
+   public void ActivateManualResetCounter()
+   {
+      buildingCanvas.transform.Find("JamCounter").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JamCounter").GetComponent<TextMeshProUGUI>().text = ($"{TurnManager.jamTurnCounter.ToString()}...");
+   }
+
+   // Deactivates the manual reset counter
+   public void DeactivateManualResetCounter()
+   {
+      buildingCanvas.transform.Find("JamCounter").gameObject.SetActive(false);
+   }
+
+   // Closes the jam panel and removes its listeners
+   public void CloseJamPanel()
+   {
+      jamPanel.SetActive(false);
+      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      PopUpManager.Instance.EnablePlayerInput();
+   }
+
+   // Deactivates the jam button and removes its listener
+   public void DeactivateJamButton()
+   {
+      buildingCanvas.transform.Find("JamButton").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
+      buildingCanvas.transform.Find("JamButton").gameObject.SetActive(false);
+
+   }
+
+   // Deactivates the jam symbol on the building canvas
+   public void DeactivateJamSymbol()
+   {
+      buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
+   }
 }

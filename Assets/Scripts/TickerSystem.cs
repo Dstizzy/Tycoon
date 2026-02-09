@@ -20,7 +20,7 @@ public class TickerSystem : MonoBehaviour {
 
    public enum MessageTypes {
       WorldEvent,
-      ResultMessage
+      ErrorMessage
    }
 
    private void Awake() 
@@ -54,7 +54,7 @@ public class TickerSystem : MonoBehaviour {
             currentCanvasGroup = wortldEventCanvasGroup;
             currentText        = worldEventMessageText; 
             break;
-         case MessageTypes.ResultMessage:
+         case MessageTypes.ErrorMessage:
             currentCanvasGroup = errorCanvasGroup;
             currentText        = errorMessageText;
             break;
