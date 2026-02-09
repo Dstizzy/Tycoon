@@ -396,13 +396,14 @@ public class TradeHutManager : MonoBehaviour
    {
       int    totalSellValue = 0,
              soldCount      = 0;
-      string successMessage = null;
-      
-      switch (currentSellItem.tag) 
+      string successMessage = "",
+             itemTag = currentSellItem ? currentSellItem.tag : string.Empty;
+
+      switch (itemTag) 
       {
          // Tier 1 items
          case CRUDE_TOOL_TAG:
-            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
+            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
             {
                soldCount = crudeToolSellCount;
                

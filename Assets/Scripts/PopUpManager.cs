@@ -92,10 +92,10 @@ public class PopUpManager : MonoBehaviour
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
-            OreRefinery_Manager.Instance.DeactivateJamButton();
+          //  OreRefinery_Manager.Instance.DeactivateJamButton();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
          {
-            OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+           // OreRefinery_Manager.Instance.DeactivateManualResetCounter();
          }
          buildingTransform = null; // Clear the reference to the old building
       }
@@ -111,11 +111,11 @@ public class PopUpManager : MonoBehaviour
          {
             if(TurnManager.manualResetOption)
             {
-               OreRefinery_Manager.Instance.ActivateManualResetCounter();
+               //OreRefinery_Manager.Instance.ActivateManualResetCounter();
             }
             else
             {
-               OreRefinery_Manager.Instance.ActivateJamButton();
+               //OreRefinery_Manager.Instance.ActivateJamButton();
             }
          }
          else
