@@ -137,7 +137,7 @@ public class TurnManager : MonoBehaviour
 
          OnTurnEnded?.Invoke();
       }
-   }
+   
 
    // Updates the turn text UI element to display the current
    // turn and the maximum turn limit.        

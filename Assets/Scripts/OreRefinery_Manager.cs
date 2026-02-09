@@ -20,6 +20,7 @@ public class OreRefinery_Manager : MonoBehaviour
                     public  TextMeshProUGUI oreRefineryLevelText;
 
    public int oreLevel = STARTING_LEVEL;
+   public int jammingChance = 15; // Starting percentage for jamming
 
    public int JammingPercentage = 15;
 
@@ -344,4 +345,5 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
    }
+>>>>>>> c8d75cae560bb31eb4c7883c990f7337e26b93e4
 }
