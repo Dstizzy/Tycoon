@@ -4,6 +4,7 @@ using TMPro;
 using System;
 using UnityEngine.Rendering.UI;
 using static TickerSystem;
+using static InventoryManager; 
 
 public class TurnManager : MonoBehaviour
 {
@@ -90,35 +91,7 @@ public class TurnManager : MonoBehaviour
       currentTurn++;
       eventCountdown++;
 
-      if ((eventCountdown % 5) == 0) 
-      {
-         tradeHutManager.WorldEventNewsTickerText();
-         tradeHutManager.WorldEvent();
-         newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
-
-         eventCountdown = 0;
-      }
-      else 
-      {
-         if (eventCountdown == 1) 
-         {
-            tradeHutManager.ResetWorldEventShifts();
-            tradeHutManager.WorldEventChance();
-         }
-
-         if (eventCountdown >= 3 && eventCountdown <= 5) 
-         {
-            newsTicker.gameObject.SetActive(true);
-            tradeHutManager.WorldEventNewsTickerText();
-            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
-         }
-      }
-
-      HandleJamming();
-      HandleEnemy();
-
-
-      // Check if the game should end
+      // Check if the game should end                 */
       if (currentTurn > maxTurns)
       {
          EndGame();
@@ -127,11 +100,50 @@ public class TurnManager : MonoBehaviour
       {
          UpdateTurnUI();
 
-         if(currentTurn == 2)
-            TradeHutManager.Instance.CraftMarketForesight();
+         if (eventCountdown == 5) 
+         {
+            tradeHutManager.WorldEventNewsTickerText();
+            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
+            
+            // World Event fluctuation
+            tradeHutManager.MarketFluctuate();
 
-         TradeHutManager.Instance.MarketFluctuate();
-         TradeHutManager.Instance.CraftMarketForesight();
+            eventCountdown = 0;
+         } 
+         else 
+         {
+            if (eventCountdown == 1) 
+            {
+               tradeHutManager.ResetWorldEventShifts();
+               tradeHutManager.WorldEventChance();
+               tradeHutManager.MarketFluctuate();
+            } 
+            else 
+            {
+               if (eventCountdown >= 3 && eventCountdown <= 5) 
+               {
+                  newsTicker.gameObject.SetActive(true);
+                  tradeHutManager.WorldEventNewsTickerText();
+                  newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
+                  tradeHutManager.MarketFluctuate();
+               }
+               else
+                  tradeHutManager.MarketFluctuate();
+            }
+         }
+
+         tradeHutManager.CraftMarketForesight();
+
+         if (currentTurn == 2)
+            tradeHutManager.CraftMarketForesight();
+
+         //// Natural flucuations
+         //if(eventCountdown > 0 && eventCountdown != 5) 
+         //{
+         //   TradeHutManager.Instance.MarketFluctuate();
+         //   TradeHutManager.Instance.CraftMarketForesight();
+         //}
+
          Debug.Log("Turn" + currentTurn + "Start");
 
 
