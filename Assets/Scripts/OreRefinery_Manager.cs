@@ -15,6 +15,8 @@ public class OreRefinery_Manager : MonoBehaviour {
     [SerializeField] private Transform upgradePanel;
     public TextMeshProUGUI oreRefineryLevelText;
 
+    private TickerSystem ticker;
+
     public int oreLevel = STARTING_LEVEL;
 
     public int CurrentOreProduction { get; private set; }
@@ -34,6 +36,7 @@ public class OreRefinery_Manager : MonoBehaviour {
             infoPanel.gameObject.SetActive(false);
         }
 
+        ticker = TickerSystem.Instance;
         TurnManager.OnTurnEnded += ProduceOres;
 
         CalculateRefineryValues();
@@ -147,17 +150,20 @@ public class OreRefinery_Manager : MonoBehaviour {
             oreLevel += 1;
             CalculateRefineryValues(); // Recalculate production/cost for the next level.
             Debug.Log("Upgrade successful to Level " + oreLevel);
+            ticker.ShowTicker("Upgrade successful to Level " + oreLevel, Color.green, TickerSystem.MessageTypes.ResultMessage);
          }
          else
          {
             // 3. (Failure) Not enough Pearls.
             Debug.Log("UPGRADE FAILED: Not enough Pearls. Need " + NextUpgradeCostInPearls);
+            ticker.ShowTicker("UPGRADE FAILED: Not enough Pearls. Need " + NextUpgradeCostInPearls, Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
 
       }
       else
       {
          Debug.Log("Ore Refinery is already at max level.");
+         ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, TickerSystem.MessageTypes.ResultMessage);
       }
 
       // (Existing Panel/UI update logic)

@@ -97,7 +97,7 @@ public class TurnManager : MonoBehaviour
          } 
          else 
          {
-            if (eventCountdown == 1) 
+            if (eventCountdown == 1)
             {
                tradeHutManager.ResetWorldEventShifts();
                tradeHutManager.WorldEventChance();
