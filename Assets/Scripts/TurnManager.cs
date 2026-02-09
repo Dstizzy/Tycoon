@@ -187,7 +187,7 @@ public class TurnManager : MonoBehaviour
       if(OreRefinery_Manager.Instance.IsBlocked == false)
       {
          randomNumber = random.Next(1, 100);
-         if (randomNumber < OreRefinery_Manager.Instance.JammingPercentage)
+         if (randomNumber < OreRefinery_Manager.Instance.jammingChance)
          {
             JamRefinery();
          }

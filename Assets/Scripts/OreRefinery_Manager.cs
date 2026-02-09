@@ -13,16 +13,20 @@ public class OreRefinery_Manager : MonoBehaviour
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL = 4;
 
-   [SerializeField] private Transform       infoPanel;
-   [SerializeField] private Transform       upgradePanel;
-   [SerializeField] private GameObject      buildingCanvas;
-   [SerializeField] private GameObject      jamPanel;
-                    public  TextMeshProUGUI oreRefineryLevelText;
+   [SerializeField] private Transform infoPanel;
+   [SerializeField] private Transform upgradePanel;
+   [SerializeField] private GameObject buildingCanvas;
+   [SerializeField] private GameObject jamPanel;
+   public TextMeshProUGUI oreRefineryLevelText;
 
    TickerSystem ticker;
 
    public int oreLevel = STARTING_LEVEL;
-   public int jammingChance = 15; // Starting percentage for jamming
+
+   public int jammingChance = 0;
+
+   public bool IsBlocked = false;
+
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
 
@@ -71,7 +75,7 @@ public class OreRefinery_Manager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinory());
+            upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinery());
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
             break;
          default:
@@ -120,15 +124,7 @@ public class OreRefinery_Manager : MonoBehaviour
    }
 
    // --- ADDED: Unsubscribe when destroyed ---
-   private void OnDestroy()
-   {
-      if (TurnManager.Instance != null)
-      {
-         TurnManager.OnTurnEnded -= ProduceOres;
-      }
-   }
-
-   // --- MODIFIED: Calculation Function ---
+   //private void OnDestroy()
    private void CalculateRefineryValues()
    {
       // Ore production logic
@@ -144,7 +140,7 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Ore Refinery Level 2: Produces 25 Ore per turn. Upgrade Cost: 350 pearls + 1 patch kit.");
             CurrentOreProduction = 25;
             NextUpgradeCostInPearls = 350;
-            //NextUpgradeCostInPatchKits = 1;
+            //NextUpgradeCostInPatchKits = 1; Need to implement Patch Kits in InventoryManager
             break;
          case 3:
             Debug.Log("Ore Refinery Level 3: Produces 60 Ore per turn. Upgrade Cost: 1000 pearls + 1 precision lens");
@@ -162,7 +158,61 @@ public class OreRefinery_Manager : MonoBehaviour
       }
    }
 
-   // Reduces jamming percentage when user unlocks tier 1 in lab
+   public void ActivateJamButton()
+   {
+      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
+   }
+
+   public void ActivateJamSymbol()
+   {
+      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(true);
+   }
+
+   public void OpenJamPanel()
+   {
+      jamPanel.SetActive(true);
+      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseJamPanel());
+      jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(1));
+      jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(2));
+
+      PopUpManager.Instance.DisablePlayerInput();
+   }
+
+   public void PayForUnjamming(int paymentType)
+   {
+      if (paymentType == 1)
+      {
+         if (InventoryManager.Instance.patchKitCount >= 1)
+         {
+            //InventoryManager.Instance.TrySpendPatchKit(1);
+            IsBlocked = false;
+            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+            CloseJamPanel();
+            Debug.Log("Ore Refinery unjammed successfully.");
+         }
+         else
+         {
+            Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
+         }
+      }
+      else
+      {
+         if (InventoryManager.Instance.pearlCount >= 100)
+         {
+            InventoryManager.Instance.TrySpendPearl(100);
+            IsBlocked = false;
+            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+            CloseJamPanel();
+            Debug.Log("Ore Refinery unjammed successfully.");
+         }
+         else
+         {
+            Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
+         }
+      }
+   }
+
    public void ReduceJamming(int oreAmount)
    {
       jammingChance -= oreAmount;
@@ -185,63 +235,54 @@ public class OreRefinery_Manager : MonoBehaviour
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }
 
-   // --- MODIFIED: Now spends Pearls using InventoryManager ---
-   public void UpgradeOreRefinory()
+   public void CloseJamPanel()
    {
+      jamPanel.SetActive(false);
+      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      PopUpManager.Instance.EnablePlayerInput();
+   }
+   public void DeactivateJamButton()
+   {
+      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
+      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(false);
 
-      if (oreLevel < ENDING_LEVEL)
+   }
+
+   public void UpgradeOreRefinery()
+   {
+      if (oreLevel >= ENDING_LEVEL)
       {
-
-         // 1. Attempt to pay Pearls using InventoryManager.
-         if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls && InventoryManager.Instance.oreCount >= NextUpgradeCostInOre)
-         {
-            // 2. (Success) Enough Pearls, so spend them.
-            InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
-            InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
-
-            oreLevel += 1;
-            jammingChance += 5;
-            CalculateRefineryValues(); // Recalculate production/cost for the next level.
-            Debug.Log("Upgrade successful to Level " + oreLevel);
-            ticker.ShowTicker("Upgrade successful to Level " + oreLevel, Color.green, TickerSystem.MessageTypes.ResultMessage);
-         }
-         else
-         {
-            // 3. (Failure) Not enough Pearls.
-            Debug.Log("UPGRADE FAILED: Not enough Pearls. Need " + NextUpgradeCostInPearls);
-            ticker.ShowTicker("UPGRADE FAILED: Not enough Pearls. Need " + NextUpgradeCostInPearls, Color.red, TickerSystem.MessageTypes.ResultMessage);
-         }
-
+         Debug.Log("Ore Refinery is already at max level.");
+         return;
+      }
+      if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls && InventoryManager.Instance.oreCount >= NextUpgradeCostInOre)
+      {
+         InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
+         InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
+         oreLevel++;
+         CalculateRefineryValues();
+         oreRefineryLevelText.text = "Level " + oreLevel.ToString();
+         Debug.Log($"Ore Refinery upgraded to level {oreLevel}!");
       }
       else
       {
-         Debug.Log("Ore Refinery is already at max level.");
-         ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, TickerSystem.MessageTypes.ResultMessage);
+         Debug.Log("Not enough resources to upgrade the Ore Refinery.");
       }
-
-      switch (oreLevel)
-      {
-         case 2:
-            upgradePanel.transform.Find("UpgradePanelLvlOne").gameObject.SetActive(false);
-            upgradePanel.transform.Find("UpgradePanelLvlTwo").gameObject.SetActive(true);
-            break;
-         case 3:
-            upgradePanel.transform.Find("UpgradePanelLvlTwo").gameObject.SetActive(false);
-            upgradePanel.transform.Find("UpgradePanelLvlThree").gameObject.SetActive(true);
-            break;
-         default:
-            break;
-      }
-
-      // (Existing Panel/UI update logic)
-      oreRefineryLevelText.text = "Level " + oreLevel.ToString();
-      upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
-      upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
-      CloseUpgradePanel();
-      PopUpManager.Instance.EnablePlayerInput();
    }
 
-   
+   public void ActivateManualResetCounter()
+   {
+      buildingCanvas.transform.Find("JamCounter").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JamCounter").GetComponent<TextMeshProUGUI>().text = ($"{TurnManager.jamTurnCounter.ToString()}...");
+   }
 
-   
+   public void DeactivateManualResetCounter()
+   {
+      buildingCanvas.transform.Find("JamCounter").gameObject.SetActive(false);
+   }
+
+   public void DeactivateJamSymbol()
+   {
+      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+   }
 }
