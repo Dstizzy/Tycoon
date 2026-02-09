@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: abaa494cb76754429b66768e1bb49924
+guid: 009345196c4d145e38ab3e3001ba8225
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -469738134670642733
-    second: no_0
+      213: 2699292116151530409
+    second: overclock_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: no_0
+      name: overclock_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 409
-        height: 122
+        x: 235
+        y: 2
+        width: 554
+        height: 548
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3d17081c7a72b79f0800000000000000
-      internalID: -469738134670642733
+      spriteID: 9a37930d0efc57520800000000000000
+      internalID: 2699292116151530409
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      no_0: -469738134670642733
+      overclock_0: 2699292116151530409
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
