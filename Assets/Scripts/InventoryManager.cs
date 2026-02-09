@@ -1174,8 +1174,8 @@ public class InventoryManager : MonoBehaviour
             return TryUseEngine(amount);
          case PRECISION_LENS_TAG:
             return TryUsePrecisionLens(amount);
-         case RAW_ORE_CHUNK_TAG:
-            return TryUseRawOreChunk(amount);
+         //case RAW_ORE_CHUNK_TAG:
+           // return TryUseRawOreChunk(amount);
 
          default:
             Debug.LogError($"TrySpendItem: Unknown item type '{itemName}'");
