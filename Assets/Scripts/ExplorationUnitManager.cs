@@ -16,6 +16,7 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI decisionResults;
    [SerializeField] private GameObject exploreShipIcon;
 
+   public int lastProcessedTurn = -1;
    private MapNode nextTurnDestination;
 
    const int EXPLORE_BUTTON = 1;
@@ -42,15 +43,27 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void OnEnable()
    {
-      TurnManager.OnTurnEnded += HandleNewTurn;
+     // TurnManager.OnTurnEnded += HandleNewTurn;
       ShipManager.OnShipDeath += HandleExplorationDone;
    }
 
    //
    private void OnDisable()
    {
-      TurnManager.OnTurnEnded -= HandleNewTurn;
+     // TurnManager.OnTurnEnded -= HandleNewTurn;
       ShipManager.OnShipDeath -= HandleExplorationDone;
+   }
+
+   private void Update()
+   {
+      if(TurnManager.Instance != null)
+      {
+         if(TurnManager.Instance.currentTurn > lastProcessedTurn)
+         {
+            lastProcessedTurn = TurnManager.Instance.currentTurn;
+            HandleNewTurn();
+         }
+      }
    }
 
    // Activates the requested exploration unit panel
