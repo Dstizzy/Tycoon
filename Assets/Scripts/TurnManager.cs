@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -112,7 +112,7 @@ public class TurnManager : MonoBehaviour
          } 
          else 
          {
-            if (eventCountdown == 1)
+            if (eventCountdown == 1) 
             {
                tradeHutManager.ResetWorldEventShifts();
                tradeHutManager.WorldEventChance();

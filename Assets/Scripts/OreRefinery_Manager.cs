@@ -19,6 +19,8 @@ public class OreRefinery_Manager : MonoBehaviour
    [SerializeField] private GameObject      jamPanel;
                     public  TextMeshProUGUI oreRefineryLevelText;
 
+   TickerSystem ticker;
+
    public int oreLevel = STARTING_LEVEL;
    public int jammingChance = 15; // Starting percentage for jamming
    public int CurrentOreProduction { get; private set; }
