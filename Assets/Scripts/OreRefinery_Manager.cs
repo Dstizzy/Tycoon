@@ -17,6 +17,7 @@ public class OreRefinery_Manager : MonoBehaviour
    public TextMeshProUGUI oreRefineryLevelText;
 
    public int oreLevel = STARTING_LEVEL;
+   public int jammingChance = 15; // Starting percentage for jamming
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
 
@@ -129,16 +130,27 @@ public class OreRefinery_Manager : MonoBehaviour
       NextUpgradeCostInPearls = 50 * oreLevel;
    }
 
-   // --- ADDED: This function is called by the TurnManager's event ---
+   // Reduces jamming percentage when user unlocks tier 1 in lab
+   public void ReduceJamming(int oreAmount)
+   {
+      jammingChance -= oreAmount;
+
+      if (jammingChance < 0)
+         jammingChance = 0;
+
+      Debug.Log($"Refinery improved! Jamming chance is now {jammingChance}%");
+   }
+
    private void ProduceOres()
    {
-      // Use InventoryManager.Instance.TryAddOre to add ore.
+      int roll = Random.Range(0, 100);
+
+      if (roll < jammingChance)
+      {
+         Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
+      }
+
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
-
-      // Notify UI (or other scripts) that oreCount has changed.
-      InventoryManager.Instance.OnOreCountChanged?.Invoke(InventoryManager.Instance.oreCount);
-
-      Debug.Log("OreRefinery produced " + CurrentOreProduction + " Ore. Total Ore: " + InventoryManager.Instance.oreCount);
    }
 
    // --- MODIFIED: Now spends Pearls using InventoryManager ---
@@ -177,4 +189,8 @@ public class OreRefinery_Manager : MonoBehaviour
       CloseUpgradePanel();
       PopUpManager.Instance.EnablePlayerInput();
    }
+
+   
+
+   
 }
