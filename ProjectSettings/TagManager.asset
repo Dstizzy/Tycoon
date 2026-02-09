@@ -20,9 +20,13 @@ TagManager:
   - Engine
   - Harpoon
   - Pressure Valve
-  - Rare Ore
-  - Industrial Blue Print
-  - Clockwork Blue Print
+  - Patch Kit
+  - Diving Bell
+  - Precision Lens
+  - Mercenary Engineer
+  - Raw Ore Chunk
+  - Tier 2 Blueprint
+  - Tier 3 Blueprint
   layers:
   - Default
   - TransparentFX

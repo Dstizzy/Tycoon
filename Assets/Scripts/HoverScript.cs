@@ -8,6 +8,10 @@ public class HoverScript : MonoBehaviour {
    /* Private variables                                                                                                                                */
    RaycastHit2D raycastHit2D;
 
+   [SerializeField] private Transform ForgeLevelText;
+   [SerializeField] private Transform OreRefineryText;
+   [SerializeField] private Transform ExplorationUnitText;
+
    private Transform prevHoverObject;
    private Transform currentHoverObject;
 
@@ -21,6 +25,10 @@ public class HoverScript : MonoBehaviour {
          Destroy(gameObject);
       else
          Instance = this;
+
+      ForgeLevelText.gameObject.SetActive(false);
+      OreRefineryText.gameObject.SetActive(false);
+      ExplorationUnitText.gameObject.SetActive(false);
 
       playerActions = new PlayerActions();
       playerActions.PlayerInput.Enable();
@@ -51,13 +59,29 @@ public class HoverScript : MonoBehaviour {
          /* Retrieve the SpriteRenderer and check if it exists before using it                                                                       */
          SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
 
-         if (prevRenderer != null)
+         if (prevRenderer != null) 
+         {
+            switch (prevHoverObject.tag) 
+            {
+               case "Forge":
+                  ForgeLevelText.gameObject.SetActive(false);
+                  break;
+               case "Ore Refinery":
+                  OreRefineryText.gameObject.SetActive(false);
+                  break;
+               case "Exploration Unit":
+                  ExplorationUnitText.gameObject.SetActive(false);
+                  break;
+            } 
+
             /* Revert the color/state of the object we just left                                                                                    */
             prevRenderer.color = Color.white;
+         }
       }
 
       /* Case B: Mouse moved ONTO a new object                                                                                                        */
-      if (currentHoverObject != null && currentHoverObject != prevHoverObject) {
+      if (currentHoverObject != null && currentHoverObject != prevHoverObject) 
+      {  
          /* Retrieve the SpriteRenderer and check if it exists before using it                                                                       */
          SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
 
@@ -65,6 +89,17 @@ public class HoverScript : MonoBehaviour {
          {
             /* Set the color/state of the new object                                                                                                */
             currentRenderer.color = Color.red;
+            switch (currentHoverObject.tag) {
+               case "Forge":
+                  ForgeLevelText.gameObject.SetActive(true);
+                  break;
+               case "Ore Refinery":
+                  OreRefineryText.gameObject.SetActive(true);
+                  break;
+               case "Exploration Unit":
+                  ExplorationUnitText.gameObject.SetActive(true);
+                  break;
+            }
          }
       }
 

@@ -1,29 +1,36 @@
 using System;
 
+using TMPro;
+
 using UnityEngine;
+using static TradeHutManager;
 
 public class Item {
 
    /* Public static properties                                          */
-   public static int crudeToolSellValue     { get; private set; } = 15;
-   public static int harpoonSellValue       { get; private set; } = 20;
-   public static int pressureValveSellValue { get; private set; } = 60;
-   public static int engineSellValue        { get; private set; } = 200;
-   
-   public static int rareOrePrice                 { get; private set; } = 100;
-   public static int industrialBluePrintSellValue { get; private set; } = 500;
-   public static int clockworkBluePrintSellValue  { get; private set; } = 2000;
+   private static int crudeToolSellValue     { get; set; } = 15;
+   private static int harpoonSellValue       { get; set; } = 20;
+   private static int pressureValveSellValue { get; set; } = 60;
+   private static int engineSellValue        { get; set; } = 150;
+   private static int rawOrePrice            { get; set; } = 1;
+   private static int mercenaryEngineerPrice { get; set; } = 100;
+   private static int Tier2BluePrintPrice    { get; set; } = 500;
+   private static int Tier3BluePrintPrice    { get; set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-    public const int MIN_CRUDE_TOOL_VALUE     = 10;
-    public const int MAX_CRUDE_TOOL_VALUE     = 25;
-    public const int MIN_HARPOON_VALUE        = 12;
-    public const int MAX_HARPOON_VALUE        = 40;
-    public const int MIN_PRESSURE_VALVE_VALUE = 35;
-    public const int MAX_PRESSURE_VALVE_VALUE = 100;
-    public const int MIN_ENGINE_VALUE         = 80;
-    public const int MAX_ENGINE_VALUE         = 450;
+   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 15;
+   public const int BASE_HARPON_SELL_VALUE         = 20;
+   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 60;
+   public const int BASE_ENGINE_VALUE              = 150;
+   public const int MIN_CRUDE_TOOL_VALUE           = 0;
+   public const int MAX_CRUDE_TOOL_VALUE           = 40;
+   public const int MIN_HARPOON_VALUE              = 0;
+   public const int MAX_HARPOON_VALUE              = 50;
+   public const int MIN_PRESSURE_VALVE_VALUE       = 0;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 130;
+   public const int MIN_ENGINE_VALUE               = 0;
+   public const int MAX_ENGINE_VALUE               = 310;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -37,7 +44,7 @@ public class Item {
    const string ENGINE_DESCRIPTION               = 
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
-   const string RARE_ORE_DESCRIPTION             = 
+   const string RAW_ORE_CHUNK_DESCRIPTION             = 
       "A rare and valuable ore found in deep underwater caves. " +
       "Highly sought after for its unique properties and worth a significant amount.";
    const string INDUSTRIAL_BLUEPRINT_DESCRIPTION =
@@ -57,9 +64,10 @@ public class Item {
         DivingBell,
         Engine,
         PrecisionLens,
-        RareOre,
-        IndustrialBluePrint,
-        ClockworkBlueprint
+        RawOreChunk,
+        Tier2BluePrint,
+        Tier3BluePrint,
+        MercenaryEngineer
    }
 
     public static int GetItemValue(ItemType itemType) 
@@ -74,7 +82,6 @@ public class Item {
               return pressureValveSellValue;
            case ItemType.Engine:
                return engineSellValue;
-           
            default:
                Debug.LogError("Unkown Item");
                return 0;
@@ -84,15 +91,17 @@ public class Item {
    public static int GetItemPrice(ItemType itemType) 
    {
       switch (itemType) 
-       {
-         case ItemType.RareOre:
-            return rareOrePrice;
-         case ItemType.IndustrialBluePrint:
-            return industrialBluePrintSellValue;
-         case ItemType.ClockworkBlueprint:
-            return clockworkBluePrintSellValue;
+      {
+         case ItemType.RawOreChunk:
+            return rawOrePrice;
+         case ItemType.Tier2BluePrint:
+            return Tier2BluePrintPrice;
+         case ItemType.Tier3BluePrint:
+            return Tier3BluePrintPrice;
+         case ItemType.MercenaryEngineer:
+            return mercenaryEngineerPrice;
          default:
-            Debug.LogError("Unknown Item");
+            Debug.LogError($"Unknown Item: `{itemType}`");
             return 0;
       }
    }
@@ -109,11 +118,11 @@ public class Item {
             return PRESSURE_VALVE_DESCRIPTION;
          case ItemType.Engine:
             return ENGINE_DESCRIPTION;
-         case ItemType.RareOre:
-            return RARE_ORE_DESCRIPTION;
-         case ItemType.IndustrialBluePrint:
+         case ItemType.RawOreChunk:
+            return RAW_ORE_CHUNK_DESCRIPTION;
+         case ItemType.Tier2BluePrint:
             return INDUSTRIAL_BLUEPRINT_DESCRIPTION;
-         case ItemType.ClockworkBlueprint:
+         case ItemType.Tier3BluePrint:
             return CLOCKWORK_BLUEPRINT_DESCRIPTION;
          default:
             return "No description available.";
@@ -277,7 +286,7 @@ public class Item {
       return;
    }
 
-   public static void TryIncreaseEnginesSellValue(int amount) 
+   public static void TryIncreaseEngineSellValue(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
       if (engineSellValue >= MAX_ENGINE_VALUE) 
@@ -324,4 +333,76 @@ public class Item {
 
       return;
    }
+   public static void TryIncreaseTier2BlueprintPrice(int amount) 
+   {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if ( Tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
+      {
+         Debug.LogError("Crude Tool Sell Value is already at maximum!");
+         return;
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (engineSellValue + amount > MAX_ENGINE_VALUE) 
+      {
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_ENGINE_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      engineSellValue += amount;
+
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+      return;
+   }
+
+   public static void TryDecreaseTier2BlueprintPrice(int amount) 
+   {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (engineSellValue <= MIN_ENGINE_VALUE) 
+      {
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         return;
+      }
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (engineSellValue - amount < MIN_ENGINE_VALUE) 
+      {
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_ENGINE_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      engineSellValue -= amount;
+
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+
+      return;
+   }
+
+   public static void ApplyDiscountToBuyItems(float percent) 
+   {
+      TextMeshProUGUI rareOrePriceText           = new();
+      TextMeshProUGUI Tier2BluePrintPriceText    = new();
+      TextMeshProUGUI Tier3BluePrintPriceText    = new();
+      TextMeshProUGUI mercenaryEngineerPriceText = new();
+
+      rawOrePrice          -= (int)(rawOrePrice * percent);
+      rareOrePriceText      = Instance.BuyItems.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      rareOrePriceText.text = rawOrePrice.ToString();
+
+      Tier2BluePrintPrice         -= (int)(Tier2BluePrintPrice * percent);
+      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier2BluePrintPriceText.text = Tier2BluePrintPrice.ToString();
+
+      Tier3BluePrintPrice         -= (int)(Tier3BluePrintPrice * percent);
+      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
+
+      mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);
+      mercenaryEngineerPriceText      = Instance.BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      mercenaryEngineerPriceText.text = mercenaryEngineerPrice.ToString();
+   }
+
 }

@@ -1,4 +1,6 @@
 /* libraries                                                                                     */
+using System;
+
 using TMPro;
 
 using UnityEngine;
@@ -31,10 +33,10 @@ public class LabManager : MonoBehaviour
     [SerializeField] private GameObject commerceTab;
     [SerializeField] private GameObject productionTab;
     [SerializeField] private GameObject explorationTab;
-    [SerializeField] private CraftingController craftingController;
+ 
 
    /* Public variables                                                                          */
-   public static int currentCommerceTier { get; private set; }
+   public static int currentCommerceTier { get; private set; } = 0;
 
 
     TradeHutManager tradeHutManager;
@@ -226,9 +228,11 @@ public class LabManager : MonoBehaviour
            currentCommerceTier = TIER_ONE;
            tradeHutManager.marketShiftMin = 1;
            tradeHutManager.marketShiftMax = 2;
-           
-            foreach(Transform item in tradeHutManager.Items)
+
+           foreach(Transform item in tradeHutManager.SellItems)
               item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
+
+           ApplyDiscountToBuyItems(.2f);
         }
         /* Permanently reduce gold spent on refinery upkeep by 50%                               */
         else if (tabType == productionTab)
@@ -251,17 +255,10 @@ public class LabManager : MonoBehaviour
         /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
         if (tabType == commerceTab)
         {
-            TradeHutManager.Instance.marketShiftMin = 3;
-            TradeHutManager.Instance.marketShiftMax = 5;
-            
-            Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
-            Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
+           TradeHutManager.Instance.marketShiftMin = 3;
+           TradeHutManager.Instance.marketShiftMax = 5;
 
-            chainImage.gameObject.SetActive(false);
-            
-            mysteryBox.interactable = true;
-
-            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, TradeHutManager.INDUSTRIAL_BLUE_PRINT_TAG);
+           tradeHutManager.RecycleButton.gameObject.SetActive(true);
         }
 
         /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
@@ -269,8 +266,7 @@ public class LabManager : MonoBehaviour
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
-            craftingController.UnlockRefinedToolFromLab();
-            craftingController.ApplyLockStateToUI();
+           
         }
         /* Permanently increase gold by +15 per turn                                             */
         else if (tabType == explorationTab)
@@ -285,21 +281,29 @@ public class LabManager : MonoBehaviour
 
     public void ImplementTierThreeInnovation(GameObject tabType)
     {
-        /* Allows all items in storage to be sold for 5x multiplier                              */
+       int crudeToolSellValueIncrease     = Mathf.CeilToInt(GetItemValue(ItemType.CrudeTool) * 1.2f) - GetItemValue(ItemType.CrudeTool),
+           harpoonSellValueIncrease       = Mathf.CeilToInt(GetItemValue(ItemType.Harpoon) * 1.2f) - GetItemValue(ItemType.Harpoon),
+           pressureValveSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.PressureValve) * 1.2f) - GetItemValue(ItemType.PressureValve),
+           engineSellValueIncrease        = Mathf.CeilToInt(GetItemValue(ItemType.Engine) * 1.2f) - GetItemValue(ItemType.Engine);
+
         if (tabType == commerceTab)
         {
-            TradeHutManager.Instance.marketShiftMin = 5;
-            TradeHutManager.Instance.marketShiftMax = 10;
+           tradeHutManager.marketShiftMin = 5;
+           tradeHutManager.marketShiftMax = 10;
 
-            tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 1.0f, TradeHutManager.CLOCKWORK_BLUEPRINT_TAG);
-            Debug.Log("All items in storage sold for 5x");
+           // Removes the negative world events
+           tradeHutManager.isTier3BuffACtive = true;
+
+           // Raises sell items base price by 1.2 
+           TryIncreaseCrudeToolSellValue(crudeToolSellValueIncrease);
+           TryIncreaseHarpoonSellValue(harpoonSellValueIncrease);
+           TryIncreasePressureValveValue(pressureValveSellValueIncrease);
+           TryIncreaseEngineSellValue(engineSellValueIncrease);
         }
         /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
         else if (tabType == productionTab)
         {
             Debug.Log("Unlock Artifact and crafting results in double item");
-            craftingController.UnlockArtifactToolFromLab();
-            craftingController.ApplyLockStateToUI();
         }
         /* Decrease search costs by 50%                                                          */
         else if (tabType == explorationTab)
@@ -382,6 +386,4 @@ public class LabManager : MonoBehaviour
     {
         infoPanel.gameObject.SetActive(false);
     }
-
-
 }
