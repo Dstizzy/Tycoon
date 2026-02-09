@@ -351,12 +351,12 @@ public class LabManager : MonoBehaviour
          TradeHutManager.Instance.marketShiftMin = 3;
          TradeHutManager.Instance.marketShiftMax = 5;
             
-         Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
-         Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
+         //Button mysteryBox = tradeHutManager.BuyPanel.Find("Mystery Box").GetComponent<Button>();
+         //Image  chainImage = tradeHutManager.BuyPanel.Find("Chain").GetComponent<Image>();
 
-         chainImage.gameObject.SetActive(false);
+         //chainImage.gameObject.SetActive(false);
             
-         mysteryBox.interactable = true;
+         //mysteryBox.interactable = true;
 
          //tradeHutManager.CreateBuyItem(GetItemSprite(ItemType.IndustrialBluePrint), GetItemPrice(ItemType.IndustrialBluePrint), 1.0f, TradeHutManager.INDUSTRIAL_BLUE_PRINT_TAG);
       }
