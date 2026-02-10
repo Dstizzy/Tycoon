@@ -5,18 +5,23 @@ using UnityEngine.UI;
 
 public class MainUIManager : MonoBehaviour
 {
+
+   // Buttons on the main UI
    public Button   MainMenuButton;
    public Button[] DropdownButtons;
    public Button   InventoryButton;
    public Button   victoryButton;
 
+   // UI elements on main UI
    [SerializeField] private TextMeshProUGUI pearCountText;
    [SerializeField] private TextMeshProUGUI oreCountText;
    [SerializeField] private Transform       erroPanel;
    [SerializeField] private GameObject      victoryPanel;
 
+   // State variable to track dropdown visibility
    private bool isVisible = false;
 
+   // Singleton instance
    private void Awake()
    {
 
@@ -49,6 +54,8 @@ public class MainUIManager : MonoBehaviour
       InventoryManager.Instance.OnOreCountChanged += ChangeOreCountText;
       InventoryManager.Instance.OnPearlCountChanged += ChangePearlCountText;
    }
+
+   // Method to toggle the visibility of the dropdown buttons
    public void ToggleMenu()
    {
       isVisible = !isVisible;
@@ -56,18 +63,21 @@ public class MainUIManager : MonoBehaviour
       DropdownButtons[1].gameObject.SetActive(isVisible);
    }
 
+   // Changes the Pearl count text on the main UI
    public void ChangePearlCountText(int newPearlCount)
    {
       if (pearCountText != null)
          pearCountText.text = newPearlCount.ToString();
    }
 
+   // Changes the Ore count text on the main UI
    public void ChangeOreCountText(int newOreCount)
    {
       if (oreCountText != null)
          oreCountText.text = newOreCount.ToString();
    }
 
+   //Shows the victory panel and sets up the buttons for the submarine assembly
    public void ShowVictoryPanel()
    {
       if (victoryPanel != null)
@@ -80,17 +90,18 @@ public class MainUIManager : MonoBehaviour
 
          PopUpManager.Instance.DisablePlayerInput();
 
-         // First Part
+         // Activates the head
          victoryPanel.transform.Find("SubmarineSkel/HeadButton").GetComponent<Button>().onClick.AddListener(() => ActivateHead());
 
-         // Second Part
+         // Activates the body
          victoryPanel.transform.Find("SubmarineSkel/BodyButton").GetComponent<Button>().onClick.AddListener(() => ActivateBody());
 
-         // Third Part
+         // Activates the tail
          victoryPanel.transform.Find("SubmarineSkel/TailButton").GetComponent<Button>().onClick.AddListener(() => ActivateTail());
       }
    }
 
+   // Activates the head of the submarine
    public void ActivateHead()
    {
       if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
@@ -111,6 +122,7 @@ public class MainUIManager : MonoBehaviour
       }
    }
 
+   // Activates the body of the submarine
    public void ActivateBody() 
    {
       if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
@@ -131,6 +143,7 @@ public class MainUIManager : MonoBehaviour
       }
    }
 
+   // Activates the tail of the submarine
    public void ActivateTail() 
    {
       if(victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
@@ -151,6 +164,7 @@ public class MainUIManager : MonoBehaviour
       }
    }
 
+   // Activates the final form of the submarine when all parts are active
    public void ActivateFinalForm() 
    {
       victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
