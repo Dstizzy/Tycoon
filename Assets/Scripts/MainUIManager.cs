@@ -75,51 +75,86 @@ public class MainUIManager : MonoBehaviour
          victoryPanel.SetActive(true);
          victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => {
             victoryPanel.SetActive(false);
-            victoryButton.onClick.RemoveAllListeners();
             PopUpManager.Instance.EnablePlayerInput();
          });
 
          PopUpManager.Instance.DisablePlayerInput();
 
          // First Part
-         victoryPanel.transform.Find("SubmarineSkel/HeadButton").GetComponent<Button>().onClick.AddListener(() => ActivateFirstPart());
+         victoryPanel.transform.Find("SubmarineSkel/HeadButton").GetComponent<Button>().onClick.AddListener(() => ActivateHead());
 
          // Second Part
-         victoryPanel.transform.Find("SubmarineSkel/BodyButton").GetComponent<Button>().onClick.AddListener(() => ActivateSecondPart());
+         victoryPanel.transform.Find("SubmarineSkel/BodyButton").GetComponent<Button>().onClick.AddListener(() => ActivateBody());
 
          // Third Part
-         victoryPanel.transform.Find("SubmarineSkel/TailButton").GetComponent<Button>().onClick.AddListener(() => ActivateThirdPart());
+         victoryPanel.transform.Find("SubmarineSkel/TailButton").GetComponent<Button>().onClick.AddListener(() => ActivateTail());
       }
    }
 
-   public void ActivateFirstPart()
+   public void ActivateHead()
    {
-      if(victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
       {
-         victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
+         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
+      }
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
       }
       else
       {
          if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
-         else
             victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(false);
+         else
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
       }
    }
 
-   public void ActivateSecondPart() 
+   public void ActivateBody() 
    {
-      if(victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf)
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(true);
+      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
+      {
+         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
+      }
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
+      }
       else
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(false);
+      {
+         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf)
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(false);
+         else
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(true);
+      }
    }
 
-   public void ActivateThirdPart() 
+   public void ActivateTail() 
    {
-      if(victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
+      if(victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
+      {
+         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
+      }
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
+      }
       else
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(false);
+      {
+         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(false);
+         else
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
+      }
+   }
+
+   public void ActivateFinalForm() 
+   {
+      victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
+      victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
+      victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
    }
 }
