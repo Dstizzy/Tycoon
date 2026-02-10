@@ -6789,6 +6789,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea54b18dfe33cf44f9aaee7b0325d1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  isOverclockUnlocked: 0
+  isLabTier3Unlocked: 0
   hasTier3Blueprint: 0
   hasTier2Blueprint: 0
   hasMercenaryEngineer: 0
@@ -6803,8 +6805,8 @@ MonoBehaviour:
   tier2Container: {fileID: 1870121388}
   tier3Container: {fileID: 1718020251}
   craftWindowTemplate: {fileID: 3524657759485616187, guid: 21b7e3556231b4868b3bf51fccb2d2dd, type: 3}
-  resultPanel: {fileID: 209167155}
   forgeLevelText: {fileID: 1370257073}
+  activeJobs: []
 --- !u!1 &249455045
 GameObject:
   m_ObjectHideFlags: 0
@@ -23714,8 +23716,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hover
   mainCam: {fileID: 264605918}
   ForgeLevelText: {fileID: 1345118096}
-  OreRefineryText: {fileID: 0}
-  ExplorationUnitText: {fileID: 0}
+  OreRefineryText: {fileID: 544194360}
+  ExplorationUnitText: {fileID: 1105813450}
 --- !u!1 &870609632
 GameObject:
   m_ObjectHideFlags: 0
@@ -24693,7 +24695,7 @@ MonoBehaviour:
   upgradePanel: {fileID: 451993531}
   buildingCanvas: {fileID: 808467043}
   jamPanel: {fileID: 214154250}
-  oreRefineryLevelText: {fileID: 0}
+  oreRefineryLevelText: {fileID: 544194361}
   oreLevel: 1
   jammingChance: 0
   IsBlocked: 0
