@@ -745,8 +745,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e0c1386a0ca84643983204268cf27dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TickerSystem
-  messageText: {fileID: 526125802}
-  canvasGroup: {fileID: 2131802705}
+  wortldEventCanvasGroup: {fileID: 0}
+  worldEventMessageText: {fileID: 0}
+  errorCanvasGroup: {fileID: 0}
+  errorMessageText: {fileID: 0}
   timeVisible: 3
   fadeDuration: 1
 --- !u!222 &26924191
@@ -1020,8 +1022,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea54b18dfe33cf44f9aaee7b0325d1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  hasClockworkBlueprint: 0
-  hasIndustrialBlueprint: 0
+  isOverclockUnlocked: 0
+  isLabTier3Unlocked: 0
+  hasTier3Blueprint: 0
+  hasTier2Blueprint: 0
+  hasMercenaryEngineer: 0
+  isMercenaryEngineerActive: 0
   craftPanel: {fileID: 724393313}
   infoPanel: {fileID: 1513537679}
   upgradePanel: {fileID: 1636761558}
@@ -1033,6 +1039,7 @@ MonoBehaviour:
   tier3Container: {fileID: 0}
   craftWindowTemplate: {fileID: 0}
   forgeLevelText: {fileID: 1865819879}
+  activeJobs: []
 --- !u!1 &47119352
 GameObject:
   m_ObjectHideFlags: 0
@@ -8868,7 +8875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &343835725
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25407,7 +25414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1052712657
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30238,7 +30245,7 @@ MonoBehaviour:
   jamPanel: {fileID: 1693751960}
   oreRefineryLevelText: {fileID: 395592420}
   oreLevel: 1
-  JammingPercentage: 0
+  jammingChance: 10
   IsBlocked: 0
 --- !u!224 &1253925820
 RectTransform:
@@ -30810,6 +30817,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hover
   mainCam: {fileID: 255228995}
+  ForgeLevelText: {fileID: 0}
+  OreRefineryText: {fileID: 0}
+  ExplorationUnitText: {fileID: 0}
 --- !u!4 &1279560155
 Transform:
   m_ObjectHideFlags: 0
@@ -31728,7 +31738,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1319359218
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34742,7 +34752,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
   TradePanels: {fileID: 1676091237}
-  BuyPanel: {fileID: 1991024846}
   BuyWindow: {fileID: 217802084}
   SellPanel: {fileID: 1780782510}
   SellWindow: {fileID: 136477197}
@@ -34750,9 +34759,12 @@ MonoBehaviour:
   UpgradePanel: {fileID: 24327634}
   MysteryBoxPanel: {fileID: 1331592561}
   tradeHutLevelText: {fileID: 1196488203}
+  BuyPanel: {fileID: 1991024846}
+  RecycleButton: {fileID: 0}
   currrentNewsTickerMessage: 
   marketShiftMax: 2
   marketShiftMin: 1
+  isTier3BuffACtive: 0
 --- !u!222 &1420476661
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -37168,20 +37180,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  explorationUnitLevelText: {fileID: 518365693}
+  eventDatabase: {fileID: 0}
+  eventController: {fileID: 0}
+  shipManager: {fileID: 0}
   explorePanel: {fileID: 337120087}
-  infoPanel: {fileID: 1744873516}
   upgradePanel: {fileID: 1884121428}
-  levelOneTab: {fileID: 869933459}
-  levelTwoTab: {fileID: 2124356114}
-  levelThreeTab: {fileID: 1018899177}
-  levelOneBoat: {fileID: 0}
-  levelTwoBoat: {fileID: 0}
-  levelThreeBoat: {fileID: 0}
-  possibleRewards: []
-  rewardsPanel: {fileID: 715213940}
-  rewardsContainer: {fileID: 1992235966}
-  rewardEntry: {fileID: 6802433317973521069, guid: e4428a40e8843ad45911227f786de83e, type: 3}
+  infoPanel: {fileID: 1744873516}
+  decisionPanel: {fileID: 0}
+  decisionResultsPanel: {fileID: 0}
+  decisionResults: {fileID: 0}
+  exploreShipIcon: {fileID: 0}
+  lastProcessedTurn: -1
   isExploring: 0
 --- !u!224 &1563393457
 RectTransform:
@@ -37454,7 +37463,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1574701373
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45259,6 +45268,7 @@ MonoBehaviour:
   InventoryButton: {fileID: 538460160}
   pearCountText: {fileID: 112052609}
   oreCountText: {fileID: 1729472736}
+  erroPanel: {fileID: 0}
 --- !u!1 &1844991018
 GameObject:
   m_ObjectHideFlags: 0

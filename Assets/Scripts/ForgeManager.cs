@@ -1,35 +1,43 @@
 ﻿using TMPro;
-
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-using static TickerSystem;
+[System.Serializable]
+public class CraftingJob
+{
+   public Item.ItemType itemType;
+   public int amount;
+   public int turnsRemaining;
+   public string itemName;
+}
 
 public class ForgeManager : MonoBehaviour
 {
    /* Constants */
-   const int CRAFT_BUTTON         = 1;
-   const int INFO_BUTTON          = 2;
-   const int UPGRADE_BUTTON       = 3;
-   const int STARTING_LEVEL       = 1;
-   const int CRUDE_TOOL_COST      = 10;
-   const int HARPOON_COST         = 25;
-   const int PATCH_KIT_COST       = 15;
+   const int CRAFT_BUTTON = 1;
+   const int INFO_BUTTON = 2;
+   const int UPGRADE_BUTTON = 3;
+   const int STARTING_LEVEL = 1;
+   const int CRUDE_TOOL_COST = 10;
+   const int HARPOON_COST = 25;
+   const int PATCH_KIT_COST = 15;
    const int PRESSUREV_VALVE_COST = 50;
-   const int DIVING_BELL_COST     = 75;
-   const int ENGINE_COST          = 150;
-   const int PRECISION_LENS_COST  = 200;
+   const int DIVING_BELL_COST = 75;
+   const int ENGINE_COST = 150;
+   const int PRECISION_LENS_COST = 200;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
+   public bool isOverclockUnlocked = false;
+   public bool isLabTier3Unlocked = false;
    public bool hasTier3Blueprint = false;
    public bool hasTier2Blueprint = false;
-   public bool hasMercenaryEngineer      = false;
+   public bool hasMercenaryEngineer = false;
    public bool isMercenaryEngineerActive = false;
-
 
 
    /* Inspector Variables */
@@ -50,17 +58,19 @@ public class ForgeManager : MonoBehaviour
 
    [Header("Windw Template")]
    [SerializeField] private Transform craftWindowTemplate;
-
-   public CraftResultPanel resultPanel;
-   private TickerSystem ticker;
-
    public TextMeshProUGUI forgeLevelText;
+
+   [Header("Crafting Queue")]
+   public List<CraftingJob> activeJobs = new List<CraftingJob>();
 
    /* Private state variables */
    private Transform currentCraftWindow;
-   private int selectedCraftAmount = 0;
-   private Item.ItemType selectedItemType;
+   private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
    private static int forgeLevel = STARTING_LEVEL;
+   private Toggle currentOverclockToggle;
+   private Image craftSlot1;
+   private Image craftSlot2;
+   private GameObject craftButtonObject;
 
    public static ForgeManager Instance { get; private set; }
 
@@ -70,19 +80,27 @@ public class ForgeManager : MonoBehaviour
 
       if (craftWindowTemplate.gameObject.scene.name != null)
          craftWindowTemplate.gameObject.SetActive(false);
+
+      // Link to turn system
+      if (TurnManager.Instance != null)
+         TurnManager.OnTurnEnded += ProcessCraftingQueue;
    }
 
+   private void OnDestroy()
+   {
+      // Unlink to turn system to prevent errors
+      if (TurnManager.Instance != null)
+         TurnManager.OnTurnEnded -= ProcessCraftingQueue;
+   }
    private void Awake()
    {
       if (Instance != null && Instance != this)
          Destroy(this.gameObject);
-      else 
+      else
       {
          Instance = this;
          DontDestroyOnLoad(this.gameObject);
       }
-
-      ticker = TickerSystem.Instance;
 
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
@@ -102,228 +120,81 @@ public class ForgeManager : MonoBehaviour
       forgeLevelText.text = "Level" + forgeLevel;
    }
 
-   private void CreateCraftWindow(Transform container, Item.ItemType itemType)
+   // REMOVED itemType argument
+   private void CreateCraftWindow(Transform container)
    {
-      Debug.Log("CreateCraftWindow: Attempting to spawn window...");
+      Debug.Log("CreateCraftWindow: Spawning...");
 
-      // 1. Safe Container Check
-      if (container == null) { Debug.LogError("CRITICAL: Container is null!"); return; }
-      container.gameObject.SetActive(true);
-      if (container.parent != null) container.parent.gameObject.SetActive(true);
+      if (container == null) return;
 
-      // 2. Clear Old Window
-      if (currentCraftWindow != null)
-      {
-         Destroy(currentCraftWindow.gameObject);
-         currentCraftWindow = null;
-      }
 
-      // 3. Instantiate and Verify
-      if (craftWindowTemplate == null) { Debug.LogError("CRITICAL: CraftWindowTemplate is not assigned in Inspector!"); return; }
+      if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
 
       Transform windowTransform = Instantiate(craftWindowTemplate, container);
       currentCraftWindow = windowTransform;
-
       windowTransform.localPosition = Vector3.zero;
       windowTransform.localScale = Vector3.one;
 
-      selectedItemType = itemType; 
-      selectedCraftAmount = 0;
+      // FIND IMAGES
+      Transform img1 = FindChildByName(windowTransform, "ItemImage1");
+      Transform img2 = FindChildByName(windowTransform, "ItemImage2");
 
+      if (img1 != null) craftSlot1 = img1.GetComponent<Image>();
+      if (img2 != null) craftSlot2 = img2.GetComponent<Image>();
 
-
-      Transform imageTrans = windowTransform.Find("ItemImage");
-      if (imageTrans != null)
-      {
-         imageTrans.GetComponent<Image>().sprite = Item.GetItemSprite(itemType);
-      }
-      else
-      {
-         Debug.LogError("MISSING: Could not find object named 'ItemImage' in prefab!");
-      }
-
-      Transform incBtn = windowTransform.Find("QuantityButtons/IncreaseButton");
-      if (incBtn != null)
-      {
-         incBtn.GetComponent<Button>().onClick.AddListener(() => IncreaseCraftAmount(windowTransform));
-      }
-      else
-      {
-         Debug.LogError("MISSING: Could not find 'QuantityButtons/IncreaseButton' in prefab!");
-      }
-
-      Transform decBtn = windowTransform.Find("QuantityButtons/DecreaseButton");
-      if (decBtn != null)
-      {
-         decBtn.GetComponent<Button>().onClick.AddListener(() => DecreaseCraftAmount(windowTransform));
-      }
-      else
-      {
-         Debug.LogError("MISSING: Could not find 'QuantityButtons/DecreaseButton' in prefab!");
-      }
-
-      Transform craftBtn = windowTransform.Find("CraftButton");
+      //FIND BUTTONS
+      Transform craftBtn = FindChildByName(windowTransform, "CraftButton");
       if (craftBtn != null)
       {
-         craftBtn.GetComponent<Button>().onClick.AddListener(() => CraftSelectedItem());
+         craftButtonObject = craftBtn.gameObject; // Store the object
+         craftButtonObject.GetComponent<Button>().onClick.AddListener(() => CraftStagedItems());
       }
-      else
+
+      //FIND TOGGLE
+      Transform toggleTrans = FindChildByName(windowTransform, "OverclockToggle");
+      if (toggleTrans != null)
       {
-         Debug.LogError("MISSING: Could not find 'CraftButton' in prefab!");
+         currentOverclockToggle = toggleTrans.GetComponent<Toggle>();
+         currentOverclockToggle.gameObject.SetActive(isOverclockUnlocked);
+         currentOverclockToggle.isOn = false;
       }
 
-      UpdateCraftAmountUI(windowTransform);
-      windowTransform.gameObject.SetActive(true);
+      // Refresh Visuals based on Staging List
+      UpdateStagingUI();
 
-      Debug.Log("Success! Window should be visible.");
+      windowTransform.gameObject.SetActive(true);
    }
+
 
    /* Open the craft window when a item is selected*/
    public void OnCraftItemSelected(int tier, Item.ItemType itemType)
    {
-      /* Decide which container to used based on the selected tier */
-      Transform targetContainer = null;
+      // 1. Determine Capacity based on Level
+      int maxStagingSlots = (forgeLevel >= 2) ? 2 : 1;
 
+      // 2. Logic: If list is full, clear it and start new. Otherwise, add to it.
+      if (stagingItems.Count >= maxStagingSlots)
+      {
+         stagingItems.Clear();
+      }
+
+      // 3. Add the item
+      stagingItems.Add(itemType);
+
+      // 4. Determine Container
+      Transform targetContainer = null;
       switch (tier)
       {
-         case TIER_1:
-            targetContainer = tier1Container;
-            break;
-
-         case TIER_2:
-            targetContainer = tier2Container;
-            break;
-
-         case TIER_3:
-            targetContainer = tier3Container;
-            break;
+         case TIER_1: targetContainer = tier1Container; break;
+         case TIER_2: targetContainer = tier2Container; break;
+         case TIER_3: targetContainer = tier3Container; break;
       }
 
-      if (targetContainer != null)
-         CreateCraftWindow(targetContainer, itemType);
+      // 5. Open/Refresh the Window
+      if (targetContainer != null) CreateCraftWindow(targetContainer);
    }
 
-   public void IncreaseCraftAmount(Transform window)
-   {
-      if (selectedCraftAmount < MAX_CRAFT_AMOUNT)
-         selectedCraftAmount++;
-      UpdateCraftAmountUI(window);
-   }
 
-   public void DecreaseCraftAmount(Transform window)
-   {
-      if (selectedCraftAmount > MIN_CRAFT_AMOUNT)
-         selectedCraftAmount--;
-      UpdateCraftAmountUI(window);
-   }
-
-   public void UpdateCraftAmountUI(Transform window)
-   {
-      int costPerItem = 0,
-          totalCost;
-
-      TextMeshProUGUI amountText = window.Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      if (amountText != null)
-         amountText.text = selectedCraftAmount.ToString();
-
-      Transform costText = window.Find("currencyNeeded");
-
-      if (costText == null)
-         costText = window.Find("ItemValue");
-
-      if (costText != null)
-      {
-         
-         switch (selectedItemType)
-         {
-            /* Tier 1 items */
-            case Item.ItemType.CrudeTool:
-               costPerItem = CRUDE_TOOL_COST;
-               break;
-            case Item.ItemType.Harpoon:
-               costPerItem = HARPOON_COST;
-               break;
-            case Item.ItemType.PatchKit:
-               costPerItem = PATCH_KIT_COST;
-               break;
-
-            /* Tier 2 items */
-            case Item.ItemType.PressureValve:
-               costPerItem = PRESSUREV_VALVE_COST;
-               break;
-            case Item.ItemType.DivingBell:
-               costPerItem = DIVING_BELL_COST;
-               break;
-
-            /* Tier 3 items */
-            case Item.ItemType.Engine:
-               costPerItem = ENGINE_COST;
-               break;
-            case Item.ItemType.PrecisionLens:
-               costPerItem = PRECISION_LENS_COST;
-               break;
-         }
-
-         totalCost = selectedCraftAmount * costPerItem;
-         costText.GetComponent<TextMeshProUGUI>().text = totalCost.ToString();
-      }
-     
-   }
-
-   public void CraftSelectedItem()
-   {
-      int    unitCost = 0,  // Cost of one selected item
-             totalCost;     // Total cost required to craft
-      string itemName = ""; // Item name
-
-      // 1. Determine the cost of ONE item
-      switch (selectedItemType)
-      {
-         case Item.ItemType.CrudeTool:
-            unitCost = CRUDE_TOOL_COST; itemName = "Crude Tool";
-            break;
-         case Item.ItemType.Harpoon:
-            unitCost = HARPOON_COST; itemName = "Harpoon";
-            break;
-         case Item.ItemType.PatchKit:
-            unitCost = PATCH_KIT_COST; itemName = "Patch Kit";
-            break;
-         case Item.ItemType.PressureValve:
-            unitCost = PRESSUREV_VALVE_COST; itemName = "Pressure Valve";
-            break;
-         case Item.ItemType.DivingBell:
-            unitCost = DIVING_BELL_COST; itemName = "Diving Bell";
-            break;
-         case Item.ItemType.Engine:
-            unitCost = ENGINE_COST; itemName = "Engine";
-            break;
-         case Item.ItemType.PrecisionLens:
-            unitCost = PRECISION_LENS_COST; itemName = "Precision Lens";
-            break;
-      }
-
-      // Calculate TOTAL cost 
-      totalCost = unitCost * selectedCraftAmount;
-
-      // Check if there is enough ores to spend
-      if (InventoryManager.Instance.TrySpendOre(totalCost))
-      {
-         // Success, craft the desired items
-         switch (selectedItemType)
-         {
-            case Item.ItemType.CrudeTool: InventoryManager.Instance.TryAddCrudeTool(selectedCraftAmount); break;
-            case Item.ItemType.Harpoon: InventoryManager.Instance.TryAddHarpoon(selectedCraftAmount); break;
-            case Item.ItemType.PatchKit: InventoryManager.Instance.TryAddPatchKit(selectedCraftAmount); break;
-            case Item.ItemType.PressureValve: InventoryManager.Instance.TryAddPressureValve(selectedCraftAmount); break;
-            case Item.ItemType.DivingBell: InventoryManager.Instance.TryAddDivingBell(selectedCraftAmount); break;
-            case Item.ItemType.Engine: InventoryManager.Instance.TryAddEngine(selectedCraftAmount); break;
-            case Item.ItemType.PrecisionLens: InventoryManager.Instance.TryAddPrecisionLens(selectedCraftAmount); break;
-         }
-
-         // Show Success Panel
-         ticker.ShowTicker($"Succesfully crafted the {itemName}!", Color.green, MessageTypes.ResultMessage);
-      }
-   }
 
    private void SetCraftItemButtons()
    {
@@ -345,7 +216,7 @@ public class ForgeManager : MonoBehaviour
       {
          if (btn.name.Contains("ItemButton"))
          {
-            Debug.Log($"-- Found ItemButton: {btn.name}"); 
+            Debug.Log($"-- Found ItemButton: {btn.name}");
 
             btn.onClick.RemoveAllListeners();
             ItemUI itemUI = btn.GetComponent<ItemUI>();
@@ -359,15 +230,17 @@ public class ForgeManager : MonoBehaviour
             Item.ItemType type = itemUI.itemType;
 
             // Wire up the click
-            btn.onClick.AddListener(() => {
-               Debug.Log($"CLICKED: {type} in Tier {tier}"); 
+            btn.onClick.AddListener(() =>
+            {
+               Debug.Log($"CLICKED: {type} in Tier {tier}");
                OnCraftItemSelected(tier, type);
             });
          }
          else if (btn.name == "ExitButton")
          {
             btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => {
+            btn.onClick.AddListener(() =>
+            {
                CloseAllTierPanels();
                if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
             });
@@ -390,11 +263,11 @@ public class ForgeManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.transform.Find("YesButton").   GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
+            upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
             break;
          default:
-            Debug.LogError("Building Panel: Unknown button ID.");
+            Debug.Log("Building Panel: Unknown button ID.");
             break;
       }
    }
@@ -408,25 +281,23 @@ public class ForgeManager : MonoBehaviour
       {
          upgradeCost = 500;
       }
-      else 
-         if (forgeLevel == 2)
-         {
-            upgradeCost = 800;
-         }
+      else if (forgeLevel == 2)
+      {
+         upgradeCost = 800;
+      }
 
       // Check if there is sufficient pearls to upgrade
-      if (InventoryManager.Instance.TrySpendPearl(upgradeCost))
+      if (InventoryManager.Instance.pearlCount >= upgradeCost)
       {
+         // Enough pearls, deduct the required amount
+         InventoryManager.Instance.TrySpendPearl(upgradeCost);
+
          // Perform the upgrade
          if (forgeLevel < ENDING_LEVEL)
          {
             forgeLevel += 1;
          }
-
          forgeLevelText.text = "Level " + forgeLevel.ToString();
-
-         ticker.ShowTicker($"Forge upgraded to Level {forgeLevel}.", Color.green, MessageTypes.ResultMessage);
-
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
       }
@@ -438,13 +309,11 @@ public class ForgeManager : MonoBehaviour
          {
             // Display the fail message
             upgradeText.text = $"Not enough pearls to upgrade!\nYou need {upgradeCost} pearls.";
-            upgradePanel.gameObject.SetActive(false);
+            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
          }
-         Debug.LogError("Not enough pearls to upgrade!");
+         Debug.Log("Not enough pearls to upgrade!");
 
-         ticker.ShowTicker($"Not enough pearls to upgrade � need {upgradeCost} pearls.", Color.red, MessageTypes.ResultMessage);
       }
-
    }
 
    public void CloseForgePanel(int buttonID)
@@ -481,7 +350,7 @@ public class ForgeManager : MonoBehaviour
 
       if (t1 != null)
       {
-         t1.GetComponent<Button>().onClick.RemoveAllListeners(); 
+         t1.GetComponent<Button>().onClick.RemoveAllListeners();
          t1.GetComponent<Button>().onClick.AddListener(() => OpenTierPanel(1));
       }
       else Debug.LogError("Could not find button 'Tier1' inside TierButtons!");
@@ -560,9 +429,9 @@ public class ForgeManager : MonoBehaviour
    {
       craftPanel.gameObject.SetActive(false);
 
-      /* Destroy the craft window when closing the main panel*/
-      if (currentCraftWindow != null)
-         Destroy(currentCraftWindow.gameObject);
+      stagingItems.Clear();
+
+      if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
    }
    private void CloseInfoPanel()
    {
@@ -603,5 +472,227 @@ public class ForgeManager : MonoBehaviour
             break;
       }
    }
+
+   public void UnlockOverclock()
+   {
+      isOverclockUnlocked = true;
+      Debug.Log("Overclocking Unlocked in Forge!");
+   }
+
+   private int GetTurnsNeeded(Item.ItemType type)
+   {
+      int turns = 1;
+
+      // 1. Determine Base Turns
+      switch (type)
+      {
+         case Item.ItemType.CrudeTool:
+            turns = 1;
+            break;
+         case Item.ItemType.Harpoon:
+            turns = isLabTier3Unlocked ? 1 : 2;
+            break;
+         case Item.ItemType.PatchKit:
+            turns = 1;
+            break;
+         case Item.ItemType.PressureValve:
+            turns = isLabTier3Unlocked ? 1 : 2;
+            break;
+         case Item.ItemType.DivingBell:
+            turns = 3;
+            break;
+         case Item.ItemType.Engine:
+            turns = 4;
+            break;
+         case Item.ItemType.PrecisionLens:
+            turns = 5;
+            break;
+         default:
+            turns = 1;
+            break;
+      }
+
+      // 2. Level 3 Bonus: Reduce turn cost by 1
+      if (forgeLevel >= 3)
+      {
+         turns -= 1;
+      }
+
+      // 3. Allow 0 turns (Instant Crafting)
+      if (turns < 0) turns = 0;
+
+      return turns;
+   }
+
+   private void ProcessCraftingQueue()
+   {
+      int jobCount;
+
+      int maxParallelSlots = (forgeLevel >= 2) ? 2 : 1;
+
+      for (jobCount = activeJobs.Count - 1; jobCount >= 0; jobCount--)
+      {
+
+         if (jobCount < maxParallelSlots)
+         {
+            CraftingJob job = activeJobs[jobCount];
+            job.turnsRemaining--;
+
+            if (job.turnsRemaining <= 0)
+            {
+               DeliverItem(job);
+               activeJobs.RemoveAt(jobCount);
+               Debug.Log($"Crafting Complete: {job.itemName}");
+            }
+         }
+      }
+
+
+   }
+
+   private void DeliverItem(CraftingJob job)
+   {
+      switch (job.itemType)
+      {
+         case Item.ItemType.CrudeTool:
+            InventoryManager.Instance.TryAddCrudeTool(job.amount);
+            break;
+         case Item.ItemType.Harpoon:
+            InventoryManager.Instance.TryAddHarpoon(job.amount);
+            break;
+         case Item.ItemType.PatchKit:
+            InventoryManager.Instance.TryAddPatchKit(job.amount);
+            break;
+         case Item.ItemType.PressureValve:
+            InventoryManager.Instance.TryAddPressureValve(job.amount);
+            break;
+         case Item.ItemType.DivingBell:
+            InventoryManager.Instance.TryAddDivingBell(job.amount);
+            break;
+         case Item.ItemType.Engine:
+            InventoryManager.Instance.TryAddEngine(job.amount);
+            break;
+         case Item.ItemType.PrecisionLens:
+            InventoryManager.Instance.TryAddPrecisionLens(job.amount);
+            break;
+      }
+   }
+
+   public void UnlockReduceCraftingTime()
+   {
+      isLabTier3Unlocked = true;
+      Debug.Log("Node 3 in production path unlocked: crafting times reduced!");
+   }
+   private Transform FindChildByName(Transform parent, string name)
+   {
+      foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
+      {
+         if (child.name.Trim() == name) return child;
+      }
+      return null;
+   }
+   private void UpdateStagingUI()
+   {
+      if (craftButtonObject != null)
+      {
+         craftButtonObject.SetActive(stagingItems.Count > 0);
+      }
+      // SLOT 1: Shows the first item in the staging list
+      if (craftSlot1 != null)
+      {
+         if (stagingItems.Count > 0)
+         {
+            craftSlot1.gameObject.SetActive(true);
+            craftSlot1.sprite = Item.GetItemSprite(stagingItems[0]);
+         }
+         else
+         {
+            craftSlot1.gameObject.SetActive(false);
+         }
+      }
+
+      // SLOT 2: Shows the second item 
+      if (craftSlot2 != null)
+      {
+         if (forgeLevel >= 2 && stagingItems.Count > 1)
+         {
+            craftSlot2.gameObject.SetActive(true);
+            craftSlot2.sprite = Item.GetItemSprite(stagingItems[1]);
+         }
+         else
+         {
+            craftSlot2.gameObject.SetActive(false);
+         }
+      }
+   }
+   public void CraftStagedItems()
+   {
+      if (stagingItems.Count == 0) return;
+
+      int totalCost = 0;
+      bool isOverclocked = (currentOverclockToggle != null && currentOverclockToggle.isOn);
+
+      // 1. Calculate Total Cost
+      foreach (var type in stagingItems)
+      {
+         totalCost += GetItemCost(type);
+      }
+
+      // 2. Check Affordability
+      if (InventoryManager.Instance.TrySpendOre(totalCost))
+      {
+         // 3. Process Each Item
+         foreach (var type in stagingItems)
+         {
+            int amount = isOverclocked ? 2 : 1;
+            int turns = GetTurnsNeeded(type);
+
+            // Create the job data
+            CraftingJob job = new CraftingJob();
+            job.itemType = type;
+            job.amount = amount;
+            job.itemName = type.ToString();
+            job.turnsRemaining = turns;
+
+            if (turns <= 0)
+            {
+               // If it takes 0 turns, deliver it immediately
+               DeliverItem(job);
+               Debug.Log($"[Instant Craft] {job.itemName} delivered immediately!");
+            }
+            else
+            {
+               // Otherwise, add to the waiting list
+               activeJobs.Add(job);
+               Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
+            }
+         }
+
+         // 4. Cleanup UI
+         stagingItems.Clear();
+         UpdateStagingUI();
+
+         if (currentOverclockToggle != null) currentOverclockToggle.isOn = false;
+      }
+      else
+      {
+         Debug.Log("Not enough ore for all items!");
+      }
+   }
+   private int GetItemCost(Item.ItemType type)
+   {
+      switch (type)
+      {
+         case Item.ItemType.CrudeTool: return CRUDE_TOOL_COST;
+         case Item.ItemType.Harpoon: return HARPOON_COST;
+         case Item.ItemType.PatchKit: return PATCH_KIT_COST;
+         case Item.ItemType.PressureValve: return PRESSUREV_VALVE_COST;
+         case Item.ItemType.DivingBell: return DIVING_BELL_COST;
+         case Item.ItemType.Engine: return ENGINE_COST;
+         case Item.ItemType.PrecisionLens: return PRECISION_LENS_COST;
+         default: return 0;
+      }
+   }
 }
-   
+
+
