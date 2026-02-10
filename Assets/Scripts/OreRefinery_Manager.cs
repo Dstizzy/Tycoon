@@ -1,7 +1,11 @@
 ﻿using NUnit.Framework.Constraints;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
+
+using static TickerSystem;
 
 public class OreRefinery_Manager : MonoBehaviour
 {
@@ -183,14 +187,14 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       if (paymentType == 1)
       {
-         if (InventoryManager.Instance.patchKitCount >= 1)
+         if (InventoryManager.Instance.TryUsePatchKit(1))
          {
-            //InventoryManager.Instance.TrySpendPatchKit(1);
             IsBlocked = false;
             buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
             CloseJamPanel();
             Debug.Log("Ore Refinery unjammed successfully.");
-         }
+            ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
+         } 
          else
          {
             Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
@@ -198,9 +202,8 @@ public class OreRefinery_Manager : MonoBehaviour
       }
       else
       {
-         if (InventoryManager.Instance.pearlCount >= 100)
+         if (InventoryManager.Instance.TrySpendPearl(100))
          {
-            InventoryManager.Instance.TrySpendPearl(100);
             IsBlocked = false;
             buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
             CloseJamPanel();
@@ -209,7 +212,6 @@ public class OreRefinery_Manager : MonoBehaviour
          else
          {
             Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
-            ticker.ShowTicker("Not enough Pearls to unjam the Ore Refinery.", Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
       }
    }

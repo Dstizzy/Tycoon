@@ -515,7 +515,7 @@ public class TradeHutManager : MonoBehaviour
             ticker.ShowTicker("No items have been selected", Color.red, MessageTypes.ResultMessage);
 
 
-      // Handle purchasing blueprint / mercenary items
+      // Handle purchasing blueprint
       if (currentBuyItem != null) 
       {
          // Tier 2 Blueprint purchase flow
@@ -570,6 +570,7 @@ public class TradeHutManager : MonoBehaviour
          if (currentBuyItem.CompareTag(MERCENARY_ENGINEER_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.MercenaryEngineer))) 
          {
             ForgeManager.Instance.hasMercenaryEngineer = true;
+            BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
             ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
          }
       }
