@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81287b6efe0e224f8b87368858d2135, type: 3}
+  m_Name: 1_03Direction
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  nodeName: 1_03
+  mapPosition: {x: -100, y: 55}
+  isExplored: 1
+  nodeDepth: 1
+  type: 1
+  navigationStory: You have come to a coral reef, and you must go around it.
+  choiceAText: Go to the left
+  pathA: {fileID: 11400000, guid: bd3d86b077522bb47ac284a063d07531, type: 2}
+  choiceBText: Go to the right
+  pathB: {fileID: 11400000, guid: e4c4230130a10a64fa7cea00d999f17a, type: 2}
+  nextNode: {fileID: 0}
