@@ -570,7 +570,9 @@ public class TradeHutManager : MonoBehaviour
          if (currentBuyItem.CompareTag(MERCENARY_ENGINEER_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.MercenaryEngineer))) 
          {
             ForgeManager.Instance.hasMercenaryEngineer = true;
-            BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
+
+            if(inv.mercenaryEngineerCount == 3)
+               BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
             ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
          }
       }

@@ -33,7 +33,8 @@ public class InventoryManager : MonoBehaviour
                            DivingBellCountText,
                            EngineCountText,
                            PrecisionLensCountText,
-                           RaWOreChunkCountText;
+                           RaWOreChunkCountText,
+                           MercenaryEngineerCountText;
    
    /* Constants                                                                     */
    public const int MIN_PEARL_COUNT          = 0,                                              
@@ -44,14 +45,16 @@ public class InventoryManager : MonoBehaviour
                     MAX_ORE_COUNT            = 10000;
                    
 
-   public const int MAX_CRUDE_TOOL_COUNT     = 100,
-                    MAX_HARPOON_COUNT        = 100,
-                    MAX_PRESSURE_VALVE_COUNT = 100,
-                    MAX_ENGINE_COUNT         = 100,
-                    MAX_RAW_ORE_COUNT        = 100,
-                    MAX_PATCH_KIT_COUNT      = 100,
-                    MAX_DIVING_BELL_COUNT    = 100,
-                    MAX_PRECISION_LENS_COUNT = 100,
+   public const int MAX_CRUDE_TOOL_COUNT         = 100,
+                    MAX_HARPOON_COUNT            = 100,
+                    MAX_PRESSURE_VALVE_COUNT     = 100,
+                    MAX_ENGINE_COUNT             = 100,
+                    MAX_RAW_ORE_COUNT            = 100,
+                    MAX_PATCH_KIT_COUNT          = 100,
+                    MAX_DIVING_BELL_COUNT        = 100,
+                    MAX_PRECISION_LENS_COUNT     = 100,
+                    MAX_MERCENARY_ENGINEER_COUNT = 3,
+
                     MIN_CRUDE_TOOL_COUNT     = 0,
                     MIN_HARPOON_COUNT        = 0,
                     MIN_PRESSURE_VALVE_COUNT = 0,
@@ -59,7 +62,8 @@ public class InventoryManager : MonoBehaviour
                     MIN_RARE_ORE_CHUNK_COUNT = 0,
                     MIN_PATCH_KIT_COUNT      = 0,
                     MIN_DIVING_BELL_COUNT    = 0,
-                    MIN_PRECISION_LENS_COUNT = 0;
+                    MIN_PRECISION_LENS_COUNT = 0,
+                    MIN_MERCENARY_ENGINEER_COUNT = 0;
 
 
    public const int RESOURCE_SPACING        = 30,
@@ -92,14 +96,15 @@ public class InventoryManager : MonoBehaviour
    public int crystalCount       { get; private set; }
    public int oreCount           { get; private set; }
 
-   public int crudeToolCount     { get; private set; }
-   public int harpoonCount       { get; private set; }
-   public int patchKitCount      { get; private set; }
-   public int pressureValveCount { get; private set; }
-   public int divingBellCount    { get; private set; }
-   public int engineCount        { get; private set; }
-   public int precisionLensCount { get; private set; }
-   public int rawOreChunkCount   { get; private set; }
+   public int crudeToolCount         { get; private set; }
+   public int harpoonCount           { get; private set; }
+   public int patchKitCount          { get; private set; }
+   public int pressureValveCount     { get; private set; }
+   public int divingBellCount        { get; private set; }
+   public int engineCount            { get; private set; }
+   public int precisionLensCount     { get; private set; }
+   public int rawOreChunkCount       { get; private set; }
+   public int mercenaryEngineerCount { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource,  
@@ -1078,6 +1083,63 @@ public class InventoryManager : MonoBehaviour
       engineValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryAddMercenaryEngineer(int amount)
+   {
+      bool isSuccess = false;
+
+      if (mercenaryEngineerCount >= MAX_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count is at maximum!");
+         ticker.ShowTicker($"Mercenary Engineer count is at maximum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else if ((mercenaryEngineerCount + amount) > MAX_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count would exceed maximum!");
+         ticker.ShowTicker($"Cannot add Mercenary Engineers - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else
+      {
+         isSuccess = true;
+         mercenaryEngineerCount += amount;
+      }
+
+      // Update any UI if present
+      if (MercenaryEngineerCountText != null)
+         MercenaryEngineerCountText.text = " x" + mercenaryEngineerCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryUseMercenaryEngineer(int amount)
+   {
+      bool isSuccess = false;
+
+      if (mercenaryEngineerCount <= MIN_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count is at minimum!");
+         ticker.ShowTicker($"Mercenary Engineer count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else if (mercenaryEngineerCount < amount)
+      {
+         Debug.LogError("Not enough Mercenary Engineers!");
+         ticker.ShowTicker($"Cannot use Mercenary Engineers, only {mercenaryEngineerCount} available!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else
+      {
+         isSuccess = true;
+         mercenaryEngineerCount -= amount;
+      }
+
+      if (MercenaryEngineerCountText != null)
+         MercenaryEngineerCountText.text = " x" + mercenaryEngineerCount.ToString();
 
       return isSuccess;
    }
