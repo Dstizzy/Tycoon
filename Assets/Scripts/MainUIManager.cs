@@ -1,6 +1,7 @@
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class MainUIManager : MonoBehaviour
@@ -170,5 +171,17 @@ public class MainUIManager : MonoBehaviour
       victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
       victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
+   }
+
+   public void GoBack()
+   {
+      if (SceneHistory.Instance != null)
+      {
+          SceneHistory.Instance.LoadPreviousScene();
+      }
+      else
+      {
+          Debug.LogError("SceneHistory is missing from the scene!");
+      }
    }
 }

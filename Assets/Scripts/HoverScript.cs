@@ -34,9 +34,30 @@ public class HoverScript : MonoBehaviour {
       playerActions.PlayerInput.Enable();
       playerActions.PlayerInput.Hover.performed += Hover;
    }
+   private void OnEnable()
+    {
+        if (playerActions != null) 
+        {
+            playerActions.PlayerInput.Enable();
+            playerActions.PlayerInput.Hover.performed += Hover;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (playerActions != null) 
+        {
+            playerActions.PlayerInput.Hover.performed -= Hover;
+            playerActions.PlayerInput.Disable();
+        }
+    }
+
 
    public void Hover(InputAction.CallbackContext context) 
    {
+      if (mainCam == null) 
+         return;
+      
       /* 1. Get mouse position converted to World Space (Vector2 is sufficient for 2D physics)                                                      */
       Vector2 mouseScreenPos = context.ReadValue<Vector2>();
 
