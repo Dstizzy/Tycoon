@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -99,6 +99,9 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
+
+         HandleJamming();
+         HandleEnemy();
 
          if (eventCountdown == 5) 
          {

@@ -19,9 +19,11 @@ public class OreRefinery_Manager : MonoBehaviour
    [SerializeField] private GameObject jamPanel;
    public TextMeshProUGUI oreRefineryLevelText;
 
+   TickerSystem ticker;
+
    public int oreLevel = STARTING_LEVEL;
 
-   public int jammingChance = 0;
+   public int jammingChance = 10;
 
    public bool IsBlocked = false;
 
@@ -48,7 +50,8 @@ public class OreRefinery_Manager : MonoBehaviour
          infoPanel.gameObject.SetActive(false);
       }
 
-      TurnManager.OnTurnEnded += ProduceOres;
+        ticker = TickerSystem.Instance;
+        TurnManager.OnTurnEnded += ProduceOres;
 
       CalculateRefineryValues();
 
@@ -206,6 +209,7 @@ public class OreRefinery_Manager : MonoBehaviour
          else
          {
             Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
+            ticker.ShowTicker("Not enough Pearls to unjam the Ore Refinery.", Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
       }
    }
@@ -227,6 +231,9 @@ public class OreRefinery_Manager : MonoBehaviour
       if (roll < jammingChance)
       {
          Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
+         IsBlocked = true;
+         ActivateJamButton();
+         ActivateJamSymbol();
       }
 
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
@@ -250,20 +257,25 @@ public class OreRefinery_Manager : MonoBehaviour
       if (oreLevel >= ENDING_LEVEL)
       {
          Debug.Log("Ore Refinery is already at max level.");
+         ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, TickerSystem.MessageTypes.ResultMessage);
          return;
       }
       if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls && InventoryManager.Instance.oreCount >= NextUpgradeCostInOre)
       {
          InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
          InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
+         
          oreLevel++;
          CalculateRefineryValues();
+
          oreRefineryLevelText.text = "Level " + oreLevel.ToString();
          Debug.Log($"Ore Refinery upgraded to level {oreLevel}!");
+         ticker.ShowTicker($"Ore Refinery upgraded to level {oreLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       else
       {
          Debug.Log("Not enough resources to upgrade the Ore Refinery.");
+         ticker.ShowTicker("Not enough Pearls to upgrade the Ore Refinery.", Color.red, TickerSystem.MessageTypes.ResultMessage);
       }
    }
 

@@ -1,9 +1,7 @@
-using TMPro;
-
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using static TickerSystem;
 
 [System.Serializable]
 public class CraftingJob
@@ -104,8 +102,6 @@ public class ForgeManager : MonoBehaviour
          DontDestroyOnLoad(this.gameObject);
       }
 
-      //ticker = TickerSystem.Instance;
-
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
       upgradePanel.gameObject.SetActive(false);
@@ -168,7 +164,7 @@ public class ForgeManager : MonoBehaviour
 
       windowTransform.gameObject.SetActive(true);
    }
-  
+
 
    /* Open the craft window when a item is selected*/
    public void OnCraftItemSelected(int tier, Item.ItemType itemType)
@@ -195,7 +191,7 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 5. Open/Refresh the Window
-     if (targetContainer != null) CreateCraftWindow(targetContainer);
+      if (targetContainer != null) CreateCraftWindow(targetContainer);
    }
 
 
@@ -271,7 +267,7 @@ public class ForgeManager : MonoBehaviour
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
             break;
          default:
-            Debug.LogError("Building Panel: Unknown button ID.");
+            Debug.Log("Building Panel: Unknown button ID.");
             break;
       }
    }
@@ -285,25 +281,23 @@ public class ForgeManager : MonoBehaviour
       {
          upgradeCost = 500;
       }
-      else 
-         if (forgeLevel == 2)
-         {
-            upgradeCost = 800;
-         }
+      else if (forgeLevel == 2)
+      {
+         upgradeCost = 800;
+      }
 
       // Check if there is sufficient pearls to upgrade
-      if (InventoryManager.Instance.TrySpendPearl(upgradeCost))
+      if (InventoryManager.Instance.pearlCount >= upgradeCost)
       {
+         // Enough pearls, deduct the required amount
+         InventoryManager.Instance.TrySpendPearl(upgradeCost);
+
          // Perform the upgrade
          if (forgeLevel < ENDING_LEVEL)
          {
             forgeLevel += 1;
          }
-
          forgeLevelText.text = "Level " + forgeLevel.ToString();
-
-         //ticker.ShowTicker($"Forge upgraded to Level {forgeLevel}.", Color.green, MessageTypes.ResultMessage);
-
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
       }
@@ -315,9 +309,9 @@ public class ForgeManager : MonoBehaviour
          {
             // Display the fail message
             upgradeText.text = $"Not enough pearls to upgrade!\nYou need {upgradeCost} pearls.";
-            upgradePanel.gameObject.SetActive(false);
+            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
          }
-         Debug.LogError("Not enough pearls to upgrade!");
+         Debug.Log("Not enough pearls to upgrade!");
 
       }
    }
@@ -553,7 +547,7 @@ public class ForgeManager : MonoBehaviour
          }
       }
 
-    
+
    }
 
    private void DeliverItem(CraftingJob job)
@@ -700,6 +694,5 @@ public class ForgeManager : MonoBehaviour
       }
    }
 }
-
 
 

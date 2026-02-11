@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 48c4db970e31f434ea32d8c63f7c3274
+guid: 8d0e667bcac6e8d4e854085716b2e807
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5222846192215791325
-    second: hazard_symbol_0
+      213: -6324880435504713953
+    second: lab_0
+  - first:
+      213: -6418968023466826118
+    second: lab_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +103,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: hazard_symbol_0
+      name: lab_0
       rect:
         serializedVersion: 2
-        x: 138
-        y: 6
-        width: 402
-        height: 363
+        x: 59
+        y: 79
+        width: 577
+        height: 695
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dd61683a0f64b7840800000000000000
-      internalID: 5222846192215791325
+      spriteID: f1f6cea21c28938a0800000000000000
+      internalID: -6324880435504713953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_1
+      rect:
+        serializedVersion: 2
+        x: 647
+        y: 500
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a762ba0879e3be6a0800000000000000
+      internalID: -6418968023466826118
       vertices: []
       indices: 
       edges: []
@@ -125,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f7b5601329df9d349b0ec3444601f198
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      hazard_symbol_0: 5222846192215791325
+      lab_0: -6324880435504713953
+      lab_1: -6418968023466826118
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
