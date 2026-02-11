@@ -14,7 +14,9 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private Transform decisionPanel;
    [SerializeField] private Transform decisionResultsPanel;
    [SerializeField] private Transform newDepthPanel;
+   [SerializeField] private Transform inventoryPanel;
    [SerializeField] private TextMeshProUGUI decisionResults;
+   [SerializeField] private TextMeshProUGUI shipInventory;
    [SerializeField] private TextMeshProUGUI depthWarningText;
    [SerializeField] private GameObject exploreShipIcon;
 
@@ -192,6 +194,10 @@ public class ExplorationUnitManager : MonoBehaviour
          MapNode current = MapManager.Instance.currentNode;
          decisionPanel.gameObject.SetActive(true);
 
+         Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
+         inventoryButton.onClick.RemoveAllListeners();
+         inventoryButton.onClick.AddListener(() => ShowInventoryPanel());
+
          Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
          returnShip.onClick.RemoveAllListeners();
          returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
@@ -304,6 +310,27 @@ public class ExplorationUnitManager : MonoBehaviour
          else
             CloseDecisionPanel();
       });
+   }
+
+   private void ShowInventoryPanel()
+   {
+      inventoryPanel.gameObject.SetActive(true);
+      Button closeInventoryPanel = inventoryPanel.Find("ClosePanelButton").GetComponent<Button>();
+      closeInventoryPanel.onClick.RemoveAllListeners();
+      closeInventoryPanel.onClick.AddListener(() => inventoryPanel.gameObject.SetActive(false));
+
+      string currentInventory = "";
+
+      if (shipManager.GetGold() > 0)
+         currentInventory += $"Gold: {shipManager.GetGold()}\n";
+      if (shipManager.GetOre() > 0)
+         currentInventory += $"Ore: {shipManager.GetOre()}\n";
+      if (shipManager.GetHarpoon() > 0)
+         currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
+      if (shipManager.GetArtifact() > 0)
+         currentInventory += $"Artifacts: {shipManager.GetArtifact()}";
+
+      shipInventory.text = currentInventory;
    }
 
    //

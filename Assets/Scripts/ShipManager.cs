@@ -59,10 +59,12 @@ public class ShipManager : MonoBehaviour
       currentDepth = newDepth;
    }
 
-   public int GetDepth()
-   {
-      return currentDepth;
-   }
+   public int GetDepth() { return currentDepth; }
+   public int GetGold() { return currentGold; }
+   public int GetOre() { return currentOre; }
+   public int GetHarpoon() {  return currentHarpoon; }
+   public int GetArtifact() { return currentArtifact; }
+
 
    public void UpgradeShip()
    {
