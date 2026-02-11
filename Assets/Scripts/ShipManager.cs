@@ -9,6 +9,7 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private ExplorationUnitManager explorationUnitManager;
    [SerializeField] private Transform fuelPanel;
    [SerializeField] private Transform healthPanel;
+   [SerializeField] private Transform confirmReturnPanel;
    public TextMeshProUGUI decisionFuelText;
    public TextMeshProUGUI decisionHealthText;
    public TextMeshProUGUI exploreFuelText;
@@ -84,13 +85,13 @@ public class ShipManager : MonoBehaviour
    private void UpdateShipUI()
    {
       if (decisionFuelText != null)
-         decisionFuelText.text = $"{currentFuel}/{maxFuel}";
+         decisionFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
       if (decisionHealthText != null)
-         decisionHealthText.text = $"{currentHealth}/{maxHealth}";
+         decisionHealthText.text = $"health: {currentHealth}/{maxHealth}";
       if (exploreFuelText != null)
-         exploreFuelText.text = $"{currentFuel}/{maxFuel}";
+         exploreFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
       if (exploreHealthText != null)
-         exploreHealthText.text = $"{currentHealth}/{maxHealth}";
+         exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
    }
 
    public RoundResults ApplyEventResult(EventChoice results)
@@ -144,14 +145,6 @@ public class ShipManager : MonoBehaviour
          ShipDestruction();
 
       UpdateShipUI();
-   }
-
-   public void RequestReturn()
-   {
-      if (currentFuel < currentDepth)
-         LowFuel();
-      else
-         FinishExploration();
    }
 
    // Reset ship health, fuel, depth, inventory, and map location
@@ -213,20 +206,39 @@ public class ShipManager : MonoBehaviour
       healthPanel.gameObject.SetActive(true);
    }
 
+   public void OpenConfirmReturnPanel()
+   {
+      confirmReturnPanel.gameObject.SetActive(true);
+      Button returnShip = confirmReturnPanel.Find("Return").GetComponent<Button>();
+      returnShip.onClick.RemoveAllListeners();
+      returnShip.onClick.AddListener(() => {
+         FinishExploration();
+         CloseConfirmReturnPanel();
+      });
+      Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
+      stayOut.onClick.RemoveAllListeners();
+      stayOut.onClick.AddListener(() => CloseConfirmReturnPanel());
+   }
+
    private void CloseFuelPanel()
    {
-      fuelPanel.gameObject?.SetActive(false);
+      fuelPanel.gameObject.SetActive(false);
    }
 
    private void CloseHealthPanel()
    {
-      healthPanel.gameObject?.SetActive(false);
+      healthPanel.gameObject.SetActive(false);
+   }
+
+   private void CloseConfirmReturnPanel()
+   {
+      confirmReturnPanel.gameObject.SetActive(false);
    }
 
    public void FinishExploration()
    {
       //ADD TO INVENTORY
-
+      explorationUnitManager.CloseDecisionPanel();
       ResetShip();
    }
 }

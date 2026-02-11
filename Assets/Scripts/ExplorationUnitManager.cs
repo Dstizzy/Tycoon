@@ -153,6 +153,10 @@ public class ExplorationUnitManager : MonoBehaviour
          MapNode current = MapManager.Instance.currentNode;
          decisionPanel.gameObject.SetActive(true);
 
+         Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
+         returnShip.onClick.RemoveAllListeners();
+         returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
+
          Button choice1 = decisionPanel.Find("Choice1").GetComponent<Button>();
          Button choice2 = decisionPanel.Find("Choice2").GetComponent<Button>();
          choice1.onClick.RemoveAllListeners();
