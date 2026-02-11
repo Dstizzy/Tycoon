@@ -13,7 +13,9 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private Transform infoPanel;
    [SerializeField] private Transform decisionPanel;
    [SerializeField] private Transform decisionResultsPanel;
+   [SerializeField] private Transform newDepthPanel;
    [SerializeField] private TextMeshProUGUI decisionResults;
+   [SerializeField] private TextMeshProUGUI depthWarningText;
    [SerializeField] private GameObject exploreShipIcon;
 
    public int lastProcessedTurn = -1;
@@ -57,13 +59,11 @@ public class ExplorationUnitManager : MonoBehaviour
    private void Update()
    {
       if(TurnManager.Instance != null)
-      {
          if(TurnManager.Instance.currentTurn > lastProcessedTurn)
          {
             lastProcessedTurn = TurnManager.Instance.currentTurn;
             HandleNewTurn();
          }
-      }
    }
 
    // Activates the requested exploration unit panel
@@ -122,6 +122,38 @@ public class ExplorationUnitManager : MonoBehaviour
 
    }
 
+   private bool CheckForDepthIncrease(MapNode targetNode)
+   {
+      if (targetNode != null && targetNode.nodeDepth > shipManager.GetDepth() && shipManager.shipLevel < targetNode.nodeDepth)
+      {
+         newDepthPanel.gameObject.SetActive(true);
+
+         int predictedDamage = shipManager.GetDamage(targetNode.nodeDepth);
+         if (depthWarningText != null)
+            depthWarningText.text = $"Ship entering new depth.\nPressure will exceed hull rating.\nTaking {predictedDamage} health per turn";
+
+         Button sendHome = newDepthPanel.Find("Return").GetComponent<Button>();
+         Button keepGoing = newDepthPanel.Find("KeepGoing").GetComponent<Button>();
+
+         sendHome.onClick.RemoveAllListeners();
+         keepGoing.onClick.RemoveAllListeners();
+
+         sendHome.onClick.AddListener(() =>
+         {
+            nextTurnDestination = null;
+            newDepthPanel.gameObject.SetActive(false);
+            shipManager.FinishExploration();
+         });
+         keepGoing.onClick.AddListener(() =>
+         {
+            newDepthPanel.gameObject.SetActive(false);
+            CloseDecisionPanel();
+         });
+         return true;
+      }
+      return false;
+   }
+
    private void ProcessDecision(EventChoice choice, MapNode currentNode)
    {
       ShipManager.RoundResults results = shipManager.ApplyEventResult(choice);
@@ -129,9 +161,14 @@ public class ExplorationUnitManager : MonoBehaviour
          ShowResultsPanel(results, currentNode);
       else
       {
-         CloseDecisionPanel();
          if (currentNode != null)
+         {
             nextTurnDestination = currentNode.nextNode;
+            if(!CheckForDepthIncrease(nextTurnDestination))
+               CloseDecisionPanel();
+         }
+         else
+            CloseDecisionPanel();
       }
    }
 
@@ -140,15 +177,17 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (isExploring)
       {
-         shipManager.NewTurn();
-
-         if (!isExploring) return;
-
-         if(nextTurnDestination != null)
+         MapNode nextNode = nextTurnDestination;
+         if (nextNode != null)
          {
-            MapManager.Instance.MoveToNode(nextTurnDestination);
+            MapManager.Instance.MoveToNode(nextNode);
             nextTurnDestination = null;
          }
+
+         shipManager.NewTurn();
+
+         if (!isExploring)
+            return;
 
          MapNode current = MapManager.Instance.currentNode;
          decisionPanel.gameObject.SetActive(true);
@@ -168,10 +207,18 @@ public class ExplorationUnitManager : MonoBehaviour
             eventController.choiceAText.text = current.choiceAText;
             eventController.choiceBText.text = current.choiceBText;
 
-            choice1.onClick.AddListener(() => CloseDecisionPanel());
-            choice1.onClick.AddListener(() => nextTurnDestination = current.pathA);
-            choice2.onClick.AddListener(() => CloseDecisionPanel());
-            choice2.onClick.AddListener(() => nextTurnDestination = current.pathB);
+            choice1.onClick.AddListener(() => 
+            {
+               nextTurnDestination = current.pathA;
+               if(!CheckForDepthIncrease(nextTurnDestination))
+                  CloseDecisionPanel();
+            });
+            choice2.onClick.AddListener(() =>
+            {
+               nextTurnDestination = current.pathB;
+               if (!CheckForDepthIncrease(nextTurnDestination))
+                  CloseDecisionPanel();
+            });
          }
          else
          {
@@ -180,14 +227,8 @@ public class ExplorationUnitManager : MonoBehaviour
             if(randomEvent != null)
             {
                eventController.SetEventPanel(randomEvent);
-               choice1.onClick.AddListener(() =>
-               {
-                  ProcessDecision(randomEvent.choiceA, current);
-               });
-               choice2.onClick.AddListener(() =>
-               {
-                  ProcessDecision(randomEvent.choiceB, current);
-               });
+               choice1.onClick.AddListener(() => ProcessDecision(randomEvent.choiceA, current));
+               choice2.onClick.AddListener(() => ProcessDecision(randomEvent.choiceB, current));
             }
          }
       }
@@ -252,11 +293,16 @@ public class ExplorationUnitManager : MonoBehaviour
       continueButton.onClick.RemoveAllListeners();
       continueButton.onClick.AddListener(() =>
       {
-         CloseDecisionPanel();
          decisionResultsPanel.gameObject.SetActive(false);
 
          if (currentNode != null)
+         {
             nextTurnDestination = currentNode.nextNode;
+            if (!CheckForDepthIncrease(nextTurnDestination))
+               CloseDecisionPanel();
+         }
+         else
+            CloseDecisionPanel();
       });
    }
 

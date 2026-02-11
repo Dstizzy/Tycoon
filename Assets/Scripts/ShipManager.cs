@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using JetBrains.Annotations;
 
 public class ShipManager : MonoBehaviour
 {
@@ -128,18 +129,28 @@ public class ShipManager : MonoBehaviour
       return finalResults;
    }
 
+   public int GetDamage(int depthCheck)
+   {
+      int damage = 0;
+      if (shipLevel == 1 && depthCheck == 2)
+         damage = 30;
+      else if (shipLevel == 1 && depthCheck == 3)
+         damage = 60;
+      else if (shipLevel == 2 && depthCheck == 3)
+         damage = 40;
+
+      return damage;
+   }
+
    public void NewTurn()
    {
       currentFuel -= 1;
       if (currentFuel <= 0)
          LowFuel();
 
-      if (shipLevel == 1 && currentDepth == 2)
-         currentHealth -= 30;
-      if (shipLevel == 1 && currentDepth == 3)
-         currentHealth -= 60;
-      if (shipLevel == 2 && currentDepth == 3)
-         currentHealth -= 40;
+      int hullDamage = GetDamage(currentDepth);
+      if (hullDamage > 0)
+         currentHealth -= hullDamage;
 
       if (currentHealth <= 0)
          ShipDestruction();
@@ -172,7 +183,7 @@ public class ShipManager : MonoBehaviour
          confirmFuelButton.onClick.RemoveAllListeners();
          confirmFuelButton.onClick.AddListener(() =>
          {
-            CloseFuelPanel();
+            ClosePanels();
             explorationUnitManager.CloseDecisionPanel();
             ResetShip();
          });
@@ -190,7 +201,7 @@ public class ShipManager : MonoBehaviour
       confirmHealthButton.onClick.RemoveAllListeners();
       confirmHealthButton.onClick.AddListener(() =>
       {
-         CloseHealthPanel();
+         ClosePanels();
          explorationUnitManager.CloseDecisionPanel();
          ResetShip();
       });
@@ -220,14 +231,10 @@ public class ShipManager : MonoBehaviour
       stayOut.onClick.AddListener(() => CloseConfirmReturnPanel());
    }
 
-   private void CloseFuelPanel()
-   {
-      fuelPanel.gameObject.SetActive(false);
-   }
-
-   private void CloseHealthPanel()
+   private void ClosePanels()
    {
       healthPanel.gameObject.SetActive(false);
+      fuelPanel.gameObject.SetActive(false);
    }
 
    private void CloseConfirmReturnPanel()
