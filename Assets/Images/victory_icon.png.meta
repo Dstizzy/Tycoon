@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3bd50367d0bdbc84cbdaca3784debc4a
+guid: 033db103da04a7842ba1908fa212f22d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1405933785823610103
-    second: submarine_head_0
+      213: -2419899548835181867
+    second: victory_icon_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: submarine_head_0
+      name: victory_icon_0
       rect:
         serializedVersion: 2
-        x: 57
-        y: 167
-        width: 221
-        height: 160
+        x: 82
+        y: 82
+        width: 335
+        height: 336
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 90b7346bbae1d7ce0800000000000000
-      internalID: -1405933785823610103
+      spriteID: 5da0d877e2aca6ed0800000000000000
+      internalID: -2419899548835181867
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      submarine_head_0: -1405933785823610103
+      victory_icon_0: -2419899548835181867
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
