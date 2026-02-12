@@ -11,6 +11,8 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private Transform fuelPanel;
    [SerializeField] private Transform healthPanel;
    [SerializeField] private Transform confirmReturnPanel;
+   [SerializeField] private Transform finalRewardsPanel;
+   [SerializeField] private TextMeshProUGUI finalRewards;
    public TextMeshProUGUI decisionFuelText;
    public TextMeshProUGUI decisionHealthText;
    public TextMeshProUGUI exploreFuelText;
@@ -186,13 +188,8 @@ public class ShipManager : MonoBehaviour
          confirmFuelButton.onClick.AddListener(() =>
          {
             ClosePanels();
-            explorationUnitManager.CloseDecisionPanel();
-            ResetShip();
+            FinishExploration();
          });
-      }
-      if (currentFuel > 0 && currentFuel < currentDepth)
-      {
-         // message fuel insufficient for return
       }
    }
 
@@ -226,28 +223,51 @@ public class ShipManager : MonoBehaviour
       returnShip.onClick.RemoveAllListeners();
       returnShip.onClick.AddListener(() => {
          FinishExploration();
-         CloseConfirmReturnPanel();
+         ClosePanels();
       });
       Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
       stayOut.onClick.RemoveAllListeners();
-      stayOut.onClick.AddListener(() => CloseConfirmReturnPanel());
+      stayOut.onClick.AddListener(() => ClosePanels());
    }
 
    private void ClosePanels()
    {
       healthPanel.gameObject.SetActive(false);
       fuelPanel.gameObject.SetActive(false);
-   }
-
-   private void CloseConfirmReturnPanel()
-   {
       confirmReturnPanel.gameObject.SetActive(false);
    }
 
    public void FinishExploration()
    {
-      //ADD TO INVENTORY
+      ClosePanels();
       explorationUnitManager.CloseDecisionPanel();
+
+      finalRewardsPanel.gameObject.SetActive(true);
+      Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
+      confirmRewards.onClick.RemoveAllListeners();
+      confirmRewards.onClick.AddListener(() =>
+      {
+         finalRewardsPanel.gameObject.SetActive(false);
+         AddRewards();
+      });
+
+      string totalRewards = "";
+
+      if (currentGold > 0)
+         totalRewards += $"Gold: {currentGold}\n";
+      if (currentOre > 0)
+         totalRewards += $"Ore: {currentOre}\n";
+      if (currentHarpoon > 0)
+         totalRewards += $"Harpoons: {currentHarpoon}\n";
+      if (currentArtifact > 0)
+         totalRewards += $"Artifacts: {currentArtifact}";
+      finalRewards.text = totalRewards;
+
       ResetShip();
+   }
+
+   private void AddRewards()
+   {
+
    }
 }
