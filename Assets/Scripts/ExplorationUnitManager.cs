@@ -159,7 +159,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ProcessDecision(EventChoice choice, MapNode currentNode)
    {
       ShipManager.RoundResults results = shipManager.ApplyEventResult(choice);
-      if (results.goldChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0)
+      if (results.pearlChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0 || results.crystalChanged != 0)
          ShowResultsPanel(results, currentNode);
       else
       {
@@ -275,11 +275,11 @@ public class ExplorationUnitManager : MonoBehaviour
       else
       {
          EventChoice consolationPrize = new EventChoice();
-         consolationPrize.goldChange = 200;
+         consolationPrize.pearlChange = 200;
          consolationPrize.oreChange = 200;
          ProcessDecision(consolationPrize, null);
 
-         decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nGold: +200\nOre: +200";
+         decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nPearl: +200\nOre: +200";
       }
    }
 
@@ -306,16 +306,22 @@ public class ExplorationUnitManager : MonoBehaviour
       decisionResultsPanel.gameObject.SetActive(true);
       string resultsText = "";
 
-      if(results.goldChanged != 0)
+      if(results.pearlChanged != 0)
       {
-         string sign = results.goldChanged > 0 ? "+" : "";
-         resultsText += $"Gold: {sign}{results.goldChanged}\n";
+         string sign = results.pearlChanged > 0 ? "+" : "";
+         resultsText += $"Pearl: {sign}{results.pearlChanged}\n";
       }
 
       if(results.oreChanged != 0)
       {
          string sign = results.oreChanged > 0 ? "+" : "";
          resultsText += $"Ore: {sign}{results.oreChanged}\n";
+      }
+
+      if(results.crystalChanged != 0)
+      {
+         string sign = results.oreChanged > 0 ? "+" : "";
+         resultsText += $"Crystal: {sign}{results.crystalChanged}\n";
       }
 
       if(results.healthChanged != 0)
@@ -358,10 +364,12 @@ public class ExplorationUnitManager : MonoBehaviour
 
       string currentInventory = "";
 
-      if (shipManager.GetGold() > 0)
-         currentInventory += $"Gold: {shipManager.GetGold()}\n";
+      if (shipManager.GetPearl() > 0)
+         currentInventory += $"Pearl: {shipManager.GetPearl()}\n";
       if (shipManager.GetOre() > 0)
          currentInventory += $"Ore: {shipManager.GetOre()}\n";
+      if (shipManager.GetCrystal() > 0)
+         currentInventory += $"Cystal: {shipManager.GetCrystal()}\n";
       if (shipManager.GetHarpoon() > 0)
          currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
       if (shipManager.GetArtifact() > 0)

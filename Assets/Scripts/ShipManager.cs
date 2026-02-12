@@ -28,16 +28,18 @@ public class ShipManager : MonoBehaviour
    int currentHealth;
    int maxHealth;
    int maxFuel;
-   int currentGold;
+   int currentPearl;
    int currentOre;
+   int currentCrystal;
    int currentHarpoon;
    int currentArtifact;
    int currentDepth = 1;
 
    public struct RoundResults
    {
-      public int goldChanged;
+      public int pearlChanged;
       public int oreChanged;
+      public int crystalChanged;
       public int healthChanged;
       public int fuelChanged;
    }
@@ -62,8 +64,9 @@ public class ShipManager : MonoBehaviour
    }
 
    public int GetDepth() { return currentDepth; }
-   public int GetGold() { return currentGold; }
+   public int GetPearl() { return currentPearl; }
    public int GetOre() { return currentOre; }
+   public int GetCrystal() {  return currentCrystal; }
    public int GetHarpoon() {  return currentHarpoon; }
    public int GetArtifact() { return currentArtifact; }
 
@@ -103,18 +106,21 @@ public class ShipManager : MonoBehaviour
    {
       RoundResults finalResults = new RoundResults();
 
-      int actualGold = results.goldChange + UnityEngine.Random.Range(results.minGold, results.maxGold + 1);
+      int actualPearl = results.pearlChange + UnityEngine.Random.Range(results.minPearl, results.maxPearl + 1);
       int actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
+      int actualCrystal = results.crystalChange;
 
-      currentGold += actualGold;
+      currentPearl += actualPearl;
       currentOre += actualOre;
+      currentCrystal += actualCrystal;
       currentHealth += results.healthChange;
       currentFuel += results.fuelChange;
       currentHarpoon += results.harpoonChange;
       currentArtifact += results.artifactChange;
 
-      finalResults.goldChanged = actualGold;
+      finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
+      finalResults.crystalChanged = actualCrystal;
       finalResults.healthChanged = results.healthChange;
       finalResults.fuelChanged = results.fuelChange;
 
@@ -168,8 +174,9 @@ public class ShipManager : MonoBehaviour
       currentFuel = maxFuel;
       currentHealth = maxHealth;
       currentDepth = 1;
-      currentGold = 0;
+      currentPearl = 0;
       currentOre = 0;
+      currentCrystal = 0;
       currentHarpoon = 0;
       currentArtifact = 0;
       MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
@@ -253,10 +260,12 @@ public class ShipManager : MonoBehaviour
 
       string totalRewards = "";
 
-      if (currentGold > 0)
-         totalRewards += $"Gold: {currentGold}\n";
+      if (currentPearl > 0)
+         totalRewards += $"Pearl: {currentPearl}\n";
       if (currentOre > 0)
          totalRewards += $"Ore: {currentOre}\n";
+      if (currentCrystal > 0)
+         totalRewards += $"Crystal: {currentCrystal}\n";
       if (currentHarpoon > 0)
          totalRewards += $"Harpoons: {currentHarpoon}\n";
       if (currentArtifact > 0)
@@ -268,6 +277,16 @@ public class ShipManager : MonoBehaviour
 
    private void AddRewards()
    {
-
+      if(InventoryManager.Instance != null)
+      {
+         if (currentPearl > 0)
+            InventoryManager.Instance.TryAddPearl(currentPearl);
+         if (currentOre > 0)
+            InventoryManager.Instance.TryAddOre(currentOre);
+         if (currentCrystal > 0)
+            InventoryManager.Instance.TryAddCrystal(currentCrystal);
+         if (currentHarpoon > 0)
+            InventoryManager.Instance.TryAddHarpoon(currentHarpoon);
+      }
    }
 }
