@@ -8,11 +8,14 @@ public class MapManager : MonoBehaviour
    public MapNode currentNode;
    public RectTransform exploreShipIcon;
    public RectTransform decisionShipIcon;
+   public bool winningPathIsLeft;
    [SerializeField] private ShipManager shipManager;
 
    private void Awake()
    {
       Instance = this;
+
+      winningPathIsLeft = (Random.Range(0, 2) == 0);
    }
 
    public void MoveToNode(MapNode newNode)

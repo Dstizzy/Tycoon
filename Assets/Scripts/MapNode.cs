@@ -21,4 +21,8 @@ public class MapNode : ScriptableObject
 
    [Header("Event Settings (If Type = Event)")]
    public MapNode nextNode;
+
+   [Header("End Game Settings")]
+   public bool isFinalNode;
+   public bool isLeftPath;
 }

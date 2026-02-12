@@ -192,6 +192,13 @@ public class ExplorationUnitManager : MonoBehaviour
             return;
 
          MapNode current = MapManager.Instance.currentNode;
+
+         if(current.isFinalNode)
+         {
+            HandleFinalNode(current);
+            return;
+         }
+
          decisionPanel.gameObject.SetActive(true);
 
          Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
@@ -244,6 +251,36 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       isExploring = false;
       nextTurnDestination = null;
+   }
+
+   public void HandleFinalNode(MapNode current)
+   {
+      bool isWinner = false;
+
+      if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
+         isWinner = true;
+
+      if (isWinner)
+      {
+         decisionResults.text = "MISSION ACCOMPLISHED!\nYou have found the vessel piece.\nYou will now return.";
+         decisionResultsPanel.gameObject.SetActive(true);
+         Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
+         confirmEnd.onClick.RemoveAllListeners();
+         confirmEnd.onClick.AddListener(() =>
+         {
+            shipManager.FinishExploration();
+            decisionResultsPanel.gameObject.SetActive(false);
+         });
+      }
+      else
+      {
+         EventChoice consolationPrize = new EventChoice();
+         consolationPrize.goldChange = 200;
+         consolationPrize.oreChange = 200;
+         ProcessDecision(consolationPrize, null);
+
+         decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nGold: +200\nOre: +200";
+      }
    }
 
    //
