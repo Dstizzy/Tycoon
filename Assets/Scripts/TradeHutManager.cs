@@ -93,17 +93,15 @@ public class TradeHutManager : MonoBehaviour
    
    public bool isTier3BuffACtive  = false;
 
-   public static int tradeHutLevel;
    private InventoryManager inv;
 
    public static TradeHutManager Instance;
 
    private void Awake() 
    {
-      tradeHutLevel = STARTING_LEVEL;
-      SellItems     = new();
-      BuyItems      = new();
-      ticker        = TickerSystem.Instance;
+      SellItems = new();
+      BuyItems  = new();
+      ticker    = TickerSystem.Instance;
 
       // Initialize lastResetTurn for every ItemType so lookups are safe
       foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
@@ -133,11 +131,6 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
       else
          CloseUpgradePanel();
-
-      if (tradeHutLevelText != null)
-         tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-      else
-         Debug.LogError("Trade Hut Level Text is not assigned in the Inspector!");
 
       if (SellWindow == null)
          Debug.LogError("Sell window is not assigned in the Inspector");
@@ -1184,32 +1177,10 @@ public class TradeHutManager : MonoBehaviour
             ShowInfoPanel();
             InfoPanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
             break;
-         case UPGRADE_BUTTON:
-            ShowUpgradePanel();
-            UpgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeTradeHut());
-            UpgradePanel.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(UPGRADE_BUTTON));
-            break;
          default:
             Debug.Log("Building Panel: Unknown button ID.");
             break;
       }
-   }
-
-   /* Increments the trade hut level                                                                  */
-   private void UpgradeTradeHut() 
-   {
-      if (tradeHutLevel < ENDING_LEVEL)
-         tradeHutLevel += 1;
-      else
-         Debug.Log("Trade Hut is already at max level.");
-
-      tradeHutLevelText.text = "Level " + tradeHutLevel.ToString();
-
-      UpgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.RemoveAllListeners();
-      UpgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveAllListeners();
-
-      CloseUpgradePanel();
-      PopUpManager.Instance.EnablePlayerInput();
    }
 
    /* Closes the panel corresponding to the button ID                                                 */

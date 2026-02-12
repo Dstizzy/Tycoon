@@ -3,10 +3,9 @@ using System;
 
 using TMPro;
 
-using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.UI;
+
 using static TickerSystem;
 
 public class InventoryManager : MonoBehaviour 
@@ -35,6 +34,10 @@ public class InventoryManager : MonoBehaviour
                            PrecisionLensCountText,
                            RaWOreChunkCountText,
                            MercenaryEngineerCountText;
+
+   [SerializeField] private Image ForgeUpgradeIcon,
+                                  OreRefineryUpgradeIcon,
+                                  ExplorationUnitUpgradeIcon;
    
    /* Constants                                                                     */
    public const int MIN_PEARL_COUNT          = 0,                                              
@@ -507,6 +510,7 @@ public class InventoryManager : MonoBehaviour
          }
       }
       
+      CheckUpgradeResources();
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
@@ -535,7 +539,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
       }
-      
+
+      CheckUpgradeResources();
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
@@ -586,7 +591,7 @@ public class InventoryManager : MonoBehaviour
             crystalCount -= crystalAmount;
             isSuccess     = true;
          }
-      
+
       OnCrystalCountChanged?.Invoke(crystalCount);
       CrystalCountText.text = " x" + crystalCount.ToString();
       
@@ -614,7 +619,7 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-
+      CheckUpgradeResources();
       OnOreCountChanged?.Invoke(oreCount);
       OreCountText.text = " x" + oreCount.ToString();
 
@@ -631,7 +636,8 @@ public class InventoryManager : MonoBehaviour
          ticker.ShowTicker($"Ore count is at minimum!", Color.red, MessageTypes.ResultMessage);
 
       } 
-      else
+      else 
+      { 
          if (oreCount < oreAmount)
          {
             Debug.LogError("Not enough ore to spend!");
@@ -642,9 +648,11 @@ public class InventoryManager : MonoBehaviour
             oreCount -= oreAmount;
             isSuccess = true;
          }
+      }
 
-         OnOreCountChanged?.Invoke(oreCount);
-         OreCountText.text = " x" + oreCount.ToString();
+      CheckUpgradeResources();
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
 
       return isSuccess;
    }
@@ -1209,5 +1217,27 @@ public class InventoryManager : MonoBehaviour
       CraftsPanel.gameObject.SetActive(false);
    }
 
-   
+   private void CheckUpgradeResources() 
+   {
+      if(pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre >= oreCount)
+         OreRefineryUpgradeIcon.gameObject.SetActive(true);
+      else
+         OreRefineryUpgradeIcon.gameObject.SetActive(false);
+
+      if (ForgeManager.forgeLevel == 1) 
+      {
+         if(pearlCount >= ForgeManager.LEVEL_2_PEARL_COST)
+            ForgeUpgradeIcon.gameObject.SetActive(true);
+         else
+            ForgeUpgradeIcon.gameObject.SetActive(false);
+      }
+      else
+      {
+         if(ForgeManager.forgeLevel == 2)
+            if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+            else
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+      }
+   }
 }
