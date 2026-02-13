@@ -10,12 +10,11 @@ using static InventoryManager;
 using static Item;
 using static Resources;
 using static TickerSystem;
-using static UnityEditor.Progress;
 using static WorldEvents;
 
 public class TradeHutManager : MonoBehaviour 
 {
-   /* Inspector variables                                                                             */
+   // Inspector variables
    [SerializeField] private Transform TradePanels;            
    [SerializeField] private Transform BuyWindow;    
    [SerializeField] private Transform SellPanel;              
@@ -33,15 +32,18 @@ public class TradeHutManager : MonoBehaviour
 
    public string currrentNewsTickerMessage;
 
-   private readonly static System.Random Rng = new System.Random();
+   // Random number generator
+   private readonly static System.Random Rng = new System.Random(); 
+
+   // Keeps track of the last item that had a world event
    private readonly Dictionary<ItemType, bool> lastResetTurn = new Dictionary<ItemType, bool>();
 
-   /* Transforms                                                                                      */
+   // Transforms
    private Transform currentBuyItem,    
                      currentSellItem,
                      currentMysteryBoxResult;
 
-   /* Private variables                                                                               */
+   // Private variables
    private int crudeToolSellCount = 0,
                harpoonSellCount   = 0, 
                pressureValveCount = 0, 
@@ -62,11 +64,11 @@ public class TradeHutManager : MonoBehaviour
                shiftDirection,
                worldEvent;
 
-   /* Public variables                                                                                 */
+   // Public variables
    public int marketShiftMax = 0,
               marketShiftMin = 0;
 
-   /* Constants                                                                                        */
+   // Constants
    public const int ENDING_LEVEL   = 5,  
                     STARTING_LEVEL = 1, 
       
@@ -250,13 +252,13 @@ public class TradeHutManager : MonoBehaviour
       RectTransform tradeItemRectTransform;
       Button        itemButton;
 
-      /* Instantiate the template and set its position in the container                               */
+      // Instantiate the template and set its position in the container
       tradeItemTransform     = Instantiate(buyItemTemplate, buyItemContainer);
       buyItemTemplate.gameObject.SetActive(false);
       tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
       tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, verticalIndex);     
 
-      /* Populate the item properties                                                                 */
+      // Populate the item properties
       tradeItemTransform.tag = itemTag;
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.ToString();
       tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>().text = itemValue.ToString();
@@ -266,7 +268,7 @@ public class TradeHutManager : MonoBehaviour
 
       BuyItems.Add(tradeItemTransform);
 
-      /* Dynamically add a listener to the button, which creates the buy window                       */
+      // Dynamically add a listener to the button, which creates the buy window
       itemButton.onClick.AddListener(() => CreateBuyWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
 
       tradeItemTransform.gameObject.SetActive(true);
@@ -281,7 +283,7 @@ public class TradeHutManager : MonoBehaviour
 
       sellWindowTemplate.gameObject.SetActive(false);
 
-      /* Destroy the previously opened sell window instance before creating a new one                 */
+      // Destroy the previously opened sell window instance before creating a new one
       if (currentSellItem != null) 
       {
          Destroy(currentSellItem.gameObject);
@@ -295,21 +297,21 @@ public class TradeHutManager : MonoBehaviour
 
       sellItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
 
-      /* Populate item properties                                                                     */
+      // Populate item properties
       sellItemTransform.Find("ItemImage").GetComponent<Image>().sprite              = itemSprite;
       sellItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + itemCount.ToString();
       sellItemTransform.Find("currencyIcon").GetComponent<Image>().sprite           = currencySprite;
       sellItemTransform.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = "0";
 
-      /* Get references to the increase and decrease buttons                                          */
+      // Get references to the increase and decrease buttons
       Button increaseButton = sellItemTransform.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
       Button decreaseButton = sellItemTransform.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
 
-      /* Dynamically add listeners to the buttons, increasing or decreasing the sell items            */
+      // Dynamically add listeners to the buttons, increasing or decreasing the sell items
       increaseButton.onClick.AddListener(() => IncreaseSellItemCount(sellItemTransform));
       decreaseButton.onClick.AddListener(() => DecreaseSellItemCount(sellItemTransform));
 
-      /* Store the reference to the newly created sell window instance                                */
+      // Store the reference to the newly created sell window instance
       currentSellItem = sellItemTransform;
       sellItemTransform.gameObject.SetActive(true);
       ShowSellWindow();
@@ -324,7 +326,7 @@ public class TradeHutManager : MonoBehaviour
 
       buyWindowTemplate.gameObject.SetActive(false);
 
-      /* Destroy the previously opened buy window instance before creating a new one                  */
+      // Destroy the previously opened buy window instance before creating a new one
       if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
@@ -336,7 +338,7 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-      /* Populate item properties                                                                     */
+      // Populate item properties
       buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
       buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = (itemCount + 1).ToString();
       buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
@@ -370,16 +372,16 @@ public class TradeHutManager : MonoBehaviour
 
          buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
 
-         /* Get references to the increase and decrease buttons                                          */
+         // Get references to the increase and decrease buttons
          Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
          Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
          
-         /* Dynamically add listeners to the buttons, which increases or decreases the buy item count    */
+         // Dynamically add listeners to the buttons, which increases or decreases the buy item count
          increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
          decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
       }
 
-      /* Store the reference to the newly created buy window instance                                 */
+      // Store the reference to the newly created buy window instance
       currentBuyItem = buyItemTransfrom;
       buyItemTransfrom.gameObject.SetActive(true);
       ShowBuyWindow();
@@ -389,8 +391,9 @@ public class TradeHutManager : MonoBehaviour
    {
       int    totalSellValue = 0,
              soldCount      = 0;
+
       string successMessage = "",
-             itemTag = currentSellItem ? currentSellItem.tag : string.Empty;
+             itemTag        = currentSellItem ? currentSellItem.tag : string.Empty;
 
       switch (itemTag) 
       {
@@ -458,17 +461,19 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
       
-      // Credit pearls and show success ticker only if something sold
+      // Recieves pearls and show success ticker only if something sold
       if (totalSellValue > 0)
       {
          inv.TryAddPearl(totalSellValue);
          ticker.ShowTicker(successMessage ?? $"Sold items for {totalSellValue} pearls.", Color.green, MessageTypes.ResultMessage);
-      }
-      else
+      } 
+      else 
+      { 
          if(soldCount == MIN_SELL_ITEM_COUNT) 
             ticker.ShowTicker("No items have been selected.", Color.red, MessageTypes.ResultMessage);
          else
             soldCount = 0;
+      }
 
       crudeToolSellCount = MIN_SELL_ITEM_COUNT;
       harpoonSellCount   = MIN_SELL_ITEM_COUNT;
@@ -489,10 +494,10 @@ public class TradeHutManager : MonoBehaviour
 
   public void BuyItem() 
   {
-      // Check if there is a current buy item
+      // Checks if there is a current buy item
       if (currentBuyItem != null) 
       {
-         // Handle raw ore exchange
+         // Handles raw ore exchange
          if (rawOreExchange > MIN_BUY_ITEM_COUNT) 
          { 
             bool pearlsSpent = inv.TrySpendPearl(rawOreExchange),
@@ -513,14 +518,14 @@ public class TradeHutManager : MonoBehaviour
          // Tier 2 Blueprint purchase flow
          if (currentBuyItem.CompareTag(TIER_2_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier2BluePrint))) 
          {
-            // Grant player access to tier 2 blueprint content
+            // Grants player access to tier 2 blueprint content
             ForgeManager.Instance.hasTier2Blueprint = true;
 
-            // Add new craftable items to the inventory/craft list (pressure valve, diving bell)
+            // Adds new craftable items to the inventory/craft list (pressure valve, diving bell)
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
 
-            // Remove the tier 2 blueprint from the buy panel
+            // Removes the tier 2 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).gameObject.SetActive(false);
 
             // Reveal the pressure valve on the sell panel and enable its UI controls
@@ -537,17 +542,17 @@ public class TradeHutManager : MonoBehaviour
          // Tier 3 Blueprint purchase flow
          if (currentBuyItem.CompareTag(TIER_3_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier3BluePrint)))
          {
-            // Grant player access to tier 3 blueprint content
+            // Grants player access to tier 3 blueprint content
             ForgeManager.Instance.hasTier3Blueprint = true;
 
-            // Remove the tier 3 blueprint from the buy panel
+            // Removes the tier 3 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).gameObject.SetActive(false);
 
-            // Add new craftable items (engine, precision lens) to inventory/craft list
+            // Adds new craftable items (engine, precision lens) to inventory/craft list
             inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
             inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
 
-            // Reveal the engine on the sell panel and enable its UI controls
+            // Reveals the engine on the sell panel and enable its UI controls
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemButton").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemName").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").gameObject.SetActive(true);
@@ -563,7 +568,7 @@ public class TradeHutManager : MonoBehaviour
          {
             ForgeManager.Instance.hasMercenaryEngineer = true;
 
-            if(inv.mercenaryEngineerCount == 3)
+            if(inv.mercenaryEngineerCount == MAX_MERCENARY_ENGINEER_COUNT)
                BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
             ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
          }
@@ -581,7 +586,7 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-   /* Increments the count for the item being sold and updates the UI                                 */
+   // Increments the count for the item being sold and updates the UI
    public void IncreaseSellItemCount(Transform item) 
    {
       switch (item.tag) 
@@ -624,7 +629,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   /* Decrements the count for the item being sold and updates the UI                                 */
+   // Decrements the count for the item being sold and updates the UI
    public void DecreaseSellItemCount(Transform item) 
    {
       switch (item.tag) 
@@ -667,7 +672,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   /* Increments the count for the item being bought and updates the UI                               */
+   // Increments the count for the item being bought and updates the UI
    public void IncreaseBuyItemsCount(Transform item) 
    {
       switch (item.tag) 
@@ -686,7 +691,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   /* Decrements the count for the item being bought and updates the UI                               */
+   // Decrements the count for the item being bought and updates the UI
    public void DecreaseBuyItemsCount(Transform item) 
    {
       switch (item.tag) 
@@ -705,6 +710,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
+   // Exchanges ores for pearls
    public void RecycleOre() 
    {
       int pearlsReceived = Rng.Next(PEARL_REWARD_MINIMUM, PEARL_REWARD_MAXIMUM + 1);
@@ -715,39 +721,39 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-   public void MysterBoxResult(ResourceType resource, int resourceAmount) 
-   {
-      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(false);
+   //public void MysterBoxResult(ResourceType resource, int resourceAmount) 
+   //{
+   //   MysteryBoxPanel.Find("StartingView").gameObject.SetActive(false);
 
-      Transform ResultContainer = MysteryBoxPanel.Find("ResultContainer");
-      Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
-      Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
+   //   Transform ResultContainer = MysteryBoxPanel.Find("ResultContainer");
+   //   Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
+   //   Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
 
-      ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = GetResourceSprite(resource);
-      ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
+   //   ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = GetResourceSprite(resource);
+   //   ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
 
-      currentMysteryBoxResult = ResultTransform;
-      ResultTransform.gameObject.SetActive(true);
-   }
+   //   currentMysteryBoxResult = ResultTransform;
+   //   ResultTransform.gameObject.SetActive(true);
+   //}
 
-   public void OpenMysterBox() 
-   {
+   //public void OpenMysterBox() 
+   //{
 
-      int successChance = Rng.Next(1, 101);
+   //   int successChance = Rng.Next(1, 101);
 
-      if(successChance <= 60) 
-      { 
-         MysterBoxResult(ResourceType.Pearl, 200);
-         InventoryManager.Instance.TryAddPearl(200);
-      }
-      else 
-      {
-         MysterBoxResult(ResourceType.Crystal, 50);
-         InventoryManager.Instance.TryAddPearl(50);
-      }
-   }
+   //   if(successChance <= 60) 
+   //   { 
+   //      MysterBoxResult(ResourceType.Pearl, 200);
+   //      InventoryManager.Instance.TryAddPearl(200);
+   //   }
+   //   else 
+   //   {
+   //      MysterBoxResult(ResourceType.Crystal, 50);
+   //      InventoryManager.Instance.TryAddPearl(50);
+   //   }
+   //}
 
-   /* Shows market shifts for next turn */
+   // Shows market shifts for next turn
    public void CraftMarketForesight() 
    {
   
@@ -775,7 +781,7 @@ public class TradeHutManager : MonoBehaviour
       else 
       {
          baseVal = GetItemValue(ItemType.CrudeTool);
-         preview = baseVal; // default to current
+         preview = baseVal;
 
          if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.CrudeToolEvent) 
          {
@@ -900,7 +906,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   /* Shifts the sell market each turn.  */
+   // Shifts the sell market each turn and during world events
    public void MarketFluctuate() 
    {
       // Crude Tool fluctuations
@@ -947,6 +953,7 @@ public class TradeHutManager : MonoBehaviour
          }
       }
      
+      // Pressure Valve fluctuations
       if (ForgeManager.Instance.hasTier2Blueprint) 
       {
          if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == 5) 
@@ -966,6 +973,7 @@ public class TradeHutManager : MonoBehaviour
          }
       }
 
+      // Clockwork engine fluctuations
       if (ForgeManager.Instance.hasTier3Blueprint) 
       {
          if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == 5) 
@@ -987,7 +995,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   /* Determines world event selection and shift direction for the next cycle. */
+   // Determines world event selection and shift direction for the next cycle.
    public void WorldEventChance() 
    {
       int worldEvent1 = (int)WorldEventTypes.CrudeToolEvent,
@@ -1027,6 +1035,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
+   // Displays the next world event's market fluctuations
    public void WorldEventForesight(TextMeshProUGUI sellValueText) 
    {
       int preview; 
@@ -1084,7 +1093,6 @@ public class TradeHutManager : MonoBehaviour
             preview = Mathf.Clamp(preview, MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
             sellValueText.text = "Next Value: " + preview.ToString();
             break;
-
          default:
             Debug.LogError("Unknown Event");
             break;
@@ -1092,44 +1100,61 @@ public class TradeHutManager : MonoBehaviour
 
    }
 
-   public void ResetWorldEventShifts() 
-   {
-      switch (worldEvent) 
-      {
+  public void ResetWorldEventShifts() 
+  {
+     // Determine which world event was active and reverse its effect on item values
+     switch (worldEvent) 
+     {
+         // Undo the crude tool event shift based on previous direction
          case (int)WorldEventTypes.CrudeToolEvent:
-            if (shiftDirection <= 50) 
-               TryDecreaseCrudeToolSellValue((int)(BASE_CRUDE_TOOL_SELL_VALUE));
-            else 
-               TryIncreaseCrudeToolSellValue((int)(BASE_CRUDE_TOOL_SELL_VALUE));
+           if (shiftDirection <= 50) 
+              TryDecreaseCrudeToolSellValue((int)(BASE_CRUDE_TOOL_SELL_VALUE));
+           else 
+              TryIncreaseCrudeToolSellValue((int)(BASE_CRUDE_TOOL_SELL_VALUE));
 
+            // Flag the reset for crude tool
             lastResetTurn[ItemType.CrudeTool] = true;
-            break;
+           break;
+
+         // Undo the crude tool event shift based on previous direction
          case (int)WorldEventTypes.HarpoonEvent:
             if (shiftDirection <= 50) 
                TryDecreaseHarpoonSellValue((int)(BASE_HARPON_SELL_VALUE));
             else 
                TryIncreaseHarpoonSellValue((int)(BASE_HARPON_SELL_VALUE));
+
+            // Flag the reset for harpoon
             lastResetTurn[ItemType.Harpoon] = true;
             break;
+
+         // Undo the pressure valve event shift based on previous direction
          case (int)WorldEventTypes.PressureValveEvent:
-            if (shiftDirection <= 50)
-               TryDecreasePressureValveValue((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
-            else
-               TryIncreasePressureValveValue((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
-            lastResetTurn[ItemType.PressureValve] = true;
-            break;
+           if (shiftDirection <= 50)
+              TryDecreasePressureValveValue((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
+           else
+              TryIncreasePressureValveValue((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
+  
+           // Flag the reset for Pressure Valve
+           lastResetTurn[ItemType.PressureValve] = true;
+           break;
+
+         // Undo the engine event shift based on previous direction
          case (int)WorldEventTypes.ClockworkEngineEvent:
-            if (shiftDirection <= 50)
-               TryDecreaseEnginesSellValue((int)(BASE_ENGINE_VALUE));
-            else
-               TryIncreaseEngineSellValue((int)(BASE_ENGINE_VALUE));
-            lastResetTurn[ItemType.Engine] = true;
-            break;
-         default:
-            Debug.LogError("Unknown Event");
-            break;
-      }
-   }
+           if (shiftDirection <= 50)
+              TryDecreaseEnginesSellValue((int)(BASE_ENGINE_VALUE));
+           else
+              TryIncreaseEngineSellValue((int)(BASE_ENGINE_VALUE));
+  
+           // Flag the reset for Engine
+           lastResetTurn[ItemType.Engine] = true;
+           break;
+  
+        // Unknown event should be logged for debugging
+        default:
+           Debug.LogError("Unknown Event");
+           break;
+     }
+  }
 
    public void ChangeItemValueText(int newAmount, ItemType itemType) 
    {
@@ -1161,7 +1186,7 @@ public class TradeHutManager : MonoBehaviour
       return;
    }
 
-   /* Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel           */
+   // Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel
    public void RequestTradeHutPanel(int buttonID) 
    {
       switch (buttonID) 
@@ -1182,7 +1207,7 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   /* Closes the panel corresponding to the button ID                                                 */
+   // Closes the panel corresponding to the button ID
    public void CloseTradeHutPanel(int buttonID)    
    {
       switch (buttonID)
@@ -1214,11 +1239,6 @@ public class TradeHutManager : MonoBehaviour
       InfoPanel.gameObject.SetActive(true);
    }
 
-   private void ShowUpgradePanel() 
-   {
-      UpgradePanel.gameObject.SetActive(true);
-   }
-
    public void ShowSellPanel() 
    {
       if (BuyPanel.gameObject.activeSelf) 
@@ -1229,7 +1249,7 @@ public class TradeHutManager : MonoBehaviour
          CloseBuyPanel();
       }
 
-      /* Destroy the instantiated buy item/window instance if it exists                               */
+      // Destroy the instantiated buy item/window instance if it exists
       if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
@@ -1248,7 +1268,7 @@ public class TradeHutManager : MonoBehaviour
          CloseSellPanel();
       }
 
-      /* Destroy the instantiated sell item/window instance if it exists                              */
+      // Destroy the instantiated sell item/window instance if it exists
       if (currentSellItem != null) 
       {
          Destroy(currentSellItem.gameObject);
@@ -1267,24 +1287,24 @@ public class TradeHutManager : MonoBehaviour
       SellWindow.gameObject.SetActive(true);
    }
 
-   public void ShowMysteryBoxPanel() 
-   {
-      MysteryBoxPanel.gameObject.SetActive(true);
-      MysteryBoxPanel.Find("StartingView").gameObject.SetActive(true);
-   }
+   //public void ShowMysteryBoxPanel() 
+   //{
+   //   MysteryBoxPanel.gameObject.SetActive(true);
+   //   MysteryBoxPanel.Find("StartingView").gameObject.SetActive(true);
+   //}
 
    private void CloseTradePanel() 
    {
       TradePanels.gameObject.SetActive(false);
 
-      /* Destroy the instantiated sell item/window instance if it exists                              */
+      // Destroy the instantiated sell item/window instance if it exists
       if (currentSellItem != null) 
       {
          Destroy(currentSellItem.gameObject);
          currentSellItem = null;
       }
 
-      /* Destroy the instantiated buy item/window instance if it exists                               */
+      // Destroy the instantiated buy item/window instance if it exists
       if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
@@ -1333,13 +1353,13 @@ public class TradeHutManager : MonoBehaviour
       BuyWindow.gameObject?.SetActive(false);
    }
 
-   public void CloseMysteryBoxPanel() 
-   {
-      if(currentMysteryBoxResult != null) 
-      {
-         Destroy(currentMysteryBoxResult.gameObject);
-         currentMysteryBoxResult = null;
-      }
-      MysteryBoxPanel.gameObject.SetActive(false);
-   }
+   //public void CloseMysteryBoxPanel() 
+   //{
+   //   if(currentMysteryBoxResult != null) 
+   //   {
+   //      Destroy(currentMysteryBoxResult.gameObject);
+   //      currentMysteryBoxResult = null;
+   //   }
+   //   MysteryBoxPanel.gameObject.SetActive(false);
+   //}
 }

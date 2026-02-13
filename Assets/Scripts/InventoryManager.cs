@@ -172,11 +172,11 @@ public class InventoryManager : MonoBehaviour
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
-      //CreateResource(Item.GetItemSprite(Item.ItemType.RareOre), ORE_POSITION + 10, RARE_ORE_TAG); 
+      //CreateResource(Item.GetItemSprite(Item.ItemType.RawOreChunk), ORE_POSITION + 10, RAW_ORE_CHUNK_TAG); 
 
       CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      //CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
       //CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
@@ -457,7 +457,7 @@ public class InventoryManager : MonoBehaviour
             break;
          case DIVING_BELL_TAG:
             craftCount = divingBellCount;
-            craftInfo = "";
+            craftInfo  = Item.GetItemDescription(Item.ItemType.DivingBell);
             break;
          case ENGINE_TAG:
             craftCount = engineCount;
@@ -465,7 +465,7 @@ public class InventoryManager : MonoBehaviour
             break;
          case PRECISION_LENS_TAG:
             craftCount = precisionLensCount;
-            craftInfo  = "";
+            craftInfo = Item.GetItemDescription(Item.ItemType.PrecisionLens);
             break;
          case RAW_ORE_CHUNK_TAG:
             craftCount = rawOreChunkCount;

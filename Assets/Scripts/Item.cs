@@ -53,6 +53,12 @@ public class Item {
    const string CLOCKWORK_BLUEPRINT_DESCRIPTION  = 
       "A blueprint detailing intricate clockwork mechanisms. " +
       "Highly prized by collectors and engineers alike.";
+   const string PATCH_KIT_DESCRIPTION =
+     "A compact repair kit containing patches, resin and basic tools. " +
+     "Used to repair equipment or as a component in crafting.";
+   const string MERCENARY_ENGINEER_DESCRIPTION =
+      "A hired specialist who can immediately complete a single crafting task when activated. " +
+      "Consumed on use — ideal when you need an item instantly.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -114,6 +120,8 @@ public class Item {
             return CRUDE_TOOL_DESCRIPTION;
          case ItemType.Harpoon:
             return HARPOON_DESCRIPTION;
+         case ItemType.PatchKit:
+            return PATCH_KIT_DESCRIPTION;
          case ItemType.PressureValve:
             return PRESSURE_VALVE_DESCRIPTION;
          case ItemType.Engine:
@@ -124,7 +132,10 @@ public class Item {
             return INDUSTRIAL_BLUEPRINT_DESCRIPTION;
          case ItemType.Tier3BluePrint:
             return CLOCKWORK_BLUEPRINT_DESCRIPTION;
+         case ItemType.MercenaryEngineer:
+            return MERCENARY_ENGINEER_DESCRIPTION;
          default:
+            Debug.LogError("No description available.");
             return "No description available.";
       }
    }

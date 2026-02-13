@@ -67,7 +67,7 @@ public class WorldEvents {
             break;
          case TURN_5:
             if (shiftDirection <= 50)
-            tickerMessage = "MIGRATION EVENT: Leviathans breaching! Harpoon prices +300%!";
+            tickerMessage = "MIGRATION EVENT: Leviathans breaching! Harpoon prices Doubled!";
             else
                tickerMessage = "PEACE EVENT: The beasts are gone. Harpoon value crashed!";
             break;
@@ -99,7 +99,7 @@ public class WorldEvents {
             break;
          case TURN_5:
             if (shiftDirection <= 50)
-               tickerMessage = "SEISMIC EVENT: Pressure spikes detected! Valve demand Tripled!";
+               tickerMessage = "SEISMIC EVENT: Pressure spikes detected! Valve demand Doubled!";
             else
                tickerMessage = "STABILITY EVENT: Zero pressure incidents. Valve market dead.";
             break;
