@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: You have come across a merchant who is selling fuel.
   choiceA:
-    buttonText: Trade 10 gold for 1 fuel
-    goldChange: -10
+    buttonText: Trade 10 pearls for 1 fuel
+    pearlChange: -10
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 1
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0
@@ -33,16 +33,16 @@ MonoBehaviour:
     healthDamage: 0
   choiceB:
     buttonText: No trade
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0

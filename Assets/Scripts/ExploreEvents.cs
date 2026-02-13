@@ -22,7 +22,6 @@ public struct EventChoice
    public int fuelChange;
    public int inventoryChange;
    public int harpoonChange;
-   public int artifactChange;
    public bool waitTurn;
 
    [Header("Range Result")]

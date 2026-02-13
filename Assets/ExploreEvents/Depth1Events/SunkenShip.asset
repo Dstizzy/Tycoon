@@ -15,16 +15,16 @@ MonoBehaviour:
   description: You have come across a sunken ship.
   choiceA:
     buttonText: 'Strip the deck of the ship: +10-35 ore'
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 5
+    maxPearl: 25
     minOre: 10
     maxOre: 35
     fuelChance: 0
@@ -33,16 +33,16 @@ MonoBehaviour:
     healthDamage: 0
   choiceB:
     buttonText: 'Search captain''s quarters: +0-45 gold'
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 45
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0

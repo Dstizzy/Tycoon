@@ -32,7 +32,6 @@ public class ShipManager : MonoBehaviour
    int currentOre;
    int currentCrystal;
    int currentHarpoon;
-   int currentArtifact;
    int currentDepth = 1;
 
    public struct RoundResults
@@ -68,7 +67,6 @@ public class ShipManager : MonoBehaviour
    public int GetOre() { return currentOre; }
    public int GetCrystal() {  return currentCrystal; }
    public int GetHarpoon() {  return currentHarpoon; }
-   public int GetArtifact() { return currentArtifact; }
 
 
    public void UpgradeShip()
@@ -116,7 +114,6 @@ public class ShipManager : MonoBehaviour
       currentHealth += results.healthChange;
       currentFuel += results.fuelChange;
       currentHarpoon += results.harpoonChange;
-      currentArtifact += results.artifactChange;
 
       finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
@@ -178,7 +175,6 @@ public class ShipManager : MonoBehaviour
       currentOre = 0;
       currentCrystal = 0;
       currentHarpoon = 0;
-      currentArtifact = 0;
       MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
 
       UpdateShipUI();
@@ -268,8 +264,6 @@ public class ShipManager : MonoBehaviour
          totalRewards += $"Crystal: {currentCrystal}\n";
       if (currentHarpoon > 0)
          totalRewards += $"Harpoons: {currentHarpoon}\n";
-      if (currentArtifact > 0)
-         totalRewards += $"Artifacts: {currentArtifact}";
       finalRewards.text = totalRewards;
 
       ResetShip();

@@ -12,17 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: HydroChimney
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: A white smoke vent is spewing hot minerals, forming crystal towers
   choiceA:
-    buttonText: 
+    buttonText: Smash the towers to collect all crystals
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
+    crystalChange: 25
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0
@@ -31,17 +30,16 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
-    healthDamage: 0
+    healthDamage: -15
   choiceB:
-    buttonText: 
+    buttonText: Collect loose crystals
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
+    crystalChange: 5
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0

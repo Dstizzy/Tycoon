@@ -2,6 +2,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
@@ -110,7 +111,8 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
-      nextTurnDestination = MapManager.Instance.startingNode.nextNode;
+      if(MapManager.Instance.startingNode != null)
+         nextTurnDestination = MapManager.Instance.startingNode.nextNode;
       CloseExplorationPanel();
    }
 
@@ -154,6 +156,53 @@ public class ExplorationUnitManager : MonoBehaviour
          return true;
       }
       return false;
+   }
+
+   private void SetupButtons(string textA, UnityAction actionA,
+                          string textB, UnityAction actionB,
+                          string textC, UnityAction actionC)
+   {
+      Transform container = decisionPanel.Find("ButtonContainer");
+
+      Button button1 = container.Find("Choice1").GetComponent<Button>();
+      if (button1 != null)
+      {
+         button1.gameObject.SetActive(true);
+         button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
+         button1.onClick.RemoveAllListeners();
+         if (actionA != null)
+            button1.onClick.AddListener(actionA);
+      }
+
+      Button button2 = container.Find("Choice2").GetComponent<Button>();
+      if (button2 != null)
+      {
+         if (!string.IsNullOrEmpty(textB))
+         {
+            button2.gameObject.SetActive(true);
+            button2.GetComponentInChildren<TextMeshProUGUI>().text = textB;
+            button2.onClick.RemoveAllListeners();
+            if (actionB != null)
+               button2.onClick.AddListener(actionB);
+         }
+         else
+            button2.gameObject.SetActive(false);
+      }
+
+      Button button3 = container.Find("Choice3").GetComponent<Button>();
+      if (button3 != null)
+      {
+         if (!string.IsNullOrEmpty(textC))
+         {
+            button3.gameObject.SetActive(true);
+            button3.GetComponentInChildren<TextMeshProUGUI>().text = textC;
+            button3.onClick.RemoveAllListeners();
+            if (actionC != null)
+               button3.onClick.AddListener(actionC);
+         }
+         else
+            button3.gameObject.SetActive(false);
+      }
    }
 
    private void ProcessDecision(EventChoice choice, MapNode currentNode)
@@ -209,29 +258,15 @@ public class ExplorationUnitManager : MonoBehaviour
          returnShip.onClick.RemoveAllListeners();
          returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
 
-         Button choice1 = decisionPanel.Find("Choice1").GetComponent<Button>();
-         Button choice2 = decisionPanel.Find("Choice2").GetComponent<Button>();
-         choice1.onClick.RemoveAllListeners();
-         choice2.onClick.RemoveAllListeners();
-
          if(current.type == MapNode.NodeType.Directional)
          {
             eventController.scenarioText.text = current.navigationStory;
-            eventController.choiceAText.text = current.choiceAText;
-            eventController.choiceBText.text = current.choiceBText;
 
-            choice1.onClick.AddListener(() => 
-            {
-               nextTurnDestination = current.pathA;
-               if(!CheckForDepthIncrease(nextTurnDestination))
-                  CloseDecisionPanel();
-            });
-            choice2.onClick.AddListener(() =>
-            {
-               nextTurnDestination = current.pathB;
-               if (!CheckForDepthIncrease(nextTurnDestination))
-                  CloseDecisionPanel();
-            });
+            SetupButtons(
+               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); },
+               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); },
+               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }
+            );
          }
          else
          {
@@ -240,8 +275,12 @@ public class ExplorationUnitManager : MonoBehaviour
             if(randomEvent != null)
             {
                eventController.SetEventPanel(randomEvent);
-               choice1.onClick.AddListener(() => ProcessDecision(randomEvent.choiceA, current));
-               choice2.onClick.AddListener(() => ProcessDecision(randomEvent.choiceB, current));
+               string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
+               SetupButtons(
+                  randomEvent.choiceA.buttonText, () => ProcessDecision(randomEvent.choiceA, current),
+                  textB, () => ProcessDecision(randomEvent.choiceB, current),
+                  null, null
+               );
             }
          }
       }
@@ -320,7 +359,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if(results.crystalChanged != 0)
       {
-         string sign = results.oreChanged > 0 ? "+" : "";
+         string sign = results.crystalChanged > 0 ? "+" : "";
          resultsText += $"Crystal: {sign}{results.crystalChanged}\n";
       }
 
@@ -372,8 +411,6 @@ public class ExplorationUnitManager : MonoBehaviour
          currentInventory += $"Cystal: {shipManager.GetCrystal()}\n";
       if (shipManager.GetHarpoon() > 0)
          currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
-      if (shipManager.GetArtifact() > 0)
-         currentInventory += $"Artifacts: {shipManager.GetArtifact()}";
 
       shipInventory.text = currentInventory;
    }

@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: NarrowFissure
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: 
+  description: A narrow fissure is seen that could save fuel, but you risk scraping
+    your ship
   choiceA:
-    buttonText: 
+    buttonText: Squeeze through
     pearlChange: 0
     oreChange: 0
     crystalChange: 0
     healthChange: 0
-    fuelChange: 0
+    fuelChange: 1
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0
@@ -30,10 +30,10 @@ MonoBehaviour:
     maxOre: 0
     fuelChance: 0
     fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    damageChance: 0.5
+    healthDamage: -10
   choiceB:
-    buttonText: 
+    buttonText: Go around
     pearlChange: 0
     oreChange: 0
     crystalChange: 0
@@ -41,7 +41,6 @@ MonoBehaviour:
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0

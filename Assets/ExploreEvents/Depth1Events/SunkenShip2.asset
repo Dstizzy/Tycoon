@@ -15,16 +15,16 @@ MonoBehaviour:
   description: Your crew has noticed a sunken ship just off the path
   choiceA:
     buttonText: Explore ship for resources
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 10
+    minPearl: 0
+    maxPearl: 10
     minOre: 0
     maxOre: 15
     fuelChance: 0
@@ -33,16 +33,16 @@ MonoBehaviour:
     healthDamage: 0
   choiceB:
     buttonText: 
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0

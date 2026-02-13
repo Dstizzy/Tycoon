@@ -18,6 +18,8 @@ public class MapNode : ScriptableObject
    public MapNode pathA;
    public string choiceBText;
    public MapNode pathB;
+   public string choiceCText;
+   public MapNode pathC;
 
    [Header("Event Settings (If Type = Event)")]
    public MapNode nextNode;
