@@ -37,12 +37,10 @@ public class PopUpManager : MonoBehaviour
       if (Instance != null && Instance != this)
       {
          Destroy(this.gameObject);
+         return;
       }
       else
-      {
          Instance = this;
-         DontDestroyOnLoad(this.gameObject);
-      }
 
       playerActions = new PlayerActions();
       playerActions.PlayerInput.Enable();
@@ -60,6 +58,8 @@ public class PopUpManager : MonoBehaviour
    }
    private void OnBuildingHover(InputAction.CallbackContext context)
    {
+      if (cam == null)
+         return;
 
       PointerEventData eventData = new PointerEventData(EventSystem.current);
       eventData.position = context.ReadValue<Vector2>();
