@@ -158,9 +158,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 1000;
+      pearlCount     = 500;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = 1000;
+      oreCount       = 100;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -1219,7 +1219,7 @@ public class InventoryManager : MonoBehaviour
 
    private void CheckUpgradeResources() 
    {
-      if(pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre >= oreCount)
+      if(pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
          OreRefineryUpgradeIcon.gameObject.SetActive(true);
       else
          OreRefineryUpgradeIcon.gameObject.SetActive(false);

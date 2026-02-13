@@ -489,28 +489,27 @@ public class TradeHutManager : MonoBehaviour
 
   public void BuyItem() 
   {
-      // Handle raw ore exchange
-      if (rawOreExchange > MIN_BUY_ITEM_COUNT) 
-      { 
-         bool pearlsSpent = inv.TrySpendPearl(rawOreExchange),
-              oreAdded    = false;
-      
-         if (pearlsSpent)
-            oreAdded = inv.TryAddOre(rawOreExchange);
-      
-         if (pearlsSpent && oreAdded)
-            ticker.ShowTicker($"Bought {rawOreExchange} Ore for {rawOreExchange} pearls.", Color.green, MessageTypes.ResultMessage);
-      
-         rawOreExchange = MIN_BUY_ITEM_COUNT;
-      }
-      else
-         if(currentBuyItem.tag == RAW_ORE_CHUNK_TAG)
-            ticker.ShowTicker("No items have been selected", Color.red, MessageTypes.ResultMessage);
-
-
-      // Handle purchasing blueprint
+      // Check if there is a current buy item
       if (currentBuyItem != null) 
       {
+         // Handle raw ore exchange
+         if (rawOreExchange > MIN_BUY_ITEM_COUNT) 
+         { 
+            bool pearlsSpent = inv.TrySpendPearl(rawOreExchange),
+                 oreAdded    = false;
+            
+            if (pearlsSpent)
+               oreAdded = inv.TryAddOre(rawOreExchange);
+            
+            if (pearlsSpent && oreAdded)
+               ticker.ShowTicker($"Bought {rawOreExchange} Ore for {rawOreExchange} pearls.", Color.green, MessageTypes.ResultMessage);
+            
+            rawOreExchange = MIN_BUY_ITEM_COUNT;
+         }
+         else
+            if(currentBuyItem.tag == RAW_ORE_CHUNK_TAG)
+               ticker.ShowTicker("No items have been selected", Color.red, MessageTypes.ResultMessage);
+
          // Tier 2 Blueprint purchase flow
          if (currentBuyItem.CompareTag(TIER_2_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier2BluePrint))) 
          {
