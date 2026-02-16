@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 2_09
   mapPosition: {x: 37, y: 10}
-  isExplored: 1
+  isExplored: 0
   nodeDepth: 2
   type: 1
   navigationStory: The path ahead splits in two
@@ -22,4 +22,8 @@ MonoBehaviour:
   pathA: {fileID: 11400000, guid: 3a0beeab9da4572499a84fac7121ec15, type: 2}
   choiceBText: Take the right route
   pathB: {fileID: 11400000, guid: a2d4720dd029c4343ae6487ccb4e600d, type: 2}
+  choiceCText: 
+  pathC: {fileID: 0}
   nextNode: {fileID: 0}
+  isFinalNode: 0
+  isLeftPath: 0

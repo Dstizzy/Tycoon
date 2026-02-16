@@ -22,4 +22,8 @@ MonoBehaviour:
   pathA: {fileID: 11400000, guid: bd3d86b077522bb47ac284a063d07531, type: 2}
   choiceBText: Go to the right
   pathB: {fileID: 11400000, guid: e4c4230130a10a64fa7cea00d999f17a, type: 2}
+  choiceCText: 
+  pathC: {fileID: 0}
   nextNode: {fileID: 0}
+  isFinalNode: 0
+  isLeftPath: 0

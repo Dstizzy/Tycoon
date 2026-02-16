@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_12
   mapPosition: {x: -22, y: 55}
-  isExplored: 1
+  isExplored: 0
   nodeDepth: 1
   type: 1
   navigationStory: Your ship has come to ruins of an old trade outpost.

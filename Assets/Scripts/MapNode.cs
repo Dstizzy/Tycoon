@@ -1,4 +1,5 @@
-using System.Runtime.CompilerServices;
+using System;
+using System.Security.Cryptography;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewNode", menuName = "Map/Node")]
@@ -8,6 +9,7 @@ public class MapNode : ScriptableObject
    public Vector2 mapPosition;
    public bool isExplored = false;
    public int nodeDepth;
+   public event Action OnRevealed;
 
    public enum NodeType { Event, Directional }
    public NodeType type;
@@ -27,4 +29,13 @@ public class MapNode : ScriptableObject
    [Header("End Game Settings")]
    public bool isFinalNode;
    public bool isLeftPath;
+
+   public void RevealNode()
+   {
+      if (!isExplored)
+      {
+         isExplored = true;
+         OnRevealed?.Invoke();
+      }
+   }
 }

@@ -111,8 +111,11 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
-      if(MapManager.Instance.startingNode != null)
+      if (MapManager.Instance.startingNode != null)
+      { 
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
+
+      }
       CloseExplorationPanel();
    }
 

@@ -1,5 +1,13 @@
 using JetBrains.Annotations;
+using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public struct NodeVisual
+{
+   public MapNode nodeData;
+   public GameObject cloudObject;
+}
 
 public class MapManager : MonoBehaviour
 {
@@ -11,10 +19,12 @@ public class MapManager : MonoBehaviour
    public bool winningPathIsLeft;
    [SerializeField] private ShipManager shipManager;
 
+   [Header("MapVisuals")]
+   public List<NodeVisual> mapVisuals = new List<NodeVisual>();
+
    private void Awake()
    {
       Instance = this;
-
       winningPathIsLeft = (Random.Range(0, 2) == 0);
    }
 
@@ -23,7 +33,6 @@ public class MapManager : MonoBehaviour
       if (newNode == null) return;
 
       currentNode = newNode;
-      currentNode.isExplored = true;
       shipManager.SetDepth(currentNode.nodeDepth);
 
       if(exploreShipIcon != null && decisionShipIcon != null)
@@ -31,5 +40,6 @@ public class MapManager : MonoBehaviour
          exploreShipIcon.anchoredPosition = currentNode.mapPosition;
          decisionShipIcon.anchoredPosition = currentNode.mapPosition;
       }
+      currentNode.RevealNode();
    }
 }
