@@ -19,13 +19,18 @@ public class MapManager : MonoBehaviour
    public bool winningPathIsLeft;
    [SerializeField] private ShipManager shipManager;
 
-   [Header("MapVisuals")]
-   public List<NodeVisual> mapVisuals = new List<NodeVisual>();
+   [Header("Game Reset")]
+   public List<MapNode> allNodesInGame;
 
    private void Awake()
    {
       Instance = this;
       winningPathIsLeft = (Random.Range(0, 2) == 0);
+
+      if (allNodesInGame != null)
+         foreach (MapNode node in allNodesInGame)
+            if (node != null)
+               node.isExplored = false;
    }
 
    public void MoveToNode(MapNode newNode)

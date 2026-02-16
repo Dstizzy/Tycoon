@@ -29,6 +29,7 @@ public class ExplorationUnitManager : MonoBehaviour
    const int UPGRADE_BUTTON = 3;
 
    public bool isExploring = false;
+   private bool isWaiting = false;
 
    //
    private void Awake()
@@ -211,6 +212,9 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ProcessDecision(EventChoice choice, MapNode currentNode)
    {
       ShipManager.RoundResults results = shipManager.ApplyEventResult(choice);
+
+      if (choice.waitTurn)
+         isWaiting = true;
       if (results.pearlChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0 || results.crystalChanged != 0)
          ShowResultsPanel(results, currentNode);
       else
@@ -231,6 +235,14 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (isExploring)
       {
+         if(isWaiting)
+         {
+            shipManager.NewTurn();
+            if (!isExploring) return;
+            isWaiting = false;
+            return;
+         }
+
          MapNode nextNode = nextTurnDestination;
          if (nextNode != null)
          {

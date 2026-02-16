@@ -46193,9 +46193,38 @@ MonoBehaviour:
   decisionShipIcon: {fileID: 282217425}
   winningPathIsLeft: 0
   shipManager: {fileID: 1841321750}
-  mapVisuals:
-  - nodeData: {fileID: 11400000, guid: bef1dd1c5ff4f124cb5cc50c194e1379, type: 2}
-    cloudObject: {fileID: 0}
+  allNodesInGame:
+  - {fileID: 11400000, guid: bef1dd1c5ff4f124cb5cc50c194e1379, type: 2}
+  - {fileID: 11400000, guid: 117d03577374af349a495697f1de55bb, type: 2}
+  - {fileID: 11400000, guid: 1b981a8cf2654984e8cd4d24a56f33fe, type: 2}
+  - {fileID: 11400000, guid: 9d7ac96869063504ba1d9987b19b1f49, type: 2}
+  - {fileID: 11400000, guid: bd3d86b077522bb47ac284a063d07531, type: 2}
+  - {fileID: 11400000, guid: c02f9d6747f77ad4e8f05d4c7e2be707, type: 2}
+  - {fileID: 11400000, guid: 14bcb5fa9f9aa764081052cc680401bf, type: 2}
+  - {fileID: 11400000, guid: 4f37228f27857d142aae3d27a42c70de, type: 2}
+  - {fileID: 11400000, guid: 9cb875b5bf03d594d85ae693f10059fe, type: 2}
+  - {fileID: 11400000, guid: e4c4230130a10a64fa7cea00d999f17a, type: 2}
+  - {fileID: 11400000, guid: 72b0e6cd87db6f044a80e861a2964179, type: 2}
+  - {fileID: 11400000, guid: 01cea5cc967f57b41a017149670f30c1, type: 2}
+  - {fileID: 11400000, guid: c0161af8ef63bf843a5a6c40378e958f, type: 2}
+  - {fileID: 11400000, guid: ad25bfc9491dba245b69e6f31ba73052, type: 2}
+  - {fileID: 11400000, guid: 20747cd4923e96444a2105b94d35e132, type: 2}
+  - {fileID: 11400000, guid: f8d3d0d048036df489d639c148990c7f, type: 2}
+  - {fileID: 11400000, guid: e89ffa0e26f9ec34187eb0f5a2e5ff4a, type: 2}
+  - {fileID: 11400000, guid: d95840d5f59bf9840b29f0c40604246b, type: 2}
+  - {fileID: 11400000, guid: ad51abe62ad00d843bf2fed0ea986eca, type: 2}
+  - {fileID: 11400000, guid: 83cd0b6cb09b64a40859b35be4c21018, type: 2}
+  - {fileID: 11400000, guid: 25771886ad646e945a0abdb85cc6c3ac, type: 2}
+  - {fileID: 11400000, guid: 14242e3a41e842b47871450152e63a50, type: 2}
+  - {fileID: 11400000, guid: 97f0846d4986a0f41886b7a68d4582b8, type: 2}
+  - {fileID: 11400000, guid: 679338c95f452174e8f71a3799ef4c6b, type: 2}
+  - {fileID: 11400000, guid: 3a0beeab9da4572499a84fac7121ec15, type: 2}
+  - {fileID: 11400000, guid: a2d4720dd029c4343ae6487ccb4e600d, type: 2}
+  - {fileID: 11400000, guid: ea13ffb45d0453c41832b3049ae6c54d, type: 2}
+  - {fileID: 11400000, guid: 58a8d42c2520e5348b7a80af34710929, type: 2}
+  - {fileID: 11400000, guid: 04c0307d39d89e743ab059c091672845, type: 2}
+  - {fileID: 11400000, guid: fa2d20a7317048248b27ba6da571467d, type: 2}
+  - {fileID: 11400000, guid: d35d22b9fe6816246a9613308a862b89, type: 2}
 --- !u!1 &1845484426
 GameObject:
   m_ObjectHideFlags: 0
