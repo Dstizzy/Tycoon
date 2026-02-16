@@ -3,10 +3,9 @@ using System;
 
 using TMPro;
 
-using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.UI;
+
 using static TickerSystem;
 
 public class InventoryManager : MonoBehaviour 
@@ -33,7 +32,12 @@ public class InventoryManager : MonoBehaviour
                            DivingBellCountText,
                            EngineCountText,
                            PrecisionLensCountText,
-                           RaWOreChunkCountText;
+                           RaWOreChunkCountText,
+                           MercenaryEngineerCountText;
+
+   [SerializeField] private Image ForgeUpgradeIcon,
+                                  OreRefineryUpgradeIcon,
+                                  ExplorationUnitUpgradeIcon;
    
    /* Constants                                                                     */
    public const int MIN_PEARL_COUNT          = 0,                                              
@@ -44,14 +48,16 @@ public class InventoryManager : MonoBehaviour
                     MAX_ORE_COUNT            = 10000;
                    
 
-   public const int MAX_CRUDE_TOOL_COUNT     = 100,
-                    MAX_HARPOON_COUNT        = 100,
-                    MAX_PRESSURE_VALVE_COUNT = 100,
-                    MAX_ENGINE_COUNT         = 100,
-                    MAX_RAW_ORE_COUNT        = 100,
-                    MAX_PATCH_KIT_COUNT      = 100,
-                    MAX_DIVING_BELL_COUNT    = 100,
-                    MAX_PRECISION_LENS_COUNT = 100,
+   public const int MAX_CRUDE_TOOL_COUNT         = 100,
+                    MAX_HARPOON_COUNT            = 100,
+                    MAX_PRESSURE_VALVE_COUNT     = 100,
+                    MAX_ENGINE_COUNT             = 100,
+                    MAX_RAW_ORE_COUNT            = 100,
+                    MAX_PATCH_KIT_COUNT          = 100,
+                    MAX_DIVING_BELL_COUNT        = 100,
+                    MAX_PRECISION_LENS_COUNT     = 100,
+                    MAX_MERCENARY_ENGINEER_COUNT = 3,
+
                     MIN_CRUDE_TOOL_COUNT     = 0,
                     MIN_HARPOON_COUNT        = 0,
                     MIN_PRESSURE_VALVE_COUNT = 0,
@@ -59,7 +65,8 @@ public class InventoryManager : MonoBehaviour
                     MIN_RARE_ORE_CHUNK_COUNT = 0,
                     MIN_PATCH_KIT_COUNT      = 0,
                     MIN_DIVING_BELL_COUNT    = 0,
-                    MIN_PRECISION_LENS_COUNT = 0;
+                    MIN_PRECISION_LENS_COUNT = 0,
+                    MIN_MERCENARY_ENGINEER_COUNT = 0;
 
 
    public const int RESOURCE_SPACING        = 30,
@@ -92,14 +99,15 @@ public class InventoryManager : MonoBehaviour
    public int crystalCount       { get; private set; }
    public int oreCount           { get; private set; }
 
-   public int crudeToolCount     { get; private set; }
-   public int harpoonCount       { get; private set; }
-   public int patchKitCount      { get; private set; }
-   public int pressureValveCount { get; private set; }
-   public int divingBellCount    { get; private set; }
-   public int engineCount        { get; private set; }
-   public int precisionLensCount { get; private set; }
-   public int rawOreChunkCount   { get; private set; }
+   public int crudeToolCount         { get; private set; }
+   public int harpoonCount           { get; private set; }
+   public int patchKitCount          { get; private set; }
+   public int pressureValveCount     { get; private set; }
+   public int divingBellCount        { get; private set; }
+   public int engineCount            { get; private set; }
+   public int precisionLensCount     { get; private set; }
+   public int rawOreChunkCount       { get; private set; }
+   public int mercenaryEngineerCount { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource,  
@@ -150,9 +158,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 10000;
+      pearlCount     = 500;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = 10000;
+      oreCount       = 100;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -502,6 +510,7 @@ public class InventoryManager : MonoBehaviour
          }
       }
       
+      CheckUpgradeResources();
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
@@ -530,7 +539,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
       }
-      
+
+      CheckUpgradeResources();
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
@@ -581,7 +591,7 @@ public class InventoryManager : MonoBehaviour
             crystalCount -= crystalAmount;
             isSuccess     = true;
          }
-      
+
       OnCrystalCountChanged?.Invoke(crystalCount);
       CrystalCountText.text = " x" + crystalCount.ToString();
       
@@ -609,7 +619,7 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-
+      CheckUpgradeResources();
       OnOreCountChanged?.Invoke(oreCount);
       OreCountText.text = " x" + oreCount.ToString();
 
@@ -626,7 +636,8 @@ public class InventoryManager : MonoBehaviour
          ticker.ShowTicker($"Ore count is at minimum!", Color.red, MessageTypes.ResultMessage);
 
       } 
-      else
+      else 
+      { 
          if (oreCount < oreAmount)
          {
             Debug.LogError("Not enough ore to spend!");
@@ -637,9 +648,11 @@ public class InventoryManager : MonoBehaviour
             oreCount -= oreAmount;
             isSuccess = true;
          }
+      }
 
-         OnOreCountChanged?.Invoke(oreCount);
-         OreCountText.text = " x" + oreCount.ToString();
+      CheckUpgradeResources();
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
 
       return isSuccess;
    }
@@ -1082,6 +1095,63 @@ public class InventoryManager : MonoBehaviour
       return isSuccess;
    }
 
+   public bool TryAddMercenaryEngineer(int amount)
+   {
+      bool isSuccess = false;
+
+      if (mercenaryEngineerCount >= MAX_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count is at maximum!");
+         ticker.ShowTicker($"Mercenary Engineer count is at maximum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else if ((mercenaryEngineerCount + amount) > MAX_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count would exceed maximum!");
+         ticker.ShowTicker($"Cannot add Mercenary Engineers - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else
+      {
+         isSuccess = true;
+         mercenaryEngineerCount += amount;
+      }
+
+      // Update any UI if present
+      if (MercenaryEngineerCountText != null)
+         MercenaryEngineerCountText.text = " x" + mercenaryEngineerCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryUseMercenaryEngineer(int amount)
+   {
+      bool isSuccess = false;
+
+      if (mercenaryEngineerCount <= MIN_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count is at minimum!");
+         ticker.ShowTicker($"Mercenary Engineer count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else if (mercenaryEngineerCount < amount)
+      {
+         Debug.LogError("Not enough Mercenary Engineers!");
+         ticker.ShowTicker($"Cannot use Mercenary Engineers, only {mercenaryEngineerCount} available!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else
+      {
+         isSuccess = true;
+         mercenaryEngineerCount -= amount;
+      }
+
+      if (MercenaryEngineerCountText != null)
+         MercenaryEngineerCountText.text = " x" + mercenaryEngineerCount.ToString();
+
+      return isSuccess;
+   }
+
    public void ShowInventoryPanel() 
    {
       InventoryPanel.gameObject.SetActive(true);
@@ -1147,5 +1217,27 @@ public class InventoryManager : MonoBehaviour
       CraftsPanel.gameObject.SetActive(false);
    }
 
-   
+   private void CheckUpgradeResources() 
+   {
+      if(pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
+         OreRefineryUpgradeIcon.gameObject.SetActive(true);
+      else
+         OreRefineryUpgradeIcon.gameObject.SetActive(false);
+
+      if (ForgeManager.forgeLevel == 1) 
+      {
+         if(pearlCount >= ForgeManager.LEVEL_2_PEARL_COST)
+            ForgeUpgradeIcon.gameObject.SetActive(true);
+         else
+            ForgeUpgradeIcon.gameObject.SetActive(false);
+      }
+      else
+      {
+         if(ForgeManager.forgeLevel == 2)
+            if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+            else
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+      }
+   }
 }

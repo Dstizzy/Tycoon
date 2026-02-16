@@ -29,6 +29,8 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
+   public const int LEVEL_2_PEARL_COST = 500;
+   public const int LEVEL_3_PEARL_COST = 800;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
@@ -66,7 +68,7 @@ public class ForgeManager : MonoBehaviour
    /* Private state variables */
    private Transform currentCraftWindow;
    private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
-   private static int forgeLevel = STARTING_LEVEL;
+   public static int forgeLevel {get; private set; } = STARTING_LEVEL;
    private Toggle currentOverclockToggle;
    private Image craftSlot1;
    private Image craftSlot2;
@@ -279,11 +281,11 @@ public class ForgeManager : MonoBehaviour
       // Determine the cost needed for current level be upgraded
       if (forgeLevel == 1)
       {
-         upgradeCost = 500;
+         upgradeCost = LEVEL_2_PEARL_COST;
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 800;
+         upgradeCost = LEVEL_3_PEARL_COST;
       }
 
       // Check if there is sufficient pearls to upgrade

@@ -38,6 +38,6 @@ public class MainMenuManager : MonoBehaviour
       yield return new WaitForSeconds(FadeDuration);
 
       // 3. Load the scene.
-      SceneManager.LoadScene(sceneName);
+      SceneHistory.Instance.LoadScene(sceneName);
    }
 }
