@@ -412,7 +412,7 @@ public class Item {
       Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
 
       mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);
-      mercenaryEngineerPriceText      = Instance.BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      mercenaryEngineerPriceText      = Instance.BuyItems.Find(item => item.CompareTag(InventoryManager.MERCENARY_ENGINEER_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
       mercenaryEngineerPriceText.text = mercenaryEngineerPrice.ToString();
    }
 

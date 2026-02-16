@@ -49,7 +49,8 @@ public class TradeHutManager : MonoBehaviour
                pressureValveCount = 0, 
                engineSellCount    = 0, 
 
-               rawOreExchange     = 0,
+               rawOreExchange            = 0,
+               mercenaryEngineerBuyCount = 0,
        
                crudeToolFluctuation,
                harpoonFluctuation,
@@ -90,8 +91,7 @@ public class TradeHutManager : MonoBehaviour
       
    public const string RAW_ORE_CHUNK_TAG      = "Raw Ore Chunk",
                        TIER_2_BLUEPRINT       = "Tier 2 Blueprint",
-                       TIER_3_BLUEPRINT       = "Tier 3 Blueprint",
-                       MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
+                       TIER_3_BLUEPRINT       = "Tier 3 Blueprint";
    
    public bool isTier3BuffACtive  = false;
 
@@ -365,7 +365,7 @@ public class TradeHutManager : MonoBehaviour
       buyItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(false);
       buyItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(false);
 
-      if (itemTag  == RAW_ORE_CHUNK_TAG) 
+      if (itemTag  == RAW_ORE_CHUNK_TAG || itemTag == MERCENARY_ENGINEER_TAG)
       {
          buyItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(true);
          buyItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(true);
@@ -564,9 +564,14 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // Mercenary Engineer purchase flow
-         if (currentBuyItem.CompareTag(MERCENARY_ENGINEER_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.MercenaryEngineer))) 
+         if (currentBuyItem.CompareTag(MERCENARY_ENGINEER_TAG) && 
+             inv.TrySpendPearl(mercenaryEngineerBuyCount * GetItemPrice(ItemType.MercenaryEngineer)) &&
+             inv.TryAddMercenaryEngineer(mercenaryEngineerBuyCount)) 
          {
-            ForgeManager.Instance.hasMercenaryEngineer = true;
+            if(inv.InventoryItems?.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)) == null)
+               inv.CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
+
+            ForgeManager.Instance.hasMercenaryEngineer = inv.mercenaryEngineerCount > 0 ? true: false;
 
             if(inv.mercenaryEngineerCount == MAX_MERCENARY_ENGINEER_COUNT)
                BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
@@ -685,6 +690,14 @@ public class TradeHutManager : MonoBehaviour
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rawOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
             }
             break;
+         case MERCENARY_ENGINEER_TAG:
+            if (mercenaryEngineerBuyCount < MAX_MERCENARY_ENGINEER_COUNT) 
+            {
+               mercenaryEngineerBuyCount += 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerBuyCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (mercenaryEngineerBuyCount * GetItemPrice(ItemType.MercenaryEngineer)).ToString();
+            }
+            break;
           default:
             Debug.LogError("Unknown item tag: " + item.tag);
             break;
@@ -702,6 +715,14 @@ public class TradeHutManager : MonoBehaviour
                rawOreExchange -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rawOreExchange.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rawOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
+            }
+            break;
+         case MERCENARY_ENGINEER_TAG:
+            if (mercenaryEngineerBuyCount < MAX_BUY_ITEM_COUNT) 
+            {
+               mercenaryEngineerBuyCount -= 1;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerBuyCount.ToString();
+               item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (mercenaryEngineerBuyCount * GetItemPrice(ItemType.MercenaryEngineer)).ToString();
             }
             break;
          default:
