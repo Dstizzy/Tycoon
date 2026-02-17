@@ -148,7 +148,7 @@ public class PopUpManager : MonoBehaviour
 
       popUps = new();
 
-      int buttonCount = (buildingTransform.CompareTag("Lab") || buildingTransform.CompareTag("Ore Refinery")) ? 2 : buildingButtonsPreFab.Length;
+      int buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge")) ? buildingButtonsPreFab.Length : 2;
 
       for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++)
       {

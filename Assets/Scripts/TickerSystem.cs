@@ -7,8 +7,8 @@ public class TickerSystem : MonoBehaviour {
    [Header("UI References")]
    [SerializeField] private CanvasGroup     wortldEventCanvasGroup;
    [SerializeField] private TextMeshProUGUI worldEventMessageText;
-   [SerializeField] private CanvasGroup     errorCanvasGroup;
-   [SerializeField] private TextMeshProUGUI errorMessageText;
+   [SerializeField] private CanvasGroup     resultCanvasGroup;
+   [SerializeField] private TextMeshProUGUI resultMessageText;
 
    [Header("Settings")]
    [SerializeField] private float timeVisible  = 5.0f;
@@ -37,9 +37,14 @@ public class TickerSystem : MonoBehaviour {
       if (wortldEventCanvasGroup != null) 
          wortldEventCanvasGroup.alpha = 0;
 
-      if (errorCanvasGroup!= null)
-         errorCanvasGroup.alpha = 0;
-     
+      if (resultCanvasGroup!= null)
+         resultCanvasGroup.alpha = 0;
+      else
+         Debug.Log("resultCanvasGroup is not set in the inspector");
+
+      if(resultMessageText == null)
+         Debug.Log("resultMessageText is not set in the inspector");
+
       gameObject.SetActive(false);
    }
 
@@ -55,8 +60,8 @@ public class TickerSystem : MonoBehaviour {
             currentText        = worldEventMessageText; 
             break;
          case MessageTypes.ResultMessage:
-            currentCanvasGroup = errorCanvasGroup;
-            currentText        = errorMessageText;
+            currentCanvasGroup = resultCanvasGroup;
+            currentText        = resultMessageText;
             break;
          default:
             Debug.LogError("Unkown message type: " + currentMessageType);
