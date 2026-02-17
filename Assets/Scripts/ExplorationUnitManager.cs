@@ -34,7 +34,7 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void Awake()
    {
-      /* Verify all panels are assigned and disable them at startup                              */
+      // Verify all panels are assigned and disable them at startup
       if (infoPanel == null)
          Debug.LogError("Info Panel is not assigned in the Inspector!");
       else
@@ -49,14 +49,12 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void OnEnable()
    {
-     // TurnManager.OnTurnEnded += HandleNewTurn;
       ShipManager.OnShipDeath += HandleExplorationDone;
    }
 
    //
    private void OnDisable()
    {
-     // TurnManager.OnTurnEnded -= HandleNewTurn;
       ShipManager.OnShipDeath -= HandleExplorationDone;
    }
 
@@ -109,6 +107,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
+   // starts an exploration
    public void StartExploration()
    {
       isExploring = true;
@@ -120,6 +119,7 @@ public class ExplorationUnitManager : MonoBehaviour
       CloseExplorationPanel();
    }
 
+   //
    public void ConfirmUpgrade()
    {
       //if (inventory has enough resources to upgrade)
@@ -130,6 +130,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
    }
 
+   // checks if exploration is entering a new depth tier when ship is not currently at safe level
    private bool CheckForDepthIncrease(MapNode targetNode)
    {
       if (targetNode != null && targetNode.nodeDepth > shipManager.GetDepth() && shipManager.shipLevel < targetNode.nodeDepth)
@@ -162,6 +163,7 @@ public class ExplorationUnitManager : MonoBehaviour
       return false;
    }
 
+   //
    private void SetupButtons(string textA, UnityAction actionA,
                           string textB, UnityAction actionB,
                           string textC, UnityAction actionC)
@@ -209,6 +211,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
+   // 
    private void ProcessDecision(EventChoice choice, MapNode currentNode)
    {
       ShipManager.RoundResults results = shipManager.ApplyEventResult(choice);
@@ -235,6 +238,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (isExploring)
       {
+         // handle losing a turn
          if(isWaiting)
          {
             shipManager.NewTurn();
@@ -251,12 +255,12 @@ public class ExplorationUnitManager : MonoBehaviour
          }
 
          shipManager.NewTurn();
-
          if (!isExploring)
             return;
 
          MapNode current = MapManager.Instance.currentNode;
 
+         // check if current node is one of the end of map nodes
          if(current.isFinalNode)
          {
             HandleFinalNode(current);
@@ -265,14 +269,17 @@ public class ExplorationUnitManager : MonoBehaviour
 
          decisionPanel.gameObject.SetActive(true);
 
+         // set up inventory button on decision panel
          Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
          inventoryButton.onClick.RemoveAllListeners();
          inventoryButton.onClick.AddListener(() => ShowInventoryPanel());
 
+         // set up return ship button on decision panel
          Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
          returnShip.onClick.RemoveAllListeners();
          returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
 
+         // handle directional decision
          if(current.type == MapNode.NodeType.Directional)
          {
             eventController.scenarioText.text = current.navigationStory;
@@ -283,6 +290,7 @@ public class ExplorationUnitManager : MonoBehaviour
                current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }
             );
          }
+         // handle event decision
          else
          {
             ExploreEvents randomEvent = eventDatabase.GetRandomEvent(current.nodeDepth);
@@ -301,12 +309,14 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
+   // tells game explorationis done and resets the next turn node
    public void HandleExplorationDone()
    {
       isExploring = false;
       nextTurnDestination = null;
    }
 
+   //
    public void HandleFinalNode(MapNode current)
    {
       bool isWinner = false;
@@ -355,35 +365,33 @@ public class ExplorationUnitManager : MonoBehaviour
       upgradePanel.gameObject.SetActive(true);
    }
 
+   // shows the event results panel with the all results from an event
    private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode)
    {
       decisionResultsPanel.gameObject.SetActive(true);
       string resultsText = "";
 
+      // check to see if event resulted in any ship or inventory changes, and show changes on panel
       if(results.pearlChanged != 0)
       {
          string sign = results.pearlChanged > 0 ? "+" : "";
          resultsText += $"Pearl: {sign}{results.pearlChanged}\n";
       }
-
       if(results.oreChanged != 0)
       {
          string sign = results.oreChanged > 0 ? "+" : "";
          resultsText += $"Ore: {sign}{results.oreChanged}\n";
       }
-
       if(results.crystalChanged != 0)
       {
          string sign = results.crystalChanged > 0 ? "+" : "";
          resultsText += $"Crystal: {sign}{results.crystalChanged}\n";
       }
-
       if(results.healthChanged != 0)
       {
          string sign = results.healthChanged > 0 ? "+" : "";
          resultsText += $"Health: {sign}{results.healthChanged}\n";
       }
-
       if(results.fuelChanged != 0)
       {
          string sign = results.fuelChanged > 0 ? "+" : "";
@@ -392,6 +400,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       decisionResults.text = resultsText;
 
+      // set up confirm button for results panel
       Button continueButton = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
       continueButton.onClick.RemoveAllListeners();
       continueButton.onClick.AddListener(() =>
@@ -409,6 +418,7 @@ public class ExplorationUnitManager : MonoBehaviour
       });
    }
 
+   // shows the inventory panel with ship's current inventory
    private void ShowInventoryPanel()
    {
       inventoryPanel.gameObject.SetActive(true);
@@ -430,25 +440,25 @@ public class ExplorationUnitManager : MonoBehaviour
       shipInventory.text = currentInventory;
    }
 
-   //
+   // closes the exploration panel
    private void CloseExplorationPanel()
    {
       explorePanel.gameObject.SetActive(false);
    }
 
-   //
+   // closes the info panel
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
    }
 
-   //
+   // closes the upgrade panel
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
    }
 
-   //
+   // closes the decision panel
    public void CloseDecisionPanel()
    {
       decisionPanel.gameObject.SetActive(false);

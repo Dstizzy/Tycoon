@@ -30,6 +30,7 @@ public class MapNode : ScriptableObject
    public bool isFinalNode;
    public bool isLeftPath;
 
+   // Reveals node on map
    public void RevealNode()
    {
       if (!isExplored)

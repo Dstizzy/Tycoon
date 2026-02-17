@@ -68,7 +68,7 @@ public class ShipManager : MonoBehaviour
    public int GetCrystal() {  return currentCrystal; }
    public int GetHarpoon() {  return currentHarpoon; }
 
-
+   // Upgrade ship's level
    public void UpgradeShip()
    {
       if (shipLevel < 3)
@@ -78,6 +78,7 @@ public class ShipManager : MonoBehaviour
       }
    }
 
+   // Update the ship's stats to the ship's current level
    public void UpdateStatsToLevel()
    {
       maxHealth = maxHealthByLevel[shipLevel];
@@ -88,6 +89,7 @@ public class ShipManager : MonoBehaviour
       UpdateShipUI();
    }
 
+   // Update the ship's fuel and health in the decision and explore panels
    private void UpdateShipUI()
    {
       if (decisionFuelText != null)
@@ -136,6 +138,7 @@ public class ShipManager : MonoBehaviour
       return finalResults;
    }
 
+   // Calculates damage ship will take if beyond ship's depth level
    public int GetDamage(int depthCheck)
    {
       int damage = 0;
@@ -149,16 +152,18 @@ public class ShipManager : MonoBehaviour
       return damage;
    }
 
+   // Handles a new turn in the ship
    public void NewTurn()
    {
+      // burn one fuel and check if empty
       currentFuel -= 1;
       if (currentFuel <= 0)
          LowFuel();
 
+      // take out potential hull damage and check for destruction
       int hullDamage = GetDamage(currentDepth);
       if (hullDamage > 0)
          currentHealth -= hullDamage;
-
       if (currentHealth <= 0)
          ShipDestruction();
 
@@ -181,6 +186,7 @@ public class ShipManager : MonoBehaviour
       OnShipDeath?.Invoke();
    }
 
+   // Tells that fuel is too low to continue
    public void LowFuel()
    {
       if(currentFuel <= 0)
@@ -196,6 +202,7 @@ public class ShipManager : MonoBehaviour
       }
    }
 
+   // Tells that ship has lost all its health
    public void ShipDestruction()
    {
       OpenHealthPanel();
@@ -209,16 +216,19 @@ public class ShipManager : MonoBehaviour
       });
    }
 
+   // Opens the panel that tells ship fuel is empty
    private void OpenFuelPanel()
    {
       fuelPanel.gameObject.SetActive(true);
    }
 
+   // Opens the panel that tells ship has been destroyed
    private void OpenHealthPanel()
    {
       healthPanel.gameObject.SetActive(true);
    }
 
+   // Opens panel to confirm ship to return to base
    public void OpenConfirmReturnPanel()
    {
       confirmReturnPanel.gameObject.SetActive(true);
@@ -233,6 +243,7 @@ public class ShipManager : MonoBehaviour
       stayOut.onClick.AddListener(() => ClosePanels());
    }
 
+   // Closes health, fuel, and return panels
    private void ClosePanels()
    {
       healthPanel.gameObject.SetActive(false);
@@ -240,11 +251,13 @@ public class ShipManager : MonoBehaviour
       confirmReturnPanel.gameObject.SetActive(false);
    }
 
+   // Ends a successful exploration and shows total rewards
    public void FinishExploration()
    {
       ClosePanels();
       explorationUnitManager.CloseDecisionPanel();
 
+      // Activate and populate total rewards panel
       finalRewardsPanel.gameObject.SetActive(true);
       Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
       confirmRewards.onClick.RemoveAllListeners();
@@ -269,6 +282,7 @@ public class ShipManager : MonoBehaviour
       ResetShip();
    }
 
+   // Moves rewards from ship inventory to main game inventory
    private void AddRewards()
    {
       if(InventoryManager.Instance != null)

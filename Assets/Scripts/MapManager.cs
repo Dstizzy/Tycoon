@@ -33,6 +33,7 @@ public class MapManager : MonoBehaviour
                node.isExplored = false;
    }
 
+   // 
    public void MoveToNode(MapNode newNode)
    {
       if (newNode == null) return;
