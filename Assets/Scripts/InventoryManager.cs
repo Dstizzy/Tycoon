@@ -184,16 +184,16 @@ public class InventoryManager : MonoBehaviour
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
-      //CreateResource(GetItemSprite(ItemType.RawOreChunk), ORE_POSITION + 10, RAW_ORE_CHUNK_TAG); 
+      CreateResource(GetItemSprite(ItemType.RawOreChunk), ORE_POSITION + 10, RAW_ORE_CHUNK_TAG); 
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, TradeHutManager.MERCENARY_ENGINEER_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
@@ -468,11 +468,11 @@ public class InventoryManager : MonoBehaviour
             break;
          case HARPOON_TAG:
             craftCount = harpoonCount;
-            craftInfo  =   GetItemDescription(ItemType.Harpoon);
+            craftInfo  = GetItemDescription(ItemType.Harpoon);
             break;
          case PATCH_KIT_TAG:
             craftCount = patchKitCount;
-            craftInfo  = "";
+            craftInfo  = GetItemDescription(ItemType.PrecisionLens);
             break;
          case PRESSURE_VALVE_TAG:
             craftCount = pressureValveCount;
