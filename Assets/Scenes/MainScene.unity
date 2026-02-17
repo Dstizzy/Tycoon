@@ -12609,7 +12609,7 @@ RectTransform:
   m_GameObject: {fileID: 434204910}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.09583954, y: 0.21372215, z: 0.09583954}
+  m_LocalScale: {x: 0.087030925, y: 0.19407895, z: 0.087030925}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 481686965}
@@ -12704,7 +12704,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -49.850967, y: 19.785946, z: -20.484993, w: -260.25964}
+  m_margin: {x: -106.02696, y: 19.785946, z: -43.559593, w: -434.23724}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -31154,8 +31154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TickerSystem
   wortldEventCanvasGroup: {fileID: 1947835112}
   worldEventMessageText: {fileID: 1228308057}
-  errorCanvasGroup: {fileID: 0}
-  errorMessageText: {fileID: 0}
+  resultCanvasGroup: {fileID: 876424541}
+  resultMessageText: {fileID: 1961443196}
   timeVisible: 3
   fadeDuration: 1
 --- !u!222 &1093620696
@@ -41993,7 +41993,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 126.483086, y: 0, z: -3.7117538, w: 0}
+  m_margin: {x: 126.483086, y: 0, z: -44.553757, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -47772,14 +47772,14 @@ RectTransform:
   m_GameObject: {fileID: 1821202313}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.09684648, y: 0.1762606, z: 0.09684648}
+  m_LocalScale: {x: 0.07380794, y: 0.16624737, z: 0.07380794}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 158942425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.5, y: -27.9}
+  m_AnchoredPosition: {x: 0.5, y: -28.6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1821202315
@@ -47802,7 +47802,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Pearls can be used to buy certain items
+  m_text: " \"A versatile mineral extracted from underwater deposits.\" +\r\n \"
+    Ore is the primary crafting material used to manufacture tools, components, and
+    equipment.\""
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6edb2c9e4669cbf42adcf29e891fa247, type: 2}
   m_sharedMaterial: {fileID: 6755858502930423827, guid: 6edb2c9e4669cbf42adcf29e891fa247, type: 2}
@@ -47867,7 +47869,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -49.850967, y: 19.785946, z: -32.565434, w: -93.98279}
+  m_margin: {x: -139.05705, y: 19.785946, z: -132.00034, w: -357.30823}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -49546,7 +49548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccbabee0dc87d348aa98bb7d43b8980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
-  newsTicker: {fileID: 0}
+  newsTicker: {fileID: 1093620695}
   currentTurn: 1
   maxTurns: 50
   turnText: {fileID: 921050911}
@@ -55163,8 +55165,8 @@ MonoBehaviour:
   CraftsPanel: {fileID: 1959257976}
   CraftWindow: {fileID: 1378259646}
   ForgeUpgradeIcon: {fileID: 354741248}
-  OreRefineryUpgradeIcon: {fileID: 0}
-  ExplorationUnitUpgradeIcon: {fileID: 0}
+  OreRefineryUpgradeIcon: {fileID: 483294769}
+  ExplorationUnitUpgradeIcon: {fileID: 714135069}
 --- !u!4 &2135487484
 Transform:
   m_ObjectHideFlags: 0
