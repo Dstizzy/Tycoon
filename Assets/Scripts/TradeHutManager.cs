@@ -182,7 +182,7 @@ public class TradeHutManager : MonoBehaviour
 
       sellItemTemplate.gameObject.SetActive(false);
 
-      // Instantiate the template and set its position in the container                               
+      // Instantiate the template and set its position in the containerS                             
       tradeItemTransform     = Instantiate(sellItemTemplate, sellItemContainer);
       tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
