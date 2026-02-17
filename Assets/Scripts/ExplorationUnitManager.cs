@@ -130,7 +130,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
    }
 
-   // checks if exploration is entering a new depth tier when ship is not currently at safe level
+   // Checks if exploration is entering a new depth tier when ship is not currently at safe level
    private bool CheckForDepthIncrease(MapNode targetNode)
    {
       if (targetNode != null && targetNode.nodeDepth > shipManager.GetDepth() && shipManager.shipLevel < targetNode.nodeDepth)
@@ -164,9 +164,9 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    //
-   private void SetupButtons(string textA, UnityAction actionA,
-                          string textB, UnityAction actionB,
-                          string textC, UnityAction actionC)
+   private void SetupButtons(string textA, UnityAction actionA, bool interactableA,
+                             string textB, UnityAction actionB, bool interactableB,
+                             string textC, UnityAction actionC, bool interactableC)
    {
       Transform container = decisionPanel.Find("ButtonContainer");
 
@@ -175,6 +175,7 @@ public class ExplorationUnitManager : MonoBehaviour
       {
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
+         button1.interactable = interactableA;
          button1.onClick.RemoveAllListeners();
          if (actionA != null)
             button1.onClick.AddListener(actionA);
@@ -187,6 +188,7 @@ public class ExplorationUnitManager : MonoBehaviour
          {
             button2.gameObject.SetActive(true);
             button2.GetComponentInChildren<TextMeshProUGUI>().text = textB;
+            button2.interactable = interactableB;
             button2.onClick.RemoveAllListeners();
             if (actionB != null)
                button2.onClick.AddListener(actionB);
@@ -202,6 +204,7 @@ public class ExplorationUnitManager : MonoBehaviour
          {
             button3.gameObject.SetActive(true);
             button3.GetComponentInChildren<TextMeshProUGUI>().text = textC;
+            button3.interactable = interactableC;
             button3.onClick.RemoveAllListeners();
             if (actionC != null)
                button3.onClick.AddListener(actionC);
@@ -285,9 +288,9 @@ public class ExplorationUnitManager : MonoBehaviour
             eventController.scenarioText.text = current.navigationStory;
 
             SetupButtons(
-               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); },
-               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); },
-               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }
+               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true
             );
          }
          // handle event decision
@@ -299,10 +302,13 @@ public class ExplorationUnitManager : MonoBehaviour
             {
                eventController.SetEventPanel(randomEvent);
                string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
+
+               bool canAffordA = shipManager.CanAfford(randomEvent.choiceA);
+               bool canAffordB = shipManager.CanAfford(randomEvent.choiceB);
                SetupButtons(
-                  randomEvent.choiceA.buttonText, () => ProcessDecision(randomEvent.choiceA, current),
-                  textB, () => ProcessDecision(randomEvent.choiceB, current),
-                  null, null
+                  randomEvent.choiceA.buttonText, () => ProcessDecision(randomEvent.choiceA, current), canAffordA,
+                  textB, () => ProcessDecision(randomEvent.choiceB, current), canAffordB,
+                  null, null, false
                );
             }
          }

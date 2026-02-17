@@ -68,6 +68,14 @@ public class ShipManager : MonoBehaviour
    public int GetCrystal() {  return currentCrystal; }
    public int GetHarpoon() {  return currentHarpoon; }
 
+   public bool CanAfford(EventChoice choice)
+   {
+      if(choice.oreChange < 0 && GetOre() < Mathf.Abs(choice.oreChange)) { return false; }
+      if (choice.pearlChange < 0 && GetPearl() < Mathf.Abs(choice.pearlChange)) { return false; }
+      if (choice.crystalChange < 0 && GetCrystal() < Mathf.Abs(choice.crystalChange)) { return false; }
+      return true;
+   }
+
    // Upgrade ship's level
    public void UpgradeShip()
    {
