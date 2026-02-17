@@ -73,6 +73,7 @@ public class ForgeManager : MonoBehaviour
    private Image craftSlot1;
    private Image craftSlot2;
    private GameObject craftButtonObject;
+   private TickerSystem ticker;
 
    public static ForgeManager Instance { get; private set; }
 
@@ -103,6 +104,8 @@ public class ForgeManager : MonoBehaviour
          Instance = this;
          DontDestroyOnLoad(this.gameObject);
       }
+
+      ticker = TickerSystem.Instance;
 
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
@@ -647,7 +650,9 @@ public class ForgeManager : MonoBehaviour
          foreach (var type in stagingItems)
          {
             int amount = isOverclocked ? 2 : 1;
-            int turns = GetTurnsNeeded(type);
+            int turns = isMercenaryEngineerActive ? 0 : GetTurnsNeeded(type);
+
+            isMercenaryEngineerActive = false;
 
             // Create the job data
             CraftingJob job = new CraftingJob();
@@ -661,12 +666,14 @@ public class ForgeManager : MonoBehaviour
                // If it takes 0 turns, deliver it immediately
                DeliverItem(job);
                Debug.Log($"[Instant Craft] {job.itemName} delivered immediately!");
-            }
+               ticker.ShowTicker($"{job.itemName} delivered immediately!", Color.green, TickerSystem.MessageTypes.ResultMessage);
+            } 
             else
             {
                // Otherwise, add to the waiting list
                activeJobs.Add(job);
                Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
+               ticker.ShowTicker($"[Queued] {job.itemName} - {turns} turns remaining.", Color.green, TickerSystem.MessageTypes.ResultMessage);
             }
          }
 
@@ -695,6 +702,20 @@ public class ForgeManager : MonoBehaviour
          default: return 0;
       }
    }
+
+   public void TryActivateMercenaryEngineer() 
+   {
+
+      if (!isMercenaryEngineerActive && InventoryManager.Instance.TryUseMercenaryEngineer(1)) 
+      {
+         isMercenaryEngineerActive = true;
+         ticker.ShowTicker("Mercenary engineer is active.", Color.green, TickerSystem.MessageTypes.ResultMessage);
+      }
+      else
+         if(isMercenaryEngineerActive)
+            ticker.ShowTicker("Mercenary engineer already active.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+
+
+      return;
+   }
 }
-
-

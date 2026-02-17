@@ -9,7 +9,8 @@ public class Resources
       "A rare resource found underwater. " +
       "Crystals can be used to unlock certain research branches";
    const string ORE_DESCRIPTION =
-      "just ore";
+      "A versatile mineral extracted from underwater deposits." +
+      " Ore is the primary crafting material used to manufacture tools, components, and equipment.";
 
    public enum ResourceType {
      Pearl,
