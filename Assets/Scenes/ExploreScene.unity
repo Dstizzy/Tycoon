@@ -9544,7 +9544,7 @@ MonoBehaviour:
   mainCam: {fileID: 846177466}
   ForgeLevelText: {fileID: 0}
   OreRefineryText: {fileID: 0}
-  ExplorationUnitText: {fileID: 0}
+  ExplorationUnitText: {fileID: 460778891}
 --- !u!4 &335830409
 Transform:
   m_ObjectHideFlags: 0
@@ -32505,6 +32505,7 @@ GameObject:
   - component: {fileID: 1358883668}
   - component: {fileID: 1358883670}
   - component: {fileID: 1358883669}
+  - component: {fileID: 1358883671}
   m_Layer: 5
   m_Name: DecisionPanel
   m_TagString: Untagged
@@ -32577,6 +32578,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1358883667}
   m_CullTransparentMesh: 1
+--- !u!225 &1358883671
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358883667}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1359596714
 GameObject:
   m_ObjectHideFlags: 0

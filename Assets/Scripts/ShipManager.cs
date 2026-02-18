@@ -228,18 +228,22 @@ public class ShipManager : MonoBehaviour
    private void OpenFuelPanel()
    {
       fuelPanel.gameObject.SetActive(true);
+      explorationUnitManager.SetDecisionInteractable(false);
    }
 
    // Opens the panel that tells ship has been destroyed
    private void OpenHealthPanel()
    {
       healthPanel.gameObject.SetActive(true);
+      explorationUnitManager.SetDecisionInteractable(false);
    }
 
    // Opens panel to confirm ship to return to base
    public void OpenConfirmReturnPanel()
    {
       confirmReturnPanel.gameObject.SetActive(true);
+      explorationUnitManager.SetDecisionInteractable(false);
+
       Button returnShip = confirmReturnPanel.Find("Return").GetComponent<Button>();
       returnShip.onClick.RemoveAllListeners();
       returnShip.onClick.AddListener(() => {
@@ -257,6 +261,7 @@ public class ShipManager : MonoBehaviour
       healthPanel.gameObject.SetActive(false);
       fuelPanel.gameObject.SetActive(false);
       confirmReturnPanel.gameObject.SetActive(false);
+      explorationUnitManager.SetDecisionInteractable(false);
    }
 
    // Ends a successful exploration and shows total rewards

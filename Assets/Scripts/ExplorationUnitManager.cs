@@ -375,6 +375,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode)
    {
       decisionResultsPanel.gameObject.SetActive(true);
+      SetDecisionInteractable(false);
       string resultsText = "";
 
       // check to see if event resulted in any ship or inventory changes, and show changes on panel
@@ -412,6 +413,7 @@ public class ExplorationUnitManager : MonoBehaviour
       continueButton.onClick.AddListener(() =>
       {
          decisionResultsPanel.gameObject.SetActive(false);
+         SetDecisionInteractable(true);
 
          if (currentNode != null)
          {
@@ -428,9 +430,14 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowInventoryPanel()
    {
       inventoryPanel.gameObject.SetActive(true);
+      SetDecisionInteractable(false);
       Button closeInventoryPanel = inventoryPanel.Find("ClosePanelButton").GetComponent<Button>();
       closeInventoryPanel.onClick.RemoveAllListeners();
-      closeInventoryPanel.onClick.AddListener(() => inventoryPanel.gameObject.SetActive(false));
+      closeInventoryPanel.onClick.AddListener(() => 
+      {
+         inventoryPanel.gameObject.SetActive(false);
+         SetDecisionInteractable(true);
+      });
 
       string currentInventory = "";
 
@@ -444,6 +451,15 @@ public class ExplorationUnitManager : MonoBehaviour
          currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
 
       shipInventory.text = currentInventory;
+   }
+
+   public void SetDecisionInteractable(bool isInteractable)
+   {
+      CanvasGroup cg = decisionPanel.GetComponent<CanvasGroup>();
+      if (cg != null)
+         cg.interactable = isInteractable;
+      else
+         Debug.LogWarning("DecisionPanel is missing a canvas group component");
    }
 
    // closes the exploration panel
