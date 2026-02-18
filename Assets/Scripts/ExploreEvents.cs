@@ -23,6 +23,7 @@ public struct EventChoice
    public int inventoryChange;
    public int harpoonChange;
    public bool waitTurn;
+   public bool loseOre;
 
    [Header("Range Result")]
    public int minPearl;

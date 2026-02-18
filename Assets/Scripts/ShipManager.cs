@@ -115,8 +115,12 @@ public class ShipManager : MonoBehaviour
       RoundResults finalResults = new RoundResults();
 
       int actualPearl = results.pearlChange + UnityEngine.Random.Range(results.minPearl, results.maxPearl + 1);
-      int actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
       int actualCrystal = results.crystalChange;
+      int actualOre = 0;
+      if (results.loseOre)
+         actualOre = -currentOre;
+      else
+         actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
 
       currentPearl += actualPearl;
       currentOre += actualOre;
