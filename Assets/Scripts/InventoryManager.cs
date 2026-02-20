@@ -1045,7 +1045,7 @@ public class InventoryManager : MonoBehaviour
          else 
          {
             isSuccess = true;
-            pressureValveCount += pressureValveAmount;
+            pressureValveCount -= pressureValveAmount;
          }
       }
 
@@ -1110,8 +1110,8 @@ public class InventoryManager : MonoBehaviour
          }
          else 
          {
-            isSuccess = true;
-            engineCount += engineAmount;
+            isSuccess   = true;
+            engineCount -= engineAmount;
          }
       }
 

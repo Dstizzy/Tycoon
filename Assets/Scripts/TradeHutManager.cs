@@ -161,8 +161,8 @@ public class TradeHutManager : MonoBehaviour
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
-      //CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
-      //CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
       CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.0f, TIER_2_BLUEPRINT);
@@ -434,7 +434,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
                soldCount = pressureValveCount;
-               
+
                if (inv.TryUsePressureValve(pressureValveCount))
                {
                   totalSellValue += soldCount * GetItemValue(ItemType.PressureValve);
