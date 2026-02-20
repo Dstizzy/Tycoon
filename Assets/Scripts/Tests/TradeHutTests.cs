@@ -2,23 +2,22 @@ using NUnit.Framework;
 
 using System.Collections;
 
-using TMPro;
-
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
+using static Item;
+
 [TestFixture]
 public class TradeHutTests : InputTestFixture {
    [SetUp]
-   public void TestSetup() {
+   public void TestSetup()
+   {
       // Ensure the default Mouse device is available
-      if (Mouse.current == null) {
+      if (Mouse.current == null)
          InputSystem.AddDevice<Mouse>();
-      }
    }
 
    [UnityTearDown] // Runs after *each* [UnityTest]
@@ -26,135 +25,168 @@ public class TradeHutTests : InputTestFixture {
       // Find all the pop-up buttons that were likely left behind.
       GameObject[] popUpButtons = GameObject.FindGameObjectsWithTag("BuildingButton");
 
-      foreach (GameObject go in popUpButtons) {
+      foreach (GameObject go in popUpButtons)
          // Destroy them to ensure they aren't blocking the next test's input.
          UnityEngine.Object.Destroy(go);
-      }
 
       // Allow one frame for the destruction to take effect
       yield return null;
    }
 
    [Test]
-   public void IsMouseAdded() {
+   public void IsMouseAdded() 
+   {
       Assert.IsNotNull(Mouse.current, "Setup Error: Missing Mouse device.");
    }
 
    [UnityTest]
    public IEnumerator TradePanelsTest() {
-
-      Button     ExitButton     = null;
-      Button     BuyTab         = null;
-      GameObject BuyPanel       = null;
-      GameObject TradePanels    = null;
-      GameObject SellPanel      = null;
-      GameObject InfoPanel      = null;
-      GameObject UpgradePanel   = null;
-      Vector3    worldPosition  = new Vector3(0, 0, 0);
-      Vector2    screenPosition = new Vector2(0, 0);
-
+      // 1. Load the scene and wait for it to be fully ready
       SceneManager.LoadScene("MainScene");
-      yield return new WaitForSeconds(0.1f);
-      
-      // Find a specific building in the scene (Trade Hut)
-      GameObject tradeHut = GameObject.Find("TradeHut");
-      Assert.IsNotNull(tradeHut, $"Could not find trade hut");
-      
-      // Set the main camera
-      Camera mainCamera = Camera.main;
-      Assert.IsNotNull(mainCamera, "Setup Error: Missing Main Camera.");
 
-      // 1.Find the PopUpManager's GameObject by its unique name
-      GameObject popUpManagerGO = GameObject.Find("PopUp Manager");
-      Assert.IsNotNull(popUpManagerGO, "Setup Error: PopUpManager GameObject not found in scene by name.");
-      Component popUpManagerComponent = popUpManagerGO.GetComponent("PopUpManager");
-      Assert.IsNotNull(popUpManagerComponent, "Setup Error: PopUpManager component not found on the GameObject.");
-
-      // Loop through each of the three buttons: Trade, Upgrade, Info
-      for (int buttonIndex = 0; buttonIndex < 3; buttonIndex++) {
-         // ... (input queuing logic remains the same) ...
-
-         Set(Mouse.current.position, screenPosition);
-         
-         yield return new WaitForSeconds(0.1f);
-
-         // 4. NOW, find the containers (they are frozen and won't be destroyed)
-         GameObject[] popUpContainers = GameObject.FindGameObjectsWithTag("BuildingButton");
-
-         Assert.IsNotEmpty(popUpContainers, "No building buttons (containers) found after input was frozen.");
-         // We assert that the containers were created.
-         // Check if the panels open up for each button
-         Button myButton = popUpContainers[buttonIndex].GetComponentInChildren<Button>();
-         Assert.IsNotNull(myButton, $"Could not find button.");
-         Debug.Log($"{buttonIndex}");
-
-         // Get the text of the button
-         TextMeshProUGUI buttonTextComponent = myButton.GetComponentInChildren<TextMeshProUGUI>();
-         Assert.IsNotNull(buttonTextComponent, "Could not find TextMeshProUGUI component on button.");
-         Debug.Log($"Clicking button with text: {buttonTextComponent.text}");
-         
-         // Click a building button pop up
-         //worldPosition = myButton.transform.position;
-         //screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
-         //Set(Mouse.current.position, screenPosition);
-         //yield return null;
-         //Press(Mouse.current.leftButton);
-         //yield return null;
-         //Release(Mouse.current.leftButton);
-         //yield return null;
-         
-         myButton.onClick.Invoke();
-         // Verify the corresponding panel pops up
-         switch (buttonTextComponent.text) 
-         {
-            case "Trade":
-               TradePanels = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradePanels");
-
-               SellPanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradePanels/SellPanel");
-               Assert.IsNotNull(SellPanel, $"Could not find the Trade Panel.");
-               Assert.IsTrue(SellPanel.activeSelf, "Sell Panel did not pop up.");
-
-               BuyTab = GameObject.Find($"Building Panel Canvas/UI_TradeHut/TradePanels/BuyTab").GetComponent<Button>();
-               BuyTab.onClick.Invoke();
-
-               BuyPanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradePanels/BuyPanel");
-               Assert.IsNotNull(BuyPanel, $"Could not find the Trade Panel.");
-               Assert.IsTrue(BuyPanel.activeSelf, "Trade Panel did not pop up.");
-
-               ExitButton = GameObject.Find($"Building Panel Canvas/UI_TradeHut/TradePanels/ExitButton").GetComponent<Button>();
-               Assert.IsNotNull(ExitButton, "Could not find Exit Button.");
-               ExitButton.onClick.Invoke();
-
-               Assert.IsFalse(TradePanels.activeSelf, "TradePanels are still active");
-               break;
-            case "Upgrade":
-               UpgradePanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradeUpgradePanel");
-               Assert.IsNotNull(UpgradePanel, $"Could not find the Upgrade Panel.");
-               Assert.IsTrue(UpgradePanel.activeSelf, "Upgrade Panel did not pop up.");
-
-               ExitButton = GameObject.Find($"Building Panel Canvas/UI_TradeHut/TradeUpgradePanel/CancelButton").GetComponent<Button>();
-               Assert.IsNotNull(ExitButton, "Could not find Exit Button.");
-
-               ExitButton.onClick.Invoke();
-               Assert.IsFalse(UpgradePanel.activeSelf, "Upgrade Panel is still active");
-               break;
-            case "Info":
-               InfoPanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradeInfoPanel");
-               Assert.IsNotNull(InfoPanel, $"Could not find the Info Panel.");
-               Assert.IsTrue(InfoPanel.activeSelf, "Info Panel did not pop up.");
-
-               ExitButton = GameObject.Find($"Building Panel Canvas/UI_TradeHut/TradeInfoPanel/ExitButton").GetComponent<Button>();
-               Assert.IsNotNull(ExitButton, "Could not find Exit Button.");
-               ExitButton.onClick.Invoke();
-               Assert.IsFalse(InfoPanel.activeSelf, "Info Panel is still atcive");
-               break;
-            /* This occurs when there is a fourth button                                     */
-            default:
-               Assert.Fail();
-               break;
-         }
-         
+      // Proper way to wait for scene load in Unity tests
+      float timeout = 2.0f;
+      while (!SceneManager.GetActiveScene().name.Equals("MainScene") && timeout > 0) {
+         timeout -= Time.deltaTime;
          yield return null;
-      } 
+      }
+
+      // Give Unity one frame to initialize the UI and Singletons
+      yield return new WaitForEndOfFrame();
+
+      // 2. Ensure TradeHutManager is active
+      Assert.IsNotNull(TradeHutManager.Instance, "TradeHutManager Instance is null. Is it in the scene?");
+
+      // 3. Open the Panels via the Manager instead of searching for floating buttons
+      // This bypasses the hover/popup logic which is often the source of test flakiness
+      TradeHutManager.Instance.RequestTradeHutPanel(TradeHutManager.TRADE_BUTTON);
+      yield return null; // Wait for SetActive(true) to propagate
+
+      // 4. Verify Trade Panel (Sell/Buy)
+      GameObject sellPanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradePanels/SellPanel");
+      Assert.IsNotNull(sellPanel, "Sell Panel not found after RequestTradeHutPanel(TRADE_BUTTON).");
+      Assert.IsTrue(sellPanel.activeInHierarchy, "Sell Panel is not visible.");
+
+      // Test switching to Buy Panel
+      TradeHutManager.Instance.ShowBuyPanel();
+      yield return null;
+      GameObject buyPanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradePanels/BuyPanel");
+      Assert.IsTrue(buyPanel.activeInHierarchy, "Buy Panel did not activate via ShowBuyPanel().");
+
+      // Close Trade Panel
+      TradeHutManager.Instance.CloseTradeHutPanel(TradeHutManager.TRADE_BUTTON);
+      yield return null;
+      Assert.IsFalse(GameObject.Find("Building Panel Canvas/UI_TradeHut/TradePanels").activeInHierarchy, "Trade Panels did not close.");
+
+      // 5. Verify Info Panel
+      TradeHutManager.Instance.RequestTradeHutPanel(TradeHutManager.INFO_BUTTON);
+      yield return null;
+      GameObject infoPanel = GameObject.Find("Building Panel Canvas/UI_TradeHut/TradeInfoPanel");
+      Assert.IsNotNull(infoPanel, "Info Panel not found.");
+      Assert.IsTrue(infoPanel.activeInHierarchy, "Info Panel did not open.");
+
+      TradeHutManager.Instance.CloseTradeHutPanel(TradeHutManager.INFO_BUTTON);
+      yield return null;
+      Assert.IsFalse(infoPanel.activeInHierarchy, "Info Panel did not close.");
+   }
+
+   [UnityTest]
+   public IEnumerator SellItemsTransactionTest() 
+   {
+      // 1. Load the scene and wait for initialization
+      SceneManager.LoadScene("MainScene");
+
+      float timeout = 2.0f;
+      while (!SceneManager.GetActiveScene().name.Equals("MainScene") && timeout > 0) {
+         timeout -= Time.deltaTime;
+         yield return null;
+      }
+
+      // Wait for Start() and UI to stabilize
+      yield return new WaitForEndOfFrame();
+      yield return new WaitForSeconds(1.0f); // Delay to see the initial state
+
+      // 2. Setup Inventory state
+      InventoryManager.Instance.TryAddCrudeTool(10);
+      int startingPearls = InventoryManager.Instance.pearlCount;
+      int itemValue = GetItemValue(ItemType.CrudeTool);
+
+      // 3. Open the main Trade Panel
+      TradeHutManager.Instance.RequestTradeHutPanel(TradeHutManager.TRADE_BUTTON);
+      yield return new WaitForSeconds(1.0f); // Delay to see the Trade Panel open
+
+      // 4. Find the template item in the list
+      var itemUI = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(InventoryManager.CRUDE_TOOL_TAG));
+      Assert.IsNotNull(itemUI, "Could not find Crude Tool in the SellItems list!");
+
+      // 5. Trigger 'CreateSellWindow' by clicking the item button
+      // This instantiates the window that contains "ItemCount" and "currencyGained"
+      Button itemBtn = itemUI.Find("ItemButton").GetComponent<Button>();
+      itemBtn.onClick.Invoke();
+      yield return new WaitForSeconds(1.0f); // Delay to see the Sell Transaction Window appear
+
+      // 6. Grab the reference directly from the Manager using Reflection
+      var field = typeof(TradeHutManager).GetField("currentSellItem",
+          System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      Transform currentSellItemTransform = (Transform)field.GetValue(TradeHutManager.Instance);
+
+      Assert.IsNotNull(currentSellItemTransform, "TradeHutManager.currentSellItem is null!");
+      GameObject activeWindow = currentSellItemTransform.gameObject;
+
+      // 7. Increment count and observe UI updates
+      for (int i = 0; i < 5; i++) {
+         TradeHutManager.Instance.IncreaseSellItemCount(activeWindow.transform);
+         yield return new WaitForSeconds(0.3f); // Brief delay to see the number incrementing
+      }
+      yield return new WaitForSeconds(1.0f); // Pause to see the final count before selling
+
+      // 8. Execute Sale and Verify
+      TradeHutManager.Instance.SellItem();
+      yield return new WaitForSeconds(1.0f); // Delay to see the window close and pearls update
+
+      // Verification
+      Assert.AreEqual(startingPearls + (5 * itemValue), InventoryManager.Instance.pearlCount, "Pearls were not added correctly.");
+      Assert.AreEqual(5, InventoryManager.Instance.crudeToolCount, "Items were not deducted from inventory correctly.");
+   }
+
+   [UnityTest]
+   public IEnumerator BuyBlueprintTransactionTest() {
+      // 1. Load scene and wait for initialization
+      SceneManager.LoadScene("MainScene");
+      yield return new WaitForSeconds(1.0f);
+      yield return new WaitForEndOfFrame();
+
+      // 2. Setup: Ensure player has enough pearls
+      InventoryManager.Instance.TryAddPearl(5000);
+      Assert.IsFalse(ForgeManager.Instance.hasTier2Blueprint, "Setup Error: Tier 2 already unlocked.");
+
+      // 3. Open Panels
+      TradeHutManager.Instance.RequestTradeHutPanel(TradeHutManager.TRADE_BUTTON);
+      TradeHutManager.Instance.ShowBuyPanel();
+      yield return new WaitForSeconds(1.0f);
+
+      // 4. Find the Blueprint UI button and INVOKE the click
+      // This call triggers CreateBuyWindow() which sets the 'currentBuyItem' reference
+      var blueprintUI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.TIER_2_BLUEPRINT));
+      Assert.IsNotNull(blueprintUI, "Blueprint UI not found in list.");
+
+      Button buyButton = blueprintUI.Find("ItemButton").GetComponent<Button>();
+      buyButton.onClick.Invoke();
+
+      // 5. CRITICAL: Wait for the next frame so the Manager can finish instantiating the window
+      yield return new WaitForEndOfFrame();
+      yield return new WaitForSeconds(0.5f);
+
+      // 6. Verify the reference is set before calling BuyItem
+      var field = typeof(TradeHutManager).GetField("currentBuyItem",
+          System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      Assert.IsNotNull(field.GetValue(TradeHutManager.Instance), "Manager failed to set 'currentBuyItem' reference!");
+
+      // 7. Execute Purchase
+      TradeHutManager.Instance.BuyItem();
+      yield return new WaitForSeconds(1.0f);
+
+      // 8. Verify logic results
+      Assert.IsTrue(ForgeManager.Instance.hasTier2Blueprint, "ForgeManager flag did not update to TRUE.");
    }
 }

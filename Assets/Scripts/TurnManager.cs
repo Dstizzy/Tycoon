@@ -1,10 +1,11 @@
-﻿﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+
 using TMPro;
-using System;
-using UnityEngine.Rendering.UI;
+
+using UnityEngine;
+using UnityEngine.UI;
+
 using static TickerSystem;
-using static InventoryManager; 
 
 public class TurnManager : MonoBehaviour
 {

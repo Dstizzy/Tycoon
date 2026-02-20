@@ -1,12 +1,9 @@
-﻿using NUnit.Framework.Constraints;
-
-using TMPro;
+﻿using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
 
 using static TickerSystem;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class OreRefinery_Manager : MonoBehaviour
 {
