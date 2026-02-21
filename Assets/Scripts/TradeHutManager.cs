@@ -1119,7 +1119,6 @@ public class TradeHutManager : MonoBehaviour
             Debug.LogError("Unknown Event");
             break;
       }
-
    }
 
   public void ResetWorldEventShifts() 

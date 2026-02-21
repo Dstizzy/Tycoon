@@ -39,11 +39,20 @@ public class LabManager : MonoBehaviour
    public static int currentCommerceTier { get; private set; } = 0;
 
 
-    TradeHutManager tradeHutManager;
+   TradeHutManager tradeHutManager;
+   
+   public static LabManager labManager;
 
     /* Check if all required game objects exist and are in there required states                 */
     private void Awake() 
     {
+      if (labManager != null && labManager != this)
+         Destroy(this.gameObject);
+      else {
+         labManager = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
       tradeHutManager = TradeHutManager.Instance;
 
       if (tradeHutManager == null)
