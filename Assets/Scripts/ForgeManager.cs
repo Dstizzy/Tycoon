@@ -85,6 +85,7 @@ public class ForgeManager : MonoBehaviour
 
    public static ForgeManager Instance { get; private set; }
    public static int forgeLevel = STARTING_LEVEL;
+   TickerSystem ticker;
 
    private bool hasCraftedThisTurn = false;
 
