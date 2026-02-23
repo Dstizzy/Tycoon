@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -16,13 +17,13 @@ public class PopUpManager : MonoBehaviour
    [SerializeField] private ForgeManager forgeManager;
    [SerializeField] private LabManager labManager;
 
-   private Transform prevHoverObject;
-   private Transform currentHoverObject;
+   public Transform prevHoverObject;
+   public Transform currentHoverObject;
 
-   private List<GameObject> popUps;
+   public List<GameObject> popUps;
    private PlayerActions playerActions;
    private List<RaycastResult> raycastResults = new List<RaycastResult>();
-   public static Transform buildingTransform;
+   public Transform buildingTransform;
    public static bool IsBuildingBlocked = false;
 
    public static PopUpManager Instance { get; private set; }
@@ -58,6 +59,12 @@ public class PopUpManager : MonoBehaviour
          playerActions.Dispose();
       }
    }
+
+   // This event is invoked whenever the hovered tag changes, passing the new tag as a parameter
+   public static event Action<string> OnHoverTagChanged;
+   
+   public static event Action<GameObject, int> OnBuildingButtonCreated;
+
    private void OnBuildingHover(InputAction.CallbackContext context)
    {
 
@@ -89,6 +96,9 @@ public class PopUpManager : MonoBehaviour
       /* Case A: Mouse moved OFF the previous object (either to empty space or a new object)                                                          */
       if (prevHoverObject != null && prevHoverObject != currentHoverObject)
       {
+         // Report the tag of the object we just left (or "None" if we left to empty space)
+         string tagToReport = currentHoverObject.tag;
+         OnHoverTagChanged?.Invoke(tagToReport);
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
@@ -191,6 +201,8 @@ public class PopUpManager : MonoBehaviour
 
          newButton.GetComponentInChildren<ButtonsPopUp>().SetText(buttonText);
          newButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnBuildingButtonClick(buttonId));
+
+         OnBuildingButtonCreated?.Invoke(newButton, buttonId);
 
          fixedPopUpPosition.y -= buttonSpacing;
       }

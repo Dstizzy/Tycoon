@@ -14,7 +14,7 @@ public class OreRefinery_Manager : MonoBehaviour
    const int ENDING_LEVEL = 4;
 
    [SerializeField] private Transform infoPanel;
-   [SerializeField] private Transform upgradePanel;
+   [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;
    [SerializeField] private GameObject jamPanel;
    public TextMeshProUGUI oreRefineryLevelText;
