@@ -14,6 +14,9 @@ public class CraftingJob
 
 public class ForgeManager : MonoBehaviour
 {
+
+   TickerSystem ticker;
+
    /* Constants */
    const int CRAFT_BUTTON = 1;
    const int INFO_BUTTON = 2;

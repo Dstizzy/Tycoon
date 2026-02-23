@@ -7322,9 +7322,11 @@ MonoBehaviour:
   - {fileID: 497038770}
   - {fileID: 1774668904}
   InventoryButton: {fileID: 1022596560}
+  victoryButton: {fileID: 0}
   pearCountText: {fileID: 1445754057}
   oreCountText: {fileID: 1418080283}
   erroPanel: {fileID: 1779676229}
+  victoryPanel: {fileID: 0}
 --- !u!1 &311787832
 GameObject:
   m_ObjectHideFlags: 0
@@ -16424,7 +16426,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &747570170
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16442,7 +16444,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -11.9, y: -42.5}
+  m_AnchoredPosition: {x: -11.9, y: -60.1}
   m_SizeDelta: {x: 0, y: 45.35396}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &747570171
@@ -21224,6 +21226,9 @@ MonoBehaviour:
   ResourceWindow: {fileID: 1217910594}
   CraftsPanel: {fileID: 1634886651}
   CraftWindow: {fileID: 2042969549}
+  ForgeUpgradeIcon: {fileID: 0}
+  OreRefineryUpgradeIcon: {fileID: 0}
+  ExplorationUnitUpgradeIcon: {fileID: 0}
 --- !u!4 &908429416
 Transform:
   m_ObjectHideFlags: 0
@@ -21652,7 +21657,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &947218973
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22443,8 +22448,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TickerSystem
   wortldEventCanvasGroup: {fileID: 1314494785}
   worldEventMessageText: {fileID: 1158624603}
-  errorCanvasGroup: {fileID: 1456204203}
-  errorMessageText: {fileID: 252746174}
+  resultCanvasGroup: {fileID: 0}
+  resultMessageText: {fileID: 0}
   timeVisible: 3
   fadeDuration: 1
 --- !u!222 &966763817
