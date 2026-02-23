@@ -10,34 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: GoldStatue
+  m_Name: ThermalVent
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: There is a huge statue on the sea floor below
+  description: A small crack in the seabed is releasing hot steam. Your sensors detect
+    resources inside
   choiceA:
-    buttonText: Scape out a few pieces
-    pearlChange: 10
+    buttonText: Collect Resources
+    pearlChange: 0
     oreChange: 0
     crystalChange: 5
-    healthChange: 0
+    healthChange: -10
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0
-    minOre: 0
-    maxOre: 0
+    minOre: 5
+    maxOre: 15
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Take the statue with you, but lose fuel from the added weight
-    pearlChange: 20
-    oreChange: 75
-    crystalChange: 20
+    buttonText: Steer clear to avoid the heat.
+    pearlChange: 0
+    oreChange: 0
+    crystalChange: 0
     healthChange: 0
-    fuelChange: -4
+    fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
     waitTurn: 0

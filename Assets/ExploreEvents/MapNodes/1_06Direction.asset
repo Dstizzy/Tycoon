@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_06
   mapPosition: {x: -40, y: 90}
-  isExplored: 1
+  isExplored: 0
   nodeDepth: 1
   type: 1
   navigationStory: You have come to a large crack in the ocean floor.
@@ -22,4 +22,8 @@ MonoBehaviour:
   pathA: {fileID: 11400000, guid: 4f37228f27857d142aae3d27a42c70de, type: 2}
   choiceBText: Follow the right path
   pathB: {fileID: 11400000, guid: 9cb875b5bf03d594d85ae693f10059fe, type: 2}
+  choiceCText: 
+  pathC: {fileID: 0}
   nextNode: {fileID: 0}
+  isFinalNode: 0
+  isLeftPath: 0

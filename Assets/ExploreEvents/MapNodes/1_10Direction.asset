@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_10
   mapPosition: {x: -55, y: 55}
-  isExplored: 1
+  isExplored: 0
   nodeDepth: 1
   type: 1
   navigationStory: You have come to a massive canyon on the ocean floor.
@@ -22,4 +22,8 @@ MonoBehaviour:
   pathA: {fileID: 11400000, guid: 01cea5cc967f57b41a017149670f30c1, type: 2}
   choiceBText: Travel along the right ridge
   pathB: {fileID: 11400000, guid: ad25bfc9491dba245b69e6f31ba73052, type: 2}
+  choiceCText: 
+  pathC: {fileID: 0}
   nextNode: {fileID: 0}
+  isFinalNode: 0
+  isLeftPath: 0

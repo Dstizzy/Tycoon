@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: GoldStatue
+  m_Name: LostTorpedo
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: There is a huge statue on the sea floor below
+  description: An old unexploded torpedo is found
   choiceA:
-    buttonText: Scape out a few pieces
-    pearlChange: 10
+    buttonText: Carefully dismantle it for fuel
+    pearlChange: 0
     oreChange: 0
-    crystalChange: 5
+    crystalChange: 0
     healthChange: 0
-    fuelChange: 0
+    fuelChange: 3
     inventoryChange: 0
     harpoonChange: 0
     waitTurn: 0
@@ -29,15 +29,15 @@ MonoBehaviour:
     maxOre: 0
     fuelChance: 0
     fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    damageChance: 0.5
+    healthDamage: -25
   choiceB:
-    buttonText: Take the statue with you, but lose fuel from the added weight
-    pearlChange: 20
-    oreChange: 75
-    crystalChange: 20
+    buttonText: Ignore to avoid risk
+    pearlChange: 0
+    oreChange: 0
+    crystalChange: 0
     healthChange: 0
-    fuelChange: -4
+    fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
     waitTurn: 0

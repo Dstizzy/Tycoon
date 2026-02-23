@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using JetBrains.Annotations;
 
 public class ShipManager : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private ExplorationUnitManager explorationUnitManager;
    [SerializeField] private Transform fuelPanel;
    [SerializeField] private Transform healthPanel;
+   [SerializeField] private Transform confirmReturnPanel;
+   [SerializeField] private Transform finalRewardsPanel;
+   [SerializeField] private TextMeshProUGUI finalRewards;
    public TextMeshProUGUI decisionFuelText;
    public TextMeshProUGUI decisionHealthText;
    public TextMeshProUGUI exploreFuelText;
@@ -24,16 +28,17 @@ public class ShipManager : MonoBehaviour
    int currentHealth;
    int maxHealth;
    int maxFuel;
-   int currentGold;
+   int currentPearl;
    int currentOre;
+   int currentCrystal;
    int currentHarpoon;
-   int currentArtifact;
    int currentDepth = 1;
 
    public struct RoundResults
    {
-      public int goldChanged;
+      public int pearlChanged;
       public int oreChanged;
+      public int crystalChanged;
       public int healthChanged;
       public int fuelChanged;
    }
@@ -57,11 +62,21 @@ public class ShipManager : MonoBehaviour
       currentDepth = newDepth;
    }
 
-   public int GetDepth()
+   public int GetDepth() { return currentDepth; }
+   public int GetPearl() { return currentPearl; }
+   public int GetOre() { return currentOre; }
+   public int GetCrystal() {  return currentCrystal; }
+   public int GetHarpoon() {  return currentHarpoon; }
+
+   public bool CanAfford(EventChoice choice)
    {
-      return currentDepth;
+      if(choice.oreChange < 0 && GetOre() < Mathf.Abs(choice.oreChange)) { return false; }
+      if (choice.pearlChange < 0 && GetPearl() < Mathf.Abs(choice.pearlChange)) { return false; }
+      if (choice.crystalChange < 0 && GetCrystal() < Mathf.Abs(choice.crystalChange)) { return false; }
+      return true;
    }
 
+   // Upgrade ship's level
    public void UpgradeShip()
    {
       if (shipLevel < 3)
@@ -71,6 +86,7 @@ public class ShipManager : MonoBehaviour
       }
    }
 
+   // Update the ship's stats to the ship's current level
    public void UpdateStatsToLevel()
    {
       maxHealth = maxHealthByLevel[shipLevel];
@@ -81,34 +97,41 @@ public class ShipManager : MonoBehaviour
       UpdateShipUI();
    }
 
+   // Update the ship's fuel and health in the decision and explore panels
    private void UpdateShipUI()
    {
       if (decisionFuelText != null)
-         decisionFuelText.text = $"{currentFuel}/{maxFuel}";
+         decisionFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
       if (decisionHealthText != null)
-         decisionHealthText.text = $"{currentHealth}/{maxHealth}";
+         decisionHealthText.text = $"health: {currentHealth}/{maxHealth}";
       if (exploreFuelText != null)
-         exploreFuelText.text = $"{currentFuel}/{maxFuel}";
+         exploreFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
       if (exploreHealthText != null)
-         exploreHealthText.text = $"{currentHealth}/{maxHealth}";
+         exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
    }
 
    public RoundResults ApplyEventResult(EventChoice results)
    {
       RoundResults finalResults = new RoundResults();
 
-      int actualGold = results.goldChange + UnityEngine.Random.Range(results.minGold, results.maxGold + 1);
-      int actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
+      int actualPearl = results.pearlChange + UnityEngine.Random.Range(results.minPearl, results.maxPearl + 1);
+      int actualCrystal = results.crystalChange;
+      int actualOre = 0;
+      if (results.loseOre)
+         actualOre = -currentOre;
+      else
+         actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
 
-      currentGold += actualGold;
+      currentPearl += actualPearl;
       currentOre += actualOre;
+      currentCrystal += actualCrystal;
       currentHealth += results.healthChange;
       currentFuel += results.fuelChange;
       currentHarpoon += results.harpoonChange;
-      currentArtifact += results.artifactChange;
 
-      finalResults.goldChanged = actualGold;
+      finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
+      finalResults.crystalChanged = actualCrystal;
       finalResults.healthChanged = results.healthChange;
       finalResults.fuelChanged = results.fuelChange;
 
@@ -127,31 +150,36 @@ public class ShipManager : MonoBehaviour
       return finalResults;
    }
 
+   // Calculates damage ship will take if beyond ship's depth level
+   public int GetDamage(int depthCheck)
+   {
+      int damage = 0;
+      if (shipLevel == 1 && depthCheck == 2)
+         damage = 30;
+      else if (shipLevel == 1 && depthCheck == 3)
+         damage = 60;
+      else if (shipLevel == 2 && depthCheck == 3)
+         damage = 40;
+
+      return damage;
+   }
+
+   // Handles a new turn in the ship
    public void NewTurn()
    {
+      // burn one fuel and check if empty
       currentFuel -= 1;
       if (currentFuel <= 0)
          LowFuel();
 
-      if (shipLevel == 1 && currentDepth == 2)
-         currentHealth -= 30;
-      if (shipLevel == 1 && currentDepth == 3)
-         currentHealth -= 60;
-      if (shipLevel == 2 && currentDepth == 3)
-         currentHealth -= 40;
-
+      // take out potential hull damage and check for destruction
+      int hullDamage = GetDamage(currentDepth);
+      if (hullDamage > 0)
+         currentHealth -= hullDamage;
       if (currentHealth <= 0)
          ShipDestruction();
 
       UpdateShipUI();
-   }
-
-   public void RequestReturn()
-   {
-      if (currentFuel < currentDepth)
-         LowFuel();
-      else
-         FinishExploration();
    }
 
    // Reset ship health, fuel, depth, inventory, and map location
@@ -160,16 +188,17 @@ public class ShipManager : MonoBehaviour
       currentFuel = maxFuel;
       currentHealth = maxHealth;
       currentDepth = 1;
-      currentGold = 0;
+      currentPearl = 0;
       currentOre = 0;
+      currentCrystal = 0;
       currentHarpoon = 0;
-      currentArtifact = 0;
       MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
 
       UpdateShipUI();
       OnShipDeath?.Invoke();
    }
 
+   // Tells that fuel is too low to continue
    public void LowFuel()
    {
       if(currentFuel <= 0)
@@ -179,17 +208,13 @@ public class ShipManager : MonoBehaviour
          confirmFuelButton.onClick.RemoveAllListeners();
          confirmFuelButton.onClick.AddListener(() =>
          {
-            CloseFuelPanel();
-            explorationUnitManager.CloseDecisionPanel();
-            ResetShip();
+            ClosePanels();
+            FinishExploration();
          });
-      }
-      if (currentFuel > 0 && currentFuel < currentDepth)
-      {
-         // message fuel insufficient for return
       }
    }
 
+   // Tells that ship has lost all its health
    public void ShipDestruction()
    {
       OpenHealthPanel();
@@ -197,36 +222,96 @@ public class ShipManager : MonoBehaviour
       confirmHealthButton.onClick.RemoveAllListeners();
       confirmHealthButton.onClick.AddListener(() =>
       {
-         CloseHealthPanel();
+         ClosePanels();
          explorationUnitManager.CloseDecisionPanel();
          ResetShip();
       });
    }
 
+   // Opens the panel that tells ship fuel is empty
    private void OpenFuelPanel()
    {
       fuelPanel.gameObject.SetActive(true);
+      explorationUnitManager.SetDecisionInteractable(false);
    }
 
+   // Opens the panel that tells ship has been destroyed
    private void OpenHealthPanel()
    {
       healthPanel.gameObject.SetActive(true);
+      explorationUnitManager.SetDecisionInteractable(false);
    }
 
-   private void CloseFuelPanel()
+   // Opens panel to confirm ship to return to base
+   public void OpenConfirmReturnPanel()
    {
-      fuelPanel.gameObject?.SetActive(false);
+      confirmReturnPanel.gameObject.SetActive(true);
+      explorationUnitManager.SetDecisionInteractable(false);
+
+      Button returnShip = confirmReturnPanel.Find("Return").GetComponent<Button>();
+      returnShip.onClick.RemoveAllListeners();
+      returnShip.onClick.AddListener(() => {
+         FinishExploration();
+         ClosePanels();
+      });
+      Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
+      stayOut.onClick.RemoveAllListeners();
+      stayOut.onClick.AddListener(() => ClosePanels());
    }
 
-   private void CloseHealthPanel()
+   // Closes health, fuel, and return panels
+   private void ClosePanels()
    {
-      healthPanel.gameObject?.SetActive(false);
+      healthPanel.gameObject.SetActive(false);
+      fuelPanel.gameObject.SetActive(false);
+      confirmReturnPanel.gameObject.SetActive(false);
+      explorationUnitManager.SetDecisionInteractable(false);
    }
 
+   // Ends a successful exploration and shows total rewards
    public void FinishExploration()
    {
-      //ADD TO INVENTORY
+      ClosePanels();
+      explorationUnitManager.CloseDecisionPanel();
+
+      // Activate and populate total rewards panel
+      finalRewardsPanel.gameObject.SetActive(true);
+      Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
+      confirmRewards.onClick.RemoveAllListeners();
+      confirmRewards.onClick.AddListener(() =>
+      {
+         finalRewardsPanel.gameObject.SetActive(false);
+         AddRewards();
+      });
+
+      string totalRewards = "";
+
+      if (currentPearl > 0)
+         totalRewards += $"Pearl: {currentPearl}\n";
+      if (currentOre > 0)
+         totalRewards += $"Ore: {currentOre}\n";
+      if (currentCrystal > 0)
+         totalRewards += $"Crystal: {currentCrystal}\n";
+      if (currentHarpoon > 0)
+         totalRewards += $"Harpoons: {currentHarpoon}\n";
+      finalRewards.text = totalRewards;
 
       ResetShip();
+   }
+
+   // Moves rewards from ship inventory to main game inventory
+   private void AddRewards()
+   {
+      if(InventoryManager.Instance != null)
+      {
+         if (currentPearl > 0)
+            InventoryManager.Instance.TryAddPearl(currentPearl);
+         if (currentOre > 0)
+            InventoryManager.Instance.TryAddOre(currentOre);
+         if (currentCrystal > 0)
+            InventoryManager.Instance.TryAddCrystal(currentCrystal);
+         if (currentHarpoon > 0)
+            InventoryManager.Instance.TryAddHarpoon(currentHarpoon);
+      }
    }
 }

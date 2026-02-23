@@ -15,16 +15,16 @@ MonoBehaviour:
   description: There is a rip current along your path
   choiceA:
     buttonText: Ride the current to the next node without losing fuel
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 1
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0
@@ -33,16 +33,16 @@ MonoBehaviour:
     healthDamage: 0
   choiceB:
     buttonText: Stay out of it, collect potential rewards caught in it
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 10
+    minPearl: 0
+    maxPearl: 10
     minOre: 5
     maxOre: 10
     fuelChance: 0

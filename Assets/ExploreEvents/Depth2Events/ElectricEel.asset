@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: An electric eel wraps itself around one of your thrusters
   choiceA:
-    buttonText: 
-    goldChange: 0
+    buttonText: 20 hull damage
+    pearlChange: 0
     oreChange: 0
-    healthChange: 0
+    crystalChange: 0
+    healthChange: -20
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0
@@ -32,17 +32,17 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 20 hull damage
-    goldChange: 0
+    buttonText: 
+    pearlChange: 0
     oreChange: 0
-    healthChange: -20
+    crystalChange: 0
+    healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0

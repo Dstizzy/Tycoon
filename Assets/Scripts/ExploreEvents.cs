@@ -15,18 +15,19 @@ public struct EventChoice
    public string buttonText;
 
    [Header("Guaranteed Result")]
-   public int goldChange;
+   public int pearlChange;
    public int oreChange;
+   public int crystalChange;
    public int healthChange;
    public int fuelChange;
    public int inventoryChange;
    public int harpoonChange;
-   public int artifactChange;
    public bool waitTurn;
+   public bool loseOre;
 
    [Header("Range Result")]
-   public int minGold;
-   public int maxGold;
+   public int minPearl;
+   public int maxPearl;
    public int minOre;
    public int maxOre;
 

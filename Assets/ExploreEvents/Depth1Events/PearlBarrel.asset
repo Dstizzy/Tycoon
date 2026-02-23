@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: GoldStatue
+  m_Name: PearlBarrel
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: There is a huge statue on the sea floor below
+  description: You have come across an unmarked floating barrel.
   choiceA:
-    buttonText: Scape out a few pieces
-    pearlChange: 10
+    buttonText: Open barrel
+    pearlChange: 15
     oreChange: 0
-    crystalChange: 5
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
+    artifactChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0
@@ -32,14 +33,15 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Take the statue with you, but lose fuel from the added weight
-    pearlChange: 20
-    oreChange: 75
-    crystalChange: 20
+    buttonText: 
+    pearlChange: 0
+    oreChange: 0
+    crystalChange: 0
     healthChange: 0
-    fuelChange: -4
+    fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
+    artifactChange: 0
     waitTurn: 0
     minPearl: 0
     maxPearl: 0
