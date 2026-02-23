@@ -8668,8 +8668,8 @@ Transform:
   m_GameObject: {fileID: 296511044}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.043, y: -0.13, z: 0}
-  m_LocalScale: {x: 0.1822639, y: 0.20764282, z: 1}
+  m_LocalPosition: {x: 0.04167, y: -0.05625, z: 0}
+  m_LocalScale: {x: 0.05931894, y: 0.082525015, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 101405399}
@@ -8721,7 +8721,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -6196526671931555548, guid: b2e563a5ea5183b459ff3016c4886da1, type: 3}
+  m_Sprite: {fileID: -5394447298557987403, guid: d45bd1181418a0d448400caca23f78e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -47736,9 +47736,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapManager
   startingNode: {fileID: 11400000, guid: bef1dd1c5ff4f124cb5cc50c194e1379, type: 2}
   currentNode: {fileID: 0}
+  winningPathIsLeft: 0
   exploreShipIcon: {fileID: 263672193}
   decisionShipIcon: {fileID: 627293418}
   shipManager: {fileID: 1699829495}
+  allNodesInGame: []
 --- !u!114 &1699829494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47771,6 +47773,9 @@ MonoBehaviour:
   explorationUnitManager: {fileID: 1699829497}
   fuelPanel: {fileID: 1183469141}
   healthPanel: {fileID: 1620232961}
+  confirmReturnPanel: {fileID: 0}
+  finalRewardsPanel: {fileID: 0}
+  finalRewards: {fileID: 0}
   decisionFuelText: {fileID: 281257171}
   decisionHealthText: {fileID: 411947377}
   exploreFuelText: {fileID: 1394652411}
@@ -47838,7 +47843,11 @@ MonoBehaviour:
   infoPanel: {fileID: 1075595322}
   decisionPanel: {fileID: 1567440196}
   decisionResultsPanel: {fileID: 185062687}
+  newDepthPanel: {fileID: 0}
+  inventoryPanel: {fileID: 0}
   decisionResults: {fileID: 825337853}
+  shipInventory: {fileID: 0}
+  depthWarningText: {fileID: 0}
   exploreShipIcon: {fileID: 263672192}
   lastProcessedTurn: -1
   isExploring: 0
