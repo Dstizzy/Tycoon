@@ -32,7 +32,7 @@ public class MapNode : ScriptableObject
    public bool isFinalNode;
    public bool isLeftPath;
 
-   // Reveals node on map
+   // Marks node as discovered and alerts all listening UI elements
    public void RevealNode()
    {
       if (!isExplored)
