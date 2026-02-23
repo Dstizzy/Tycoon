@@ -1287,4 +1287,25 @@ public class InventoryManager : MonoBehaviour
       }
    }
 
+   private void CheckUpgradeResources() 
+   {
+      if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
+         OreRefineryUpgradeIcon.gameObject.SetActive(true);
+      else
+         OreRefineryUpgradeIcon.gameObject.SetActive(false);
+
+      if (ForgeManager.forgeLevel == 1) {
+         if (pearlCount >= ForgeManager.LEVEL_2_PEARL_COST)
+            ForgeUpgradeIcon.gameObject.SetActive(true);
+         else
+            ForgeUpgradeIcon.gameObject.SetActive(false);
+      } else {
+         if (ForgeManager.forgeLevel == 2)
+            if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+            else
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+      }
+   }
+
 }
