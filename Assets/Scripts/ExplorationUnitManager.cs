@@ -338,6 +338,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       isExploring = false;
       nextTurnDestination = null;
+      SetDecisionInteractable(true);
    }
 
    // Handles the end-of-map sequence
