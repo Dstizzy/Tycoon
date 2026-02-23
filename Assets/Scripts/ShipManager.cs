@@ -253,10 +253,15 @@ public class ShipManager : MonoBehaviour
       returnShip.onClick.AddListener(() => {
          FinishExploration();
          ClosePanels();
+         explorationUnitManager.SetDecisionInteractable(true);
       });
       Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
       stayOut.onClick.RemoveAllListeners();
-      stayOut.onClick.AddListener(() => ClosePanels());
+      stayOut.onClick.AddListener(() =>
+      {
+         ClosePanels();
+         explorationUnitManager.SetDecisionInteractable(true);
+      });
    }
 
    // Closes health, fuel, and return panels
