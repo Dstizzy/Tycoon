@@ -23,9 +23,15 @@ public class LabManager : MonoBehaviour
     public const int TIER_TWO_ITEM_COST = 25;
     public const int TIER_THREE_PEARL_COST = 700;
     public const int TIER_THREE_ITEM_COST = 50;
+   public const int PROD_T1_PEARL = 400;
+   public const int PROD_T1_LENS = 2;
+   public const int PROD_T2_PEARL = 1000;
+   public const int PROD_T2_LENS = 5;
+   public const int PROD_T3_PEARL = 3000;
+   public const int PROD_T3_LENS = 10;
 
-    /* Inspector Variables                                                                       */
-    [SerializeField] private Transform innovatePanel;
+   /* Inspector Variables                                                                       */
+   [SerializeField] private Transform innovatePanel;
     [SerializeField] private Transform infoPanel;
 
     [SerializeField] private GameObject pathButtons;
@@ -39,11 +45,20 @@ public class LabManager : MonoBehaviour
    public static int currentCommerceTier { get; private set; } = 0;
 
 
-    TradeHutManager tradeHutManager;
+   TradeHutManager tradeHutManager;
+   
+   public static LabManager labManager;
 
     /* Check if all required game objects exist and are in there required states                 */
     private void Awake() 
     {
+      if (labManager != null && labManager != this)
+         Destroy(this.gameObject);
+      else {
+         labManager = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
       tradeHutManager = TradeHutManager.Instance;
 
       if (tradeHutManager == null)
@@ -169,58 +184,106 @@ public class LabManager : MonoBehaviour
         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
     }
 
-    /* Handle different changes upon clicking a buy button                                       */
-    private void HandleInnovation(GameObject tab, int tier)
-    {
-        switch (tier)
-        {
+   private void HandleInnovation(GameObject tab, int tier)
+   {
+      int pearlCost = 0, itemCost = 0;
+      string requiredItem = "";
+
+      if (tab == commerceTab)
+      {
+         requiredItem = "Crude Tool"; // Put your commerce item requirement here if needed
+         switch (tier)
+         {
+            case TIER_ONE: pearlCost = TIER_ONE_PEARL_COST; itemCost = TIER_ONE_ITEM_COST; break;
+            case TIER_TWO: pearlCost = TIER_TWO_PEARL_COST; itemCost = TIER_TWO_ITEM_COST; break;
+            case TIER_THREE: pearlCost = TIER_THREE_PEARL_COST; itemCost = TIER_THREE_ITEM_COST; break;
+         }
+      }
+      else if (tab == productionTab)
+      {
+         requiredItem = "Precision Lens";
+         switch (tier)
+         {
+            case TIER_ONE: pearlCost = PROD_T1_PEARL; itemCost = PROD_T1_LENS; break;
+            case TIER_TWO: pearlCost = PROD_T2_PEARL; itemCost = PROD_T2_LENS; break;
+            case TIER_THREE: pearlCost = PROD_T3_PEARL; itemCost = PROD_T3_LENS; break;
+         }
+      }
+      else if (tab == explorationTab)
+      {
+         requiredItem = "";
+         pearlCost = 0; // Add exploration costs here later
+         itemCost = 0;
+      }
+
+      // Attempt to unlock tiers with the corresponding cost
+      if (PerformBuy(pearlCost, itemCost, requiredItem))
+      {
+         switch (tier)
+         {
             case TIER_ONE:
-                PerformBuy(TIER_ONE_PEARL_COST, TIER_ONE_ITEM_COST);
-                ImplementTierOneInnovation(tab);
-                UnlockNextNode(tab, 2);
-                tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
-                tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
-                tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
-                tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneFilled").gameObject.SetActive(true);
-                tab.transform.Find("buttonContainer/tierOneButton").gameObject.SetActive(false);
-                tab.transform.Find("costContainer/tierOneCost").gameObject.SetActive(false);
-                tab.transform.Find("costContainer/tierOneImages").gameObject.SetActive(false);
-                break;
+               ImplementTierOneInnovation(tab);
+               UnlockNextNode(tab, 2);
+               tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
+               tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
+               tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
+               tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneFilled").gameObject.SetActive(true);
+               tab.transform.Find("buttonContainer/tierOneButton").gameObject.SetActive(false);
+               tab.transform.Find("costContainer/tierOneCost").gameObject.SetActive(false);
+               tab.transform.Find("costContainer/tierOneImages").gameObject.SetActive(false);
+               break;
             case TIER_TWO:
-                PerformBuy(TIER_TWO_PEARL_COST, TIER_TWO_ITEM_COST);
-                ImplementTierTwoInnovation(tab);
-                UnlockNextNode(tab, 3);
-                tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
-                tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
-                tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
-                tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoFilled").gameObject.SetActive(true);
-                tab.transform.Find("buttonContainer/tierTwoButton").gameObject.SetActive(false);
-                tab.transform.Find("costContainer/tierTwoCost").gameObject.SetActive(false);
-                tab.transform.Find("costContainer/tierTwoImages").gameObject.SetActive(false);
-                break;
+               ImplementTierTwoInnovation(tab);
+               UnlockNextNode(tab, 3);
+               tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
+               tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
+               tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
+               tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoFilled").gameObject.SetActive(true);
+               tab.transform.Find("buttonContainer/tierTwoButton").gameObject.SetActive(false);
+               tab.transform.Find("costContainer/tierTwoCost").gameObject.SetActive(false);
+               tab.transform.Find("costContainer/tierTwoImages").gameObject.SetActive(false);
+               break;
             case TIER_THREE:
-                PerformBuy(TIER_THREE_PEARL_COST, TIER_THREE_ITEM_COST);
-                ImplementTierThreeInnovation(tab);
-                tab.transform.Find("branch/thirdConnector/unfilledConnector").gameObject.SetActive(false);
-                tab.transform.Find("branch/thirdConnector/filledConnector").gameObject.SetActive(true);
-                tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeUnfilled").gameObject.SetActive(false);
-                tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeFilled").gameObject.SetActive(true);
-                tab.transform.Find("buttonContainer/tierThreeButton").gameObject.SetActive(false);
-                tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
-                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
-                break;
-        };
-    }
+               ImplementTierThreeInnovation(tab);
+               tab.transform.Find("branch/thirdConnector/unfilledConnector").gameObject.SetActive(false);
+               tab.transform.Find("branch/thirdConnector/filledConnector").gameObject.SetActive(true);
+               tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeUnfilled").gameObject.SetActive(false);
+               tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeFilled").gameObject.SetActive(true);
+               tab.transform.Find("buttonContainer/tierThreeButton").gameObject.SetActive(false);
+               tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
+               tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
+               break;
+         };
+      }
+   }
 
-    /* Spend certain amount of resources and give corresponding innovations                      */
-    public void PerformBuy(int pearlCost, int itemCost)
-    {
-        InventoryManager.Instance.TrySpendPearl(pearlCost);
-        //InventoryManager.Instance.TrySpendItem("Crude Tool", itemCost);
+   /* Spend certain amount of resources and give corresponding innovations                     */
+   public bool PerformBuy(int pearlCost, int itemCost, string itemName)
+   {
+      // Check to see if there is enough pearls
+      if (InventoryManager.Instance.pearlCount < pearlCost)
+      {
+         Debug.Log("Not enough pearls!");
+         return false;
+      }
 
-    }
+      // Try to spend the item if necessary
+      if (!string.IsNullOrEmpty(itemName) && itemCost > 0)
+      {
+         // Link to inventory to spend the item
+         if (!InventoryManager.Instance.TrySpendItem(itemName, itemCost))
+         {
+            Debug.Log($"Not enough {itemName} to spend!");
+            return false;
+         }
+      }
 
-    public void ImplementTierOneInnovation(GameObject tabType)
+      // Spend the pearls
+      InventoryManager.Instance.TrySpendPearl(pearlCost);
+      return true;
+   }
+
+   public void ImplementTierOneInnovation(GameObject tabType)
     {
         /* Permanently increase base sale price of all items by 10%                              */
         if (tabType == commerceTab)
@@ -234,13 +297,17 @@ public class LabManager : MonoBehaviour
 
            ApplyDiscountToBuyItems(.2f);
         }
-        /* Permanently reduce gold spent on refinery upkeep by 50%                               */
-        else if (tabType == productionTab)
-        {
-            Debug.Log("Ore upkeep reduced by 50%");
-        }
-        /* Tier 1 missions have succession increased by 25%                                      */
-        else if (tabType == explorationTab)
+      /* Permanently reduce gold spent on refinery upkeep by 50%                               */
+      else if (tabType == productionTab)
+      {
+         Debug.Log("Reduce ore jamming percentage by 5%");
+         if (OreRefinery_Manager.Instance != null)
+         {
+            OreRefinery_Manager.Instance.ReduceJamming(5);
+         }
+      }
+      /* Tier 1 missions have succession increased by 25%                                      */
+      else if (tabType == explorationTab)
         {
             Debug.Log("Tier 1 missions increased by 25%");
         }
@@ -261,15 +328,18 @@ public class LabManager : MonoBehaviour
            tradeHutManager.RecycleButton.gameObject.SetActive(true);
         }
 
-        /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
-        /*    bonus item upon crafting a single item                                             */
-        else if (tabType == productionTab)
-        {
-            Debug.Log("Unlock reinforced tool and add 5% chance of bonus item");
-           
-        }
-        /* Permanently increase gold by +15 per turn                                             */
-        else if (tabType == explorationTab)
+      /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
+      /*    bonus item upon crafting a single item                                             */
+      else if (tabType == productionTab)
+      {
+         Debug.Log("Unlock Overclock and Tier 2 Blueprints");
+         if (ForgeManager.Instance != null)
+         {
+            ForgeManager.Instance.UnlockOverclock();
+         }
+      }
+      /* Permanently increase gold by +15 per turn                                             */
+      else if (tabType == explorationTab)
         {
             Debug.Log("Permanently increase gold by +15 per turn");
         }
@@ -300,13 +370,17 @@ public class LabManager : MonoBehaviour
            TryIncreasePressureValveValue(pressureValveSellValueIncrease);
            TryIncreaseEngineSellValue(engineSellValueIncrease);
         }
-        /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
-        else if (tabType == productionTab)
-        {
-            Debug.Log("Unlock Artifact and crafting results in double item");
-        }
-        /* Decrease search costs by 50%                                                          */
-        else if (tabType == explorationTab)
+      /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
+      else if (tabType == productionTab)
+      {
+         Debug.Log("Unlock Faster Crafting and Tier 3 Blueprints");
+         if (ForgeManager.Instance != null)
+         {
+            ForgeManager.Instance.UnlockReduceCraftingTime();
+         }
+      }
+      /* Decrease search costs by 50%                                                          */
+      else if (tabType == explorationTab)
         {
             Debug.Log("Decrease search costs by 50%");
         }
