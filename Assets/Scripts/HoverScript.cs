@@ -8,10 +8,11 @@ public class HoverScript : MonoBehaviour {
    /* Private variables                                                                                                                                */
    RaycastHit2D raycastHit2D;
 
-   [SerializeField] private Transform ForgeLevelText;
-   [SerializeField] private Transform OreRefineryText;
-   [SerializeField] private Transform ExplorationUnitText;
-
+   [SerializeField] private Transform ForgeCanvas;
+   [SerializeField] private Transform OreRefineryCanvas;
+   [SerializeField] private Transform ExplorationUnitCanvas;
+   [SerializeField] private ShipManager shipManager;
+   
    private Transform prevHoverObject;
    private Transform currentHoverObject;
 
@@ -26,13 +27,43 @@ public class HoverScript : MonoBehaviour {
       else
          Instance = this;
 
-      ForgeLevelText.gameObject.SetActive(false);
-      OreRefineryText.gameObject.SetActive(false);
-      ExplorationUnitText.gameObject.SetActive(false);
+      HideAllLevels(ForgeCanvas);
+      HideAllLevels(OreRefineryCanvas);
+      HideAllLevels(ExplorationUnitCanvas);
 
       playerActions = new PlayerActions();
       playerActions.PlayerInput.Enable();
       playerActions.PlayerInput.Hover.performed += Hover;
+   }
+
+   private void HideAllLevels(Transform canvas)
+   {
+      int oreLevel;
+      Transform Level;
+
+      if (canvas == null)
+         return;
+
+      for (oreLevel = 1; oreLevel <= 4; oreLevel++)
+      {
+         Level = canvas.Find("LVL" + oreLevel);
+         if (Level != null)
+            Level.gameObject.SetActive(false);
+      }
+   }
+
+   private void SetLevelPanel(Transform canvas, int level)
+   {
+      if (canvas == null)
+         return;
+
+      HideAllLevels(canvas);
+      Transform targetLevel = canvas.Find("LVL" + level);
+
+      if (targetLevel != null)
+      {
+         targetLevel.gameObject.SetActive(true);
+      }
    }
 
    public void Hover(InputAction.CallbackContext context) 
@@ -64,13 +95,13 @@ public class HoverScript : MonoBehaviour {
             switch (prevHoverObject.tag) 
             {
                case "Forge":
-                  ForgeLevelText.gameObject.SetActive(false);
+                  HideAllLevels(ForgeCanvas);
                   break;
                case "Ore Refinery":
-                  OreRefineryText.gameObject.SetActive(false);
+                  HideAllLevels(OreRefineryCanvas);
                   break;
                case "Exploration Unit":
-                  ExplorationUnitText.gameObject.SetActive(false);
+                  HideAllLevels(ExplorationUnitCanvas);
                   break;
             } 
 
@@ -91,14 +122,16 @@ public class HoverScript : MonoBehaviour {
             currentRenderer.color = Color.red;
             switch (currentHoverObject.tag) {
                case "Forge":
-                  ForgeLevelText.gameObject.SetActive(true);
+                  SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel);
                   break;
                case "Ore Refinery":
-                  OreRefineryText.gameObject.SetActive(true);
+                  SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel);
                   break;
                case "Exploration Unit":
-                  ExplorationUnitText.gameObject.SetActive(true);
+                  if (shipManager != null)
+                     SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel);
                   break;
+                 
             }
          }
       }
