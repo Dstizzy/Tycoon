@@ -37,12 +37,10 @@ public class PopUpManager : MonoBehaviour
       if (Instance != null && Instance != this)
       {
          Destroy(this.gameObject);
+         return;
       }
       else
-      {
          Instance = this;
-         DontDestroyOnLoad(this.gameObject);
-      }
 
       playerActions = new PlayerActions();
       playerActions.PlayerInput.Enable();
@@ -60,6 +58,8 @@ public class PopUpManager : MonoBehaviour
    }
    private void OnBuildingHover(InputAction.CallbackContext context)
    {
+      if (cam == null)
+         return;
 
       PointerEventData eventData = new PointerEventData(EventSystem.current);
       eventData.position = context.ReadValue<Vector2>();
@@ -148,7 +148,7 @@ public class PopUpManager : MonoBehaviour
 
       popUps = new();
 
-      int buttonCount = (buildingTransform.CompareTag("Lab") || buildingTransform.CompareTag("Ore Refinery")) ? 2 : buildingButtonsPreFab.Length;
+      int buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge")) ? buildingButtonsPreFab.Length : 2;
 
       for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++)
       {

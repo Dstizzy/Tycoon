@@ -1,12 +1,16 @@
 /* Libraries and references                                                         */
+using NUnit;
+using NUnit.Framework;
+
 using System;
+using System.Collections.Generic;
 
 using TMPro;
 
-using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.UI;
+
+using static Item;
 using static TickerSystem;
 
 public class InventoryManager : MonoBehaviour 
@@ -22,6 +26,10 @@ public class InventoryManager : MonoBehaviour
                                       ResourceWindow,
                                       CraftsPanel,                                          
                                       CraftWindow;                              
+
+   [SerializeField] private Image ForgeUpgradeIcon,
+                                  OreRefineryUpgradeIcon,
+                                  ExplorationUnitUpgradeIcon;
                                                                                    
    private TextMeshProUGUI PearlCountText,                      
                            CrystalCountText,
@@ -33,7 +41,9 @@ public class InventoryManager : MonoBehaviour
                            DivingBellCountText,
                            EngineCountText,
                            PrecisionLensCountText,
-                           RaWOreChunkCountText;
+                           RaWOreChunkCountText,
+                           MercenaryEngineerCountText;
+
    
    /* Constants                                                                     */
    public const int MIN_PEARL_COUNT          = 0,                                              
@@ -44,14 +54,16 @@ public class InventoryManager : MonoBehaviour
                     MAX_ORE_COUNT            = 10000;
                    
 
-   public const int MAX_CRUDE_TOOL_COUNT     = 100,
-                    MAX_HARPOON_COUNT        = 100,
-                    MAX_PRESSURE_VALVE_COUNT = 100,
-                    MAX_ENGINE_COUNT         = 100,
-                    MAX_RAW_ORE_COUNT        = 100,
-                    MAX_PATCH_KIT_COUNT      = 100,
-                    MAX_DIVING_BELL_COUNT    = 100,
-                    MAX_PRECISION_LENS_COUNT = 100,
+   public const int MAX_CRUDE_TOOL_COUNT         = 100,
+                    MAX_HARPOON_COUNT            = 100,
+                    MAX_PRESSURE_VALVE_COUNT     = 100,
+                    MAX_ENGINE_COUNT             = 100,
+                    MAX_RAW_ORE_COUNT            = 100,
+                    MAX_PATCH_KIT_COUNT          = 100,
+                    MAX_DIVING_BELL_COUNT        = 100,
+                    MAX_PRECISION_LENS_COUNT     = 100,
+                    MAX_MERCENARY_ENGINEER_COUNT = 3,
+
                     MIN_CRUDE_TOOL_COUNT     = 0,
                     MIN_HARPOON_COUNT        = 0,
                     MIN_PRESSURE_VALVE_COUNT = 0,
@@ -59,32 +71,35 @@ public class InventoryManager : MonoBehaviour
                     MIN_RARE_ORE_CHUNK_COUNT = 0,
                     MIN_PATCH_KIT_COUNT      = 0,
                     MIN_DIVING_BELL_COUNT    = 0,
-                    MIN_PRECISION_LENS_COUNT = 0;
+                    MIN_PRECISION_LENS_COUNT = 0,
+                    MIN_MERCENARY_ENGINEER_COUNT = 0;
 
 
-   public const int RESOURCE_SPACING        = 30,
-                    PEARL_POSITION          = 0,
-                    CRYSTAL_POSITION        = PEARL_POSITION + 10,
-                    ORE_POSITION            = CRYSTAL_POSITION + 10,
-                    CRUDE_TOOL_POSITION     = 0,
-                    HARPOON_POSITION        = CRUDE_TOOL_POSITION + 10,
-                    PATCH_KIT_POSITION      = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
-                    DIVING_BELL_POSITION    = CRUDE_TOOL_POSITION + 10,
-                    ENGINE_POSITION         = PRESSURE_VALVE_POSITION + 10,
-                    PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION;
+   public const int RESOURCE_SPACING            = 30,
+                    PEARL_POSITION              = 0,
+                    CRYSTAL_POSITION            = PEARL_POSITION + 10,
+                    ORE_POSITION                = CRYSTAL_POSITION + 10,
+                    CRUDE_TOOL_POSITION         = 0,
+                    HARPOON_POSITION            = CRUDE_TOOL_POSITION + 10,
+                    PATCH_KIT_POSITION          = CRUDE_TOOL_POSITION,
+                    PRESSURE_VALVE_POSITION     = HARPOON_POSITION + 10,
+                    DIVING_BELL_POSITION        = CRUDE_TOOL_POSITION + 10,
+                    ENGINE_POSITION             = PRESSURE_VALVE_POSITION + 10,
+                    PRECISION_LENS_POSITION     = PRESSURE_VALVE_POSITION,
+                    MERCENARY_ENGINEER_POSITION = PRESSURE_VALVE_POSITION + 10;
 
-   public const string PEARL_TAG          =  "Pearl",
-                       CRYSTAL_TAG        =  "Crystal",
-                       ORE_TAG            =  "Ore",
-                       CRUDE_TOOL_TAG     =  "Crude Tool",
-                       HARPOON_TAG        =  "Harpoon",
-                       PATCH_KIT_TAG      =  "Patch Kit",
-                       PRESSURE_VALVE_TAG =  "Pressure Valve",
-                       DIVING_BELL_TAG    =  "Diving Bell",
-                       ENGINE_TAG         =  "Engine",
-                       PRECISION_LENS_TAG =  "Precision Lens",
-                       RAW_ORE_CHUNK_TAG  =  "Raw Ore Chunk";
+   public const string PEARL_TAG              =  "Pearl",
+                       CRYSTAL_TAG            =  "Crystal",
+                       ORE_TAG                =  "Ore",
+                       CRUDE_TOOL_TAG         =  "Crude Tool",
+                       HARPOON_TAG            =  "Harpoon",
+                       PATCH_KIT_TAG          =  "Patch Kit",
+                       PRESSURE_VALVE_TAG     =  "Pressure Valve",
+                       DIVING_BELL_TAG        =  "Diving Bell",
+                       ENGINE_TAG             =  "Engine",
+                       PRECISION_LENS_TAG     =  "Precision Lens",
+                       RAW_ORE_CHUNK_TAG      =  "Raw Ore Chunk",
+                       MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
 
 
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
@@ -92,14 +107,15 @@ public class InventoryManager : MonoBehaviour
    public int crystalCount       { get; private set; }
    public int oreCount           { get; private set; }
 
-   public int crudeToolCount     { get; private set; }
-   public int harpoonCount       { get; private set; }
-   public int patchKitCount      { get; private set; }
-   public int pressureValveCount { get; private set; }
-   public int divingBellCount    { get; private set; }
-   public int engineCount        { get; private set; }
-   public int precisionLensCount { get; private set; }
-   public int rawOreChunkCount   { get; private set; }
+   public int crudeToolCount         { get; private set; }
+   public int harpoonCount           { get; private set; }
+   public int patchKitCount          { get; private set; }
+   public int pressureValveCount     { get; private set; }
+   public int divingBellCount        { get; private set; }
+   public int engineCount            { get; private set; }
+   public int precisionLensCount     { get; private set; }
+   public int rawOreChunkCount       { get; private set; }
+   public int mercenaryEngineerCount { get; private set; }
 
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource,  
@@ -113,7 +129,9 @@ public class InventoryManager : MonoBehaviour
 
    /* Delegate for when the crystal count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnOreCountChanged;
-                                                                                   
+
+   public List<Transform> InventoryItems { get; private set; }
+
    /* Sets up the singleton instance and initializes the inventory panel state.    */
    private void Awake() 
    {
@@ -124,6 +142,8 @@ public class InventoryManager : MonoBehaviour
           Instance = this;
           DontDestroyOnLoad(this.gameObject);
       }
+
+      InventoryItems = new ();
 
       if (InventoryPanel == null) 
           Debug.LogError("Inventory Panel is not assigned in the Inspector!");
@@ -150,9 +170,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 10000;
+      pearlCount     = 500;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = 10000;
+      oreCount       = 100;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -164,15 +184,16 @@ public class InventoryManager : MonoBehaviour
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION,PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
-      //CreateResource(Item.GetItemSprite(Item.ItemType.RareOre), ORE_POSITION + 10, RARE_ORE_TAG); 
+      //CreateResource(GetItemSprite(ItemType.RawOreChunk), ORE_POSITION + 10, RAW_ORE_CHUNK_TAG); 
 
-      CreateCraft(Item.GetItemSprite(Item.ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
-      CreateCraft(Item.GetItemSprite(Item.ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(Item.GetItemSprite(Item.ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-      //CreateCraft(Item.GetItemSprite(Item.ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
+      CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
+      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+      //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+      //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, TradeHutManager.MERCENARY_ENGINEER_TAG, -250);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
@@ -257,6 +278,8 @@ public class InventoryManager : MonoBehaviour
             break;
       }
 
+      InventoryItems.Add(resourceTransform);
+
       resourceTransform.gameObject.SetActive(true);
    }
 
@@ -289,6 +312,9 @@ public class InventoryManager : MonoBehaviour
             break;
          case PRECISION_LENS_TAG:
             craftCount = precisionLensCount;
+            break;
+         case MERCENARY_ENGINEER_TAG:
+            craftCount = mercenaryEngineerCount;
             break;
          default:
             craftCount = 0;
@@ -338,6 +364,9 @@ public class InventoryManager : MonoBehaviour
          case PRECISION_LENS_TAG:
             PrecisionLensCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
+         case MERCENARY_ENGINEER_TAG:
+            MercenaryEngineerCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            break;
          default:
             Debug.LogError("Unknown craft");
             break;
@@ -345,6 +374,8 @@ public class InventoryManager : MonoBehaviour
 
       /* Dynamically add listeners to the buttons, which creates the craft window  */
       craftWindowButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); });
+
+      InventoryItems.Add(craftTransform);
       craftTransform.gameObject.SetActive(true);
    }
 
@@ -387,7 +418,7 @@ public class InventoryManager : MonoBehaviour
             break;
          case RAW_ORE_CHUNK_TAG:
             resourceCount = rawOreChunkCount;
-            resourceInfo = Item.GetItemDescription(Item.ItemType.RawOreChunk);
+            resourceInfo =       GetItemDescription(ItemType.RawOreChunk);
             break;
          default: 
             Debug.LogError("Unknown item tag for resource window.");
@@ -433,11 +464,11 @@ public class InventoryManager : MonoBehaviour
       {
          case CRUDE_TOOL_TAG:
             craftCount = crudeToolCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.CrudeTool);
+            craftInfo  = GetItemDescription(ItemType.CrudeTool);
             break;
          case HARPOON_TAG:
             craftCount = harpoonCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.Harpoon);
+            craftInfo  =   GetItemDescription(ItemType.Harpoon);
             break;
          case PATCH_KIT_TAG:
             craftCount = patchKitCount;
@@ -445,23 +476,27 @@ public class InventoryManager : MonoBehaviour
             break;
          case PRESSURE_VALVE_TAG:
             craftCount = pressureValveCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.PressureValve);
+            craftInfo  = GetItemDescription(ItemType.PressureValve);
             break;
          case DIVING_BELL_TAG:
             craftCount = divingBellCount;
-            craftInfo = "";
+            craftInfo  = GetItemDescription(ItemType.DivingBell);
             break;
          case ENGINE_TAG:
             craftCount = engineCount;
-            craftInfo  = Item.GetItemDescription(Item.ItemType.Engine);
+            craftInfo  = GetItemDescription(ItemType.Engine);
             break;
          case PRECISION_LENS_TAG:
             craftCount = precisionLensCount;
-            craftInfo  = "";
+            craftInfo  = GetItemDescription(ItemType.PrecisionLens);
             break;
          case RAW_ORE_CHUNK_TAG:
             craftCount = rawOreChunkCount;
-            craftInfo = Item.GetItemDescription (Item.ItemType.RawOreChunk);
+            craftInfo  = GetItemDescription(ItemType.RawOreChunk);
+            break;
+         case MERCENARY_ENGINEER_TAG:
+            craftCount = mercenaryEngineerCount;
+            craftInfo  = GetItemDescription(ItemType.MercenaryEngineer);
             break;
          default:
             Debug.LogError("Unknown item tag for resource window.");
@@ -502,6 +537,7 @@ public class InventoryManager : MonoBehaviour
          }
       }
       
+      CheckUpgradeResources();
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
@@ -530,7 +566,8 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
       }
-      
+
+      CheckUpgradeResources();
       OnPearlCountChanged?.Invoke(pearlCount);
       PearlCountText.text = " x" + pearlCount.ToString();
       
@@ -581,7 +618,7 @@ public class InventoryManager : MonoBehaviour
             crystalCount -= crystalAmount;
             isSuccess     = true;
          }
-      
+
       OnCrystalCountChanged?.Invoke(crystalCount);
       CrystalCountText.text = " x" + crystalCount.ToString();
       
@@ -609,7 +646,7 @@ public class InventoryManager : MonoBehaviour
             isSuccess = true;
          }
 
-
+      CheckUpgradeResources();
       OnOreCountChanged?.Invoke(oreCount);
       OreCountText.text = " x" + oreCount.ToString();
 
@@ -626,7 +663,8 @@ public class InventoryManager : MonoBehaviour
          ticker.ShowTicker($"Ore count is at minimum!", Color.red, MessageTypes.ResultMessage);
 
       } 
-      else
+      else 
+      { 
          if (oreCount < oreAmount)
          {
             Debug.LogError("Not enough ore to spend!");
@@ -637,9 +675,11 @@ public class InventoryManager : MonoBehaviour
             oreCount -= oreAmount;
             isSuccess = true;
          }
+      }
 
-         OnOreCountChanged?.Invoke(oreCount);
-         OreCountText.text = " x" + oreCount.ToString();
+      CheckUpgradeResources();
+      OnOreCountChanged?.Invoke(oreCount);
+      OreCountText.text = " x" + oreCount.ToString();
 
       return isSuccess;
    }
@@ -764,7 +804,7 @@ public class InventoryManager : MonoBehaviour
          }
 
       newHarpoonCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newHarpoonCount.text = " x" + harpoonCount.ToString();
+      newHarpoonCount.text  = " x" + harpoonCount.ToString();
       HarpoonCountText.text = " x" + harpoonCount.ToString();
 
       return isSuccess;
@@ -1078,6 +1118,70 @@ public class InventoryManager : MonoBehaviour
       engineValue          = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
       engineValue.text     = " x" + engineCount.ToString();
       EngineCountText.text = " x" + engineCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryAddMercenaryEngineer(int amount)
+   {
+      bool isSuccess = false;
+
+      if (mercenaryEngineerCount >= MAX_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count is at maximum!");
+         ticker.ShowTicker($"Mercenary Engineer count is at maximum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else 
+      {
+         if ((mercenaryEngineerCount + amount) > MAX_MERCENARY_ENGINEER_COUNT)
+         {
+            Debug.LogError("Mercenary Engineer count would exceed maximum!");
+            ticker.ShowTicker($"Cannot add Mercenary Engineers - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
+            return isSuccess;
+         }
+         else
+         {
+            isSuccess = true;
+            mercenaryEngineerCount += amount;
+         }
+      }
+
+      // Update any UI if present
+      if (MercenaryEngineerCountText != null)
+         MercenaryEngineerCountText.text = " x" + mercenaryEngineerCount.ToString();
+      
+
+      return isSuccess;
+   }
+
+   public bool TryUseMercenaryEngineer(int amount)
+   {
+      bool isSuccess = false;
+
+      if (mercenaryEngineerCount <= MIN_MERCENARY_ENGINEER_COUNT)
+      {
+         Debug.LogError("Mercenary Engineer count is at minimum!");
+         ticker.ShowTicker($"Mercenary Engineer count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else 
+      {
+         if (mercenaryEngineerCount < amount)
+         {
+            Debug.LogError("Not enough Mercenary Engineers!");
+            ticker.ShowTicker($"Cannot use Mercenary Engineers, only {mercenaryEngineerCount} available!", Color.red, MessageTypes.ResultMessage);
+            return isSuccess;
+         }
+         else
+         {
+            isSuccess = true;
+            mercenaryEngineerCount -= amount;
+         }
+      } 
+
+      if (MercenaryEngineerCountText != null)
+         MercenaryEngineerCountText.text = " x" + mercenaryEngineerCount.ToString();
 
       return isSuccess;
    }

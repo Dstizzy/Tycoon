@@ -29,6 +29,8 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
+   public const int LEVEL_2_PEARL_COST = 500;
+   public const int LEVEL_3_PEARL_COST = 800;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
@@ -110,6 +112,8 @@ public class ForgeManager : MonoBehaviour
          Instance = this;
          DontDestroyOnLoad(this.gameObject);
       }
+
+      ticker = TickerSystem.Instance;
 
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
@@ -302,11 +306,11 @@ public class ForgeManager : MonoBehaviour
       // Determine the cost needed for current level be upgraded
       if (forgeLevel == 1)
       {
-         upgradeCost = 500;
+         upgradeCost = LEVEL_2_PEARL_COST;
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 800;
+         upgradeCost = LEVEL_3_PEARL_COST;
       }
 
       // Check if there is sufficient pearls to upgrade
@@ -715,7 +719,9 @@ public class ForgeManager : MonoBehaviour
          foreach (var type in stagingItems)
          {
             int amount = isOverclocked ? 2 : 1;
-            int turns = GetTurnsNeeded(type);
+            int turns = isMercenaryEngineerActive ? 0 : GetTurnsNeeded(type);
+
+            isMercenaryEngineerActive = false;
 
             CraftingJob job = new CraftingJob();
             job.itemType = type;
@@ -793,6 +799,20 @@ public class ForgeManager : MonoBehaviour
          activeQueuePanel.SetActive(false);
       }
    }
+
+   public void TryActivateMercenaryEngineer() 
+   {
+
+      if (!isMercenaryEngineerActive && InventoryManager.Instance.TryUseMercenaryEngineer(1)) 
+      {
+         isMercenaryEngineerActive = true;
+         ticker.ShowTicker("Mercenary engineer is active.", Color.green, TickerSystem.MessageTypes.ResultMessage);
+      }
+      else
+         if(isMercenaryEngineerActive)
+            ticker.ShowTicker("Mercenary engineer already active.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+
+
+      return;
+   }
 }
-
-

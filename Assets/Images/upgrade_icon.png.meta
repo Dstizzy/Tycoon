@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 48c4db970e31f434ea32d8c63f7c3274
+guid: d7625af8a772e13428e1f4f49ce09118
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5222846192215791325
-    second: hazard_symbol_0
+      213: -486663766675196894
+    second: upgrade_icon_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: hazard_symbol_0
+      name: upgrade_icon_0
       rect:
         serializedVersion: 2
-        x: 138
-        y: 6
-        width: 402
-        height: 363
+        x: 194
+        y: 41
+        width: 287
+        height: 286
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dd61683a0f64b7840800000000000000
-      internalID: 5222846192215791325
+      spriteID: 2247546f1e50f39f0800000000000000
+      internalID: -486663766675196894
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f7b5601329df9d349b0ec3444601f198
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      hazard_symbol_0: 5222846192215791325
+      upgrade_icon_0: -486663766675196894
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
