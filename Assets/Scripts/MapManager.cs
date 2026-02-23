@@ -18,9 +18,11 @@ public class MapManager : MonoBehaviour
    private void Awake()
    {
       Instance = this;
+
       // Randomly decide on the winning end node
       winningPathIsLeft = (Random.Range(0, 2) == 0);
 
+      // Resets all nodes to unexplored
       if (allNodesInGame != null)
          foreach (MapNode node in allNodesInGame)
             if (node != null)
@@ -31,16 +33,18 @@ public class MapManager : MonoBehaviour
    public void MoveToNode(MapNode newNode)
    {
       if (newNode == null) return;
+
       // Update game's state to new location, tell ship manage how deep current node is
       currentNode = newNode;
       shipManager.SetDepth(currentNode.nodeDepth);
 
-      // Update visuals in the map
+      // Move ship icon to new node on map in both explore and decision panels
       if(exploreShipIcon != null && decisionShipIcon != null)
       {
          exploreShipIcon.anchoredPosition = currentNode.mapPosition;
          decisionShipIcon.anchoredPosition = currentNode.mapPosition;
       }
+      // Remove the node's cloud from the map
       currentNode.RevealNode();
    }
 }
