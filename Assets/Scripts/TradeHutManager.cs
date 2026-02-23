@@ -192,7 +192,7 @@ public class TradeHutManager : MonoBehaviour
       // Populate the the item properties                                                           
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
       sellValueText.text = itemValue.ToString();
-      
+
       tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals(ENGINE_TAG) ? "   " + ENGINE_TAG : itemTag;
       tradeItemTransform.Find("ItemShadow").GetComponent<Image>().sprite        = itemSprite;
       tradeItemTransform.Find("ItemShadow").gameObject.SetActive(false);
@@ -235,10 +235,11 @@ public class TradeHutManager : MonoBehaviour
          tradeItemTransform.Find("ItemShadow").gameObject.SetActive(true);
      }
 
-      SellItems.Add(tradeItemTransform);
 
       // Dynamically add a listener to the button, which creates a sell window when clicked         
       itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
+      
+      SellItems.Add(tradeItemTransform);
 
       tradeItemTransform.gameObject.SetActive(true);
    }
@@ -293,11 +294,11 @@ public class TradeHutManager : MonoBehaviour
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
       RectTransform sellItemRectTransform = sellItemTransform.GetComponent<RectTransform>();
 
-      sellItemTransform.tag = itemTag;
 
       sellItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
 
       // Populate item properties
+      sellItemTransform.tag = itemTag;
       sellItemTransform.Find("ItemImage").GetComponent<Image>().sprite              = itemSprite;
       sellItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + itemCount.ToString();
       sellItemTransform.Find("currencyIcon").GetComponent<Image>().sprite           = currencySprite;
@@ -433,7 +434,7 @@ public class TradeHutManager : MonoBehaviour
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
                soldCount = pressureValveCount;
-               
+
                if (inv.TryUsePressureValve(pressureValveCount))
                {
                   totalSellValue += soldCount * GetItemValue(ItemType.PressureValve);
@@ -1118,7 +1119,6 @@ public class TradeHutManager : MonoBehaviour
             Debug.LogError("Unknown Event");
             break;
       }
-
    }
 
   public void ResetWorldEventShifts() 

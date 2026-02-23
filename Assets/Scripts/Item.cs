@@ -59,6 +59,12 @@ public class Item {
    const string MERCENARY_ENGINEER_DESCRIPTION =
       "A hired specialist who can immediately complete a single crafting task when activated. " +
       "Consumed on use — ideal when you need an item instantly.";
+   const string PRECISION_LENS_DESCRIPTION =
+     "A small optical component used to focus delicate mechanisms. " +
+     "Required for precision assemblies; consumed during crafting.";
+   const string DIVING_BELL_DESCRIPTION =
+      "A reinforced submersible chamber that enables the Exploration Unit. " +
+      "Possessing a Diving Bell allows deployment of the unit for scouting and resource miss";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -134,6 +140,10 @@ public class Item {
             return CLOCKWORK_BLUEPRINT_DESCRIPTION;
          case ItemType.MercenaryEngineer:
             return MERCENARY_ENGINEER_DESCRIPTION;
+         case ItemType.PrecisionLens:
+            return PRECISION_LENS_DESCRIPTION;
+         case ItemType.DivingBell:
+            return DIVING_BELL_DESCRIPTION;
          default:
             Debug.LogError("No description available.");
             return "No description available.";
