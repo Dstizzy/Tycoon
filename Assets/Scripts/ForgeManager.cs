@@ -7,13 +7,16 @@ using System.Collections.Generic;
 public class CraftingJob
 {
    public Item.ItemType itemType;
-   public int amount;
-   public int turnsRemaining;
-   public string itemName;
+   public int           amount;
+   public int           turnsRemaining;
+   public string        itemName;
 }
 
 public class ForgeManager : MonoBehaviour
 {
+
+   TickerSystem ticker;
+
    /* Constants */
    const int CRAFT_BUTTON = 1;
    const int INFO_BUTTON = 2;
@@ -29,6 +32,8 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
+   public const int LEVEL_2_PEARL_COST = 500;
+   public const int LEVEL_3_PEARL_COST = 800;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
@@ -59,20 +64,29 @@ public class ForgeManager : MonoBehaviour
    [Header("Windw Template")]
    [SerializeField] private Transform craftWindowTemplate;
    public TextMeshProUGUI forgeLevelText;
+   [SerializeField] private Transform levelCanvas;
 
    [Header("Crafting Queue")]
    public List<CraftingJob> activeJobs = new List<CraftingJob>();
+   [SerializeField] private GameObject errorPanel;
+
+   [Header("Active Crafting Popup")]
+   [SerializeField] private GameObject activeQueuePanel;
+   [SerializeField] private TextMeshProUGUI queueText;
 
    /* Private state variables */
    private Transform currentCraftWindow;
    private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
-   private static int forgeLevel = STARTING_LEVEL;
    private Toggle currentOverclockToggle;
    private Image craftSlot1;
    private Image craftSlot2;
    private GameObject craftButtonObject;
+   
 
    public static ForgeManager Instance { get; private set; }
+   public static int forgeLevel = STARTING_LEVEL;
+
+   private bool hasCraftedThisTurn = false;
 
    private void Start()
    {
@@ -102,6 +116,8 @@ public class ForgeManager : MonoBehaviour
          DontDestroyOnLoad(this.gameObject);
       }
 
+      ticker = TickerSystem.Instance;
+
       craftPanel.gameObject.SetActive(false);
       infoPanel.gameObject.SetActive(false);
       upgradePanel.gameObject.SetActive(false);
@@ -116,11 +132,27 @@ public class ForgeManager : MonoBehaviour
          tier3Container.gameObject.SetActive(true);
 
       CloseAllTierPanels();
-
       forgeLevelText.text = "Level" + forgeLevel;
+      if (craftPanel != null)
+      {
+         // Find the ErrorPanel inside the CraftPanel
+         Transform errorTrans = craftPanel.Find("ErrorPanel");
+         if (errorTrans != null)
+         {
+            errorPanel = errorTrans.gameObject;
+            errorPanel.SetActive(false); // Hide it by default
+         }
+         else
+         {
+            Debug.LogError("ForgeManager: Could not find 'ErrorPanel' inside CraftPanel!");
+         }
+         if (activeQueuePanel != null)
+         {
+            activeQueuePanel.SetActive(false);
+         }
+      }
    }
 
-   // REMOVED itemType argument
    private void CreateCraftWindow(Transform container)
    {
       Debug.Log("CreateCraftWindow: Spawning...");
@@ -193,8 +225,6 @@ public class ForgeManager : MonoBehaviour
       // 5. Open/Refresh the Window
       if (targetContainer != null) CreateCraftWindow(targetContainer);
    }
-
-
 
    private void SetCraftItemButtons()
    {
@@ -279,11 +309,11 @@ public class ForgeManager : MonoBehaviour
       // Determine the cost needed for current level be upgraded
       if (forgeLevel == 1)
       {
-         upgradeCost = 500;
+         upgradeCost = LEVEL_2_PEARL_COST;
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 800;
+         upgradeCost = LEVEL_3_PEARL_COST;
       }
 
       // Check if there is sufficient pearls to upgrade
@@ -340,6 +370,11 @@ public class ForgeManager : MonoBehaviour
    {
       craftPanel.gameObject.SetActive(true);
 
+      if (errorPanel != null)
+         errorPanel.SetActive(false);
+      if (activeQueuePanel != null)
+         activeQueuePanel.SetActive(false);
+
       Transform t1 = craftPanel.transform.Find("TierButtons/Tier1");
       Transform t2 = craftPanel.transform.Find("TierButtons/Tier2");
       Transform t3 = craftPanel.transform.Find("TierButtons/Tier3");
@@ -347,6 +382,8 @@ public class ForgeManager : MonoBehaviour
       UpdateTierButtonState(t1, TIER_1, true);
       UpdateTierButtonState(t2, TIER_2, hasTier2Blueprint);
       UpdateTierButtonState(t3, TIER_3, hasTier3Blueprint);
+
+      RefreshTurnValues();
 
       if (t1 != null)
       {
@@ -397,37 +434,60 @@ public class ForgeManager : MonoBehaviour
    }
    private void ShowUpgradePanel()
    {
-      int upgradeCost = 0,
-          nextLevel = forgeLevel + 1;
+      int upgradeCost = 0;
+      string upgradeExplanation = "";
 
       upgradePanel.gameObject.SetActive(true);
-      TextMeshProUGUI upgradeText = upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
 
-      if (upgradeText != null)
+      Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+      Transform explanationTransform = upgradePanel.Find("ExplanationText");
+
+      TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI expText = explanationTransform != null ? explanationTransform.GetComponent<TextMeshProUGUI>() : null;
+
+      if (forgeLevel == 1)
       {
-         if (forgeLevel == 1)
+         upgradeCost = 500;
+         upgradeExplanation = "Bonus: Unlocks a 2nd simultaneous crafting slot!";
+      }
+      else if (forgeLevel == 2)
+      {
+         upgradeCost = 800;
+         upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
+      }
+
+      if (forgeLevel < ENDING_LEVEL)
+      {
+         if (upgradeText != null)
+            upgradeText.text = $"Would you like to upgrade\nto next level for {upgradeCost} pearls?";
+
+         if (expText != null)
          {
-            upgradeCost = 500;
-         }
-         else if (forgeLevel == 2)
-         {
-            upgradeCost = 800;
+            expText.gameObject.SetActive(true);
+            expText.text = $"<color=black>{upgradeExplanation}</color>";
          }
 
-         if (forgeLevel < ENDING_LEVEL)
-         {
-            upgradeText.text = $"Would you like to upgrade\nto next level for {upgradeCost}\npearls?";
-         }
-         else
-         {
+         Transform yesBtn = upgradePanel.Find("YesButton");
+         if (yesBtn != null) yesBtn.gameObject.SetActive(true);
+      }
+      else
+      {
+         if (upgradeText != null)
             upgradeText.text = "Max Level Reached!";
-            upgradePanel.transform.Find("YesButton").gameObject.SetActive(false);
-         }
+
+         if (expText != null)
+            expText.gameObject.SetActive(false); // Hide explanation if max level
+
+         Transform yesBtn = upgradePanel.Find("YesButton");
+         if (yesBtn != null) yesBtn.gameObject.SetActive(false);
       }
    }
    private void CloseCraftPanel()
    {
       craftPanel.gameObject.SetActive(false);
+      if (errorPanel != null) errorPanel.SetActive(false);
+
+      if (activeQueuePanel != null) activeQueuePanel.SetActive(false);
 
       stagingItems.Clear();
 
@@ -487,13 +547,13 @@ public class ForgeManager : MonoBehaviour
       switch (type)
       {
          case Item.ItemType.CrudeTool:
-            turns = 1;
+            turns = isLabTier3Unlocked ? 1 : 2;
             break;
          case Item.ItemType.Harpoon:
             turns = isLabTier3Unlocked ? 1 : 2;
             break;
          case Item.ItemType.PatchKit:
-            turns = 1;
+            turns = isLabTier3Unlocked ? 1 : 2;
             break;
          case Item.ItemType.PressureValve:
             turns = isLabTier3Unlocked ? 1 : 2;
@@ -518,14 +578,16 @@ public class ForgeManager : MonoBehaviour
          turns -= 1;
       }
 
-      // 3. Allow 0 turns (Instant Crafting)
-      if (turns < 0) turns = 0;
+      // 3. Allow minimum 1 turn
+      if (turns < 1)
+         turns = 1;
 
       return turns;
    }
 
    private void ProcessCraftingQueue()
    {
+      hasCraftedThisTurn = false;
       int jobCount;
 
       int maxParallelSlots = (forgeLevel >= 2) ? 2 : 1;
@@ -546,8 +608,6 @@ public class ForgeManager : MonoBehaviour
             }
          }
       }
-
-
    }
 
    private void DeliverItem(CraftingJob job)
@@ -625,8 +685,21 @@ public class ForgeManager : MonoBehaviour
          }
       }
    }
+
    public void CraftStagedItems()
    {
+      if (hasCraftedThisTurn)
+      {
+         Debug.Log("Already crafted this turn!");
+         if (errorPanel != null)
+         {
+            errorPanel.SetActive(true);
+            Debug.Log("Warning activated for craft more than 1 item this turn.");
+         }
+         if (craftButtonObject != null)
+            craftButtonObject.SetActive(false);
+         return;
+      }
       if (stagingItems.Count == 0) return;
 
       int totalCost = 0;
@@ -641,34 +714,36 @@ public class ForgeManager : MonoBehaviour
       // 2. Check Affordability
       if (InventoryManager.Instance.TrySpendOre(totalCost))
       {
+         hasCraftedThisTurn = true;
+
+         string popupMessage = "<b>Successfully Queued!</b>\n\n";
+
          // 3. Process Each Item
          foreach (var type in stagingItems)
          {
             int amount = isOverclocked ? 2 : 1;
-            int turns = GetTurnsNeeded(type);
+            int turns = isMercenaryEngineerActive ? 0 : GetTurnsNeeded(type);
 
-            // Create the job data
+            isMercenaryEngineerActive = false;
+
             CraftingJob job = new CraftingJob();
             job.itemType = type;
             job.amount = amount;
             job.itemName = type.ToString();
             job.turnsRemaining = turns;
 
-            if (turns <= 0)
-            {
-               // If it takes 0 turns, deliver it immediately
-               DeliverItem(job);
-               Debug.Log($"[Instant Craft] {job.itemName} delivered immediately!");
-            }
-            else
-            {
-               // Otherwise, add to the waiting list
-               activeJobs.Add(job);
-               Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
-            }
+            activeJobs.Add(job);
+            Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
+
+            // Add the item to our popup text
+            popupMessage += $"- {job.itemName} x {amount} in {turns} turns.\n";
          }
 
-         // 4. Cleanup UI
+         if (activeQueuePanel != null && queueText != null)
+         {
+            queueText.text = popupMessage;
+            activeQueuePanel.SetActive(true);
+         }
          stagingItems.Clear();
          UpdateStagingUI();
 
@@ -683,16 +758,64 @@ public class ForgeManager : MonoBehaviour
    {
       switch (type)
       {
-         case Item.ItemType.CrudeTool: return CRUDE_TOOL_COST;
-         case Item.ItemType.Harpoon: return HARPOON_COST;
-         case Item.ItemType.PatchKit: return PATCH_KIT_COST;
-         case Item.ItemType.PressureValve: return PRESSUREV_VALVE_COST;
-         case Item.ItemType.DivingBell: return DIVING_BELL_COST;
-         case Item.ItemType.Engine: return ENGINE_COST;
-         case Item.ItemType.PrecisionLens: return PRECISION_LENS_COST;
-         default: return 0;
+         case Item.ItemType.CrudeTool:
+            return CRUDE_TOOL_COST;
+         case Item.ItemType.Harpoon:
+            return HARPOON_COST;
+         case Item.ItemType.PatchKit:
+            return PATCH_KIT_COST;
+         case Item.ItemType.PressureValve:
+            return PRESSUREV_VALVE_COST;
+         case Item.ItemType.DivingBell:
+            return DIVING_BELL_COST;
+         case Item.ItemType.Engine:
+            return ENGINE_COST;
+         case Item.ItemType.PrecisionLens:
+            return PRECISION_LENS_COST;
+         default:
+            return 0;
       }
    }
+   private void RefreshTurnValues()
+   {
+      int turnCount;
+
+      // Get all the itemUI in the craft panel
+      ItemUI[] allItems = craftPanel.GetComponentsInChildren<ItemUI>(true);
+
+      foreach (ItemUI item in allItems)
+      {
+         Transform turnValueTransform = item.transform.parent.Find("TurnValue");
+
+         if (turnValueTransform != null)
+         {
+            TextMeshProUGUI turnValue = turnValueTransform.GetComponent<TextMeshProUGUI>();
+            turnCount = GetTurnsNeeded(item.itemType);
+            turnValue.text = $"{turnCount}";
+         }
+      }
+   }
+   public void CloseQueuePopup()
+   {
+      if (activeQueuePanel != null)
+      {
+         activeQueuePanel.SetActive(false);
+      }
+   }
+
+   public void TryActivateMercenaryEngineer() 
+   {
+
+      if (!isMercenaryEngineerActive && InventoryManager.Instance.TryUseMercenaryEngineer(1)) 
+      {
+         isMercenaryEngineerActive = true;
+         ticker.ShowTicker("Mercenary engineer is active.", Color.green, TickerSystem.MessageTypes.ResultMessage);
+      }
+      else
+         if(isMercenaryEngineerActive)
+            ticker.ShowTicker("Mercenary engineer already active.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+
+
+      return;
+   }
 }
-
-

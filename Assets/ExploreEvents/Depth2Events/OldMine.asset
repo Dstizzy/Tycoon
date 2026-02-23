@@ -15,16 +15,16 @@ MonoBehaviour:
   description: You have found an abandoned mine
   choiceA:
     buttonText: Risk hull damage to search for resources
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 15
+    minPearl: 0
+    maxPearl: 10
     minOre: 0
     maxOre: 15
     fuelChance: 0
@@ -33,16 +33,16 @@ MonoBehaviour:
     healthDamage: -15
   choiceB:
     buttonText: 
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0

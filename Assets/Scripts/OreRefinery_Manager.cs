@@ -1,7 +1,9 @@
-﻿using NUnit.Framework.Constraints;
-using TMPro;
+﻿using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
+
+using static TickerSystem;
 
 public class OreRefinery_Manager : MonoBehaviour
 {
@@ -23,7 +25,7 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public int oreLevel = STARTING_LEVEL;
 
-   public int jammingChance = 10;
+   public int jammingChance = 15;
 
    public bool IsBlocked = false;
 
@@ -183,14 +185,14 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       if (paymentType == 1)
       {
-         if (InventoryManager.Instance.patchKitCount >= 1)
+         if (InventoryManager.Instance.TryUsePatchKit(1))
          {
-            //InventoryManager.Instance.TrySpendPatchKit(1);
             IsBlocked = false;
             buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
             CloseJamPanel();
             Debug.Log("Ore Refinery unjammed successfully.");
-         }
+            ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
+         } 
          else
          {
             Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
@@ -198,9 +200,8 @@ public class OreRefinery_Manager : MonoBehaviour
       }
       else
       {
-         if (InventoryManager.Instance.pearlCount >= 100)
+         if (InventoryManager.Instance.TrySpendPearl(100))
          {
-            InventoryManager.Instance.TrySpendPearl(100);
             IsBlocked = false;
             buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
             CloseJamPanel();
@@ -209,11 +210,11 @@ public class OreRefinery_Manager : MonoBehaviour
          else
          {
             Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
-            ticker.ShowTicker("Not enough Pearls to unjam the Ore Refinery.", Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
       }
    }
 
+   // Reduces jamming percentage when user unlocks tier 1 in lab
    public void ReduceJamming(int oreAmount)
    {
       jammingChance -= oreAmount;
@@ -222,6 +223,7 @@ public class OreRefinery_Manager : MonoBehaviour
          jammingChance = 0;
 
       Debug.Log($"Refinery improved! Jamming chance is now {jammingChance}%");
+      ticker.ShowTicker($"Refinery improved! Jamming chance is now {jammingChance}%", Color.green, MessageTypes.ResultMessage);
    }
 
    private void ProduceOres()
@@ -257,7 +259,7 @@ public class OreRefinery_Manager : MonoBehaviour
       if (oreLevel >= ENDING_LEVEL)
       {
          Debug.Log("Ore Refinery is already at max level.");
-         ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, TickerSystem.MessageTypes.ResultMessage);
+         ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, MessageTypes.ResultMessage);
          return;
       }
       if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls && InventoryManager.Instance.oreCount >= NextUpgradeCostInOre)
@@ -270,12 +272,12 @@ public class OreRefinery_Manager : MonoBehaviour
 
          oreRefineryLevelText.text = "Level " + oreLevel.ToString();
          Debug.Log($"Ore Refinery upgraded to level {oreLevel}!");
-         ticker.ShowTicker($"Ore Refinery upgraded to level {oreLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Ore Refinery upgraded to level {oreLevel}!", Color.green, MessageTypes.ResultMessage);
       }
       else
       {
          Debug.Log("Not enough resources to upgrade the Ore Refinery.");
-         ticker.ShowTicker("Not enough Pearls to upgrade the Ore Refinery.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         ticker.ShowTicker("Not enough Pearls to upgrade the Ore Refinery.", Color.red, MessageTypes.ResultMessage);
       }
    }
 

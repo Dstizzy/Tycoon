@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: HarpoonMerchant
+  m_Name: OldEquipment
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: You've come across a travelling merchant.
+  description: Heavy equiment from an old mining crew has been abandoned, but it's
+    far too large to fit into your vessel in one piece.
   choiceA:
-    buttonText: Purchase one harpoon for 15 gold.
-    goldChange: -15
-    oreChange: 0
+    buttonText: Strip a few parts as you pass by
+    pearlChange: 0
+    oreChange: 10
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
-    harpoonChange: 1
-    artifactChange: 0
+    harpoonChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0
@@ -32,17 +33,17 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Make no trades.
-    goldChange: 0
-    oreChange: 0
+    buttonText: Spend extra turn breaking down equipment
+    pearlChange: 0
+    oreChange: 50
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
-    waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    waitTurn: 1
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0

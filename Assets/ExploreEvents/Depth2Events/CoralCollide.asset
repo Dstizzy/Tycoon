@@ -16,16 +16,16 @@ MonoBehaviour:
     ship's hull!
   choiceA:
     buttonText: Divert some fuel to power the water pumps
-    goldChange: 0
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: -2
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0
@@ -33,17 +33,17 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Seal off the leaking room, but lose all your gold
-    goldChange: -100
+    buttonText: Seal off the leaking room, but lose all your pearls
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     inventoryChange: 0
     harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
     fuelChance: 0
