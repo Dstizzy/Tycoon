@@ -914,8 +914,8 @@ public class InventoryManager : MonoBehaviour
             precisionLensCount += precisionLensAmount;
          }
       }
-            
-      PatchKitCountText.text = " x" + precisionLensCount.ToString();
+
+      PrecisionLensCountText.text = " x" + precisionLensCount.ToString();
 
       return isSuccess;
    }
@@ -945,7 +945,7 @@ public class InventoryManager : MonoBehaviour
          }
       }
 
-      PatchKitCountText.text = " x" + precisionLensCount.ToString();
+      PrecisionLensCountText.text = " x" + precisionLensCount.ToString();
 
       return isSuccess;
    }
@@ -1147,5 +1147,40 @@ public class InventoryManager : MonoBehaviour
       CraftsPanel.gameObject.SetActive(false);
    }
 
-   
+   public bool TrySpendItem(string itemName, int amount)
+   {
+      switch (itemName)
+      {
+         // Resources
+         case PEARL_TAG:
+            return TrySpendPearl(amount);
+         case CRYSTAL_TAG:
+            return TrySpendCrystal(amount);
+         case ORE_TAG:
+            return TrySpendOre(amount);
+
+         // Crafted Items
+         case CRUDE_TOOL_TAG:
+            return TryUseCrudeTool(amount);
+         case HARPOON_TAG:
+            return TryUseHarpoon(amount);
+         case PATCH_KIT_TAG:
+            return TryUsePatchKit(amount);
+         case PRESSURE_VALVE_TAG:
+            return TryUsePressureValve(amount);
+         case DIVING_BELL_TAG:
+            return TryUseDivingBell(amount);
+         case ENGINE_TAG:
+            return TryUseEngine(amount);
+         case PRECISION_LENS_TAG:
+            return TryUsePrecisionLens(amount);
+         //case RAW_ORE_CHUNK_TAG:
+            //return TryUseRawOreChunk(amount);
+
+         default:
+            Debug.LogError($"TrySpendItem: Unknown item type '{itemName}'");
+            return false;
+      }
+   }
+
 }

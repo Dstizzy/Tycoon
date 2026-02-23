@@ -23,7 +23,7 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public int oreLevel = STARTING_LEVEL;
 
-   public int jammingChance = 10;
+   public int jammingChance = 15;
 
    public bool IsBlocked = false;
 
@@ -214,6 +214,7 @@ public class OreRefinery_Manager : MonoBehaviour
       }
    }
 
+   // Reduces jamming percentage when user unlocks tier 1 in lab
    public void ReduceJamming(int oreAmount)
    {
       jammingChance -= oreAmount;
