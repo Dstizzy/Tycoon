@@ -497,6 +497,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 
    // closes the info panel
@@ -506,12 +507,14 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 
    // closes the upgrade panel
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
