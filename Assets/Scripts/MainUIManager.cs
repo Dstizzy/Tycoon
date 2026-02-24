@@ -50,6 +50,15 @@ public class MainUIManager : MonoBehaviour
          ShowVictoryPanel();
       });
 
+      if (victoryButton != null)
+      {
+         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
+         {
+            victoryPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+         });
+      }
+
       ChangePearlCountText(InventoryManager.Instance.pearlCount);
       ChangeOreCountText(InventoryManager.Instance.oreCount);
       InventoryManager.Instance.OnOreCountChanged += ChangeOreCountText;
@@ -84,21 +93,34 @@ public class MainUIManager : MonoBehaviour
       if (victoryPanel != null)
       {
          victoryPanel.SetActive(true);
-         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => {
-            victoryPanel.SetActive(false);
-            PopUpManager.Instance.EnablePlayerInput();
-         });
-
          PopUpManager.Instance.DisablePlayerInput();
 
-         // Activates the head
-         victoryPanel.transform.Find("SubmarineSkel/HeadButton").GetComponent<Button>().onClick.AddListener(() => ActivateHead());
+         // Auomatically turn on parts based on lab paths
+         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
+         if (skeleton != null)
+         {
+            skeleton.Find("SubmarineHead").gameObject.SetActive(LabManager.headUnlocked);
+            skeleton.Find("SubmarineBody").gameObject.SetActive(LabManager.bodyUnlocked);
+            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
+         }
 
-         // Activates the body
-         victoryPanel.transform.Find("SubmarineSkel/BodyButton").GetComponent<Button>().onClick.AddListener(() => ActivateBody());
+         Transform questionMark = victoryPanel.transform.Find("QuestionMark");
+         if (questionMark != null)
+         {
+            if (LabManager.headUnlocked || LabManager.bodyUnlocked || LabManager.tailUnlocked)
+            {
+               questionMark.gameObject.SetActive(false);
+            }
+            else
+            {
+               questionMark.gameObject.SetActive(true);
+            }
+         }
 
-         // Activates the tail
-         victoryPanel.transform.Find("SubmarineSkel/TailButton").GetComponent<Button>().onClick.AddListener(() => ActivateTail());
+         if (LabManager.headUnlocked && LabManager.bodyUnlocked && LabManager.tailUnlocked)
+         {
+            ActivateFinalForm();
+         }
       }
    }
 

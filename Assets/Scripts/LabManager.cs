@@ -10,51 +10,53 @@ using static Item;
 
 public class LabManager : MonoBehaviour
 {
-    /* Symbolic Constants                                                                        */
-    public const int INNOVATE_BUTTON = 1;
-    public const int INFO_BUTTON = 2;
-    public const int UPGRADE_BUTTON = 3;
-    public const int TIER_ONE = 1;
-    public const int TIER_TWO = 2;
-    public const int TIER_THREE = 3;
-    public const int TIER_ONE_PEARL_COST = 100;
-    public const int TIER_ONE_ITEM_COST = 10;
-    public const int TIER_TWO_PEARL_COST = 350;
-    public const int TIER_TWO_ITEM_COST = 25;
-    public const int TIER_THREE_PEARL_COST = 700;
-    public const int TIER_THREE_ITEM_COST = 50;
+   /* Symbolic Constants                                                                        */
+   public const int INNOVATE_BUTTON = 1;
+   public const int INFO_BUTTON = 2;
+   public const int UPGRADE_BUTTON = 3;
+   public const int TIER_ONE = 1;
+   public const int TIER_TWO = 2;
+   public const int TIER_THREE = 3;
+   public const int TIER_ONE_PEARL_COST = 100;
+   public const int TIER_ONE_ITEM_COST = 10;
+   public const int TIER_TWO_PEARL_COST = 350;
+   public const int TIER_TWO_ITEM_COST = 25;
+   public const int TIER_THREE_PEARL_COST = 700;
+   public const int TIER_THREE_ITEM_COST = 50;
    public const int PROD_T1_PEARL = 400;
    public const int PROD_T1_LENS = 2;
    public const int PROD_T2_PEARL = 1000;
    public const int PROD_T2_LENS = 5;
    public const int PROD_T3_PEARL = 3000;
    public const int PROD_T3_LENS = 10;
-
+   
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
-    [SerializeField] private Transform infoPanel;
+   [SerializeField] private Transform infoPanel;
+   [SerializeField] private GameObject pathButtons;
+   [SerializeField] private GameObject initialTab;
+   [SerializeField] private GameObject commerceTab;
+   [SerializeField] private GameObject productionTab;
+   [SerializeField] private GameObject explorationTab;
 
-    [SerializeField] private GameObject pathButtons;
-    [SerializeField] private GameObject initialTab;
-    [SerializeField] private GameObject commerceTab;
-    [SerializeField] private GameObject productionTab;
-    [SerializeField] private GameObject explorationTab;
- 
 
-   /* Public variables                                                                          */
+   /* Public variables              */
    public static int currentCommerceTier { get; private set; } = 0;
-
+   public static bool headUnlocked = false;
+   public static bool bodyUnlocked = false;
+   public static bool tailUnlocked = false;
 
    TradeHutManager tradeHutManager;
    
    public static LabManager labManager;
 
-    /* Check if all required game objects exist and are in there required states                 */
-    private void Awake() 
-    {
+   /* Check if all required game objects exist and are in there required states                 */
+   private void Awake() 
+   {
       if (labManager != null && labManager != this)
          Destroy(this.gameObject);
-      else {
+      else
+      {
          labManager = this;
          DontDestroyOnLoad(this.gameObject);
       }
@@ -64,125 +66,127 @@ public class LabManager : MonoBehaviour
       if (tradeHutManager == null)
           Debug.LogError("Insance is not initialized");
 
+      /* Set the info panel to inactive if it exists                                           */
+      if (infoPanel == null) 
+      {
+         Debug.LogError("Info Panel is not assigned in the Inspector!");
+      }
+      else 
+      {
+         infoPanel.gameObject.SetActive(false);
+      }
 
-        /* Set the info panel to inactive if it exists                                           */
-        if (infoPanel == null) 
-        {
-            Debug.LogError("Info Panel is not assigned in the Inspector!");
-        } else 
-        {
-            infoPanel.gameObject.SetActive(false);
-        }
+      /* Set the research panel to inactive if it exists                                       */
+      if (innovatePanel == null) 
+      {
+         Debug.LogError("Innovate Panel is not assigned");
+      }
+      else 
+      {
+         innovatePanel.gameObject.SetActive(false);
+      }
 
-        /* Set the research panel to inactive if it exists                                       */
-        if (innovatePanel == null) 
-        {
-            Debug.LogError("Innovate Panel is not assigned");
-        } else 
-        {
-            innovatePanel.gameObject.SetActive(false);
-        }
+      /* Set the research panel to inactive if it exists                                       */
+      if (initialTab == null)
+      {
+         Debug.LogError("Commerce Tab is not assigned");
+      }
+      else
+      {
+         initialTab.gameObject.SetActive(true);
+      }
 
-        /* Set the research panel to inactive if it exists                                       */
-        if (initialTab == null)
-        {
-            Debug.LogError("Commerce Tab is not assigned");
-        }
-        else
-        {
-            initialTab.gameObject.SetActive(true);
-        }
+      /* Set the research panel to inactive if it exists                                       */
+      if (commerceTab == null)
+      {
+         Debug.LogError("Commerce Tab is not assigned");
+      }
+      else
+      {
+         commerceTab.gameObject.SetActive(false);
+      }
 
-        /* Set the research panel to inactive if it exists                                       */
-        if (commerceTab == null)
-        {
-            Debug.LogError("Commerce Tab is not assigned");
-        }
-        else
-        {
-            commerceTab.gameObject.SetActive(false);
-        }
+      /* Set the research panel to inactive if it exists                                       */
+      if (productionTab == null)
+      {
+         Debug.LogError("Production Tab is not assigned");
+      }
+      else
+      {
+         productionTab.gameObject.SetActive(false);
+      }
 
-        /* Set the research panel to inactive if it exists                                       */
-        if (productionTab == null)
-        {
-            Debug.LogError("Production Tab is not assigned");
-        }
-        else
-        {
-            productionTab.gameObject.SetActive(false);
-        }
+      /* Set the research panel to inactive if it exists                                       */
+      if (explorationTab == null)
+      {
+         Debug.LogError("Commerce Tab is not assigned");
+      }
+      else
+      {
+         explorationTab.gameObject.SetActive(false);
+      } 
+   }
 
-        /* Set the research panel to inactive if it exists                                       */
-        if (explorationTab == null)
-        {
-            Debug.LogError("Commerce Tab is not assigned");
-        }
-        else
-        {
-            explorationTab.gameObject.SetActive(false);
-        } 
-    }
+   /* Open up a lab panel upon clicking the corresponding button                                */
+   public void RequestLabPanel(int buttonID) 
+   {
+      switch (buttonID)
+      {
+         case INNOVATE_BUTTON:
+            ShowInnovatePanel();
+            innovatePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INNOVATE_BUTTON));
+            break;
+         case INFO_BUTTON:
+            ShowInfoPanel();
+            infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INFO_BUTTON));
+            break;
+         default:
+            Debug.Log("Building Panel: Unknown button ID.");
+            break;
+      }
+   }
 
-    /* Open up a lab panel upon clicking the corresponding button                                */
-    public void RequestLabPanel(int buttonID) 
-    {
-        switch (buttonID) {
-            case INNOVATE_BUTTON:
-                ShowInnovatePanel();
-                innovatePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INNOVATE_BUTTON));
-                break;
-            case INFO_BUTTON:
-                ShowInfoPanel();
-                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INFO_BUTTON));
-                break;
-            default:
-                Debug.Log("Building Panel: Unknown button ID.");
-                break;
-        }
-    }
+   /* Close the lab panel upon clicking the exit button                                         */
+   public void CloseLabPanel(int buttonID) 
+   {
+      switch (buttonID)
+      {
+         case INNOVATE_BUTTON:
+            CloseInnovatePanel();
+            break;
+         case INFO_BUTTON:
+            CloseInfoPanel();
+            break;
+         case UPGRADE_BUTTON:
+            Debug.Log("Building Panel: Info requested.");
+            break;
+         default:
+            Debug.Log("Building Panel: Unknown button ID.");
+            break;
+      }
+      PopUpManager.Instance.EnablePlayerInput();
+   }
 
-    /* Close the lab panel upon clicking the exit button                                         */
-    public void CloseLabPanel(int buttonID) 
-    {
-        switch (buttonID) {
-            case INNOVATE_BUTTON:
-                CloseInnovatePanel();
-                break;
-            case INFO_BUTTON:
-                CloseInfoPanel();
-                break;
-            case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
-                break;
-            default:
-                Debug.Log("Building Panel: Unknown button ID.");
-                break;
-        }
-        PopUpManager.Instance.EnablePlayerInput();
-    }
+   /* Open up the research panel and assign the buttons in the initial panel                    */
+   private void ShowInnovatePanel() 
+   {
+      innovatePanel.gameObject.SetActive(true);
+      pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
+      pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
+      pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
+   }
 
-    /* Open up the research panel and assign the buttons in the initial panel                    */
-    private void ShowInnovatePanel() 
-    {
-        innovatePanel.gameObject.SetActive(true);
-        pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
-        pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
-        pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
-
-    }
-
-    /* Show the corresponding path tab upon clicking the path button                             */
-    private void ShowPath(GameObject tab)
-    {
-        initialTab.gameObject.SetActive(false);
-        tab.gameObject.SetActive(true);
-        /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
-        tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
-        tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
-        tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
-        tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
-    }
+   /* Show the corresponding path tab upon clicking the path button                             */
+   private void ShowPath(GameObject tab)
+   {
+      initialTab.gameObject.SetActive(false);
+      tab.gameObject.SetActive(true);
+      /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
+      tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
+      tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
+      tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
+      tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
+   }
 
    private void HandleInnovation(GameObject tab, int tier)
    {
@@ -194,9 +198,18 @@ public class LabManager : MonoBehaviour
          requiredItem = "Crude Tool"; // Put your commerce item requirement here if needed
          switch (tier)
          {
-            case TIER_ONE: pearlCost = TIER_ONE_PEARL_COST; itemCost = TIER_ONE_ITEM_COST; break;
-            case TIER_TWO: pearlCost = TIER_TWO_PEARL_COST; itemCost = TIER_TWO_ITEM_COST; break;
-            case TIER_THREE: pearlCost = TIER_THREE_PEARL_COST; itemCost = TIER_THREE_ITEM_COST; break;
+            case TIER_ONE:
+               pearlCost = TIER_ONE_PEARL_COST;
+               itemCost  = TIER_ONE_ITEM_COST;
+               break;
+            case TIER_TWO:
+               pearlCost = TIER_TWO_PEARL_COST;
+               itemCost = TIER_TWO_ITEM_COST;
+               break;
+            case TIER_THREE:
+               pearlCost = TIER_THREE_PEARL_COST;
+               itemCost = TIER_THREE_ITEM_COST;
+               break;
          }
       }
       else if (tab == productionTab)
@@ -204,9 +217,18 @@ public class LabManager : MonoBehaviour
          requiredItem = "Precision Lens";
          switch (tier)
          {
-            case TIER_ONE: pearlCost = PROD_T1_PEARL; itemCost = PROD_T1_LENS; break;
-            case TIER_TWO: pearlCost = PROD_T2_PEARL; itemCost = PROD_T2_LENS; break;
-            case TIER_THREE: pearlCost = PROD_T3_PEARL; itemCost = PROD_T3_LENS; break;
+            case TIER_ONE:
+               pearlCost = PROD_T1_PEARL;
+               itemCost = PROD_T1_LENS;
+               break;
+            case TIER_TWO:
+               pearlCost = PROD_T2_PEARL;
+               itemCost = PROD_T2_LENS;
+               break;
+            case TIER_THREE:
+               pearlCost = PROD_T3_PEARL;
+               itemCost = PROD_T3_LENS;
+               break;
          }
       }
       else if (tab == explorationTab)
@@ -284,19 +306,19 @@ public class LabManager : MonoBehaviour
    }
 
    public void ImplementTierOneInnovation(GameObject tabType)
-    {
-        /* Permanently increase base sale price of all items by 10%                              */
-        if (tabType == commerceTab)
-        { 
-           currentCommerceTier = TIER_ONE;
-           tradeHutManager.marketShiftMin = 1;
-           tradeHutManager.marketShiftMax = 2;
+   {
+      /* Permanently increase base sale price of all items by 10%                              */
+      if (tabType == commerceTab)
+      { 
+         currentCommerceTier = TIER_ONE;
+         tradeHutManager.marketShiftMin = 1;
+         tradeHutManager.marketShiftMax = 2;
 
-           foreach(Transform item in tradeHutManager.SellItems)
-              item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
+         foreach(Transform item in tradeHutManager.SellItems)
+            item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
 
-           ApplyDiscountToBuyItems(.2f);
-        }
+         ApplyDiscountToBuyItems(.2f);
+      }
       /* Permanently reduce gold spent on refinery upkeep by 50%                               */
       else if (tabType == productionTab)
       {
@@ -308,25 +330,25 @@ public class LabManager : MonoBehaviour
       }
       /* Tier 1 missions have succession increased by 25%                                      */
       else if (tabType == explorationTab)
-        {
-            Debug.Log("Tier 1 missions increased by 25%");
-        }
-        else
-        {
-            Debug.Log("There is no tab");
-        }
-    }
+      {
+         Debug.Log("Tier 1 missions increased by 25%");
+      }
+      else
+      {
+         Debug.Log("There is no tab");
+      }
+   }
 
-    public void ImplementTierTwoInnovation(GameObject tabType)
-    {
-        /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
-        if (tabType == commerceTab)
-        {
-           TradeHutManager.Instance.marketShiftMin = 3;
-           TradeHutManager.Instance.marketShiftMax = 5;
+   public void ImplementTierTwoInnovation(GameObject tabType)
+   {
+      /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
+      if (tabType == commerceTab)
+      {
+         TradeHutManager.Instance.marketShiftMin = 3;
+         TradeHutManager.Instance.marketShiftMax = 5;
 
-           tradeHutManager.RecycleButton.gameObject.SetActive(true);
-        }
+         tradeHutManager.RecycleButton.gameObject.SetActive(true);
+      }
 
       /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
       /*    bonus item upon crafting a single item                                             */
@@ -340,36 +362,39 @@ public class LabManager : MonoBehaviour
       }
       /* Permanently increase gold by +15 per turn                                             */
       else if (tabType == explorationTab)
-        {
-            Debug.Log("Permanently increase gold by +15 per turn");
-        }
-        else
-        {
-            Debug.Log("There is no tab");
-        }
-    }
+      {
+         Debug.Log("Permanently increase gold by +15 per turn");
+      }
+      else
+      {
+         Debug.Log("There is no tab");
+      }
+   }
 
-    public void ImplementTierThreeInnovation(GameObject tabType)
-    {
-       int crudeToolSellValueIncrease     = Mathf.CeilToInt(GetItemValue(ItemType.CrudeTool) * 1.2f) - GetItemValue(ItemType.CrudeTool),
-           harpoonSellValueIncrease       = Mathf.CeilToInt(GetItemValue(ItemType.Harpoon) * 1.2f) - GetItemValue(ItemType.Harpoon),
-           pressureValveSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.PressureValve) * 1.2f) - GetItemValue(ItemType.PressureValve),
-           engineSellValueIncrease        = Mathf.CeilToInt(GetItemValue(ItemType.Engine) * 1.2f) - GetItemValue(ItemType.Engine);
+   public void ImplementTierThreeInnovation(GameObject tabType)
+   {
+      int crudeToolSellValueIncrease     = Mathf.CeilToInt(GetItemValue(ItemType.CrudeTool) * 1.2f) - GetItemValue(ItemType.CrudeTool),
+          harpoonSellValueIncrease       = Mathf.CeilToInt(GetItemValue(ItemType.Harpoon) * 1.2f) - GetItemValue(ItemType.Harpoon),
+          pressureValveSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.PressureValve) * 1.2f) - GetItemValue(ItemType.PressureValve),
+          engineSellValueIncrease        = Mathf.CeilToInt(GetItemValue(ItemType.Engine) * 1.2f) - GetItemValue(ItemType.Engine);
 
-        if (tabType == commerceTab)
-        {
-           tradeHutManager.marketShiftMin = 5;
-           tradeHutManager.marketShiftMax = 10;
+      if (tabType == commerceTab)
+      {
+         tradeHutManager.marketShiftMin = 5;
+         tradeHutManager.marketShiftMax = 10;
 
-           // Removes the negative world events
-           tradeHutManager.isTier3BuffACtive = true;
+         // Removes the negative world events
+         tradeHutManager.isTier3BuffACtive = true;
 
-           // Raises sell items base price by 1.2 
-           TryIncreaseCrudeToolSellValue(crudeToolSellValueIncrease);
-           TryIncreaseHarpoonSellValue(harpoonSellValueIncrease);
-           TryIncreasePressureValveValue(pressureValveSellValueIncrease);
-           TryIncreaseEngineSellValue(engineSellValueIncrease);
-        }
+         // Raises sell items base price by 1.2 
+         TryIncreaseCrudeToolSellValue(crudeToolSellValueIncrease);
+         TryIncreaseHarpoonSellValue(harpoonSellValueIncrease);
+         TryIncreasePressureValveValue(pressureValveSellValueIncrease);
+         TryIncreaseEngineSellValue(engineSellValueIncrease);
+
+         // Unlock head of the submarine in victory map
+         headUnlocked = true;
+      }
       /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
       else if (tabType == productionTab)
       {
@@ -378,86 +403,88 @@ public class LabManager : MonoBehaviour
          {
             ForgeManager.Instance.UnlockReduceCraftingTime();
          }
+         // Unlock body of the submarine in victory map
+        bodyUnlocked = true;
       }
       /* Decrease search costs by 50%                                                          */
       else if (tabType == explorationTab)
-        {
-            Debug.Log("Decrease search costs by 50%");
-        }
-        else
-        {
-            Debug.Log("There is no tab");
-        }
-    }
+      {
+         Debug.Log("Decrease search costs by 50%");
+         // Unlock tail of the submarine in victory map
+         tailUnlocked = true;
+      }
+      else
+      {
+         Debug.Log("There is no tab");
+      }
+   }
 
-    /* Unlock the next tier node upon buying the previous tier node                              */
-    public void UnlockNextNode(GameObject tab, int tier)
-    {
-        Color currentColor;
+   /* Unlock the next tier node upon buying the previous tier node                              */
+   public void UnlockNextNode(GameObject tab, int tier)
+   {
+      Color currentColor;
 
-        /* Get rid of the tier 2 lock and turn on buttons and text                               */
-        if (tier == 2)
-        {
-            tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
+      /* Get rid of the tier 2 lock and turn on buttons and text                               */
+      if (tier == 2)
+      {
+         tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
 
-            currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
-            currentColor.a = 1.0f;
-            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
-            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().interactable = true;
+         currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
+         currentColor.a = 1.0f;
+         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
+         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().interactable = true;
 
-            currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
-            currentColor.a = 1.0f;
-            tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
-            
-        }
-        /* Get ride of the tier 3 lock and turn on buttons and text                              */
-        else
-        {
-            if (tier != 3)
-            {
-                Debug.Log("Accessing wrong tier node");
-                return;
-            }
-            tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
+         currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
+         currentColor.a = 1.0f;
+         tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;      
+      }
+      /* Get ride of the tier 3 lock and turn on buttons and text                              */
+      else
+      {
+         if (tier != 3)
+         {
+            Debug.Log("Accessing wrong tier node");
+            return;
+         }
+         tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
 
-            currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
-            currentColor.a = 255;
-            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
-            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
+         currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
+         currentColor.a = 255;
+         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
+         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
 
-            currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
-            currentColor.a = 255;
-            tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+         currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
+         currentColor.a = 255;
+         tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+      }
+   }
 
-        }
-    }
+   /* Return to the initial tab upon clicking the back arrow button                             */
+   private void BackToInitialTab(GameObject tab)
+   {
+      tab.gameObject.SetActive(false);
+      initialTab.gameObject.SetActive(true);
+   }
 
-    /* Return to the initial tab upon clicking the back arrow button                             */
-    private void BackToInitialTab(GameObject tab)
-    {
-        tab.gameObject.SetActive(false);
-        initialTab.gameObject.SetActive(true);
-    }
+   /* Open up the info panel                                                                    */
+   private void ShowInfoPanel() 
+   {
+      infoPanel.gameObject.SetActive(true);
+   }
 
-    /* Open up the info panel                                                                    */
-    private void ShowInfoPanel() 
-    {
-        infoPanel.gameObject.SetActive(true);
-    }
+   /* Close the research panel                                                                  */
+   private void CloseInnovatePanel() 
+   {
+      commerceTab.gameObject.SetActive(false);
+      productionTab.gameObject.SetActive(false);
+      explorationTab.gameObject.SetActive(false);
+      initialTab.gameObject.SetActive(true);
+      innovatePanel.gameObject.SetActive(false);
+   }
 
-    /* Close the research panel                                                                  */
-    private void CloseInnovatePanel() 
-    {
-        commerceTab.gameObject.SetActive(false);
-        productionTab.gameObject.SetActive(false);
-        explorationTab.gameObject.SetActive(false);
-        initialTab.gameObject.SetActive(true);
-        innovatePanel.gameObject.SetActive(false);
-    }
-
-    /* Close the info panel                                                                      */
-    private void CloseInfoPanel()
-    {
-        infoPanel.gameObject.SetActive(false);
-    }
+   /* Close the info panel                                                                      */
+   private void CloseInfoPanel()
+   {
+      infoPanel.gameObject.SetActive(false);
+   }
 }
