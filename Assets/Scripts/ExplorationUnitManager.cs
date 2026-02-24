@@ -376,18 +376,27 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowExplorationPanel()
    {
       explorePanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    //
    private void ShowInfoPanel()
    {
       infoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    //
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    // Shows the event results panel with the all results from an event
@@ -485,18 +494,27 @@ public class ExplorationUnitManager : MonoBehaviour
    private void CloseExplorationPanel()
    {
       explorePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    // closes the info panel
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    // closes the upgrade panel
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    // closes the decision panel
