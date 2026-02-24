@@ -30,6 +30,7 @@ public class ExplorationUnitManager : MonoBehaviour
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
+   const int UPGRADE_PEARLS = 100;
 
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
@@ -101,8 +102,11 @@ public class ExplorationUnitManager : MonoBehaviour
             if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
-               yesButton.interactable = !isExploring;
-               if(!isExploring)
+               bool hasEnoughPearls = InventoryManager.Instance != null && InventoryManager.Instance.pearlCount >= UPGRADE_PEARLS;
+               bool isNotMaxLevel = shipManager.shipLevel < 3;
+               bool canUpgrade = !isExploring && hasEnoughPearls && isNotMaxLevel;
+               yesButton.interactable = canUpgrade;
+               if(canUpgrade)
                   yesButton.onClick.AddListener(() => ConfirmUpgrade());
             }
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
@@ -128,9 +132,7 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    public void ConfirmUpgrade()
    {
-      //if (inventory has enough resources to upgrade)
-      //{
-      //   spend resources needed to upgrade
+      InventoryManager.Instance.TrySpendPearl(UPGRADE_PEARLS);
       shipManager.UpgradeShip();
       upgradePanel.gameObject.SetActive(false);
 
