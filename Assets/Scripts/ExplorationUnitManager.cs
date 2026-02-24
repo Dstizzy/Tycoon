@@ -1,8 +1,9 @@
+using System.Reflection;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
@@ -490,18 +491,21 @@ public class ExplorationUnitManager : MonoBehaviour
    private void CloseExplorationPanel()
    {
       explorePanel.gameObject.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 
    // closes the info panel
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 
    // closes the upgrade panel
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 
    // closes the decision panel
