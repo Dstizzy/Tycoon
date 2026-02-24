@@ -152,9 +152,6 @@ public class LabManager : MonoBehaviour
             case INFO_BUTTON:
                 CloseInfoPanel();
                 break;
-            case UPGRADE_BUTTON:
-                Debug.Log("Building Panel: Info requested.");
-                break;
             default:
                 Debug.Log("Building Panel: Unknown button ID.");
                 break;
@@ -169,8 +166,10 @@ public class LabManager : MonoBehaviour
         pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
         pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
         pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
-
-    }
+        
+        if (MainUIManager.mainUI != null)
+           MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
 
     /* Show the corresponding path tab upon clicking the path button                             */
     private void ShowPath(GameObject tab)
@@ -443,7 +442,10 @@ public class LabManager : MonoBehaviour
     private void ShowInfoPanel() 
     {
         infoPanel.gameObject.SetActive(true);
-    }
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
 
     /* Close the research panel                                                                  */
     private void CloseInnovatePanel() 
@@ -459,5 +461,8 @@ public class LabManager : MonoBehaviour
     private void CloseInfoPanel()
     {
         infoPanel.gameObject.SetActive(false);
-    }
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
+   }
 }
