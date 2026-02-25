@@ -383,18 +383,27 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowExplorationPanel()
    {
       explorePanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    //
    private void ShowInfoPanel()
    {
       infoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    //
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    // Shows the event results panel with the all results from an event
@@ -485,6 +494,9 @@ public class ExplorationUnitManager : MonoBehaviour
    private void CloseExplorationPanel()
    {
       explorePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
       PopUpManager.Instance.EnablePlayerInput();
    }
 
@@ -492,6 +504,9 @@ public class ExplorationUnitManager : MonoBehaviour
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
       PopUpManager.Instance.EnablePlayerInput();
    }
 
@@ -500,6 +515,9 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       upgradePanel.gameObject.SetActive(false);
       PopUpManager.Instance.EnablePlayerInput();
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    // closes the decision panel

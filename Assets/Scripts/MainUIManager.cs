@@ -12,6 +12,7 @@ public class MainUIManager : MonoBehaviour
    public Button[] DropdownButtons;
    public Button   InventoryButton;
    public Button   victoryButton;
+   public Button   NextButton;
 
    // UI elements on main UI
    [SerializeField] private TextMeshProUGUI pearCountText;
@@ -22,9 +23,18 @@ public class MainUIManager : MonoBehaviour
    // State variable to track dropdown visibility
    private bool isVisible = false;
 
+   public static MainUIManager mainUI;
+
    // Singleton instance
    private void Awake()
    {
+      if (mainUI != null && mainUI != this)
+         Destroy(this.gameObject);
+      else 
+      {
+         mainUI = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
 
       if (InventoryManager.Instance == null)
       {
@@ -176,12 +186,24 @@ public class MainUIManager : MonoBehaviour
    public void GoBack()
    {
       if (SceneHistory.Instance != null)
-      {
           SceneHistory.Instance.LoadPreviousScene();
-      }
       else
-      {
           Debug.LogError("SceneHistory is missing from the scene!");
-      }
+   }
+
+   public void SetMainButtonsInteractable(bool interactable)
+   {
+      if (MainMenuButton != null)
+         MainMenuButton.interactable = interactable;
+      if (InventoryButton != null)
+         InventoryButton.interactable = interactable;
+      if (victoryButton != null)
+         victoryButton.interactable = interactable;
+      if (NextButton!= null)
+         NextButton.interactable = interactable;
+      if (DropdownButtons != null)
+         foreach (var btn in DropdownButtons)
+            if (btn != null)
+               btn.interactable = interactable;
    }
 }

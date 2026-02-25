@@ -405,6 +405,9 @@ public class ForgeManager : MonoBehaviour
          t3.GetComponent<Button>().onClick.AddListener(() => OpenTierPanel(3));
       }
       else Debug.LogError("Could not find button 'Tier3' inside TierButtons!");
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void UpdateTierButtonState(Transform btnTransform, int requiredLevel, bool isUnlocked)
@@ -431,7 +434,11 @@ public class ForgeManager : MonoBehaviour
    private void ShowInfoPanel()
    {
       infoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
+
    private void ShowUpgradePanel()
    {
       int upgradeCost = 0;
@@ -481,25 +488,39 @@ public class ForgeManager : MonoBehaviour
          Transform yesBtn = upgradePanel.Find("YesButton");
          if (yesBtn != null) yesBtn.gameObject.SetActive(false);
       }
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
    private void CloseCraftPanel()
    {
       craftPanel.gameObject.SetActive(false);
       if (errorPanel != null) errorPanel.SetActive(false);
 
-      if (activeQueuePanel != null) activeQueuePanel.SetActive(false);
+      if (activeQueuePanel != null) 
+         activeQueuePanel.SetActive(false);
 
       stagingItems.Clear();
 
-      if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
+      if (currentCraftWindow != null)
+         Destroy(currentCraftWindow.gameObject);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    public void CloseAllTierPanels()
