@@ -38,21 +38,19 @@ public class LabManager : MonoBehaviour
 
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
-    [SerializeField] private Transform infoPanel;
+   [SerializeField] private Transform infoPanel;
 
-    [SerializeField] private GameObject pathButtons;
-    [SerializeField] private GameObject initialTab;
-    [SerializeField] private GameObject commerceTab;
-    [SerializeField] private GameObject productionTab;
-    [SerializeField] private GameObject explorationTab;
- 
+   [SerializeField] private GameObject pathButtons;
+   [SerializeField] private GameObject initialTab;
+   [SerializeField] private GameObject commerceTab;
+   [SerializeField] private GameObject productionTab;
+   [SerializeField] private GameObject explorationTab;
+   [SerializeField] private ShipManager shipManager;
 
    /* Public variables                                                                          */
    public static int currentCommerceTier { get; private set; } = 0;
 
-
    TradeHutManager tradeHutManager;
-   ShipManager shipManager;
    
    public static LabManager labManager;
 
@@ -319,7 +317,8 @@ public class LabManager : MonoBehaviour
       /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
-         Debug.Log("Tier 1 missions increased by 25%");
+         if(shipManager != null)
+            shipManager.ApplyLabShipBonus(10, 2);
       }
       else
       {

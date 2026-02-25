@@ -23,6 +23,10 @@ public class ShipManager : MonoBehaviour
    private int[] maxHealthByLevel = { 0, 40, 60, 90 };
    private int[] maxFuelByLevel = { 0, 6, 9, 12 };
 
+   // Lab bonuses
+   public int labBonusHealth = 0;
+   public int labBonusFuel = 0;
+
    [Header("Current Stats")]
    int currentFuel;
    int currentHealth;
@@ -85,9 +89,9 @@ public class ShipManager : MonoBehaviour
    // Update the ship's stats to the ship's current level
    public void UpdateStatsToLevel()
    {
-      maxHealth = maxHealthByLevel[shipLevel];
+      maxHealth = maxHealthByLevel[shipLevel] + labBonusHealth;
       currentHealth = maxHealth;
-      maxFuel = maxFuelByLevel[shipLevel];
+      maxFuel = maxFuelByLevel[shipLevel] + labBonusFuel;
       currentFuel = maxFuel;
 
       UpdateShipUI();
@@ -104,6 +108,13 @@ public class ShipManager : MonoBehaviour
          exploreFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
       if (exploreHealthText != null)
          exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
+   }
+
+   public void ApplyLabShipBonus(int healthBonus, int fuelBonus)
+   {
+      labBonusHealth += healthBonus;
+      labBonusFuel += fuelBonus;
+      UpdateStatsToLevel();
    }
 
    public RoundResults ApplyEventResult(EventChoice results)

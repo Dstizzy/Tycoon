@@ -23809,6 +23809,7 @@ MonoBehaviour:
   - {fileID: 1487971588}
   InventoryButton: {fileID: 281404791}
   victoryButton: {fileID: 852075032}
+  NextButton: {fileID: 0}
   pearCountText: {fileID: 222751652}
   oreCountText: {fileID: 1350818821}
   erroPanel: {fileID: 0}
@@ -30678,6 +30679,8 @@ MonoBehaviour:
   exploreFuelText: {fileID: 2039753315}
   exploreHealthText: {fileID: 2014760689}
   shipLevel: 1
+  labBonusHealth: 0
+  labBonusFuel: 0
 --- !u!114 &948325537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59100,7 +59103,7 @@ MonoBehaviour:
   mainCam: {fileID: 271219737}
   ForgeCanvas: {fileID: 117981888}
   OreRefineryCanvas: {fileID: 571826299}
-  ExplorationUnitCanvas: {fileID: 309928032}
+  ExplorationUnitCanvas: {fileID: 1071417867}
   shipManager: {fileID: 0}
 --- !u!4 &1910798897
 Transform:
@@ -65329,6 +65332,7 @@ MonoBehaviour:
   commerceTab: {fileID: 1313649420}
   productionTab: {fileID: 797391855}
   explorationTab: {fileID: 990049669}
+  shipManager: {fileID: 0}
 --- !u!1 &2107577280
 GameObject:
   m_ObjectHideFlags: 0
