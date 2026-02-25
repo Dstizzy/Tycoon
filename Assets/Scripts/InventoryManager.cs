@@ -1192,6 +1192,9 @@ public class InventoryManager : MonoBehaviour
       ResourcePanel.gameObject.SetActive(true);
       // Added for camera fix
       PopUpManager.Instance.DisablePlayerInput();
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
    
    public void ShowResourcePanel()
@@ -1232,6 +1235,9 @@ public class InventoryManager : MonoBehaviour
 
       if(CraftWindow.gameObject.activeSelf)
          CloseCraftsPanel();
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseResourcePanel()
    {
