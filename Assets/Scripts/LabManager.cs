@@ -228,6 +228,7 @@ public class LabManager : MonoBehaviour
          explorationTab.gameObject.SetActive(false);
       } 
    }
+
    private void HandleInnovation(GameObject tab, int tier)
    {
       int pearlCost = 0, itemCost = 0;
