@@ -90,34 +90,37 @@ public class MainUIManager : MonoBehaviour
    //Shows the victory panel and sets up the buttons for the submarine assembly
    public void ShowVictoryPanel()
    {
+      bool isHeadReady,
+           isBodyReady;
+
       if (victoryPanel != null)
       {
          victoryPanel.SetActive(true);
          PopUpManager.Instance.DisablePlayerInput();
 
-         // Auomatically turn on parts based on lab paths
+         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
+         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
+                                               && InventoryManager.Instance.pressureValveCount >= 5
+                                               && InventoryManager.Instance.precisionLensCount >= 5;
+
          Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
          if (skeleton != null)
          {
-            skeleton.Find("SubmarineHead").gameObject.SetActive(LabManager.headUnlocked);
-            skeleton.Find("SubmarineBody").gameObject.SetActive(LabManager.bodyUnlocked);
+            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
+            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
             skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
          }
 
-         Transform questionMark = victoryPanel.transform.Find("QuestionMark");
-         if (questionMark != null)
+         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
+         if (qestionMark != null)
          {
-            if (LabManager.headUnlocked || LabManager.bodyUnlocked || LabManager.tailUnlocked)
-            {
-               questionMark.gameObject.SetActive(false);
-            }
+            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
+               qestionMark.gameObject.SetActive(false);
             else
-            {
-               questionMark.gameObject.SetActive(true);
-            }
+               qestionMark.gameObject.SetActive(true);
          }
 
-         if (LabManager.headUnlocked && LabManager.bodyUnlocked && LabManager.tailUnlocked)
+         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
          {
             ActivateFinalForm();
          }
