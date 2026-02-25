@@ -17,18 +17,13 @@ public class LabManager : MonoBehaviour
    public const int TIER_ONE = 1;
    public const int TIER_TWO = 2;
    public const int TIER_THREE = 3;
-   public const int TIER_ONE_PEARL_COST = 100;
-   public const int TIER_ONE_ITEM_COST = 10;
-   public const int TIER_TWO_PEARL_COST = 350;
-   public const int TIER_TWO_ITEM_COST = 25;
-   public const int TIER_THREE_PEARL_COST = 700;
-   public const int TIER_THREE_ITEM_COST = 50;
-   public const int PROD_T1_PEARL = 400;
-   public const int PROD_T1_LENS = 2;
-   public const int PROD_T2_PEARL = 1000;
-   public const int PROD_T2_LENS = 5;
-   public const int PROD_T3_PEARL = 3000;
-   public const int PROD_T3_LENS = 10;
+
+   public const int T1_PEARL = 400;
+   public const int T1_LENS = 2;
+   public const int T2_PEARL = 1000;
+   public const int T2_LENS = 5;
+   public const int T3_PEARL = 3000;
+   public const int T3_LENS = 10;
    
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
@@ -191,52 +186,24 @@ public class LabManager : MonoBehaviour
    private void HandleInnovation(GameObject tab, int tier)
    {
       int pearlCost = 0, itemCost = 0;
-      string requiredItem = "";
+      string requiredItem = "Precision Lens";
 
-      if (tab == commerceTab)
-      {
-         requiredItem = "Crude Tool"; // Put your commerce item requirement here if needed
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost = TIER_ONE_PEARL_COST;
-               itemCost  = TIER_ONE_ITEM_COST;
+               pearlCost = T1_PEARL;
+               itemCost  = T1_LENS;
                break;
             case TIER_TWO:
-               pearlCost = TIER_TWO_PEARL_COST;
-               itemCost = TIER_TWO_ITEM_COST;
+               pearlCost = T2_PEARL;
+               itemCost = T2_LENS;
                break;
             case TIER_THREE:
-               pearlCost = TIER_THREE_PEARL_COST;
-               itemCost = TIER_THREE_ITEM_COST;
+               pearlCost = T3_PEARL;
+               itemCost = T3_LENS;
                break;
          }
-      }
-      else if (tab == productionTab)
-      {
-         requiredItem = "Precision Lens";
-         switch (tier)
-         {
-            case TIER_ONE:
-               pearlCost = PROD_T1_PEARL;
-               itemCost = PROD_T1_LENS;
-               break;
-            case TIER_TWO:
-               pearlCost = PROD_T2_PEARL;
-               itemCost = PROD_T2_LENS;
-               break;
-            case TIER_THREE:
-               pearlCost = PROD_T3_PEARL;
-               itemCost = PROD_T3_LENS;
-               break;
-         }
-      }
-      else if (tab == explorationTab)
-      {
-         requiredItem = "";
-         pearlCost = 0; // Add exploration costs here later
-         itemCost = 0;
-      }
+      
 
       // Attempt to unlock tiers with the corresponding cost
       if (PerformBuy(pearlCost, itemCost, requiredItem))
