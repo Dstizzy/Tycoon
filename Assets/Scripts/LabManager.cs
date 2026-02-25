@@ -1,6 +1,6 @@
 /* libraries                                                                                     */
 using System;
-
+using System.ComponentModel;
 using TMPro;
 
 using UnityEngine;
@@ -29,6 +29,12 @@ public class LabManager : MonoBehaviour
    public const int PROD_T2_LENS = 5;
    public const int PROD_T3_PEARL = 3000;
    public const int PROD_T3_LENS = 10;
+   public const int EXPL_T1_PEARL = 0;
+   public const int EXPL_T1_ITEM = 0;
+   public const int EXPL_T2_PEARL = 0;
+   public const int EXPL_T2_ITEM = 0;
+   public const int EXPL_T3_PEARL = 0;
+   public const int EXPL_T3_ITEM = 0;
 
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
@@ -46,6 +52,7 @@ public class LabManager : MonoBehaviour
 
 
    TradeHutManager tradeHutManager;
+   ShipManager shipManager;
    
    public static LabManager labManager;
 
@@ -212,8 +219,12 @@ public class LabManager : MonoBehaviour
       else if (tab == explorationTab)
       {
          requiredItem = "";
-         pearlCost = 0; // Add exploration costs here later
-         itemCost = 0;
+         switch (tier)
+         {
+            case TIER_ONE: pearlCost = EXPL_T1_PEARL; itemCost = EXPL_T1_ITEM; break;
+            case TIER_TWO: pearlCost = EXPL_T2_PEARL; itemCost = EXPL_T2_ITEM; break;
+            case TIER_THREE: pearlCost = EXPL_T3_PEARL; itemCost = EXPL_T3_ITEM; break;
+         }
       }
 
       // Attempt to unlock tiers with the corresponding cost
@@ -306,15 +317,15 @@ public class LabManager : MonoBehaviour
             OreRefinery_Manager.Instance.ReduceJamming(5);
          }
       }
-      /* Tier 1 missions have succession increased by 25%                                      */
+      /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
-        {
-            Debug.Log("Tier 1 missions increased by 25%");
-        }
-        else
-        {
-            Debug.Log("There is no tab");
-        }
+      {
+         Debug.Log("Tier 1 missions increased by 25%");
+      }
+      else
+      {
+          Debug.Log("There is no tab");
+      }
     }
 
     public void ImplementTierTwoInnovation(GameObject tabType)
@@ -338,7 +349,7 @@ public class LabManager : MonoBehaviour
             ForgeManager.Instance.UnlockOverclock();
          }
       }
-      /* Permanently increase gold by +15 per turn                                             */
+      /* Unlocks chance to find crafts on explorations                                         */
       else if (tabType == explorationTab)
         {
             Debug.Log("Permanently increase gold by +15 per turn");
@@ -379,7 +390,7 @@ public class LabManager : MonoBehaviour
             ForgeManager.Instance.UnlockReduceCraftingTime();
          }
       }
-      /* Decrease search costs by 50%                                                          */
+      /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
         {
             Debug.Log("Decrease search costs by 50%");

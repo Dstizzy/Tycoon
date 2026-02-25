@@ -20,8 +20,8 @@ public class ShipManager : MonoBehaviour
 
    [Header("Ship Level Settings")]
    public int shipLevel = 1;
-   private int[] maxHealthByLevel = { 0, 60, 80, 100 };
-   private int[] maxFuelByLevel = { 0, 7, 10, 15 };
+   private int[] maxHealthByLevel = { 0, 40, 60, 90 };
+   private int[] maxFuelByLevel = { 0, 6, 9, 12 };
 
    [Header("Current Stats")]
    int currentFuel;
@@ -30,7 +30,6 @@ public class ShipManager : MonoBehaviour
    int maxFuel;
    int currentPearl;
    int currentOre;
-   int currentCrystal;
    int currentHarpoon;
    int currentDepth = 1;
 
@@ -38,7 +37,6 @@ public class ShipManager : MonoBehaviour
    {
       public int pearlChanged;
       public int oreChanged;
-      public int crystalChanged;
       public int healthChanged;
       public int fuelChanged;
    }
@@ -65,14 +63,12 @@ public class ShipManager : MonoBehaviour
    public int GetDepth() { return currentDepth; }
    public int GetPearl() { return currentPearl; }
    public int GetOre() { return currentOre; }
-   public int GetCrystal() {  return currentCrystal; }
    public int GetHarpoon() {  return currentHarpoon; }
 
    public bool CanAfford(EventChoice choice)
    {
       if(choice.oreChange < 0 && GetOre() < Mathf.Abs(choice.oreChange)) { return false; }
       if (choice.pearlChange < 0 && GetPearl() < Mathf.Abs(choice.pearlChange)) { return false; }
-      if (choice.crystalChange < 0 && GetCrystal() < Mathf.Abs(choice.crystalChange)) { return false; }
       return true;
    }
 
@@ -115,7 +111,6 @@ public class ShipManager : MonoBehaviour
       RoundResults finalResults = new RoundResults();
 
       int actualPearl = results.pearlChange + UnityEngine.Random.Range(results.minPearl, results.maxPearl + 1);
-      int actualCrystal = results.crystalChange;
       int actualOre = 0;
       if (results.loseOre)
          actualOre = -currentOre;
@@ -124,14 +119,12 @@ public class ShipManager : MonoBehaviour
 
       currentPearl += actualPearl;
       currentOre += actualOre;
-      currentCrystal += actualCrystal;
       currentHealth += results.healthChange;
       currentFuel += results.fuelChange;
       currentHarpoon += results.harpoonChange;
 
       finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
-      finalResults.crystalChanged = actualCrystal;
       finalResults.healthChanged = results.healthChange;
       finalResults.fuelChanged = results.fuelChange;
 
@@ -190,7 +183,6 @@ public class ShipManager : MonoBehaviour
       currentDepth = 1;
       currentPearl = 0;
       currentOre = 0;
-      currentCrystal = 0;
       currentHarpoon = 0;
       MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
 
@@ -295,8 +287,6 @@ public class ShipManager : MonoBehaviour
          totalRewards += $"Pearl: {currentPearl}\n";
       if (currentOre > 0)
          totalRewards += $"Ore: {currentOre}\n";
-      if (currentCrystal > 0)
-         totalRewards += $"Crystal: {currentCrystal}\n";
       if (currentHarpoon > 0)
          totalRewards += $"Harpoons: {currentHarpoon}\n";
       finalRewards.text = totalRewards;
@@ -313,8 +303,6 @@ public class ShipManager : MonoBehaviour
             InventoryManager.Instance.TryAddPearl(currentPearl);
          if (currentOre > 0)
             InventoryManager.Instance.TryAddOre(currentOre);
-         if (currentCrystal > 0)
-            InventoryManager.Instance.TryAddCrystal(currentCrystal);
          if (currentHarpoon > 0)
             InventoryManager.Instance.TryAddHarpoon(currentHarpoon);
       }

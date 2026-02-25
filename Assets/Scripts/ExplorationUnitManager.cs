@@ -87,10 +87,11 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-               bool canExplore = !isExploring && hasDivingBell;
-               exploreButton.interactable = canExplore;
-               if (canExplore)
+             //  bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+              // bool canExplore = !isExploring && hasDivingBell;
+             //  exploreButton.interactable = canExplore;
+             //  if (canExplore)
+             if(!isExploring)
                   exploreButton.onClick.AddListener(() => StartExploration());
             }
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
@@ -241,7 +242,7 @@ public class ExplorationUnitManager : MonoBehaviour
          isWaiting = true;
 
       // If anything changed, shows the results of the decision
-      if (results.pearlChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0 || results.crystalChanged != 0)
+      if (results.pearlChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0)
          ShowResultsPanel(results, currentNode);
       // Otherwise, move on to the next turn
       else
@@ -414,11 +415,6 @@ public class ExplorationUnitManager : MonoBehaviour
          string sign = results.oreChanged > 0 ? "+" : "";
          resultsText += $"Ore: {sign}{results.oreChanged}\n";
       }
-      if(results.crystalChanged != 0)
-      {
-         string sign = results.crystalChanged > 0 ? "+" : "";
-         resultsText += $"Crystal: {sign}{results.crystalChanged}\n";
-      }
       if(results.healthChanged != 0)
       {
          string sign = results.healthChanged > 0 ? "+" : "";
@@ -470,8 +466,6 @@ public class ExplorationUnitManager : MonoBehaviour
          currentInventory += $"Pearl: {shipManager.GetPearl()}\n";
       if (shipManager.GetOre() > 0)
          currentInventory += $"Ore: {shipManager.GetOre()}\n";
-      if (shipManager.GetCrystal() > 0)
-         currentInventory += $"Cystal: {shipManager.GetCrystal()}\n";
       if (shipManager.GetHarpoon() > 0)
          currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
 
