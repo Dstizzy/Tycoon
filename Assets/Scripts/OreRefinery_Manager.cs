@@ -272,6 +272,7 @@ public class OreRefinery_Manager : MonoBehaviour
          ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, MessageTypes.ResultMessage);
          return;
       }
+
       if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls && InventoryManager.Instance.oreCount >= NextUpgradeCostInOre)
       {
          InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
