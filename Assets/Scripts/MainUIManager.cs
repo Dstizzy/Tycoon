@@ -60,6 +60,15 @@ public class MainUIManager : MonoBehaviour
          ShowVictoryPanel();
       });
 
+      if (victoryButton != null)
+      {
+         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
+         {
+            victoryPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+         });
+      }
+
       ChangePearlCountText(InventoryManager.Instance.pearlCount);
       ChangeOreCountText(InventoryManager.Instance.oreCount);
       InventoryManager.Instance.OnOreCountChanged += ChangeOreCountText;
@@ -91,24 +100,40 @@ public class MainUIManager : MonoBehaviour
    //Shows the victory panel and sets up the buttons for the submarine assembly
    public void ShowVictoryPanel()
    {
+      bool isHeadReady,
+           isBodyReady;
+
       if (victoryPanel != null)
       {
          victoryPanel.SetActive(true);
-         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => {
-            victoryPanel.SetActive(false);
-            PopUpManager.Instance.EnablePlayerInput();
-         });
-
          PopUpManager.Instance.DisablePlayerInput();
 
-         // Activates the head
-         victoryPanel.transform.Find("SubmarineSkel/HeadButton").GetComponent<Button>().onClick.AddListener(() => ActivateHead());
+         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
+         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
+                                               && InventoryManager.Instance.pressureValveCount >= 5
+                                               && InventoryManager.Instance.precisionLensCount >= 5;
 
-         // Activates the body
-         victoryPanel.transform.Find("SubmarineSkel/BodyButton").GetComponent<Button>().onClick.AddListener(() => ActivateBody());
+         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
+         if (skeleton != null)
+         {
+            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
+            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
+            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
+         }
 
-         // Activates the tail
-         victoryPanel.transform.Find("SubmarineSkel/TailButton").GetComponent<Button>().onClick.AddListener(() => ActivateTail());
+         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
+         if (qestionMark != null)
+         {
+            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
+               qestionMark.gameObject.SetActive(false);
+            else
+               qestionMark.gameObject.SetActive(true);
+         }
+
+         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
+         {
+            ActivateFinalForm();
+         }
       }
    }
 
