@@ -424,7 +424,12 @@ public class ExplorationUnitManager : MonoBehaviour
          string sign = results.oreChanged > 0 ? "+" : "";
          resultsText += $"Ore: {sign}{results.oreChanged}\n";
       }
-      if(results.healthChanged != 0)
+      if (results.harpoonChanged != 0)
+      {
+         string sign = results.harpoonChanged > 0 ? "+" : "";
+         resultsText += $"Harpoons: {sign}{results.harpoonChanged}\n";
+      }
+      if (results.healthChanged != 0)
       {
          string sign = results.healthChanged > 0 ? "+" : "";
          resultsText += $"Health: {sign}{results.healthChanged}\n";

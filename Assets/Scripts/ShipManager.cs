@@ -6,6 +6,11 @@ using JetBrains.Annotations;
 
 public class ShipManager : MonoBehaviour
 {
+   // Symbolic Constants
+   public const int LAB_T1_HEALTH_BONUS = 10;
+   public const int LAB_T1_FUEL_BONUS = 2;
+   public const int LAB_T3_LOOT_MULTIPLIER = 2;
+
    [Header("UI References")]
    [SerializeField] private ExplorationUnitManager explorationUnitManager;
    [SerializeField] private Transform fuelPanel;
@@ -26,6 +31,7 @@ public class ShipManager : MonoBehaviour
    // Lab bonuses
    public int labBonusHealth = 0;
    public int labBonusFuel = 0;
+   public int labLootMultiplier = 1;
 
    [Header("Current Stats")]
    int currentFuel;
@@ -41,6 +47,7 @@ public class ShipManager : MonoBehaviour
    {
       public int pearlChanged;
       public int oreChanged;
+      public int harpoonChanged;
       public int healthChanged;
       public int fuelChanged;
    }
@@ -110,11 +117,16 @@ public class ShipManager : MonoBehaviour
          exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
    }
 
-   public void ApplyLabShipBonus(int healthBonus, int fuelBonus)
+   public void ApplyLabShipBonus()
    {
-      labBonusHealth += healthBonus;
-      labBonusFuel += fuelBonus;
+      labBonusHealth += LAB_T1_HEALTH_BONUS;
+      labBonusFuel += LAB_T1_FUEL_BONUS;
       UpdateStatsToLevel();
+   }
+
+   public void ApplyLabRewardBonus()
+   {
+      labLootMultiplier = LAB_T3_LOOT_MULTIPLIER;
    }
 
    public RoundResults ApplyEventResult(EventChoice results)
@@ -127,15 +139,24 @@ public class ShipManager : MonoBehaviour
          actualOre = -currentOre;
       else
          actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
+      int actualHarpoon = results.harpoonChange;
+
+      if (actualPearl > 0)
+         actualPearl *= labLootMultiplier;
+      if (actualOre > 0)
+         actualOre *= labLootMultiplier;
+      if (actualHarpoon > 0)
+         actualHarpoon *= labLootMultiplier;
 
       currentPearl += actualPearl;
       currentOre += actualOre;
+      currentHarpoon += actualHarpoon;
       currentHealth += results.healthChange;
       currentFuel += results.fuelChange;
-      currentHarpoon += results.harpoonChange;
 
       finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
+      finalResults.harpoonChanged = actualHarpoon;
       finalResults.healthChanged = results.healthChange;
       finalResults.fuelChanged = results.fuelChange;
 

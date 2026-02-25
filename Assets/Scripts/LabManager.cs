@@ -318,7 +318,7 @@ public class LabManager : MonoBehaviour
       else if (tabType == explorationTab)
       {
          if(shipManager != null)
-            shipManager.ApplyLabShipBonus(10, 2);
+            shipManager.ApplyLabShipBonus();
       }
       else
       {
@@ -391,7 +391,8 @@ public class LabManager : MonoBehaviour
       /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
         {
-            Debug.Log("Decrease search costs by 50%");
+         if (shipManager != null)
+            shipManager.ApplyLabRewardBonus();
         }
         else
         {
@@ -419,7 +420,7 @@ public class LabManager : MonoBehaviour
             tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
             
         }
-        /* Get ride of the tier 3 lock and turn on buttons and text                              */
+        /* Get rid of the tier 3 lock and turn on buttons and text                              */
         else
         {
             if (tier != 3)
