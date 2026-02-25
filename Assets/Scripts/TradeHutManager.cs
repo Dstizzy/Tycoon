@@ -1208,7 +1208,7 @@ public class TradeHutManager : MonoBehaviour
    }
 
    // Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel
-   public void RequestTradeHutPanel(int buttonID) 
+   public void RequestTradeHutPanel(int buttonID)
    {
       switch (buttonID) 
       {
@@ -1253,11 +1253,17 @@ public class TradeHutManager : MonoBehaviour
    {
       TradePanels.gameObject.SetActive(true);
       ShowSellPanel();
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void ShowInfoPanel() 
    {
       InfoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    public void ShowSellPanel() 
@@ -1316,7 +1322,6 @@ public class TradeHutManager : MonoBehaviour
 
    private void CloseTradePanel() 
    {
-      TradePanels.gameObject.SetActive(false);
 
       // Destroy the instantiated sell item/window instance if it exists
       if (currentSellItem != null) 
@@ -1335,23 +1340,34 @@ public class TradeHutManager : MonoBehaviour
       crudeToolSellCount = MIN_SELL_ITEM_COUNT;
       harpoonSellCount   = MIN_SELL_ITEM_COUNT;
       engineSellCount    = MIN_SELL_ITEM_COUNT;
-      rawOreExchange       = MIN_BUY_ITEM_COUNT;
+      rawOreExchange     = MIN_BUY_ITEM_COUNT;
 
       if (SellWindow.gameObject.activeSelf)
          CloseSellWindow();
 
       if (BuyWindow.gameObject.activeSelf)
          CloseBuyWindow();
+
+      TradePanels.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
-   private void CloseInfoPanel() 
+   private void CloseInfoPanel()
    {
       InfoPanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    private void CloseUpgradePanel() 
    {
       UpgradePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    private void CloseSellPanel() 

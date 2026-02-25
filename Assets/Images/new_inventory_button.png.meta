@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1d9bc2d7580348a4ebd19a3f868999b0
+guid: 661441a9dcf099943ba3769fcfe6ead2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4390275901456637671
-    second: result_panel_0
+      213: -674765195587872859
+    second: new_inventory_button_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: result_panel_0
+      name: new_inventory_button_0
       rect:
         serializedVersion: 2
-        x: 29
-        y: 75
-        width: 602
-        height: 224
+        x: 213
+        y: 44
+        width: 249
+        height: 228
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 91128bb045b9213c0800000000000000
-      internalID: -4390275901456637671
+      spriteID: 5a7103231a0c2a6f0800000000000000
+      internalID: -674765195587872859
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8faead1a7ca5df0419b3865b360e8c20
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      result_panel_0: -4390275901456637671
+      new_inventory_button_0: -674765195587872859
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -108,21 +108,31 @@ public class OreRefinery_Manager : MonoBehaviour
    private void ShowInfoPanel()
    {
       infoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
-   //private void CloseTradePanel() {
-   //    refinePanel.gameObject.SetActive(false);
-   //}
+
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    // --- ADDED: Unsubscribe when destroyed ---
@@ -262,6 +272,7 @@ public class OreRefinery_Manager : MonoBehaviour
          ticker.ShowTicker("Ore Refinery is already at max level.", Color.white, MessageTypes.ResultMessage);
          return;
       }
+
       if (InventoryManager.Instance.pearlCount >= NextUpgradeCostInPearls && InventoryManager.Instance.oreCount >= NextUpgradeCostInOre)
       {
          InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);

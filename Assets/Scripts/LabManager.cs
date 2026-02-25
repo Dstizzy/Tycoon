@@ -71,15 +71,123 @@ public class LabManager : MonoBehaviour
          infoPanel.gameObject.SetActive(false);
       }
 
-      /* Set the research panel to inactive if it exists                                       */
-      if (innovatePanel == null) 
-      {
-         Debug.LogError("Innovate Panel is not assigned");
-      }
-      else 
-      {
-         innovatePanel.gameObject.SetActive(false);
-      }
+        /* Set the info panel to inactive if it exists                                           */
+        if (infoPanel == null) 
+        {
+            Debug.LogError("Info Panel is not assigned in the Inspector!");
+        } else 
+        {
+            infoPanel.gameObject.SetActive(false);
+        }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (innovatePanel == null) 
+        {
+            Debug.LogError("Innovate Panel is not assigned");
+        } else 
+        {
+            innovatePanel.gameObject.SetActive(false);
+        }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (initialTab == null)
+        {
+            Debug.LogError("Commerce Tab is not assigned");
+        }
+        else
+        {
+            initialTab.gameObject.SetActive(true);
+        }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (commerceTab == null)
+        {
+            Debug.LogError("Commerce Tab is not assigned");
+        }
+        else
+        {
+            commerceTab.gameObject.SetActive(false);
+        }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (productionTab == null)
+        {
+            Debug.LogError("Production Tab is not assigned");
+        }
+        else
+        {
+            productionTab.gameObject.SetActive(false);
+        }
+
+        /* Set the research panel to inactive if it exists                                       */
+        if (explorationTab == null)
+        {
+            Debug.LogError("Commerce Tab is not assigned");
+        }
+        else
+        {
+            explorationTab.gameObject.SetActive(false);
+        } 
+    }
+
+    /* Open up a lab panel upon clicking the corresponding button                                */
+    public void RequestLabPanel(int buttonID) 
+    {
+        switch (buttonID) {
+            case INNOVATE_BUTTON:
+                ShowInnovatePanel();
+                innovatePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INNOVATE_BUTTON));
+                break;
+            case INFO_BUTTON:
+                ShowInfoPanel();
+                infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INFO_BUTTON));
+                break;
+            default:
+                Debug.Log("Building Panel: Unknown button ID.");
+                break;
+        }
+    }
+
+    /* Close the lab panel upon clicking the exit button                                         */
+    public void CloseLabPanel(int buttonID) 
+    {
+        switch (buttonID) {
+            case INNOVATE_BUTTON:
+                CloseInnovatePanel();
+                break;
+            case INFO_BUTTON:
+                CloseInfoPanel();
+                break;
+            default:
+                Debug.Log("Building Panel: Unknown button ID.");
+                break;
+        }
+        PopUpManager.Instance.EnablePlayerInput();
+    }
+
+    /* Open up the research panel and assign the buttons in the initial panel                    */
+    private void ShowInnovatePanel() 
+    {
+        innovatePanel.gameObject.SetActive(true);
+        pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
+        pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
+        pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
+        
+        if (MainUIManager.mainUI != null)
+           MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
+
+    /* Show the corresponding path tab upon clicking the path button                             */
+    private void ShowPath(GameObject tab)
+    {
+        initialTab.gameObject.SetActive(false);
+        tab.gameObject.SetActive(true);
+        /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
+        tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
+        tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
+        tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
+        tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
+    }
 
       /* Set the research panel to inactive if it exists                                       */
       if (initialTab == null)
@@ -375,83 +483,89 @@ public class LabManager : MonoBehaviour
       }
       /* Decrease search costs by 50%                                                          */
       else if (tabType == explorationTab)
-      {
-         Debug.Log("Decrease search costs by 50%");
-         // Unlock tail of the submarine in victory map
-         tailUnlocked = true;
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-      }
+        {
+            Debug.Log("Decrease search costs by 50%");
+        }
+        else
+        {
+            Debug.Log("There is no tab");
+        }
+    }
+
+    /* Unlock the next tier node upon buying the previous tier node                              */
+    public void UnlockNextNode(GameObject tab, int tier)
+    {
+        Color currentColor;
+
+        /* Get rid of the tier 2 lock and turn on buttons and text                               */
+        if (tier == 2)
+        {
+            tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
+
+            currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
+            currentColor.a = 1.0f;
+            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
+            tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().interactable = true;
+
+            currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
+            currentColor.a = 1.0f;
+            tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+            
+        }
+        /* Get ride of the tier 3 lock and turn on buttons and text                              */
+        else
+        {
+            if (tier != 3)
+            {
+                Debug.Log("Accessing wrong tier node");
+                return;
+            }
+            tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
+
+            currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
+            currentColor.a = 255;
+            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
+            tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
+
+            currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
+            currentColor.a = 255;
+            tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
+
+        }
+    }
+
+    /* Return to the initial tab upon clicking the back arrow button                             */
+    private void BackToInitialTab(GameObject tab)
+    {
+        tab.gameObject.SetActive(false);
+        initialTab.gameObject.SetActive(true);
+    }
+
+    /* Open up the info panel                                                                    */
+    private void ShowInfoPanel() 
+    {
+        infoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
-   /* Unlock the next tier node upon buying the previous tier node                              */
-   public void UnlockNextNode(GameObject tab, int tier)
-   {
-      Color currentColor;
+    /* Close the research panel                                                                  */
+    private void CloseInnovatePanel() 
+    {
+        commerceTab.gameObject.SetActive(false);
+        productionTab.gameObject.SetActive(false);
+        explorationTab.gameObject.SetActive(false);
+        initialTab.gameObject.SetActive(true);
+        innovatePanel.gameObject.SetActive(false);
+    }
 
-      /* Get rid of the tier 2 lock and turn on buttons and text                               */
-      if (tier == 2)
-      {
-         tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
+    /* Close the info panel                                                                      */
+    private void CloseInfoPanel()
+    {
+        infoPanel.gameObject.SetActive(false);
 
-         currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
-         currentColor.a = 1.0f;
-         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
-         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().interactable = true;
-
-         currentColor = tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color;
-         currentColor.a = 1.0f;
-         tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;      
-      }
-      /* Get ride of the tier 3 lock and turn on buttons and text                              */
-      else
-      {
-         if (tier != 3)
-         {
-            Debug.Log("Accessing wrong tier node");
-            return;
-         }
-         tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
-
-         currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
-         currentColor.a = 255;
-         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
-         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
-
-         currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
-         currentColor.a = 255;
-         tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
-      }
-   }
-
-   /* Return to the initial tab upon clicking the back arrow button                             */
-   private void BackToInitialTab(GameObject tab)
-   {
-      tab.gameObject.SetActive(false);
-      initialTab.gameObject.SetActive(true);
-   }
-
-   /* Open up the info panel                                                                    */
-   private void ShowInfoPanel() 
-   {
-      infoPanel.gameObject.SetActive(true);
-   }
-
-   /* Close the research panel                                                                  */
-   private void CloseInnovatePanel() 
-   {
-      commerceTab.gameObject.SetActive(false);
-      productionTab.gameObject.SetActive(false);
-      explorationTab.gameObject.SetActive(false);
-      initialTab.gameObject.SetActive(true);
-      innovatePanel.gameObject.SetActive(false);
-   }
-
-   /* Close the info panel                                                                      */
-   private void CloseInfoPanel()
-   {
-      infoPanel.gameObject.SetActive(false);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 }
