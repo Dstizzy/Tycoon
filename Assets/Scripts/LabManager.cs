@@ -187,7 +187,6 @@ public class LabManager : MonoBehaviour
         tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
         tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
         tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
-    }
 
       /* Set the research panel to inactive if it exists                                       */
       if (initialTab == null)
@@ -229,68 +228,6 @@ public class LabManager : MonoBehaviour
          explorationTab.gameObject.SetActive(false);
       } 
    }
-
-   /* Open up a lab panel upon clicking the corresponding button                                */
-   public void RequestLabPanel(int buttonID) 
-   {
-      switch (buttonID)
-      {
-         case INNOVATE_BUTTON:
-            ShowInnovatePanel();
-            innovatePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INNOVATE_BUTTON));
-            break;
-         case INFO_BUTTON:
-            ShowInfoPanel();
-            infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INFO_BUTTON));
-            break;
-         default:
-            Debug.Log("Building Panel: Unknown button ID.");
-            break;
-      }
-   }
-
-   /* Close the lab panel upon clicking the exit button                                         */
-   public void CloseLabPanel(int buttonID) 
-   {
-      switch (buttonID)
-      {
-         case INNOVATE_BUTTON:
-            CloseInnovatePanel();
-            break;
-         case INFO_BUTTON:
-            CloseInfoPanel();
-            break;
-         case UPGRADE_BUTTON:
-            Debug.Log("Building Panel: Info requested.");
-            break;
-         default:
-            Debug.Log("Building Panel: Unknown button ID.");
-            break;
-      }
-      PopUpManager.Instance.EnablePlayerInput();
-   }
-
-   /* Open up the research panel and assign the buttons in the initial panel                    */
-   private void ShowInnovatePanel() 
-   {
-      innovatePanel.gameObject.SetActive(true);
-      pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
-      pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
-      pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
-   }
-
-   /* Show the corresponding path tab upon clicking the path button                             */
-   private void ShowPath(GameObject tab)
-   {
-      initialTab.gameObject.SetActive(false);
-      tab.gameObject.SetActive(true);
-      /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
-      tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
-      tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
-      tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
-      tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
-   }
-
    private void HandleInnovation(GameObject tab, int tier)
    {
       int pearlCost = 0, itemCost = 0;
