@@ -124,10 +124,16 @@ public class OreRefinery_Manager : MonoBehaviour
    private void ShowInfoPanel()
    {
       infoPanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
       PopUpManager.Instance.DisablePlayerInput();
    }
 
@@ -135,16 +141,20 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       upgradePanel.Find("Arrow2").gameObject.SetActive(true);
    }
-   //private void CloseTradePanel() {
-   //    refinePanel.gameObject.SetActive(false);
-   //}
+
    private void CloseInfoPanel()
    {
       infoPanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    // --- ADDED: Unsubscribe when destroyed ---
@@ -184,13 +194,13 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public void ActivateJamButton()
    {
-      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(true);
-      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
+      buildingCanvas.transform.Find("JamButton").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JamButton").GetComponent<Button>().onClick.AddListener(() => OpenJamPanel());
    }
 
    public void ActivateJamSymbol()
    {
-      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(true);
+      buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(true);
    }
 
    public void OpenJamPanel()
@@ -210,7 +220,7 @@ public class OreRefinery_Manager : MonoBehaviour
          if (InventoryManager.Instance.TryUsePatchKit(1))
          {
             IsBlocked = false;
-            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+            buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
             CloseJamPanel();
             Debug.Log("Ore Refinery unjammed successfully.");
             ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
@@ -225,7 +235,7 @@ public class OreRefinery_Manager : MonoBehaviour
          if (InventoryManager.Instance.TrySpendPearl(100))
          {
             IsBlocked = false;
-            buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+            buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
             CloseJamPanel();
             Debug.Log("Ore Refinery unjammed successfully.");
          }
@@ -261,8 +271,8 @@ public class OreRefinery_Manager : MonoBehaviour
    }
    public void DeactivateJamButton()
    {
-      buildingCanvas.transform.Find("Jam_Button").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
-      buildingCanvas.transform.Find("Jam_Button").gameObject.SetActive(false);
+      buildingCanvas.transform.Find("JamButton").GetComponent<Button>().onClick.RemoveListener(() => OpenJamPanel());
+      buildingCanvas.transform.Find("JamButton").gameObject.SetActive(false);
 
    }
 
@@ -306,6 +316,6 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public void DeactivateJamSymbol()
    {
-      buildingCanvas.transform.Find("Jammed_Symbol").gameObject.SetActive(false);
+      buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
    }
 }
