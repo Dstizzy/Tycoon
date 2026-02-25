@@ -21,17 +21,17 @@ public class TutorialManager : MonoBehaviour
    private void OnEnable()
    {
       PopUpManager.OnHoverTagChanged += HandleGlobalHover;
-      PopUpManager.OnBuildingButtonCreated += HandleNewButton;
+      OreRefinery_Manager.HandleTutorial += HandleNextStep;
    }
 
    private void OnDisable()
    {
       PopUpManager.OnHoverTagChanged -= HandleGlobalHover;
-      PopUpManager.OnBuildingButtonCreated -= HandleNewButton;
+      OreRefinery_Manager.HandleTutorial -= HandleNextStep;
    }
 
    // Store the reference to the current part so we can toggle arrows from the event
-   private GameObject currentActivePart;
+   public GameObject currentActivePart;
 
    private void Awake()
    {
@@ -62,7 +62,7 @@ public class TutorialManager : MonoBehaviour
 
    private void Update()
    {
-      if(requiredButtonClicked)
+      if (requiredButtonClicked)
       {
          if(Mouse.current.leftButton.wasPressedThisFrame)
          {
@@ -128,10 +128,22 @@ public class TutorialManager : MonoBehaviour
                GoToNext();
             }
             break;
+         case 6:
+            if (tutorialSection.transform.Find("SixthPart") != null)
+            {
+               tutorialSection.transform.Find("FifthPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("SixthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("SixthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
       }
    }
 
-   private void GoToNext()
+   public void GoToNext()
    {
       if (tutorialIndex < tutorialSections.Length - 1)
       {
@@ -143,7 +155,6 @@ public class TutorialManager : MonoBehaviour
       }
       else
       {
-         //panel.SetActive(false);
          tutorialSections[tutorialIndex].SetActive(false);
       }
    }
@@ -169,20 +180,6 @@ public class TutorialManager : MonoBehaviour
          requiredButtonClicked = false;
          oreRefineryUpgrade = true;
          currentActivePart = myPart;
-         /*{
-            myPart.transform.Find("Arrow").gameObject.SetActive(true);
-            PopUpManager.Instance.popUps[1].GetComponent<Button>().onClick.AddListener(() =>
-            {
-               myPart.transform.Find("Arrow").gameObject.SetActive(false);
-               myPart.transform.Find("Arrow2").gameObject.SetActive(true);
-               if((!OreRefinery_Manager.Instance.upgradePanel.gameObject.activeSelf))
-               {
-                  myPart.transform.Find("Arrow2").gameObject.SetActive(false);
-                  requiredButtonClicked = true;
-                  GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
-               }
-            });
-         }*/
       }
    }
 
@@ -193,51 +190,18 @@ public class TutorialManager : MonoBehaviour
          if(tag == "Ore Refinery")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            oreUpgradeButton = true;
-            foreach(GameObject buildingButton in PopUpManager.Instance.popUps)
-            {
-               Debug.Log($"Checking button: {buildingButton.name}");
-               if(buildingButton.transform.Find("Button/Text").GetComponent<Text>().text == "Upgrade")
-               {
-                  buildingButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() =>
-                  {
-                     Debug.Log("Ore Refinery Upgrade Button Clicked");
-                     currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-                     currentActivePart.transform.Find("Arrow2").gameObject.SetActive(true);
-                     if ((!OreRefinery_Manager.Instance.upgradePanel.gameObject.activeSelf))
-                     {
-                        currentActivePart.transform.Find("Arrow2").gameObject.SetActive(false);
-                        requiredButtonClicked = true;
-                        GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
-                     }
-                  });
-               }
-            }
+            OreRefinery_Manager.Instance.tutorialUpgrade = true;
          }
          else
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-            oreUpgradeButton = false;
          }
       }
    }
 
-   public void HandleNewButton(GameObject button, int index)
+   public void HandleNextStep()
    {
-      if(oreUpgradeButton == true && button.name == "UpgradeButton")
-      {
-         button.GetComponent<Button>().onClick.AddListener(() =>
-         {
-            Debug.Log("Ore Refinery Upgrade Button Clicked");
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-            currentActivePart.transform.Find("Arrow2").gameObject.SetActive(true);
-            if ((!OreRefinery_Manager.Instance.upgradePanel.gameObject.activeSelf))
-            {
-               currentActivePart.transform.Find("Arrow2").gameObject.SetActive(false);
-               requiredButtonClicked = true;
-               GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
-            }
-         });
-      }
+      GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
+      requiredButtonClicked = true;
    }
 }

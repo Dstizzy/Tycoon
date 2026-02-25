@@ -25,6 +25,7 @@ public class PopUpManager : MonoBehaviour
    private List<RaycastResult> raycastResults = new List<RaycastResult>();
    public Transform buildingTransform;
    public static bool IsBuildingBlocked = false;
+   public bool tutorialRefinery = false;
 
    public static PopUpManager Instance { get; private set; }
 
@@ -60,8 +61,6 @@ public class PopUpManager : MonoBehaviour
 
    // This event is invoked whenever the hovered tag changes, passing the new tag as a parameter
    public static event Action<string> OnHoverTagChanged;
-   
-   public static event Action<GameObject, int> OnBuildingButtonCreated;
 
    private void OnBuildingHover(InputAction.CallbackContext context)
    {
@@ -121,11 +120,11 @@ public class PopUpManager : MonoBehaviour
          {
             if(TurnManager.manualResetOption)
             {
-               //OreRefinery_Manager.Instance.ActivateManualResetCounter();
+               OreRefinery_Manager.Instance.ActivateManualResetCounter();
             }
             else
             {
-               //OreRefinery_Manager.Instance.ActivateJamButton();
+               OreRefinery_Manager.Instance.ActivateJamButton();
             }
          }
          else
@@ -201,8 +200,6 @@ public class PopUpManager : MonoBehaviour
 
          newButton.GetComponentInChildren<ButtonsPopUp>().SetText(buttonText);
          newButton.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnBuildingButtonClick(buttonId));
-
-         OnBuildingButtonCreated?.Invoke(newButton, buttonId);
 
          fixedPopUpPosition.y -= buttonSpacing;
       }

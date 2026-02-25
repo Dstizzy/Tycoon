@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,10 +30,14 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public bool IsBlocked = false;
 
+   public bool tutorialUpgrade = false;
+
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
 
    public int NextUpgradeCostInOre { get; private set; }
+
+   public static event Action HandleTutorial;
 
    private void Awake()
    {
@@ -76,9 +81,20 @@ public class OreRefinery_Manager : MonoBehaviour
             infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
             break;
          case UPGRADE_BUTTON:
+            if (tutorialUpgrade == true)
+            {
+               ShowTutorialPart();
+               upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => 
+               {
+                  tutorialUpgrade = false;
+                  upgradePanel.Find("Arrow2").gameObject.SetActive(false);
+                  HandleTutorial?.Invoke();
+               });
+            }
             ShowUpgradePanel();
             upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinery());
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
+   
             break;
          default:
             Debug.Log("Building Panel: Unknown button ID.");
@@ -112,6 +128,12 @@ public class OreRefinery_Manager : MonoBehaviour
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+      PopUpManager.Instance.DisablePlayerInput();
+   }
+
+   private void ShowTutorialPart()
+   {
+      upgradePanel.Find("Arrow2").gameObject.SetActive(true);
    }
    //private void CloseTradePanel() {
    //    refinePanel.gameObject.SetActive(false);
@@ -228,16 +250,6 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void ProduceOres()
    {
-      int roll = Random.Range(0, 100);
-
-      if (roll < jammingChance)
-      {
-         Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
-         IsBlocked = true;
-         ActivateJamButton();
-         ActivateJamSymbol();
-      }
-
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }
 
