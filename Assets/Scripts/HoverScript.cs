@@ -126,9 +126,7 @@ public class HoverScript : MonoBehaviour {
                       break;
                 }
             }
-         }
         }
-
         prevHoverObject = currentHoverObject;
     }
 
