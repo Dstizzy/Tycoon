@@ -27044,7 +27044,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   infoPanel: {fileID: 687691821}
   upgradePanel: {fileID: 280170928}
-  buildingCanvas: {fileID: 0}
+  buildingCanvas: {fileID: 1472809605}
   jamPanel: {fileID: 214154250}
   oreRefineryLevelText: {fileID: 15662941}
   oreLevel: 1
@@ -33757,7 +33757,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1244492158
 RectTransform:
   m_ObjectHideFlags: 0
@@ -56647,9 +56647,9 @@ MonoBehaviour:
   ResourceWindow: {fileID: 1906703890}
   CraftsPanel: {fileID: 1959257976}
   CraftWindow: {fileID: 1378259646}
-  ForgeUpgradeIcon: {fileID: 0}
-  OreRefineryUpgradeIcon: {fileID: 0}
-  ExplorationUnitUpgradeIcon: {fileID: 0}
+  ForgeUpgradeIcon: {fileID: 651291422}
+  OreRefineryUpgradeIcon: {fileID: 931650443}
+  ExplorationUnitUpgradeIcon: {fileID: 1606283041}
 --- !u!4 &2135487484
 Transform:
   m_ObjectHideFlags: 0
