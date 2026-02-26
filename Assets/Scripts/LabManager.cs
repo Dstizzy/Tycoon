@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 using static Item;
 
-public class LabManager : MonoBehaviour {
+public class LabManager : MonoBehaviour
+{
    /* Symbolic Constants                                                                        */
    public const int INNOVATE_BUTTON = 1;
    public const int INFO_BUTTON = 2;
@@ -16,18 +17,13 @@ public class LabManager : MonoBehaviour {
    public const int TIER_ONE = 1;
    public const int TIER_TWO = 2;
    public const int TIER_THREE = 3;
-   public const int TIER_ONE_PEARL_COST = 100;
-   public const int TIER_ONE_ITEM_COST = 10;
-   public const int TIER_TWO_PEARL_COST = 350;
-   public const int TIER_TWO_ITEM_COST = 25;
-   public const int TIER_THREE_PEARL_COST = 700;
-   public const int TIER_THREE_ITEM_COST = 50;
-   public const int PROD_T1_PEARL = 400;
-   public const int PROD_T1_LENS = 2;
-   public const int PROD_T2_PEARL = 1000;
-   public const int PROD_T2_LENS = 5;
-   public const int PROD_T3_PEARL = 3000;
-   public const int PROD_T3_LENS = 10;
+
+   public const int T1_PEARL = 400;
+   public const int T1_LENS = 2;
+   public const int T2_PEARL = 1000;
+   public const int T2_LENS = 5;
+   public const int T3_PEARL = 3000;
+   public const int T3_LENS = 10;
 
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
@@ -42,6 +38,9 @@ public class LabManager : MonoBehaviour {
 
    /* Public variables                                                                          */
    public static int currentCommerceTier { get; private set; } = 0;
+   public static bool headUnlocked = false;
+   public static bool bodyUnlocked = false;
+   public static bool tailUnlocked = false;
 
 
    TradeHutManager tradeHutManager;
@@ -49,10 +48,12 @@ public class LabManager : MonoBehaviour {
    public static LabManager labManager;
 
    /* Check if all required game objects exist and are in there required states                 */
-   private void Awake() {
+   private void Awake()
+   {
       if (labManager != null && labManager != this)
          Destroy(this.gameObject);
-      else {
+      else
+      {
          labManager = this;
          DontDestroyOnLoad(this.gameObject);
       }
@@ -64,51 +65,71 @@ public class LabManager : MonoBehaviour {
 
 
       /* Set the info panel to inactive if it exists                                           */
-      if (infoPanel == null) {
+      if (infoPanel == null)
+      {
          Debug.LogError("Info Panel is not assigned in the Inspector!");
-      } else {
+      }
+      else
+      {
          infoPanel.gameObject.SetActive(false);
       }
 
       /* Set the research panel to inactive if it exists                                       */
-      if (innovatePanel == null) {
+      if (innovatePanel == null)
+      {
          Debug.LogError("Innovate Panel is not assigned");
-      } else {
+      }
+      else
+      {
          innovatePanel.gameObject.SetActive(false);
       }
 
       /* Set the research panel to inactive if it exists                                       */
-      if (initialTab == null) {
+      if (initialTab == null)
+      {
          Debug.LogError("Commerce Tab is not assigned");
-      } else {
+      }
+      else
+      {
          initialTab.gameObject.SetActive(true);
       }
 
       /* Set the research panel to inactive if it exists                                       */
-      if (commerceTab == null) {
+      if (commerceTab == null)
+      {
          Debug.LogError("Commerce Tab is not assigned");
-      } else {
+      }
+      else
+      {
          commerceTab.gameObject.SetActive(false);
       }
 
       /* Set the research panel to inactive if it exists                                       */
-      if (productionTab == null) {
+      if (productionTab == null)
+      {
          Debug.LogError("Production Tab is not assigned");
-      } else {
+      }
+      else
+      {
          productionTab.gameObject.SetActive(false);
       }
 
       /* Set the research panel to inactive if it exists                                       */
-      if (explorationTab == null) {
+      if (explorationTab == null)
+      {
          Debug.LogError("Commerce Tab is not assigned");
-      } else {
+      }
+      else
+      {
          explorationTab.gameObject.SetActive(false);
       }
    }
 
    /* Open up a lab panel upon clicking the corresponding button                                */
-   public void RequestLabPanel(int buttonID) {
-      switch (buttonID) {
+   public void RequestLabPanel(int buttonID)
+   {
+      switch (buttonID)
+      {
          case INNOVATE_BUTTON:
             ShowInnovatePanel();
             innovatePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseLabPanel(INNOVATE_BUTTON));
@@ -124,8 +145,10 @@ public class LabManager : MonoBehaviour {
    }
 
    /* Close the lab panel upon clicking the exit button                                         */
-   public void CloseLabPanel(int buttonID) {
-      switch (buttonID) {
+   public void CloseLabPanel(int buttonID)
+   {
+      switch (buttonID)
+      {
          case INNOVATE_BUTTON:
             CloseInnovatePanel();
             break;
@@ -140,7 +163,8 @@ public class LabManager : MonoBehaviour {
    }
 
    /* Open up the research panel and assign the buttons in the initial panel                    */
-   private void ShowInnovatePanel() {
+   private void ShowInnovatePanel()
+   {
       innovatePanel.gameObject.SetActive(true);
       pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
       pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
@@ -151,7 +175,8 @@ public class LabManager : MonoBehaviour {
    }
 
    /* Show the corresponding path tab upon clicking the path button                             */
-   private void ShowPath(GameObject tab) {
+   private void ShowPath(GameObject tab)
+   {
       initialTab.gameObject.SetActive(false);
       tab.gameObject.SetActive(true);
       /*tab.transform.Find("branch/tierNodeOneContainer").OnMouseEnter();*/
@@ -161,33 +186,26 @@ public class LabManager : MonoBehaviour {
       tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
    }
 
-   private void HandleInnovation(GameObject tab, int tier) {
+   private void HandleInnovation(GameObject tab, int tier)
+   {
       int pearlCost = 0, itemCost = 0;
       string requiredItem = "";
 
-      if (tab == commerceTab) {
-         requiredItem = "Crude Tool"; // Put your commerce item requirement here if needed
-         switch (tier) {
-            case TIER_ONE: pearlCost = TIER_ONE_PEARL_COST; itemCost = TIER_ONE_ITEM_COST; break;
-            case TIER_TWO: pearlCost = TIER_TWO_PEARL_COST; itemCost = TIER_TWO_ITEM_COST; break;
-            case TIER_THREE: pearlCost = TIER_THREE_PEARL_COST; itemCost = TIER_THREE_ITEM_COST; break;
-         }
-      } else if (tab == productionTab) {
-         requiredItem = "Precision Lens";
-         switch (tier) {
-            case TIER_ONE: pearlCost = PROD_T1_PEARL; itemCost = PROD_T1_LENS; break;
-            case TIER_TWO: pearlCost = PROD_T2_PEARL; itemCost = PROD_T2_LENS; break;
-            case TIER_THREE: pearlCost = PROD_T3_PEARL; itemCost = PROD_T3_LENS; break;
-         }
-      } else if (tab == explorationTab) {
-         requiredItem = "";
-         pearlCost = 0; // Add exploration costs here later
-         itemCost = 0;
+
+      requiredItem = "Precision Lens"; // Put your commerce item requirement here if needed
+      switch (tier)
+      {
+         case TIER_ONE: pearlCost = T1_PEARL; itemCost = T1_LENS; break;
+         case TIER_TWO: pearlCost = T2_PEARL; itemCost = T2_LENS; break;
+         case TIER_THREE: pearlCost = T3_PEARL; itemCost = T3_LENS; break;
       }
 
+
       // Attempt to unlock tiers with the corresponding cost
-      if (PerformBuy(pearlCost, itemCost, requiredItem)) {
-         switch (tier) {
+      if (PerformBuy(pearlCost, itemCost, requiredItem))
+      {
+         switch (tier)
+         {
             case TIER_ONE:
                ImplementTierOneInnovation(tab);
                UnlockNextNode(tab, 2);
@@ -220,23 +238,26 @@ public class LabManager : MonoBehaviour {
                tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
                break;
-         }
-         ;
+         };
       }
    }
 
    /* Spend certain amount of resources and give corresponding innovations                     */
-   public bool PerformBuy(int pearlCost, int itemCost, string itemName) {
+   public bool PerformBuy(int pearlCost, int itemCost, string itemName)
+   {
       // Check to see if there is enough pearls
-      if (InventoryManager.Instance.pearlCount < pearlCost) {
+      if (InventoryManager.Instance.pearlCount < pearlCost)
+      {
          Debug.Log("Not enough pearls!");
          return false;
       }
 
       // Try to spend the item if necessary
-      if (!string.IsNullOrEmpty(itemName) && itemCost > 0) {
+      if (!string.IsNullOrEmpty(itemName) && itemCost > 0)
+      {
          // Link to inventory to spend the item
-         if (!InventoryManager.Instance.TrySpendItem(itemName, itemCost)) {
+         if (!InventoryManager.Instance.TrySpendItem(itemName, itemCost))
+         {
             Debug.Log($"Not enough {itemName} to spend!");
             return false;
          }
@@ -247,9 +268,11 @@ public class LabManager : MonoBehaviour {
       return true;
    }
 
-   public void ImplementTierOneInnovation(GameObject tabType) {
+   public void ImplementTierOneInnovation(GameObject tabType)
+   {
       /* Permanently increase base sale price of all items by 10%                              */
-      if (tabType == commerceTab) {
+      if (tabType == commerceTab)
+      {
          currentCommerceTier = TIER_ONE;
          tradeHutManager.marketShiftMin = 1;
          tradeHutManager.marketShiftMax = 2;
@@ -258,54 +281,71 @@ public class LabManager : MonoBehaviour {
             item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
 
          ApplyDiscountToBuyItems(.2f);
+         headUnlocked = true;
       }
-    /* Permanently reduce gold spent on refinery upkeep by 50%                               */
-    else if (tabType == productionTab) {
+      /* Permanently reduce gold spent on refinery upkeep by 50%                               */
+      else if (tabType == productionTab)
+      {
          Debug.Log("Reduce ore jamming percentage by 5%");
-         if (OreRefinery_Manager.Instance != null) {
+         if (OreRefinery_Manager.Instance != null)
+         {
             OreRefinery_Manager.Instance.ReduceJamming(5);
          }
+         bodyUnlocked = true;
       }
-    /* Tier 1 missions have succession increased by 25%                                      */
-    else if (tabType == explorationTab) {
+      /* Tier 1 missions have succession increased by 25%                                      */
+      else if (tabType == explorationTab)
+      {
          Debug.Log("Tier 1 missions increased by 25%");
-      } else {
+         tailUnlocked = true;
+      }
+      else
+      {
          Debug.Log("There is no tab");
       }
    }
 
-   public void ImplementTierTwoInnovation(GameObject tabType) {
+   public void ImplementTierTwoInnovation(GameObject tabType)
+   {
       /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
-      if (tabType == commerceTab) {
+      if (tabType == commerceTab)
+      {
          TradeHutManager.Instance.marketShiftMin = 3;
          TradeHutManager.Instance.marketShiftMax = 5;
 
          tradeHutManager.RecycleButton.gameObject.SetActive(true);
       }
 
-    /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
-    /*    bonus item upon crafting a single item                                             */
-    else if (tabType == productionTab) {
+      /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
+      /*    bonus item upon crafting a single item                                             */
+      else if (tabType == productionTab)
+      {
          Debug.Log("Unlock Overclock and Tier 2 Blueprints");
-         if (ForgeManager.Instance != null) {
+         if (ForgeManager.Instance != null)
+         {
             ForgeManager.Instance.UnlockOverclock();
          }
       }
-    /* Permanently increase gold by +15 per turn                                             */
-    else if (tabType == explorationTab) {
+      /* Permanently increase gold by +15 per turn                                             */
+      else if (tabType == explorationTab)
+      {
          Debug.Log("Permanently increase gold by +15 per turn");
-      } else {
+      }
+      else
+      {
          Debug.Log("There is no tab");
       }
    }
 
-   public void ImplementTierThreeInnovation(GameObject tabType) {
+   public void ImplementTierThreeInnovation(GameObject tabType)
+   {
       int crudeToolSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.CrudeTool) * 1.2f) - GetItemValue(ItemType.CrudeTool),
           harpoonSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.Harpoon) * 1.2f) - GetItemValue(ItemType.Harpoon),
           pressureValveSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.PressureValve) * 1.2f) - GetItemValue(ItemType.PressureValve),
           engineSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.Engine) * 1.2f) - GetItemValue(ItemType.Engine);
 
-      if (tabType == commerceTab) {
+      if (tabType == commerceTab)
+      {
          tradeHutManager.marketShiftMin = 5;
          tradeHutManager.marketShiftMax = 10;
 
@@ -318,27 +358,34 @@ public class LabManager : MonoBehaviour {
          TryIncreasePressureValveValue(pressureValveSellValueIncrease);
          TryIncreaseEngineSellValue(engineSellValueIncrease);
       }
-    /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
-    else if (tabType == productionTab) {
+      /* Unlock tier 3 itme (Artifact); Crafting results in two items being made               */
+      else if (tabType == productionTab)
+      {
          Debug.Log("Unlock Faster Crafting and Tier 3 Blueprints");
-         if (ForgeManager.Instance != null) {
+         if (ForgeManager.Instance != null)
+         {
             ForgeManager.Instance.UnlockReduceCraftingTime();
          }
       }
-    /* Decrease search costs by 50%                                                          */
-    else if (tabType == explorationTab) {
+      /* Decrease search costs by 50%                                                          */
+      else if (tabType == explorationTab)
+      {
          Debug.Log("Decrease search costs by 50%");
-      } else {
+      }
+      else
+      {
          Debug.Log("There is no tab");
       }
    }
 
    /* Unlock the next tier node upon buying the previous tier node                              */
-   public void UnlockNextNode(GameObject tab, int tier) {
+   public void UnlockNextNode(GameObject tab, int tier)
+   {
       Color currentColor;
 
       /* Get rid of the tier 2 lock and turn on buttons and text                               */
-      if (tier == 2) {
+      if (tier == 2)
+      {
          tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
 
          currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
@@ -352,8 +399,10 @@ public class LabManager : MonoBehaviour {
 
       }
       /* Get ride of the tier 3 lock and turn on buttons and text                              */
-      else {
-         if (tier != 3) {
+      else
+      {
+         if (tier != 3)
+         {
             Debug.Log("Accessing wrong tier node");
             return;
          }
@@ -372,13 +421,15 @@ public class LabManager : MonoBehaviour {
    }
 
    /* Return to the initial tab upon clicking the back arrow button                             */
-   private void BackToInitialTab(GameObject tab) {
+   private void BackToInitialTab(GameObject tab)
+   {
       tab.gameObject.SetActive(false);
       initialTab.gameObject.SetActive(true);
    }
 
    /* Open up the info panel                                                                    */
-   private void ShowInfoPanel() {
+   private void ShowInfoPanel()
+   {
       infoPanel.gameObject.SetActive(true);
 
       if (MainUIManager.mainUI != null)
@@ -386,7 +437,8 @@ public class LabManager : MonoBehaviour {
    }
 
    /* Close the research panel                                                                  */
-   private void CloseInnovatePanel() {
+   private void CloseInnovatePanel()
+   {
       commerceTab.gameObject.SetActive(false);
       productionTab.gameObject.SetActive(false);
       explorationTab.gameObject.SetActive(false);
@@ -395,7 +447,8 @@ public class LabManager : MonoBehaviour {
    }
 
    /* Close the info panel                                                                      */
-   private void CloseInfoPanel() {
+   private void CloseInfoPanel()
+   {
       infoPanel.gameObject.SetActive(false);
 
       if (MainUIManager.mainUI != null)
