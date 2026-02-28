@@ -19,10 +19,8 @@ public struct EventChoice
    // Flat rate resource changes applied to ship's inventory when button is clicked (use negative values for costs/damage)
    public int pearlChange;
    public int oreChange;
-   public int crystalChange;
    public int healthChange;
    public int fuelChange;
-   public int harpoonChange;
    public bool waitTurn; // If choice will result in waiting a turn
    public bool loseOre; // If choice will result in losing all ship's ore inventory
 
@@ -32,6 +30,9 @@ public struct EventChoice
    public int maxPearl;
    public int minOre;
    public int maxOre;
+
+   [Header("Tier 2 Settings")]
+   public bool requiresLabTier;
 
    [Header("Chance Results")]
    // A percent chance for fuel to change, and the amount of fuel that would be gained if successful

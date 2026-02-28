@@ -328,14 +328,14 @@ public class LabManager : MonoBehaviour
 
     public void ImplementTierTwoInnovation(GameObject tabType)
     {
-        /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
-        if (tabType == commerceTab)
-        {
-           TradeHutManager.Instance.marketShiftMin = 3;
-           TradeHutManager.Instance.marketShiftMax = 5;
+      /* Grant action to gameple 50 gold for 60% chance to get 250 back                        */
+      if (tabType == commerceTab)
+      {
+         TradeHutManager.Instance.marketShiftMin = 3;
+         TradeHutManager.Instance.marketShiftMax = 5;
 
-           tradeHutManager.RecycleButton.gameObject.SetActive(true);
-        }
+         tradeHutManager.RecycleButton.gameObject.SetActive(true);
+      }
 
       /* Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a       */
       /*    bonus item upon crafting a single item                                             */
@@ -349,13 +349,12 @@ public class LabManager : MonoBehaviour
       }
       /* Unlocks chance to find crafts on explorations                                         */
       else if (tabType == explorationTab)
-        {
-            Debug.Log("Permanently increase gold by +15 per turn");
-        }
-        else
-        {
+         if (shipManager != null)
+            shipManager.UnlockTier2Choices();
+         else
+         {
             Debug.Log("There is no tab");
-        }
+         }
     }
 
     public void ImplementTierThreeInnovation(GameObject tabType)

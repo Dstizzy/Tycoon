@@ -242,7 +242,9 @@ public class ExplorationUnitManager : MonoBehaviour
          isWaiting = true;
 
       // If anything changed, shows the results of the decision
-      if (results.pearlChanged != 0 || results.oreChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0)
+      if (results.pearlChanged != 0 || results.oreChanged != 0 || results.patchKitChanged != 0 || results.harpoonChanged != 0 ||
+         results.crudeToolChanged != 0 || results.pressureValveChanged != 0 || results.divingBellChanged != 0 ||
+         results.clockworkEngineChanged != 0 || results.precisionLensChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0)
          ShowResultsPanel(results, currentNode);
       // Otherwise, move on to the next turn
       else
@@ -324,13 +326,22 @@ public class ExplorationUnitManager : MonoBehaviour
             if(randomEvent != null)
             {
                eventController.SetEventPanel(randomEvent);
+               // 1. Check if they can afford it AND if they meet the Tier 2 requirement
+               bool canAffordA = shipManager.CanAfford(randomEvent.choiceA) && (!randomEvent.choiceA.requiresLabTier || shipManager.isTier2Unlocked);
+               bool canAffordB = shipManager.CanAfford(randomEvent.choiceB) && (!randomEvent.choiceB.requiresLabTier || shipManager.isTier2Unlocked);
+
+               // 2. Format the text (Add [LOCKED] if they don't have the upgrade)
+               string textA = randomEvent.choiceA.buttonText;
+               if (randomEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked)
+                  textA = "[LOCKED] " + textA;
+
                string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
-               // Check if player has enough resources for options
-               bool canAffordA = shipManager.CanAfford(randomEvent.choiceA);
-               bool canAffordB = shipManager.CanAfford(randomEvent.choiceB);
-               // Set up the event choices
+               if (textB != null && randomEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked)
+                  textB = "[LOCKED] " + textB;
+
+               // 3. Set up the event choices
                SetupButtons(
-                  randomEvent.choiceA.buttonText, () => ProcessDecision(randomEvent.choiceA, current), canAffordA,
+                  textA, () => ProcessDecision(randomEvent.choiceA, current), canAffordA,
                   textB, () => ProcessDecision(randomEvent.choiceB, current), canAffordB,
                   null, null, false
                );
@@ -424,17 +435,26 @@ public class ExplorationUnitManager : MonoBehaviour
          string sign = results.oreChanged > 0 ? "+" : "";
          resultsText += $"Ore: {sign}{results.oreChanged}\n";
       }
-      if (results.harpoonChanged != 0)
-      {
-         string sign = results.harpoonChanged > 0 ? "+" : "";
-         resultsText += $"Harpoons: {sign}{results.harpoonChanged}\n";
-      }
+      if (results.patchKitChanged > 0)
+         resultsText += $"Patch Kit: +{results.patchKitChanged}\n";
+      if (results.harpoonChanged > 0)
+         resultsText += $"Harpoon: +{results.harpoonChanged}\n";
+      if (results.crudeToolChanged > 0)
+         resultsText += $"Crude Tool: +{results.crudeToolChanged}\n";
+      if (results.pressureValveChanged > 0)
+         resultsText += $"Pressure Valve: +{results.pressureValveChanged}\n";
+      if (results.divingBellChanged > 0)
+         resultsText += $"Diving Bell: +{results.divingBellChanged}\n";
+      if (results.clockworkEngineChanged > 0)
+         resultsText += $"Clockwork Engine: +{results.clockworkEngineChanged}\n";
+      if (results.precisionLensChanged > 0)
+         resultsText += $"Precision Lens: +{results.precisionLensChanged}\n";
       if (results.healthChanged != 0)
       {
          string sign = results.healthChanged > 0 ? "+" : "";
          resultsText += $"Health: {sign}{results.healthChanged}\n";
       }
-      if(results.fuelChanged != 0)
+      if (results.fuelChanged != 0)
       {
          string sign = results.fuelChanged > 0 ? "+" : "";
          resultsText += $"Fuel: {sign}{results.fuelChanged}";
@@ -480,8 +500,20 @@ public class ExplorationUnitManager : MonoBehaviour
          currentInventory += $"Pearl: {shipManager.GetPearl()}\n";
       if (shipManager.GetOre() > 0)
          currentInventory += $"Ore: {shipManager.GetOre()}\n";
+      if (shipManager.GetPatchKit() > 0)
+         currentInventory += $"Patch Kit: {shipManager.GetPatchKit()}\n";
       if (shipManager.GetHarpoon() > 0)
          currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
+      if (shipManager.GetCrudeTool() > 0)
+         currentInventory += $"Crude Tool: {shipManager.GetCrudeTool()}\n";
+      if (shipManager.GetPressureValve() > 0)
+         currentInventory += $"Pressure Valve: {shipManager.GetPressureValve()}\n";
+      if (shipManager.GetDivingBell() > 0)
+         currentInventory += $"Diving Bell: {shipManager.GetDivingBell()}\n";
+      if (shipManager.GetClockworkEngine() > 0)
+         currentInventory += $"Clockwork Engine: {shipManager.GetClockworkEngine()}\n";
+      if (shipManager.GetPrecisionLens() > 0)
+         currentInventory += $"Precision Lens: {shipManager.GetPrecisionLens()}\n";
 
       shipInventory.text = currentInventory;
    }

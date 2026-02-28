@@ -40,14 +40,29 @@ public class ShipManager : MonoBehaviour
    int maxFuel;
    int currentPearl;
    int currentOre;
-   int currentHarpoon;
    int currentDepth = 1;
+
+   [Header("Ship Inventory - Crafts")]
+   public bool isTier2Unlocked = false;
+   int currentPatchKit;
+   int currentHarpoon;
+   int currentCrudeTool;
+   int currentPressureValve;
+   int currentDivingBell;
+   int currentClockworkEngine;
+   int currentPrecisionLens;
 
    public struct RoundResults
    {
       public int pearlChanged;
       public int oreChanged;
+      public int patchKitChanged;
       public int harpoonChanged;
+      public int crudeToolChanged;
+      public int pressureValveChanged;
+      public int divingBellChanged;
+      public int clockworkEngineChanged;
+      public int precisionLensChanged;
       public int healthChanged;
       public int fuelChanged;
    }
@@ -71,10 +86,21 @@ public class ShipManager : MonoBehaviour
       currentDepth = newDepth;
    }
 
+   public void UnlockTier2Choices()
+   {
+      isTier2Unlocked = true;
+   }
+
    public int GetDepth() { return currentDepth; }
    public int GetPearl() { return currentPearl; }
    public int GetOre() { return currentOre; }
+   public int GetPatchKit() { return currentPatchKit; }
    public int GetHarpoon() {  return currentHarpoon; }
+   public int GetCrudeTool() { return currentCrudeTool; }
+   public int GetPressureValve() { return currentPressureValve; }
+   public int GetDivingBell() { return currentDivingBell; }
+   public int GetClockworkEngine() { return currentClockworkEngine; }
+   public int GetPrecisionLens() { return currentPrecisionLens; }
 
    public bool CanAfford(EventChoice choice)
    {
@@ -139,24 +165,48 @@ public class ShipManager : MonoBehaviour
          actualOre = -currentOre;
       else
          actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
-      int actualHarpoon = results.harpoonChange;
 
       if (actualPearl > 0)
          actualPearl *= labLootMultiplier;
       if (actualOre > 0)
          actualOre *= labLootMultiplier;
-      if (actualHarpoon > 0)
-         actualHarpoon *= labLootMultiplier;
 
+      int foundPatchKits = 0, foundHarpoons = 0, foundCrudeTools = 0, foundPressureValves = 0, foundDivingBells = 0, foundClockworkEngines = 0, foundPrecisionLenses = 0;
+      if(results.requiresLabTier)
+      {
+         int roll = UnityEngine.Random.Range(0, 7);
+         switch (roll)
+         {
+            case 0: foundPatchKits += 1; break;
+            case 1: foundHarpoons += 1; break;
+            case 2: foundCrudeTools += 1; break;
+            case 3: foundPressureValves += 1; break;
+            case 4: foundDivingBells += 1; break;
+            case 5: foundClockworkEngines += 1; break;
+            case 6: foundPrecisionLenses += 1; break;
+         }
+      }
       currentPearl += actualPearl;
       currentOre += actualOre;
-      currentHarpoon += actualHarpoon;
       currentHealth += results.healthChange;
       currentFuel += results.fuelChange;
+      currentPatchKit += foundPatchKits;
+      currentHarpoon += foundHarpoons;
+      currentCrudeTool += foundCrudeTools;
+      currentPressureValve += foundPressureValves;
+      currentDivingBell += foundDivingBells;
+      currentClockworkEngine += foundClockworkEngines;
+      currentPrecisionLens += foundPrecisionLenses;
 
       finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
-      finalResults.harpoonChanged = actualHarpoon;
+      finalResults.patchKitChanged = foundPatchKits;
+      finalResults.harpoonChanged = foundHarpoons;
+      finalResults.crudeToolChanged = foundCrudeTools;
+      finalResults.pressureValveChanged = foundPressureValves;
+      finalResults.divingBellChanged = foundDivingBells;
+      finalResults.clockworkEngineChanged = foundClockworkEngines;
+      finalResults.precisionLensChanged = foundPrecisionLenses;
       finalResults.healthChanged = results.healthChange;
       finalResults.fuelChanged = results.fuelChange;
 
@@ -215,7 +265,13 @@ public class ShipManager : MonoBehaviour
       currentDepth = 1;
       currentPearl = 0;
       currentOre = 0;
+      currentPatchKit = 0;
       currentHarpoon = 0;
+      currentCrudeTool = 0;
+      currentPressureValve = 0;
+      currentDivingBell = 0;
+      currentClockworkEngine = 0;
+      currentPrecisionLens = 0;
       MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
 
       UpdateShipUI();
@@ -319,8 +375,20 @@ public class ShipManager : MonoBehaviour
          totalRewards += $"Pearl: {currentPearl}\n";
       if (currentOre > 0)
          totalRewards += $"Ore: {currentOre}\n";
+      if (currentPatchKit > 0)
+         totalRewards += $"Patch Kits: {currentPatchKit}\n";
       if (currentHarpoon > 0)
          totalRewards += $"Harpoons: {currentHarpoon}\n";
+      if (currentCrudeTool > 0)
+         totalRewards += $"Crude Tools: {currentCrudeTool}\n";
+      if (currentPressureValve > 0)
+         totalRewards += $"Pressure Valve: {currentPressureValve}\n";
+      if (currentDivingBell > 0)
+         totalRewards += $"Diving Bells: {currentDivingBell}\n";
+      if (currentClockworkEngine > 0)
+         totalRewards += $"Clockwork Engines: {currentClockworkEngine}\n";
+      if (currentPrecisionLens > 0)
+         totalRewards += $"Precision Lenses: {currentPrecisionLens}\n";
       finalRewards.text = totalRewards;
 
       ResetShip();
@@ -335,8 +403,20 @@ public class ShipManager : MonoBehaviour
             InventoryManager.Instance.TryAddPearl(currentPearl);
          if (currentOre > 0)
             InventoryManager.Instance.TryAddOre(currentOre);
+         if (currentPatchKit > 0)
+            InventoryManager.Instance.TryAddPatchKit(currentPatchKit);
          if (currentHarpoon > 0)
             InventoryManager.Instance.TryAddHarpoon(currentHarpoon);
+         if (currentCrudeTool > 0)
+            InventoryManager.Instance.TryAddCrudeTool(currentCrudeTool);
+         if (currentPressureValve > 0)
+            InventoryManager.Instance.TryAddPressureValve(currentPressureValve);
+         if (currentDivingBell > 0)
+            InventoryManager.Instance.TryAddDivingBell(currentDivingBell);
+         if (currentClockworkEngine > 0)
+            InventoryManager.Instance.TryAddEngine(currentClockworkEngine);
+         if (currentPrecisionLens > 0)
+            InventoryManager.Instance.TryAddPrecisionLens(currentPrecisionLens);
       }
    }
 }

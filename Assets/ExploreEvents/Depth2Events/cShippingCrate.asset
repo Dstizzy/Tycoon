@@ -10,41 +10,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: HarpoonMerchant
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: You've come across a travelling merchant.
+  m_Name: cShippingCrate
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: You spot a half-buried shipping crate wedged deep inside a narrow
+    thermal vent. It is way too tight for your submarine to maneuver into.
   choiceA:
-    buttonText: Purchase one harpoon for 15 pearls.
-    pearlChange: -15
-    oreChange: 0
-    crystalChange: 0
-    healthChange: 0
-    fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 1
-    waitTurn: 0
-    minPearl: 0
-    maxPearl: 0
-    minOre: 0
-    maxOre: 0
-    fuelChance: 0
-    fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
-  choiceB:
-    buttonText: Make no trades.
+    buttonText: Search for materials that have been dropped outside the thermal vent.
     pearlChange: 0
     oreChange: 0
     crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 10
+    minOre: 0
+    maxOre: 10
+    requiresLabTier: 0
+    fuelChance: 0
+    fuelGain: 0
+    damageChance: 0
+    healthDamage: 0
+  choiceB:
+    buttonText: Send your dive crew in to open the crate.
+    pearlChange: 0
+    oreChange: 0
+    crystalChange: 0
+    healthChange: 0
+    fuelChange: 0
+    waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 1
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
