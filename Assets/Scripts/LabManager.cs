@@ -43,6 +43,7 @@ public class LabManager : MonoBehaviour
    public static bool tailUnlocked = false;
 
    TradeHutManager tradeHutManager;
+   ShipManager shipManager;
 
    public static LabManager labManager;
 
