@@ -24,7 +24,6 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
    [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
    
-   public int lastProcessedTurn = -1; // Syncs with TurnManager to ensure logic runs once per turn
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to next turn
 
    // ID constants for the base menu buttons
@@ -54,26 +53,15 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void OnEnable()
    {
-      // Listen for the ship's death to instantly end an exploration
       ShipManager.OnShipDeath += HandleExplorationDone;
+      TurnManager.OnTurnEnded += HandleNewTurn;
    }
 
    //
    private void OnDisable()
    {
-      // lean up listener to prevent memory leaks
       ShipManager.OnShipDeath -= HandleExplorationDone;
-   }
-
-   private void Update()
-   {
-      // If global turn is higher than the last turn processed, run exploration logic
-      if(TurnManager.Instance != null)
-         if(TurnManager.Instance.currentTurn > lastProcessedTurn)
-         {
-            lastProcessedTurn = TurnManager.Instance.currentTurn;
-            HandleNewTurn();
-         }
+      TurnManager.OnTurnEnded -= HandleNewTurn;
    }
 
    // Activates the requested exploration unit panel
@@ -242,9 +230,7 @@ public class ExplorationUnitManager : MonoBehaviour
          isWaiting = true;
 
       // If anything changed, shows the results of the decision
-      if (results.pearlChanged != 0 || results.oreChanged != 0 || results.patchKitChanged != 0 || results.harpoonChanged != 0 ||
-         results.crudeToolChanged != 0 || results.pressureValveChanged != 0 || results.divingBellChanged != 0 ||
-         results.clockworkEngineChanged != 0 || results.precisionLensChanged != 0 || results.healthChanged != 0 || results.fuelChanged != 0)
+      if (results.HasChanges())
          ShowResultsPanel(results, currentNode);
       // Otherwise, move on to the next turn
       else

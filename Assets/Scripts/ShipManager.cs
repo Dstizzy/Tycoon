@@ -7,33 +7,34 @@ using JetBrains.Annotations;
 public class ShipManager : MonoBehaviour
 {
    // Symbolic Constants
-   public const int LAB_T1_HEALTH_BONUS = 10;
-   public const int LAB_T1_FUEL_BONUS = 2;
-   public const int LAB_T3_LOOT_MULTIPLIER = 2;
+   public const int LAB_T1_HEALTH_BONUS = 10; // Health added to ship from tier 1 lab upgrade
+   public const int LAB_T1_FUEL_BONUS = 2; // Fuel added to ship from tier 1 lab upgrade
+   public const int LAB_T3_LOOT_MULTIPLIER = 2; // How much loot is multiplied from tier 3 lab upgrade
 
    [Header("UI References")]
    [SerializeField] private ExplorationUnitManager explorationUnitManager;
-   [SerializeField] private Transform fuelPanel;
-   [SerializeField] private Transform healthPanel;
-   [SerializeField] private Transform confirmReturnPanel;
-   [SerializeField] private Transform finalRewardsPanel;
-   [SerializeField] private TextMeshProUGUI finalRewards;
-   public TextMeshProUGUI decisionFuelText;
-   public TextMeshProUGUI decisionHealthText;
-   public TextMeshProUGUI exploreFuelText;
-   public TextMeshProUGUI exploreHealthText;
+   [SerializeField] private Transform fuelPanel; // UI panel informing user that ship's fuel is empty
+   [SerializeField] private Transform healthPanel; // UI panel informing user that ship's health is gone
+   [SerializeField] private Transform confirmReturnPanel; // UI panel asking user if they want to send ship back
+   [SerializeField] private Transform finalRewardsPanel; // UI panel that shows total rewards at the end of exploration
+   [SerializeField] private TextMeshProUGUI finalRewards; // Text of all the final exploration rewards
+   [SerializeField] private TextMeshProUGUI decisionFuelText; // Text showing current fuel on decision panel
+   [SerializeField] private TextMeshProUGUI decisionHealthText; // Text showing current health on decision panel
+   [SerializeField] private TextMeshProUGUI exploreFuelText; // Text showing current fuel on explore panel
+   [SerializeField] private TextMeshProUGUI exploreHealthText; // Text showing current health on explore panel
 
    [Header("Ship Level Settings")]
-   public int shipLevel = 1;
-   private int[] maxHealthByLevel = { 0, 40, 60, 90 };
-   private int[] maxFuelByLevel = { 0, 6, 9, 12 };
+   public int shipLevel { get; private set; } = 1; // Current level of the ship
+   private int[] maxHealthByLevel = { 0, 40, 60, 90 }; // Ship's health based on its current level
+   private int[] maxFuelByLevel = { 0, 6, 9, 12 }; // Ship's fuel based on its current level
 
-   // Lab bonuses
-   public int labBonusHealth = 0;
-   public int labBonusFuel = 0;
-   public int labLootMultiplier = 1;
+   // Permanent lab upgrade bonuses
+   private int labBonusHealth = 0; // Current health added by current lab upgrade status
+   private int labBonusFuel = 0; // Current fuel added by lab upgrade status
+   private int labLootMultiplier = 1; // How much loot is currently multiplied based on current lab upgrade status
 
    [Header("Current Stats")]
+   // The current stats of the ship
    int currentFuel;
    int currentHealth;
    int maxHealth;
@@ -43,7 +44,8 @@ public class ShipManager : MonoBehaviour
    int currentDepth = 1;
 
    [Header("Ship Inventory - Crafts")]
-   public bool isTier2Unlocked = false;
+   public bool isTier2Unlocked = false; // Grants access to event choices resulting in crafts
+   // Current inventory of crafts
    int currentPatchKit;
    int currentHarpoon;
    int currentCrudeTool;
@@ -52,6 +54,7 @@ public class ShipManager : MonoBehaviour
    int currentClockworkEngine;
    int currentPrecisionLens;
 
+   // Data package to send results of an event choice to exploration UI manager to be displayed
    public struct RoundResults
    {
       public int pearlChanged;
@@ -65,8 +68,16 @@ public class ShipManager : MonoBehaviour
       public int precisionLensChanged;
       public int healthChanged;
       public int fuelChanged;
+
+      public bool HasChanges()
+      {
+         return pearlChanged != 0 || oreChanged != 0 || patchKitChanged != 0 || harpoonChanged != 0 ||
+                crudeToolChanged != 0 || pressureValveChanged != 0 || divingBellChanged != 0 ||
+                clockworkEngineChanged != 0 || precisionLensChanged != 0 || healthChanged != 0 || fuelChanged != 0;
+      }
    }
 
+   // Event triggered globally when ship is reset
    public static event Action OnShipDeath;
 
    void Awake()
@@ -86,11 +97,13 @@ public class ShipManager : MonoBehaviour
       currentDepth = newDepth;
    }
 
+   // Unlocks ability to select Lab Tier 2 event choices
    public void UnlockTier2Choices()
    {
       isTier2Unlocked = true;
    }
 
+   // Get functions for ship state and inventory
    public int GetDepth() { return currentDepth; }
    public int GetPearl() { return currentPearl; }
    public int GetOre() { return currentOre; }
@@ -102,6 +115,7 @@ public class ShipManager : MonoBehaviour
    public int GetClockworkEngine() { return currentClockworkEngine; }
    public int GetPrecisionLens() { return currentPrecisionLens; }
 
+   // Checks if ship currently has enough resources in inventory to pay for event choices that have a cost
    public bool CanAfford(EventChoice choice)
    {
       if(choice.oreChange < 0 && GetOre() < Mathf.Abs(choice.oreChange)) { return false; }
@@ -119,7 +133,7 @@ public class ShipManager : MonoBehaviour
       }
    }
 
-   // Update the ship's stats to the ship's current level
+   // Recalculates ship's stats based on level and lab bonuses
    public void UpdateStatsToLevel()
    {
       maxHealth = maxHealthByLevel[shipLevel] + labBonusHealth;
@@ -143,6 +157,7 @@ public class ShipManager : MonoBehaviour
          exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
    }
 
+   // Applies permanent stat boosts to the ship
    public void ApplyLabShipBonus()
    {
       labBonusHealth += LAB_T1_HEALTH_BONUS;
@@ -150,15 +165,18 @@ public class ShipManager : MonoBehaviour
       UpdateStatsToLevel();
    }
 
+   // Turns on the loot multiplier bonus
    public void ApplyLabRewardBonus()
    {
       labLootMultiplier = LAB_T3_LOOT_MULTIPLIER;
    }
 
+   // Calulates all rewards for an event choice
    public RoundResults ApplyEventResult(EventChoice results)
    {
       RoundResults finalResults = new RoundResults();
 
+      // Calculate base and random loot for pearls and ore
       int actualPearl = results.pearlChange + UnityEngine.Random.Range(results.minPearl, results.maxPearl + 1);
       int actualOre = 0;
       if (results.loseOre)
@@ -166,11 +184,13 @@ public class ShipManager : MonoBehaviour
       else
          actualOre = results.oreChange + UnityEngine.Random.Range(results.minOre, results.maxOre + 1);
 
+      // Apply tier 3 loot multiplier for all positive pearl and ore loot
       if (actualPearl > 0)
          actualPearl *= labLootMultiplier;
       if (actualOre > 0)
          actualOre *= labLootMultiplier;
 
+      // Get random craftable item if lab tier 2 events choice
       int foundPatchKits = 0, foundHarpoons = 0, foundCrudeTools = 0, foundPressureValves = 0, foundDivingBells = 0, foundClockworkEngines = 0, foundPrecisionLenses = 0;
       if(results.requiresLabTier)
       {
@@ -186,6 +206,13 @@ public class ShipManager : MonoBehaviour
             case 6: foundPrecisionLenses += 1; break;
          }
       }
+
+      if (results.fuelChance > 0 && UnityEngine.Random.value <= results.fuelChance)
+         results.fuelChange += results.fuelGain;
+      if (results.damageChance > 0 && UnityEngine.Random.value <= results.damageChance)
+         results.healthChange -= results.healthDamage;
+
+      // Apply all event changes to ship's stats and inventory
       currentPearl += actualPearl;
       currentOre += actualOre;
       currentHealth += results.healthChange;
@@ -198,6 +225,7 @@ public class ShipManager : MonoBehaviour
       currentClockworkEngine += foundClockworkEngines;
       currentPrecisionLens += foundPrecisionLenses;
 
+      // Put exact changes into struct for UI manager display
       finalResults.pearlChanged = actualPearl;
       finalResults.oreChanged = actualOre;
       finalResults.patchKitChanged = foundPatchKits;
@@ -210,6 +238,7 @@ public class ShipManager : MonoBehaviour
       finalResults.healthChanged = results.healthChange;
       finalResults.fuelChanged = results.fuelChange;
 
+      // Check for ship fail states
       if(currentFuel <= 0)
       {
          LowFuel();
@@ -242,12 +271,12 @@ public class ShipManager : MonoBehaviour
    // Handles a new turn in the ship
    public void NewTurn()
    {
-      // burn one fuel and check if empty
+      // Burn one fuel and check if empty
       currentFuel -= 1;
       if (currentFuel <= 0)
          LowFuel();
 
-      // take out potential hull damage and check for destruction
+      // Apply potential hull damage and check for destruction
       int hullDamage = GetDamage(currentDepth);
       if (hullDamage > 0)
          currentHealth -= hullDamage;
@@ -257,12 +286,13 @@ public class ShipManager : MonoBehaviour
       UpdateShipUI();
    }
 
-   // Reset ship health, fuel, depth, inventory, and map location
+   // Clears ship's inventory, resets health and fuel to max, and resets map position
    public void ResetShip()
    {
       currentFuel = maxFuel;
       currentHealth = maxHealth;
       currentDepth = 1;
+
       currentPearl = 0;
       currentOre = 0;
       currentPatchKit = 0;
@@ -272,13 +302,14 @@ public class ShipManager : MonoBehaviour
       currentDivingBell = 0;
       currentClockworkEngine = 0;
       currentPrecisionLens = 0;
+
       MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
 
       UpdateShipUI();
       OnShipDeath?.Invoke();
    }
 
-   // Tells that fuel is too low to continue
+   // Triggers the fail-state UI sequence when fuel is empty
    public void LowFuel()
    {
       if(currentFuel <= 0)
@@ -294,7 +325,7 @@ public class ShipManager : MonoBehaviour
       }
    }
 
-   // Tells that ship has lost all its health
+   // Triggers the fail-state UI sequence when health is empty
    public void ShipDestruction()
    {
       OpenHealthPanel();
@@ -353,7 +384,7 @@ public class ShipManager : MonoBehaviour
       explorationUnitManager.SetDecisionInteractable(false);
    }
 
-   // Ends a successful exploration and shows total rewards
+   // Ends a successful exploration, shows total rewards and trasfers inventory to main game inventory
    public void FinishExploration()
    {
       ClosePanels();
@@ -369,8 +400,8 @@ public class ShipManager : MonoBehaviour
          AddRewards();
       });
 
+      // Build summary text for final rewards panel based on ship's current inventory
       string totalRewards = "";
-
       if (currentPearl > 0)
          totalRewards += $"Pearl: {currentPearl}\n";
       if (currentOre > 0)

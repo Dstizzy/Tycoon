@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
-   public static MapManager Instance; // Allows other scripts to easily access the map
+   public static MapManager Instance { get; private set; } // Allows other scripts to easily access the map
    public MapNode startingNode; // Map node that the launches from
    public MapNode currentNode; // Node the shp is currently resting on
    public bool winningPathIsLeft; // Determines which final node path holds vessel piece
