@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 1fa118057464742feb537498fbd0d589
+guid: 8f4ab427068bd9b48a3850c1d991aca0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1916390521488734251
-    second: LVL2_0
-  - first:
-      213: -2407580488006073694
-    second: LVL2_1
+      213: 5075840818870867273
+    second: upgrade_no_button_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -99,56 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LVL2_0
+      name: upgrade_no_button_0
       rect:
         serializedVersion: 2
-        x: 259
-        y: 205
-        width: 830
-        height: 356
+        x: 171
+        y: 112
+        width: 343
+        height: 145
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -157,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5d70db369fc9765e0800000000000000
-      internalID: -1916390521488734251
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LVL2_1
-      rect:
-        serializedVersion: 2
-        x: 941
-        y: 207
-        width: 11
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2a28c345d4e869ed0800000000000000
-      internalID: -2407580488006073694
+      spriteID: 945d931f452017640800000000000000
+      internalID: 5075840818870867273
       vertices: []
       indices: 
       edges: []
@@ -199,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      LVL2_0: -1916390521488734251
-      LVL2_1: -2407580488006073694
+      upgrade_no_button_0: 5075840818870867273
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

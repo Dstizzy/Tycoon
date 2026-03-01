@@ -20,9 +20,6 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform SellPanel;              
    [SerializeField] private Transform SellWindow;     
    [SerializeField] private Transform InfoPanel;                   
-   [SerializeField] private Transform UpgradePanel;           
-   [SerializeField] private Transform MysteryBoxPanel;
-   [SerializeField] private TextMeshProUGUI tradeHutLevelText;
                     public  Transform BuyPanel;       
                     public  Transform RecycleButton;
    public List<Transform> SellItems { get; private set; }
@@ -128,11 +125,6 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Info Panel is not assigned in the Inspector!");
       else
          CloseInfoPanel();
-
-      if (UpgradePanel == null)
-         Debug.LogError("Upgrade Panel is not assigned in the Inspector!");
-      else
-         CloseUpgradePanel();
 
       if (SellWindow == null)
          Debug.LogError("Sell window is not assigned in the Inspector");
@@ -1239,9 +1231,6 @@ public class TradeHutManager : MonoBehaviour
          case INFO_BUTTON:
             CloseInfoPanel();
             break;
-         case UPGRADE_BUTTON:
-            CloseUpgradePanel();
-            break;
          default:
             Debug.Log("Building Panel: Unknown button ID.");
             break;
@@ -1357,14 +1346,6 @@ public class TradeHutManager : MonoBehaviour
    private void CloseInfoPanel()
    {
       InfoPanel.gameObject.SetActive(false);
-
-      if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(true);
-   }
-
-   private void CloseUpgradePanel() 
-   {
-      UpgradePanel.gameObject.SetActive(false);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
