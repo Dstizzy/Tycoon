@@ -152,17 +152,17 @@ public class TradeHutManager : MonoBehaviour
       inv = InventoryManager.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
-      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 1.0f, HARPOON_TAG);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 3.0f, PRESSURE_VALVE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), -1.0f, ENGINE_TAG, -75);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.0f, TIER_2_BLUEPRINT);
-      CreateBuyItem(GetItemSprite(ItemType.Tier3BluePrint), GetItemPrice(ItemType.Tier3BluePrint), 2.0f, TIER_3_BLUEPRINT);
-      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 0.0f, MERCENARY_ENGINEER_TAG, -35);
+      CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.5f, TIER_2_BLUEPRINT);
+      CreateBuyItem(GetItemSprite(ItemType.Tier3BluePrint), GetItemPrice(ItemType.Tier3BluePrint), 0.0f, TIER_3_BLUEPRINT, -30);
+      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
    }
 
-   public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
+   public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 
    {
       Transform       sellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
                       sellItemTemplate  = sellItemContainer.Find("SellItemTemplate").GetComponent<Transform>(),
@@ -179,7 +179,7 @@ public class TradeHutManager : MonoBehaviour
       tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
       tradeItemTransform.tag = itemTag;
-      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
+      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, verticalIndex);
 
       // Populate the the item properties                                                           
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();

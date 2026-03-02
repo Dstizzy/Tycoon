@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 1f1a41e1f12389949b2f6ca9c7e9b847
+guid: 38447026d155e3d4d9c6e9dac2f09b54
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4200413699487092292
-    second: trade_panel_0
-  - first:
-      213: -6840458104846046402
-    second: trade_panel_1
+      213: -3676809305616207730
+    second: background_01_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,45 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: trade_panel_0
+      name: background_01_0
       rect:
         serializedVersion: 2
-        x: 109
-        y: 18
-        width: 452
-        height: 354
+        x: 0
+        y: 0
+        width: 2967
+        height: 1682
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 44ecc93410eda4a30800000000000000
-      internalID: 4200413699487092292
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: trade_panel_1
-      rect:
-        serializedVersion: 2
-        x: 504
-        y: 3
-        width: 154
-        height: 370
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3ba5bf889fc111a0800000000000000
-      internalID: -6840458104846046402
+      spriteID: e8035e7ca6959fcc0800000000000000
+      internalID: -3676809305616207730
       vertices: []
       indices: 
       edges: []
@@ -150,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c2a26a480ee7450499d56f4a3925855b
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -160,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      trade_panel_0: 4200413699487092292
-      trade_panel_1: -6840458104846046402
+      background_01_0: -3676809305616207730
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
