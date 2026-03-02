@@ -12479,9 +12479,6 @@ MonoBehaviour:
   SellPanel: {fileID: 2130524080}
   SellWindow: {fileID: 1739640203}
   InfoPanel: {fileID: 444934551}
-  UpgradePanel: {fileID: 1790479432}
-  MysteryBoxPanel: {fileID: 0}
-  tradeHutLevelText: {fileID: 0}
   BuyPanel: {fileID: 702312127}
   RecycleButton: {fileID: 231883656}
   currrentNewsTickerMessage: 
@@ -30654,8 +30651,6 @@ MonoBehaviour:
   scenarioText: {fileID: 1750919947}
   choiceAText: {fileID: 873549128}
   choiceBText: {fileID: 123659938}
-  buttonA: {fileID: 1088096237}
-  buttonB: {fileID: 1857328966}
 --- !u!114 &948325536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30678,10 +30673,6 @@ MonoBehaviour:
   decisionHealthText: {fileID: 1316057666}
   exploreFuelText: {fileID: 2039753315}
   exploreHealthText: {fileID: 2014760689}
-  shipLevel: 1
-  labBonusHealth: 0
-  labBonusFuel: 0
-  labLootMultiplier: 1
   isTier2Unlocked: 0
 --- !u!114 &948325537
 MonoBehaviour:
@@ -30770,7 +30761,6 @@ MonoBehaviour:
   shipInventory: {fileID: 1403176604}
   depthWarningText: {fileID: 1906894513}
   exploreShipIcon: {fileID: 1097388913}
-  lastProcessedTurn: -1
   isExploring: 0
 --- !u!1 &948821272
 GameObject:
@@ -65342,7 +65332,6 @@ MonoBehaviour:
   commerceTab: {fileID: 1313649420}
   productionTab: {fileID: 797391855}
   explorationTab: {fileID: 990049669}
-  shipManager: {fileID: 948325536}
 --- !u!1 &2107577280
 GameObject:
   m_ObjectHideFlags: 0
