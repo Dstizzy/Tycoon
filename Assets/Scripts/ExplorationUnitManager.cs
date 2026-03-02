@@ -31,10 +31,11 @@ public class ExplorationUnitManager : MonoBehaviour
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
 
-   public bool isExploring = false; // Determines if exploration is currently ongoing
-   private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
+   public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
+   public  bool isExploring      = false; // Determines if exploration is currently ongoing
+   private bool isWaiting        = false; // Triggered when an event causes user to lose an exploration turn
 
-   //
+   public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
       // Verify all panels are assigned and disable them at startup

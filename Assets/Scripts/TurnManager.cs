@@ -16,11 +16,12 @@ public class TurnManager : MonoBehaviour
    const int ENDINGTURN      = 80;
 
 
-   // Static fields
+   // Variables
    public static System.Random random = new System.Random(); // Random number generator
    public static int       randomNumber;                     // Random number for various calculations
    public static int       jamTurnCounter;                   // Counter for turns during a jam
    public static bool      manualResetOption     = false;    // Flag for manual reset option
+   public        bool      tutorialFunction      = false;    // Checks for tutorial going on
    public static int       heatLevel;                        // Current heat level
    public static int       enemyAttackPercentage = 0;        // Percentage chance of enemy attack each turn
    public static bool      userDefends;                      // Flag indicating if the user defends against enemy attacks 

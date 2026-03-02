@@ -32,21 +32,23 @@ public class LabManager : MonoBehaviour
 
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
-    [SerializeField] private Transform infoPanel;
+   [SerializeField] private Transform infoPanel;
+   [SerializeField] private GameObject pathButtons;
+   [SerializeField] private GameObject initialTab;
+   [SerializeField] private GameObject commerceTab;
+   [SerializeField] private GameObject productionTab;
+   [SerializeField] private GameObject explorationTab;
 
-    [SerializeField] private GameObject pathButtons;
-    [SerializeField] private GameObject initialTab;
-    [SerializeField] private GameObject commerceTab;
-    [SerializeField] private GameObject productionTab;
-    [SerializeField] private GameObject explorationTab;
- 
 
    /* Public variables                                                                          */
-   public static int currentCommerceTier { get; private set; } = 0;
+   public static int  currentCommerceTier { get; private set; } = 0;
+   public        bool tutorialFunction = false; // Checks if the lab function has been explained in the tutorial
 
 
    TradeHutManager tradeHutManager;
-   
+
+   public static LabManager Instance { get; private set; }
+
    public static LabManager labManager;
 
     /* Check if all required game objects exist and are in there required states                 */

@@ -94,6 +94,7 @@ public class TradeHutManager : MonoBehaviour
                        TIER_3_BLUEPRINT       = "Tier 3 Blueprint";
    
    public bool isTier3BuffACtive  = false;
+   public bool tutorialFunction   = false;
 
    private InventoryManager inv;
 
@@ -1274,6 +1275,11 @@ public class TradeHutManager : MonoBehaviour
             CloseBuyWindow();
 
          CloseBuyPanel();
+      }
+
+      if(tutorialFunction)
+      {
+
       }
 
       // Destroy the instantiated buy item/window instance if it exists
