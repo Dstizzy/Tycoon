@@ -17,15 +17,16 @@ MonoBehaviour:
     buttonText: Scape out a few pieces
     pearlChange: 10
     oreChange: 0
+    crystalChange: 5
     healthChange: 0
     fuelChange: 0
+    inventoryChange: 0
+    harpoonChange: 0
     waitTurn: 0
-    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
-    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
@@ -34,15 +35,16 @@ MonoBehaviour:
     buttonText: Take the statue with you, but lose fuel from the added weight
     pearlChange: 20
     oreChange: 75
+    crystalChange: 20
     healthChange: 0
     fuelChange: -4
+    inventoryChange: 0
+    harpoonChange: 0
     waitTurn: 0
-    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
-    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
