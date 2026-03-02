@@ -258,7 +258,10 @@ public class InventoryManager : MonoBehaviour
 
       /* Dynamically add listeners to the button, which creates the resource       */
       /* information window                                                        */
-      resourceWindowButton.onClick.AddListener(() => CreateResourceWindow(resourceSprite, resourceTag));
+      resourceWindowButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
+         CreateResourceWindow(resourceSprite, resourceTag);
+      });
 
       switch (resourceTag)
       {
@@ -374,7 +377,10 @@ public class InventoryManager : MonoBehaviour
       }
 
       /* Dynamically add listeners to the buttons, which creates the craft window  */
-      craftWindowButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); });
+      craftWindowButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
+         CreateCraftWindow(craftSprite, craftTag);
+      });
 
       InventoryItems.Add(craftTransform);
       craftTransform.gameObject.SetActive(true);
