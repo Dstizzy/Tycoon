@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 965d4707cd3e6744d9e91435b51785b6
+guid: 2c585cee0e53ba64dba80a7ed20919b5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3214554770905276775
-    second: patch_kit_0
+      213: 5662290855432871155
+    second: pressure_valve_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: patch_kit_0
+      name: pressure_valve_0
       rect:
         serializedVersion: 2
-        x: 218
-        y: 19
-        width: 187
-        height: 182
+        x: 203
+        y: 77
+        width: 225
+        height: 239
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 99e5721a77b9363d0800000000000000
-      internalID: -3214554770905276775
+      spriteID: 3fcd40d688f749e40800000000000000
+      internalID: 5662290855432871155
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      patch_kit_0: -3214554770905276775
+      pressure_valve_0: 5662290855432871155
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
