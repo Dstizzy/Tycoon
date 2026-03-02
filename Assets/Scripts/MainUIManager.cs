@@ -222,8 +222,8 @@ public class MainUIManager : MonoBehaviour
          MainMenuButton.interactable = interactable;
       if (InventoryButton != null)
          InventoryButton.interactable = interactable;
-      if (victoryButton != null)
-         victoryButton.interactable = interactable;
+      //if (victoryButton != null)
+         //victoryButton.interactable = interactable;
       if (NextButton != null)
          NextButton.interactable = interactable;
       if (DropdownButtons != null)
