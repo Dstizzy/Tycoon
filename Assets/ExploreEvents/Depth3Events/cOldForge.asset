@@ -10,30 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: HydroChimney
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: A white smoke vent is spewing hot minerals, forming crystal towers
+  m_Name: cOldForge
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: An ancient, submerged forge was built directly around a magma vent.
+    The heavy stone doors are sealed shut by centuries of mineral buildup.
   choiceA:
-    buttonText: Smash the towers to collect all crystals
-    pearlChange: 20
+    buttonText: Break off the volcanic glass that has formed around the forge
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
     loseOre: 0
-    minPearl: 0
-    maxPearl: 0
+    minPearl: 30
+    maxPearl: 50
     minOre: 0
     maxOre: 0
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
-    healthDamage: -15
+    healthDamage: 0
   choiceB:
-    buttonText: Collect loose crystals
+    buttonText: Send your dive crew inside to search for valuable items
     pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -42,7 +45,7 @@ MonoBehaviour:
     maxPearl: 0
     minOre: 0
     maxOre: 0
-    requiresLabTier: 0
+    requiresLabTier: 1
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

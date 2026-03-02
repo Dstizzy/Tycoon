@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: HydroChimney
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: A white smoke vent is spewing hot minerals, forming crystal towers
+  m_Name: cMineField
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: A mine field surrounding a chest sits in the middle of your path
   choiceA:
-    buttonText: Smash the towers to collect all crystals
-    pearlChange: 20
+    buttonText: Go around the minefield, but risk triggering one of the outside mines
+    pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -29,20 +30,22 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
-    healthDamage: -15
+    healthDamage: 25
   choiceB:
-    buttonText: Collect loose crystals
+    buttonText: Send your dive team to navigate the mines and collect the chest (costs
+      1 turn)
     pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    waitTurn: 0
+    waitTurn: 1
     loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
-    requiresLabTier: 0
+    requiresLabTier: 1
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
