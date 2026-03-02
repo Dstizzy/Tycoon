@@ -284,6 +284,9 @@ public class OreRefinery_Manager : MonoBehaviour
          oreRefineryLevelText.text = "Level " + oreLevel.ToString();
          Debug.Log($"Ore Refinery upgraded to level {oreLevel}!");
          ticker.ShowTicker($"Ore Refinery upgraded to level {oreLevel}!", Color.green, MessageTypes.ResultMessage);
+         
+         if(oreLevel == ENDING_LEVEL)
+            InventoryManager.Instance.OreRefineryUpgradeIcon.gameObject.SetActive(false);
       }
       else
       {

@@ -28,10 +28,9 @@ public class InventoryManager : MonoBehaviour
                                       CraftsPanel,
                                       CraftWindow;
 
-   [SerializeField]
-   private Image ForgeUpgradeIcon,
-                                  OreRefineryUpgradeIcon,
-                                  ExplorationUnitUpgradeIcon;
+   public Image ForgeUpgradeIcon,
+                 OreRefineryUpgradeIcon,
+                 ExplorationUnitUpgradeIcon;
 
    private TextMeshProUGUI PearlCountText,
                            CrystalCountText,
@@ -172,7 +171,7 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount = 500;
+      pearlCount = 5000;
       crystalCount = MIN_CRYSTAL_COUNT;
       oreCount = 500;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
@@ -1300,7 +1299,8 @@ public class InventoryManager : MonoBehaviour
 
    private void CheckUpgradeResources()
    {
-      if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
+      if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls &&
+          OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
          OreRefineryUpgradeIcon.gameObject.SetActive(true);
       else
          OreRefineryUpgradeIcon.gameObject.SetActive(false);
@@ -1318,7 +1318,7 @@ public class InventoryManager : MonoBehaviour
             if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
                ForgeUpgradeIcon.gameObject.SetActive(true);
             else
-               ForgeUpgradeIcon.gameObject.SetActive(true);
+               ForgeUpgradeIcon.gameObject.SetActive(false);
       }
    }
 
