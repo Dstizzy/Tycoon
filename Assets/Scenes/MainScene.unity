@@ -12881,7 +12881,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &433365030
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31380,7 +31380,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1113495824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45382,6 +45382,8 @@ MonoBehaviour:
   scenarioText: {fileID: 1454535417}
   choiceAText: {fileID: 1511911695}
   choiceBText: {fileID: 969046677}
+  buttonA: {fileID: 0}
+  buttonB: {fileID: 0}
 --- !u!114 &1699829495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45404,7 +45406,7 @@ MonoBehaviour:
   decisionHealthText: {fileID: 411947377}
   exploreFuelText: {fileID: 1394652411}
   exploreHealthText: {fileID: 487945362}
-  isTier2Unlocked: 0
+  shipLevel: 1
 --- !u!114 &1699829496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45473,6 +45475,7 @@ MonoBehaviour:
   shipInventory: {fileID: 0}
   depthWarningText: {fileID: 0}
   exploreShipIcon: {fileID: 263672192}
+  lastProcessedTurn: -1
   isExploring: 0
 --- !u!1 &1704076718
 GameObject:
