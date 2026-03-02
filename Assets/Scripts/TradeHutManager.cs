@@ -152,17 +152,17 @@ public class TradeHutManager : MonoBehaviour
       inv = InventoryManager.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 0.0f, HARPOON_TAG);
-      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 1.0f, PRESSURE_VALVE_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.0f, ENGINE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 1.0f, HARPOON_TAG);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 3.0f, PRESSURE_VALVE_TAG);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), -1.0f, ENGINE_TAG, -75);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.0f, TIER_2_BLUEPRINT);
-      CreateBuyItem(GetItemSprite(ItemType.Tier3BluePrint), GetItemPrice(ItemType.Tier3BluePrint), 2.0f, TIER_3_BLUEPRINT);
-      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 0.0f, MERCENARY_ENGINEER_TAG, -35);
+      CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.5f, TIER_2_BLUEPRINT);
+      CreateBuyItem(GetItemSprite(ItemType.Tier3BluePrint), GetItemPrice(ItemType.Tier3BluePrint), 0.0f, TIER_3_BLUEPRINT, -30);
+      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
    }
 
-   public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag) 
+   public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 
    {
       Transform       sellItemContainer = SellPanel.Find("sellItemContainer").GetComponent<Transform>(),
                       sellItemTemplate  = sellItemContainer.Find("SellItemTemplate").GetComponent<Transform>(),
@@ -179,7 +179,7 @@ public class TradeHutManager : MonoBehaviour
       tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
       tradeItemTransform.tag = itemTag;
-      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, 0);
+      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, verticalIndex);
 
       // Populate the the item properties                                                           
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
@@ -394,10 +394,10 @@ public class TradeHutManager : MonoBehaviour
          case CRUDE_TOOL_TAG:
             if (crudeToolSellCount > MIN_SELL_ITEM_COUNT)
             {
-               soldCount = crudeToolSellCount;
                
                if (inv.TryUseCrudeTool(crudeToolSellCount)) 
                {
+                  soldCount = crudeToolSellCount;
                   totalSellValue += soldCount * GetItemValue(ItemType.CrudeTool);
                   successMessage = $"Sold {soldCount} Crude Tool{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
                }
@@ -409,10 +409,10 @@ public class TradeHutManager : MonoBehaviour
          case HARPOON_TAG:
             if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               soldCount = harpoonSellCount;
                
                if (inv.TryUseHarpoon(harpoonSellCount))
                {
+                  soldCount = harpoonSellCount;
                   totalSellValue += soldCount * GetItemValue(ItemType.Harpoon);
                   successMessage = $"Sold {soldCount} Harpoon{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
                }
@@ -425,10 +425,10 @@ public class TradeHutManager : MonoBehaviour
          case PRESSURE_VALVE_TAG:
             if (pressureValveCount > MIN_SELL_ITEM_COUNT) 
             {
-               soldCount = pressureValveCount;
 
                if (inv.TryUsePressureValve(pressureValveCount))
                {
+                  soldCount = pressureValveCount;
                   totalSellValue += soldCount * GetItemValue(ItemType.PressureValve);
                   successMessage = $"Sold {soldCount} Pressure Valve{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
                }
@@ -441,10 +441,10 @@ public class TradeHutManager : MonoBehaviour
          case ENGINE_TAG:
             if (engineSellCount > MIN_SELL_ITEM_COUNT) 
             {
-               soldCount = engineSellCount;
                
                if (inv.TryUseEngine(engineSellCount))
                {
+                  soldCount = engineSellCount;
                   totalSellValue += soldCount * GetItemValue(ItemType.Engine);
                   successMessage = $"Sold {soldCount} Engine{(soldCount > 1 ? "s" : "")} for {totalSellValue} pearls.";
                }
@@ -454,18 +454,18 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
       
+      Debug.Log("total sell value: " + totalSellValue);
       // Recieves pearls and show success ticker only if something sold
-      if (totalSellValue > 0)
+      // Change this logic at the bottom of SellItem()
+      if (totalSellValue > 0) 
       {
          inv.TryAddPearl(totalSellValue);
-         ticker.ShowTicker(successMessage ?? $"Sold items for {totalSellValue} pearls.", Color.green, MessageTypes.ResultMessage);
-      } 
-      else 
-      { 
-         if(soldCount == MIN_SELL_ITEM_COUNT) 
-            ticker.ShowTicker("No items have been selected.", Color.red, MessageTypes.ResultMessage);
-         else
-            soldCount = 0;
+         ticker.ShowTicker(successMessage, Color.green, MessageTypes.ResultMessage);
+      } else 
+      {
+         // Check if the user actually tried to sell something but failed 
+         // vs. not selecting anything at all.
+         ticker.ShowTicker("Transaction failed or no items selected.", Color.red, MessageTypes.ResultMessage);
       }
 
       crudeToolSellCount = MIN_SELL_ITEM_COUNT;
@@ -590,7 +590,7 @@ public class TradeHutManager : MonoBehaviour
       switch (item.tag) 
       {
          case CRUDE_TOOL_TAG:
-            if (crudeToolSellCount < MAX_SELL_ITEM_COUNT) 
+            if (crudeToolSellCount < MAX_SELL_ITEM_COUNT && crudeToolSellCount < inv.crudeToolCount ) 
             {
                crudeToolSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
@@ -598,7 +598,7 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          case HARPOON_TAG:
-            if (harpoonSellCount < MAX_SELL_ITEM_COUNT) 
+            if (harpoonSellCount < MAX_SELL_ITEM_COUNT && harpoonSellCount < inv.harpoonCount) 
             {
                harpoonSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
@@ -606,7 +606,7 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          case PRESSURE_VALVE_TAG:
-            if (pressureValveCount < MAX_SELL_ITEM_COUNT) 
+            if (pressureValveCount < MAX_SELL_ITEM_COUNT && pressureValveCount < inv.pressureValveCount) 
             {
                pressureValveCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveCount.ToString();
@@ -614,7 +614,7 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          case ENGINE_TAG:
-            if (engineSellCount < MAX_SELL_ITEM_COUNT) 
+            if (engineSellCount < MAX_SELL_ITEM_COUNT && engineSellCount < inv.engineCount) 
             {
                engineSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
@@ -1200,20 +1200,36 @@ public class TradeHutManager : MonoBehaviour
    }
 
    // Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel
-   public void RequestTradeHutPanel(int buttonID)
-   {
-      switch (buttonID) 
-      {
+   public void RequestTradeHutPanel(int buttonID) {
+      switch (buttonID) {
          case TRADE_BUTTON:
             ShowTradePanel();
-            SellWindow.Find("SellButton").GetComponent<Button>().onClick.AddListener(() => SellItem());
-            BuyWindow.Find("BuyButton").GetComponent<Button>().onClick.AddListener(() => BuyItem());
-            TradePanels.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
+
+            // Handle Sell Button
+            Button sellBtn = SellWindow.Find("SellButton").GetComponent<Button>();
+            sellBtn.onClick.RemoveAllListeners();
+            sellBtn.onClick.AddListener(() => SellItem());
+
+            // Handle Buy Button
+            Button buyBtn = BuyWindow.Find("BuyButton").GetComponent<Button>();
+            buyBtn.onClick.RemoveAllListeners();
+            buyBtn.onClick.AddListener(() => BuyItem());
+
+            // Handle Exit Button
+            Button exitBtnTrade = TradePanels.Find("ExitButton").GetComponent<Button>();
+            exitBtnTrade.onClick.RemoveAllListeners();
+            exitBtnTrade.onClick.AddListener(() => CloseTradeHutPanel(TRADE_BUTTON));
             break;
+
          case INFO_BUTTON:
             ShowInfoPanel();
-            InfoPanel.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
+
+            // Handle Info Exit Button
+            Button exitBtnInfo = InfoPanel.Find("ExitButton").GetComponent<Button>();
+            exitBtnInfo.onClick.RemoveAllListeners();
+            exitBtnInfo.onClick.AddListener(() => CloseTradeHutPanel(INFO_BUTTON));
             break;
+
          default:
             Debug.Log("Building Panel: Unknown button ID.");
             break;
