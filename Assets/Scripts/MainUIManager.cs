@@ -22,6 +22,8 @@ public class MainUIManager : MonoBehaviour
 
    // State variable to track dropdown visibility
    private bool isVisible = false;
+   private int displayedPearlCount = 0;
+   private int displayedOreCount = 0;
 
    public static MainUIManager mainUI;
 
@@ -52,18 +54,33 @@ public class MainUIManager : MonoBehaviour
          btn.gameObject.SetActive(false);
       }
       // Add listener to main menu button
-      MainMenuButton.onClick.AddListener(ToggleMenu);
+      MainMenuButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
+         ToggleMenu();
+      });
       InventoryButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
          InventoryManager.Instance.ShowInventoryPanel();
       });
       victoryButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
          ShowVictoryPanel();
       });
+
+      if (NextButton != null)
+      {
+         NextButton.onClick.AddListener(() =>
+         {
+            if (AudioManager.Instance != null)
+               AudioManager.Instance.PlayClick();
+         });
+      }
 
       if (victoryButton != null)
       {
          victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
          {
+            AudioManager.Instance.PlayClick();
             victoryPanel.SetActive(false);
             PopUpManager.Instance.EnablePlayerInput();
          });
@@ -87,14 +104,18 @@ public class MainUIManager : MonoBehaviour
    public void ChangePearlCountText(int newPearlCount)
    {
       if (pearCountText != null)
-         pearCountText.text = newPearlCount.ToString();
+      {
+         StartCoroutine(AnimateTopBarCounter(pearCountText, displayedPearlCount, newPearlCount, 0.5f, true));
+      }
    }
 
    // Changes the Ore count text on the main UI
    public void ChangeOreCountText(int newOreCount)
    {
       if (oreCountText != null)
-         oreCountText.text = newOreCount.ToString();
+      {
+         StartCoroutine(AnimateTopBarCounter(oreCountText, displayedOreCount, newOreCount, 0.5f, false));
+      }
    }
 
    //Shows the victory panel and sets up the buttons for the submarine assembly
@@ -230,5 +251,28 @@ public class MainUIManager : MonoBehaviour
          foreach (var btn in DropdownButtons)
             if (btn != null)
                btn.interactable = interactable;
+   }
+
+   private System.Collections.IEnumerator AnimateTopBarCounter(TextMeshProUGUI textElement, int startValue, int endValue, float duration, bool isPearl)
+   {
+      float elapsedTime = 0f;
+
+      while (elapsedTime < duration)
+      {
+         elapsedTime += Time.deltaTime;
+         float currentValue = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+
+         if (textElement != null)
+            textElement.text = Mathf.RoundToInt(currentValue).ToString();
+
+         yield return null;
+      }
+
+      if (textElement != null)
+         textElement.text = endValue.ToString();
+
+      // Update our tracker variables
+      if (isPearl) displayedPearlCount = endValue;
+      else displayedOreCount = endValue;
    }
 }
