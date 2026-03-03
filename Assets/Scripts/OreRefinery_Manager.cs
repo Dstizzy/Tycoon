@@ -10,10 +10,10 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public static OreRefinery_Manager Instance { get; private set; }
 
-   const int INFO_BUTTON = 1;
+   const int INFO_BUTTON    = 1;
    const int UPGRADE_BUTTON = 2;
    const int STARTING_LEVEL = 1;
-   const int ENDING_LEVEL = 4;
+   const int ENDING_LEVEL   = 4;
 
    [SerializeField] private Transform infoPanel;
    [SerializeField] private Transform upgradePanel;
