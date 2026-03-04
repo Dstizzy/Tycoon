@@ -444,6 +444,9 @@ public class LabManager : MonoBehaviour
       explorationTab.gameObject.SetActive(false);
       initialTab.gameObject.SetActive(true);
       innovatePanel.gameObject.SetActive(false);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    /* Close the info panel                                                                      */

@@ -626,6 +626,7 @@ public class ForgeManager : MonoBehaviour
             {
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
+               ticker.ShowTicker($"Crafting Complete: {job.itemName}",Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
             }
          }

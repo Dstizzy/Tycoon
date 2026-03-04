@@ -171,12 +171,12 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount = 5000;
-      crystalCount = MIN_CRYSTAL_COUNT;
-      oreCount = 500;
+      pearlCount     = 5000;
+      crystalCount   = MIN_CRYSTAL_COUNT;
+      oreCount       = 1000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
-      harpoonCount = MIN_HARPOON_COUNT;
-      engineCount = MIN_ENGINE_COUNT;
+      harpoonCount   = MIN_HARPOON_COUNT;
+      engineCount    = MIN_ENGINE_COUNT;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
@@ -378,7 +378,7 @@ public class InventoryManager : MonoBehaviour
 
       /* Dynamically add listeners to the buttons, which creates the craft window  */
       craftWindowButton.onClick.AddListener(() => {
-         AudioManager.Instance.PlayClick(); 
+         //AudioManager.Instance.PlayClick(); 
          CreateCraftWindow(craftSprite, craftTag);
       });
 

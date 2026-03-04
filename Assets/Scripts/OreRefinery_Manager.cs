@@ -199,6 +199,7 @@ public class OreRefinery_Manager : MonoBehaviour
          {
             IsBlocked = false;
             buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
+            DeactivateJamButton();
             CloseJamPanel();
             Debug.Log("Ore Refinery unjammed successfully.");
             ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
@@ -214,7 +215,9 @@ public class OreRefinery_Manager : MonoBehaviour
          {
             IsBlocked = false;
             buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
+            DeactivateJamButton();
             CloseJamPanel();
+            ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
             Debug.Log("Ore Refinery unjammed successfully.");
          }
          else

@@ -59,7 +59,7 @@ public class MainUIManager : MonoBehaviour
          ToggleMenu();
       });
       InventoryButton.onClick.AddListener(() => {
-         AudioManager.Instance.PlayClick(); 
+         //AudioManager.Instance.PlayClick(); 
          InventoryManager.Instance.ShowInventoryPanel();
       });
       victoryButton.onClick.AddListener(() => {
