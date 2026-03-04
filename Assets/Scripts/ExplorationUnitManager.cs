@@ -73,12 +73,12 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-             //  bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-              // bool canExplore = !isExploring && hasDivingBell;
-             //  exploreButton.interactable = canExplore;
-             //  if (canExplore)
-             if(!isExploring)
-                  exploreButton.onClick.AddListener(() => StartExploration());
+               bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               bool canExplore = !isExploring && hasDivingBell;
+               exploreButton.interactable = canExplore;
+               if (canExplore)
+                  if(!isExploring)
+                     exploreButton.onClick.AddListener(() => StartExploration());
             }
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
             break;

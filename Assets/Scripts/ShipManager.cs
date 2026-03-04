@@ -68,6 +68,7 @@ public class ShipManager : MonoBehaviour
       public int healthChanged;
       public int fuelChanged;
 
+      // Tracks if event changed status or inventory of the ship
       public bool HasChanges()
       {
          return pearlChanged != 0 || oreChanged != 0 || patchKitChanged != 0 || harpoonChanged != 0 ||
