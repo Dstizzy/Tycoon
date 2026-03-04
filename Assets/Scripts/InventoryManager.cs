@@ -78,16 +78,17 @@ public class InventoryManager : MonoBehaviour
 
    public const int RESOURCE_SPACING = 30,
                     PEARL_POSITION = 0,
-                    CRYSTAL_POSITION = PEARL_POSITION + 10,
-                    ORE_POSITION = CRYSTAL_POSITION + 10,
+                    CRYSTAL_POSITION = PEARL_POSITION + 13,
+                    ORE_POSITION = CRYSTAL_POSITION + 13,
+
                     CRUDE_TOOL_POSITION = 0,
-                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 10,
+                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 13,
                     PATCH_KIT_POSITION = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
-                    DIVING_BELL_POSITION = CRUDE_TOOL_POSITION + 10,
-                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 10,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 13,
+                    DIVING_BELL_POSITION = HARPOON_POSITION,
+                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 13,
                     PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION,
-                    MERCENARY_ENGINEER_POSITION = PRESSURE_VALVE_POSITION + 10;
+                    MERCENARY_ENGINEER_POSITION = ENGINE_POSITION;
 
    public const string PEARL_TAG = "Pearl",
                        CRYSTAL_TAG = "Crystal",
@@ -190,11 +191,11 @@ public class InventoryManager : MonoBehaviour
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
       CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, TradeHutManager.MERCENARY_ENGINEER_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);

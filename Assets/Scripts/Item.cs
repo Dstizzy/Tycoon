@@ -36,8 +36,8 @@ public class Item {
       "A basic tool made from rudimentary materials. " +
       "Useful for simple tasks but lacks durability.";
    const string HARPOON_DESCRIPTION              =
-      "A well-crafted tool made from high-quality materials. " +
-      "Offers better performance and durability for various tasks.";
+     "A reinforced harpoon crafted for hunting and defense — effective against leviathans like the kraken. " +
+      "More durable than a crude tool, and sells for a higher price.";
    const string PRESSURE_VALVE_DESCRIPTION       =
       "A well-crafted tool made from high-quality materials. " +
       "Offers better performance and durability for various tasks.";

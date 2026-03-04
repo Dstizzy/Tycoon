@@ -711,7 +711,7 @@ public class TradeHutManager : MonoBehaviour
             }
             break;
          case MERCENARY_ENGINEER_TAG:
-            if (mercenaryEngineerBuyCount < MAX_BUY_ITEM_COUNT) 
+            if (mercenaryEngineerBuyCount > MIN_BUY_ITEM_COUNT) 
             {
                mercenaryEngineerBuyCount -= 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerBuyCount.ToString();
