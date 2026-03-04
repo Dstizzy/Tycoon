@@ -13,7 +13,8 @@ public class TutorialManager : MonoBehaviour
    public         bool requiredButtonClicked = true;  // Flag to check if the required button has been clicked
    public         bool oreRefineryUpgrade    = false; // Flag to check if the ore refinery upgrade has been completed
    public         bool forgeFunction         = false; // Checks if the forge function has been explained
-   public         bool tradeHutFunction      = false; // Checks if the trade hut function has been explained
+   public         bool tradeHutFunctionOne   = false; // Checks if the first trade hut function has been explained
+   public         bool tradeHutFunctionTwo   = false; // Checks if the second trade hut function has been explained
    public         bool explorationFunction   = false; // Checks if the exploration function has been explained
    public         bool labFunction           = false; // Checks if the lab function has been explained
    public         bool enemyFunction         = false; // Checks if the enemy function has been explained
@@ -30,6 +31,7 @@ public class TutorialManager : MonoBehaviour
       OreRefinery_Manager.HandleTutorial += HandleNextStep;
       ForgeManager.HandleTutorial += HandleNextStep;
       InventoryManager.HandleTutorial += HandleNextStep;
+      TradeHutManager.HandleTutorial += HandleNextStep;
    }
 
    private void OnDisable()
@@ -38,6 +40,7 @@ public class TutorialManager : MonoBehaviour
       OreRefinery_Manager.HandleTutorial -= HandleNextStep;
       ForgeManager.HandleTutorial -= HandleNextStep;
       InventoryManager.HandleTutorial -= HandleNextStep;
+      TradeHutManager.HandleTutorial -= HandleNextStep;
    }
 
    // Store the reference to the current part so we can toggle arrows from the event
@@ -215,10 +218,17 @@ public class TutorialManager : MonoBehaviour
          currentActivePart = myPart;
       }
 
-      if(myPart.transform.Find("TradeHut") != null)
+      if(myPart.transform.Find("TradeHut1") != null)
       {
          requiredButtonClicked = false;
-         tradeHutFunction = true;
+         tradeHutFunctionOne = true;
+         currentActivePart = myPart;
+      }
+
+      if (myPart.transform.Find("TradeHut2") != null)
+      {
+         requiredButtonClicked = false;
+         tradeHutFunctionTwo = true;
          currentActivePart = myPart;
       }
    }
@@ -263,12 +273,12 @@ public class TutorialManager : MonoBehaviour
          }
       }
 
-      if(tradeHutFunction == true)
+      if(tradeHutFunctionOne == true)
       {
          if(tag == "Trade Hut")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            TradeHutManager.Instance.tutorialFunction = true;
+            TradeHutManager.Instance.tutorialFunctionOne = true;
          }
          else
          {
@@ -276,7 +286,20 @@ public class TutorialManager : MonoBehaviour
          }
       }
 
-      if(explorationFunction == true)
+      if(tradeHutFunctionTwo == true)
+      {
+         if(tag == "Trade Hut")
+         {
+            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
+            TradeHutManager.Instance.tutorialFunctionTwo = true;
+         }
+         else
+         {
+            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
+         }
+      }
+
+      if (explorationFunction == true)
       {
          if(tag == "Exploration")
          {

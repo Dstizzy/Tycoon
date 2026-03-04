@@ -93,10 +93,13 @@ public class TradeHutManager : MonoBehaviour
                        TIER_2_BLUEPRINT       = "Tier 2 Blueprint",
                        TIER_3_BLUEPRINT       = "Tier 3 Blueprint";
    
-   public bool isTier3BuffACtive  = false;
-   public bool tutorialFunction   = false;
+   public bool isTier3BuffACtive   = false;
+   public bool tutorialFunctionOne = false;
+   public bool tutorialFunctionTwo = false;
 
    private InventoryManager inv;
+
+   public static event Action HandleTutorial;
 
    public static TradeHutManager Instance;
 
@@ -290,6 +293,15 @@ public class TradeHutManager : MonoBehaviour
       {
          Destroy(currentSellItem.gameObject);
          currentSellItem = null;
+      }
+
+      if(tutorialFunctionTwo && itemTag == CRUDE_TOOL_TAG && SellPanel.Find("Arrow3").gameObject.activeSelf)
+      {
+         SellPanel.Find("Arrow3").gameObject.SetActive(false);
+         SellPanel.Find("ThirdText").gameObject.SetActive(false);
+         SellPanel.Find("FourthText").gameObject.SetActive(false);
+         SellPanel.Find("Arrow4").gameObject.SetActive(true);
+         SellPanel.Find("FifthText").gameObject.SetActive(true);
       }
 
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
@@ -1277,9 +1289,23 @@ public class TradeHutManager : MonoBehaviour
          CloseBuyPanel();
       }
 
-      if(tutorialFunction)
+      if(tutorialFunctionOne)
       {
+         SellPanel.Find("Arrow").gameObject.SetActive(true);
+         SellPanel.Find("Arrow2").gameObject.SetActive(true);
+         SellPanel.Find("FirstText").gameObject.SetActive(true);
+         SellPanel.Find("SecondText").gameObject.SetActive(true);
+      }
 
+      if(tutorialFunctionTwo)
+      {
+         SellPanel.Find("Arrow").gameObject.SetActive(false);
+         SellPanel.Find("Arrow2").gameObject.SetActive(false);
+         SellPanel.Find("FirstText").gameObject.SetActive(false);
+         SellPanel.Find("SecondText").gameObject.SetActive(false);
+         SellPanel.Find("Arrow3").gameObject.SetActive(true);
+         SellPanel.Find("ThirdText").gameObject.SetActive(true);
+         SellPanel.Find("FourthText").gameObject.SetActive(true);
       }
 
       // Destroy the instantiated buy item/window instance if it exists
@@ -1299,6 +1325,16 @@ public class TradeHutManager : MonoBehaviour
             CloseSellWindow();
 
          CloseSellPanel();
+      }
+
+      if(tutorialFunctionTwo)
+      {
+         SellPanel.Find("Arrow4").gameObject.SetActive(false);
+         SellPanel.Find("FourthText").gameObject.SetActive(false);
+         SellPanel.Find("FifthText").gameObject.SetActive(false);
+         BuyPanel.Find("Arrow5").gameObject.SetActive(true);
+         BuyPanel.Find("SixthText").gameObject.SetActive(true);
+         BuyPanel.Find("SeventhText").gameObject.SetActive(true);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
@@ -1328,6 +1364,23 @@ public class TradeHutManager : MonoBehaviour
 
    private void CloseTradePanel() 
    {
+      if(tutorialFunctionOne)
+      {
+         SellPanel.Find("Arrow").gameObject.SetActive(false);
+         SellPanel.Find("Arrow2").gameObject.SetActive(false);
+         SellPanel.Find("FirstText").gameObject.SetActive(false);
+         SellPanel.Find("SecondText").gameObject.SetActive(false);
+         tutorialFunctionOne = false;
+         HandleTutorial?.Invoke();
+      }
+
+      if(tutorialFunctionTwo && SellPanel.Find("Arrow4").gameObject.activeSelf)
+      {
+         BuyPanel.Find("Arrow4").gameObject.SetActive(false);
+         BuyPanel.Find("SixthText").gameObject.SetActive(false);
+         BuyPanel.Find("SeventhText").gameObject.SetActive(false);
+         HandleTutorial?.Invoke();
+      }
 
       // Destroy the instantiated sell item/window instance if it exists
       if (currentSellItem != null) 
