@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 0108d4bf6ee1b3d4cbdd814c9a6fb390
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6354193716674665472
+    second: diving_bell (2)_0
+  - first:
+      213: -1334435956367643754
+    second: diving_bell (2)_1
+  - first:
+      213: -5658539691317803441
+    second: diving_bell (2)_2
+  - first:
+      213: -6934570155519707115
+    second: diving_bell (2)_3
+  - first:
+      213: -3450030464467038726
+    second: diving_bell (2)_4
+  - first:
+      213: -2542159536658533531
+    second: diving_bell (2)_5
+  - first:
+      213: 3783614490116837814
+    second: diving_bell (2)_6
+  - first:
+      213: -1260032491751056916
+    second: diving_bell (2)_7
+  - first:
+      213: 2992848157529135784
+    second: diving_bell (2)_8
+  - first:
+      213: 7478629554565390228
+    second: diving_bell (2)_9
+  - first:
+      213: 3153585076357686684
+    second: diving_bell (2)_10
+  - first:
+      213: -5072758027801614624
+    second: diving_bell (2)_11
+  - first:
+      213: 1246350717600739696
+    second: diving_bell (2)_12
+  - first:
+      213: 1059509314483160695
+    second: diving_bell (2)_13
+  - first:
+      213: -5124988392894409763
+    second: diving_bell (2)_14
+  - first:
+      213: 5869129305053840843
+    second: diving_bell (2)_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: diving_bell (2)_0
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 347
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00c9964f481ae2850800000000000000
+      internalID: 6354193716674665472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_1
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 301
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69ba23d51912b7de0800000000000000
+      internalID: -1334435956367643754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_2
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 325
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f46cd878124d871b0800000000000000
+      internalID: -5658539691317803441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_3
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 294
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 518f83a3f2573cf90800000000000000
+      internalID: -6934570155519707115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_4
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 281
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afd8a2552970f10d0800000000000000
+      internalID: -3450030464467038726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_5
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 100
+        width: 122
+        height: 174
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 563b81fce5f68bcd0800000000000000
+      internalID: -2542159536658533531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_6
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 267
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b15f621559128430800000000000000
+      internalID: 3783614490116837814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_7
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 244
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce95abbef17738ee0800000000000000
+      internalID: -1260032491751056916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_8
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 217
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8aad430ea8bb88920800000000000000
+      internalID: 2992848157529135784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_9
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 211
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49f9b96d4fd69c760800000000000000
+      internalID: 7478629554565390228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_10
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 199
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c95e5452be8c3cb20800000000000000
+      internalID: 3153585076357686684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_11
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 194
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e6af594371f999b0800000000000000
+      internalID: -5072758027801614624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_12
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 185
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 071352ccf5deb4110800000000000000
+      internalID: 1246350717600739696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_13
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 183
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7768cf5ab1224be00800000000000000
+      internalID: 1059509314483160695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_14
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 176
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd35783c53260e8b0800000000000000
+      internalID: -5124988392894409763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: diving_bell (2)_15
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 171
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc5c198c106537150800000000000000
+      internalID: 5869129305053840843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      diving_bell (2)_0: 6354193716674665472
+      diving_bell (2)_1: -1334435956367643754
+      diving_bell (2)_10: 3153585076357686684
+      diving_bell (2)_11: -5072758027801614624
+      diving_bell (2)_12: 1246350717600739696
+      diving_bell (2)_13: 1059509314483160695
+      diving_bell (2)_14: -5124988392894409763
+      diving_bell (2)_15: 5869129305053840843
+      diving_bell (2)_2: -5658539691317803441
+      diving_bell (2)_3: -6934570155519707115
+      diving_bell (2)_4: -3450030464467038726
+      diving_bell (2)_5: -2542159536658533531
+      diving_bell (2)_6: 3783614490116837814
+      diving_bell (2)_7: -1260032491751056916
+      diving_bell (2)_8: 2992848157529135784
+      diving_bell (2)_9: 7478629554565390228
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

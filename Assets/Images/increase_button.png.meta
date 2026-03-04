@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cbb4033e5fcf6564ca03fc4d791b06c0
+guid: 4e89c4f75603f024fb1756c32ceb59d6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4337179028517637788
-    second: harpoon_0
+      213: -2043613511802785863
+    second: increase_button_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: harpoon_0
+      name: increase_button_0
       rect:
         serializedVersion: 2
-        x: 146
-        y: 21
-        width: 373
-        height: 352
+        x: 176
+        y: 28
+        width: 317
+        height: 318
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c9e411ad851c03c30800000000000000
-      internalID: 4337179028517637788
+      spriteID: 9bf6ecaa650a3a3e0800000000000000
+      internalID: -2043613511802785863
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 23d3f9e3f2eb23445a8d0037f61ab554
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      harpoon_0: 4337179028517637788
+      increase_button_0: -2043613511802785863
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: cbb4033e5fcf6564ca03fc4d791b06c0
+guid: 5e1519348d8314018891fb54cd0c6705
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4337179028517637788
-    second: harpoon_0
+      213: -9136834448258697486
+    second: bubble_0
+  - first:
+      213: 1762854388791719718
+    second: bubble_1
+  - first:
+      213: -8014315233242688854
+    second: bubble_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,27 +102,110 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: harpoon_0
+      name: bubble_0
       rect:
         serializedVersion: 2
-        x: 146
-        y: 21
-        width: 373
-        height: 352
+        x: 63
+        y: 481
+        width: 306
+        height: 285
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c9e411ad851c03c30800000000000000
-      internalID: 4337179028517637788
+      spriteID: 2f6fcf37a71733180800000000000000
+      internalID: -9136834448258697486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bubble_1
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 133
+        width: 286
+        height: 350
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6273ba20abae67810800000000000000
+      internalID: 1762854388791719718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bubble_2
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 1
+        width: 126
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa2519cc1ce67c090800000000000000
+      internalID: -8014315233242688854
       vertices: []
       indices: 
       edges: []
@@ -125,7 +214,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 23d3f9e3f2eb23445a8d0037f61ab554
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +224,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      harpoon_0: 4337179028517637788
+      bubble_0: -9136834448258697486
+      bubble_1: 1762854388791719718
+      bubble_2: -8014315233242688854
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

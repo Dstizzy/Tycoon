@@ -28,10 +28,9 @@ public class InventoryManager : MonoBehaviour
                                       CraftsPanel,
                                       CraftWindow;
 
-   [SerializeField]
-   private Image ForgeUpgradeIcon,
-                                  OreRefineryUpgradeIcon,
-                                  ExplorationUnitUpgradeIcon;
+   public Image ForgeUpgradeIcon,
+                 OreRefineryUpgradeIcon,
+                 ExplorationUnitUpgradeIcon;
 
    private TextMeshProUGUI PearlCountText,
                            CrystalCountText,
@@ -79,16 +78,17 @@ public class InventoryManager : MonoBehaviour
 
    public const int RESOURCE_SPACING = 30,
                     PEARL_POSITION = 0,
-                    CRYSTAL_POSITION = PEARL_POSITION + 10,
-                    ORE_POSITION = CRYSTAL_POSITION + 10,
+                    CRYSTAL_POSITION = PEARL_POSITION + 13,
+                    ORE_POSITION = CRYSTAL_POSITION + 13,
+
                     CRUDE_TOOL_POSITION = 0,
-                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 10,
+                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 13,
                     PATCH_KIT_POSITION = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
-                    DIVING_BELL_POSITION = CRUDE_TOOL_POSITION + 10,
-                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 10,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 13,
+                    DIVING_BELL_POSITION = HARPOON_POSITION,
+                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 13,
                     PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION,
-                    MERCENARY_ENGINEER_POSITION = PRESSURE_VALVE_POSITION + 10;
+                    MERCENARY_ENGINEER_POSITION = ENGINE_POSITION;
 
    public const string PEARL_TAG = "Pearl",
                        CRYSTAL_TAG = "Crystal",
@@ -172,12 +172,12 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount = 500;
-      crystalCount = MIN_CRYSTAL_COUNT;
-      oreCount = 100;
+      pearlCount     = 5000;
+      crystalCount   = MIN_CRYSTAL_COUNT;
+      oreCount       = 1000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
-      harpoonCount = MIN_HARPOON_COUNT;
-      engineCount = MIN_ENGINE_COUNT;
+      harpoonCount   = MIN_HARPOON_COUNT;
+      engineCount    = MIN_ENGINE_COUNT;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
@@ -190,12 +190,12 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
-      //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, TradeHutManager.MERCENARY_ENGINEER_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
@@ -259,7 +259,10 @@ public class InventoryManager : MonoBehaviour
 
       /* Dynamically add listeners to the button, which creates the resource       */
       /* information window                                                        */
-      resourceWindowButton.onClick.AddListener(() => CreateResourceWindow(resourceSprite, resourceTag));
+      resourceWindowButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
+         CreateResourceWindow(resourceSprite, resourceTag);
+      });
 
       switch (resourceTag)
       {
@@ -375,7 +378,10 @@ public class InventoryManager : MonoBehaviour
       }
 
       /* Dynamically add listeners to the buttons, which creates the craft window  */
-      craftWindowButton.onClick.AddListener(() => { CreateCraftWindow(craftSprite, craftTag); });
+      craftWindowButton.onClick.AddListener(() => {
+         //AudioManager.Instance.PlayClick(); 
+         CreateCraftWindow(craftSprite, craftTag);
+      });
 
       InventoryItems.Add(craftTransform);
       craftTransform.gameObject.SetActive(true);
@@ -475,7 +481,7 @@ public class InventoryManager : MonoBehaviour
             break;
          case PATCH_KIT_TAG:
             craftCount = patchKitCount;
-            craftInfo = "";
+            craftInfo = GetItemDescription(ItemType.PatchKit);
             break;
          case PRESSURE_VALVE_TAG:
             craftCount = pressureValveCount;
@@ -1300,7 +1306,8 @@ public class InventoryManager : MonoBehaviour
 
    private void CheckUpgradeResources()
    {
-      if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
+      if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls &&
+          OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
          OreRefineryUpgradeIcon.gameObject.SetActive(true);
       else
          OreRefineryUpgradeIcon.gameObject.SetActive(false);
@@ -1318,7 +1325,7 @@ public class InventoryManager : MonoBehaviour
             if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
                ForgeUpgradeIcon.gameObject.SetActive(true);
             else
-               ForgeUpgradeIcon.gameObject.SetActive(true);
+               ForgeUpgradeIcon.gameObject.SetActive(false);
       }
    }
 

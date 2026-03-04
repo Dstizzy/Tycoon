@@ -317,16 +317,17 @@ public class ForgeManager : MonoBehaviour
       }
 
       // Check if there is sufficient pearls to upgrade
-      if (InventoryManager.Instance.pearlCount >= upgradeCost)
+      if (InventoryManager.Instance.TrySpendPearl(upgradeCost))
       {
-         // Enough pearls, deduct the required amount
-         InventoryManager.Instance.TrySpendPearl(upgradeCost);
-
          // Perform the upgrade
          if (forgeLevel < ENDING_LEVEL)
          {
             forgeLevel += 1;
          }
+
+         if(forgeLevel == ENDING_LEVEL)
+            InventoryManager.Instance.ForgeUpgradeIcon.gameObject.SetActive(false);
+
          forgeLevelText.text = "Level " + forgeLevel.ToString();
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
@@ -625,6 +626,7 @@ public class ForgeManager : MonoBehaviour
             {
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
+               ticker.ShowTicker($"Crafting Complete: {job.itemName}",Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
             }
          }
