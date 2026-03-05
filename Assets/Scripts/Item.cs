@@ -8,10 +8,12 @@ using static TradeHutManager;
 public class Item {
 
    /* Public static properties                                          */
-   private static int crudeToolSellValue     { get; set; } = 15;
-   private static int harpoonSellValue       { get; set; } = 20;
-   private static int pressureValveSellValue { get; set; } = 60;
-   private static int engineSellValue        { get; set; } = 150;
+   private static int crudeToolSellValue     { get; set; } = 30;
+   private static int harpoonSellValue       { get; set; } = 60;
+   private static int pressureValveSellValue { get; set; } = 180;
+   private static int divingBellSellValue    { get; set; } = 250;
+   private static int precisionLensSellValue { get; set; } = 600;
+   private static int engineSellValue        { get; set; } = 900;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int Tier2BluePrintPrice    { get; set; } = 500;
@@ -92,6 +94,10 @@ public class Item {
                return harpoonSellValue;
            case ItemType.PressureValve:
               return pressureValveSellValue;
+           case ItemType.DivingBell:
+              return divingBellSellValue;
+           case ItemType.PrecisionLens:
+              return precisionLensSellValue;
            case ItemType.Engine:
                return engineSellValue;
            default:

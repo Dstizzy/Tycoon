@@ -154,7 +154,9 @@ public class TradeHutManager : MonoBehaviour
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 1.0f, HARPOON_TAG);
       CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 3.0f, PRESSURE_VALVE_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), -1.0f, ENGINE_TAG, -75);
+      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), -1.0f, DIVING_BELL_TAG, -75);
+      CreateSellItem(GetItemSprite(ItemType.PrecisionLens), GetItemValue(ItemType.PrecisionLens), 1.0f, PRECISION_LENS_TAG, -75);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 3.0f, ENGINE_TAG, -75);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
       CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.5f, TIER_2_BLUEPRINT);
@@ -205,6 +207,12 @@ public class TradeHutManager : MonoBehaviour
                break;
             case PRESSURE_VALVE_TAG:
                tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.pressureValveCount.ToString();
+               break;
+            case DIVING_BELL_TAG:
+               tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.divingBellCount.ToString();
+               break;
+            case PRECISION_LENS_TAG:
+               tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.precisionLensCount.ToString();
                break;
             case ENGINE_TAG:
                tradeItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = " x" + inv.engineCount.ToString();
@@ -293,6 +301,7 @@ public class TradeHutManager : MonoBehaviour
       sellItemTransform.tag = itemTag;
       sellItemTransform.Find("ItemImage").GetComponent<Image>().sprite              = itemSprite;
       sellItemTransform.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + itemCount.ToString();
+      sellItemTransform.Find("SellItemName").GetComponent<TextMeshProUGUI>().text   = itemTag;
       sellItemTransform.Find("currencyIcon").GetComponent<Image>().sprite           = currencySprite;
       sellItemTransform.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = "0";
 
@@ -333,6 +342,7 @@ public class TradeHutManager : MonoBehaviour
 
       // Populate item properties
       buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
+      buyItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text      = itemTag;
       buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = (itemCount + 1).ToString();
       buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
 
