@@ -82,11 +82,11 @@ public class InventoryManager : MonoBehaviour
                     ORE_POSITION = CRYSTAL_POSITION + 13,
 
                     CRUDE_TOOL_POSITION = 0,
-                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 13,
+                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 10,
                     PATCH_KIT_POSITION = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 13,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
                     DIVING_BELL_POSITION = HARPOON_POSITION,
-                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 13,
+                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 10,
                     PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION,
                     MERCENARY_ENGINEER_POSITION = ENGINE_POSITION;
 

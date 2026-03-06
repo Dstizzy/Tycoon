@@ -86,9 +86,9 @@ public class TradeHutManager : MonoBehaviour
                     ORE_EXCHANGE_COST    = 10;
                     
       
-   public const string RAW_ORE_CHUNK_TAG      = "Raw Ore Chunk",
-                       TIER_2_BLUEPRINT       = "Tier 2 Blueprint",
-                       TIER_3_BLUEPRINT       = "Tier 3 Blueprint";
+   public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
+                       INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
+                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint";
    
    public bool isTier3BuffACtive  = false;
 
@@ -159,8 +159,8 @@ public class TradeHutManager : MonoBehaviour
       CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 3.0f, ENGINE_TAG, -75);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.Tier2BluePrint), GetItemPrice(ItemType.Tier2BluePrint), 1.5f, TIER_2_BLUEPRINT);
-      CreateBuyItem(GetItemSprite(ItemType.Tier3BluePrint), GetItemPrice(ItemType.Tier3BluePrint), 0.0f, TIER_3_BLUEPRINT, -30);
+      CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.5f, CLOCKWORK_BLUEPRINT_TAG);
+      CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, INDUSTRIAL_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
    }
 
@@ -251,7 +251,8 @@ public class TradeHutManager : MonoBehaviour
                     tradeItemTransform;
       
       RectTransform tradeItemRectTransform;
-      Button        itemButton;
+      Button          itemButton;
+      TextMeshProUGUI infoText;
 
       // Instantiate the template and set its position in the container
       tradeItemTransform     = Instantiate(buyItemTemplate, buyItemContainer);
@@ -266,6 +267,30 @@ public class TradeHutManager : MonoBehaviour
       itemButton = tradeItemTransform.Find("ItemButton").GetComponent<Button>();
 
       itemButton.image.sprite = itemSprite;
+
+      infoText = tradeItemTransform.Find("ItemInfoPanel").Find("InfoText").GetComponent<TextMeshProUGUI>();
+
+
+      switch (itemTag) 
+      {
+         case RAW_ORE_CHUNK_TAG:
+            infoText.text = GetItemDescription(ItemType.RawOreChunk);
+            break;
+         case CLOCKWORK_BLUEPRINT_TAG:
+            infoText.text = GetItemDescription(ItemType.IndustrialBlueprint);
+            break;
+         case INDUSTRIAL_BLUEPRINT_TAG:
+            infoText.text = GetItemDescription(ItemType.ClockworkBlueprint);
+            break;
+         case MERCENARY_ENGINEER_TAG:
+            int index = GetItemDescription(ItemType.MercenaryEngineer).IndexOf('.'); 
+            if (index >= 0)
+               infoText.text = GetItemDescription(ItemType.MercenaryEngineer).Substring(0, index + 1).Trim();
+            break;
+         default:
+            Debug.LogError("Unkown item: " + itemTag);
+            break;
+      }
 
       BuyItems.Add(tradeItemTransform);
 
@@ -348,11 +373,11 @@ public class TradeHutManager : MonoBehaviour
 
       switch (itemTag) 
       {
-         case TIER_2_BLUEPRINT:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.Tier2BluePrint).ToString();
+         case CLOCKWORK_BLUEPRINT_TAG:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.IndustrialBlueprint).ToString();
             break;
-         case TIER_3_BLUEPRINT:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.Tier3BluePrint).ToString();
+         case INDUSTRIAL_BLUEPRINT_TAG:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.ClockworkBlueprint).ToString();
             break;
          case MERCENARY_ENGINEER_TAG:
             buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.MercenaryEngineer).ToString();
@@ -519,7 +544,7 @@ public class TradeHutManager : MonoBehaviour
                ticker.ShowTicker("No items have been selected", Color.red, MessageTypes.ResultMessage);
 
          // Tier 2 Blueprint purchase flow
-         if (currentBuyItem.CompareTag(TIER_2_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier2BluePrint))) 
+         if (currentBuyItem.CompareTag(CLOCKWORK_BLUEPRINT_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.IndustrialBlueprint))) 
          {
             // Grants player access to tier 2 blueprint content
             ForgeManager.Instance.hasTier2Blueprint = true;
@@ -529,40 +554,54 @@ public class TradeHutManager : MonoBehaviour
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
 
             // Removes the tier 2 blueprint from the buy panel
-            BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).gameObject.SetActive(false);
+            BuyItems.Find(item => item.CompareTag(CLOCKWORK_BLUEPRINT_TAG)).gameObject.SetActive(false);
 
-            // Reveal the pressure valve on the sell panel and enable its UI controls
+            // Reveal the tier 2 items on the sell panel and enable its UI controls
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemButton").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemName").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemValue").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+            
+            SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemButton").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemName").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemCount").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemValue").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
       
             ticker.ShowTicker("Purchased Tier 2 Blueprint — Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Tier 3 Blueprint purchase flow
-         if (currentBuyItem.CompareTag(TIER_3_BLUEPRINT) && inv.TrySpendPearl(GetItemPrice(ItemType.Tier3BluePrint)))
+         if (currentBuyItem.CompareTag(INDUSTRIAL_BLUEPRINT_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.ClockworkBlueprint)))
          {
             // Grants player access to tier 3 blueprint content
             ForgeManager.Instance.hasTier3Blueprint = true;
 
             // Removes the tier 3 blueprint from the buy panel
-            BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).gameObject.SetActive(false);
+            BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).gameObject.SetActive(false);
 
             // Adds new craftable items (engine, precision lens) to inventory/craft list
             inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
             inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
 
-            // Reveals the engine on the sell panel and enable its UI controls
+            // Reveals the tier 3 items on the sell panel and enable its UI controls
+            SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemButton").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemName").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemCount").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemValue").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
+            SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemShadow").gameObject.SetActive(false);
+      
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemButton").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemName").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemCount").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemValue").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
-      
+           
             ticker.ShowTicker("Purchased Tier 3 Blueprint — Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 

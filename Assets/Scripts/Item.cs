@@ -46,27 +46,24 @@ public class Item {
    const string ENGINE_DESCRIPTION               = 
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
-   const string RAW_ORE_CHUNK_DESCRIPTION             = 
-      "A rare and valuable ore found in deep underwater caves. " +
-      "Highly sought after for its unique properties and worth a significant amount.";
-   const string INDUSTRIAL_BLUEPRINT_DESCRIPTION =
-      "A blueprint containing advanced industrial designs. " +
-      "Valuable for manufacturing and engineering purposes.";
-   const string CLOCKWORK_BLUEPRINT_DESCRIPTION  = 
-      "A blueprint detailing intricate clockwork mechanisms. " +
-      "Highly prized by collectors and engineers alike.";
-   const string PATCH_KIT_DESCRIPTION =
+   const string RAW_ORE_CHUNK_DESCRIPTION        =
+      "Exchanges at the Trade Hut for pearls at a 1:1 ratio.";
+   const string PATCH_KIT_DESCRIPTION            =
      "A compact repair kit containing patches, resin and basic tools. " +
      "Used to repair equipment or as a component in crafting.";
-   const string MERCENARY_ENGINEER_DESCRIPTION =
-      "A hired specialist who can immediately complete a single crafting task when activated. " +
+   const string MERCENARY_ENGINEER_DESCRIPTION   =
+      "A specialist who can immediately craft a single item.  " +
       "Consumed on use — ideal when you need an item instantly.";
-   const string PRECISION_LENS_DESCRIPTION =
+   const string PRECISION_LENS_DESCRIPTION       =
      "A small optical component used to focus delicate mechanisms. " +
      "Required for precision assemblies; consumed during crafting.";
-   const string DIVING_BELL_DESCRIPTION =
+   const string DIVING_BELL_DESCRIPTION          =
       "A reinforced submersible chamber that enables the Exploration Unit. " +
       "Possessing a Diving Bell allows deployment of the unit for scouting and resource miss";
+   const string INDUSTRIAL_BLUEPRINT_DESCRIPTION =
+      "Unlocks tier 2 items recipes at the Forge.";
+   const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
+      "Unlocks tier 3 recipes at the Forge.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -79,8 +76,8 @@ public class Item {
         Engine,
         PrecisionLens,
         RawOreChunk,
-        Tier2BluePrint,
-        Tier3BluePrint,
+        IndustrialBlueprint,
+        ClockworkBlueprint,
         MercenaryEngineer
    }
 
@@ -112,9 +109,9 @@ public class Item {
       {
          case ItemType.RawOreChunk:
             return rawOrePrice;
-         case ItemType.Tier2BluePrint:
+         case ItemType.IndustrialBlueprint:
             return Tier2BluePrintPrice;
-         case ItemType.Tier3BluePrint:
+         case ItemType.ClockworkBlueprint:
             return Tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
@@ -140,9 +137,9 @@ public class Item {
             return ENGINE_DESCRIPTION;
          case ItemType.RawOreChunk:
             return RAW_ORE_CHUNK_DESCRIPTION;
-         case ItemType.Tier2BluePrint:
+         case ItemType.IndustrialBlueprint:
             return INDUSTRIAL_BLUEPRINT_DESCRIPTION;
-         case ItemType.Tier3BluePrint:
+         case ItemType.ClockworkBlueprint:
             return CLOCKWORK_BLUEPRINT_DESCRIPTION;
          case ItemType.MercenaryEngineer:
             return MERCENARY_ENGINEER_DESCRIPTION;
@@ -420,11 +417,11 @@ public class Item {
       rareOrePriceText.text = rawOrePrice.ToString();
 
       Tier2BluePrintPrice         -= (int)(Tier2BluePrintPrice * percent);
-      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(CLOCKWORK_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
       Tier2BluePrintPriceText.text = Tier2BluePrintPrice.ToString();
 
       Tier3BluePrintPrice         -= (int)(Tier3BluePrintPrice * percent);
-      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
       Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
 
       mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);
