@@ -8,9 +8,9 @@ using System;
 public class CraftingJob
 {
    public Item.ItemType itemType;
-   public int           amount;
-   public int           turnsRemaining;
-   public string        itemName;
+   public int amount;
+   public int turnsRemaining;
+   public string itemName;
 }
 
 public class ForgeManager : MonoBehaviour
@@ -82,7 +82,7 @@ public class ForgeManager : MonoBehaviour
    private Image craftSlot1;
    private Image craftSlot2;
    private GameObject craftButtonObject;
-   
+
 
    public static event Action HandleTutorial;
    public static ForgeManager Instance { get; private set; }
@@ -326,16 +326,17 @@ public class ForgeManager : MonoBehaviour
       }
 
       // Check if there is sufficient pearls to upgrade
-      if (InventoryManager.Instance.pearlCount >= upgradeCost)
+      if (InventoryManager.Instance.TrySpendPearl(upgradeCost))
       {
-         // Enough pearls, deduct the required amount
-         InventoryManager.Instance.TrySpendPearl(upgradeCost);
-
          // Perform the upgrade
          if (forgeLevel < ENDING_LEVEL)
          {
             forgeLevel += 1;
          }
+
+         if(forgeLevel == ENDING_LEVEL)
+            InventoryManager.Instance.ForgeUpgradeIcon.gameObject.SetActive(false);
+
          forgeLevelText.text = "Level " + forgeLevel.ToString();
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
@@ -508,7 +509,7 @@ public class ForgeManager : MonoBehaviour
       craftPanel.gameObject.SetActive(false);
       if (errorPanel != null) errorPanel.SetActive(false);
 
-      if (activeQueuePanel != null) 
+      if (activeQueuePanel != null)
          activeQueuePanel.SetActive(false);
 
       stagingItems.Clear();
@@ -642,6 +643,7 @@ public class ForgeManager : MonoBehaviour
             {
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
+               ticker.ShowTicker($"Crafting Complete: {job.itemName}",Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
             }
          }
@@ -848,17 +850,17 @@ public class ForgeManager : MonoBehaviour
       }
    }
 
-   public void TryActivateMercenaryEngineer() 
+   public void TryActivateMercenaryEngineer()
    {
 
-      if (!isMercenaryEngineerActive && InventoryManager.Instance.TryUseMercenaryEngineer(1)) 
+      if (!isMercenaryEngineerActive && InventoryManager.Instance.TryUseMercenaryEngineer(1))
       {
          isMercenaryEngineerActive = true;
          ticker.ShowTicker("Mercenary engineer is active.", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       else
-         if(isMercenaryEngineerActive)
-            ticker.ShowTicker("Mercenary engineer already active.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         if (isMercenaryEngineerActive)
+         ticker.ShowTicker("Mercenary engineer already active.", Color.red, TickerSystem.MessageTypes.ResultMessage);
 
 
       return;

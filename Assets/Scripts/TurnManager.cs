@@ -108,7 +108,7 @@ public class TurnManager : MonoBehaviour
          if (eventCountdown == 5) 
          {
             tradeHutManager.WorldEventNewsTickerText();
-            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
+            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
             
             // World Event fluctuation
             tradeHutManager.MarketFluctuate();
@@ -129,7 +129,7 @@ public class TurnManager : MonoBehaviour
                {
                   newsTicker.gameObject.SetActive(true);
                   tradeHutManager.WorldEventNewsTickerText();
-                  newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.white, MessageTypes.WorldEvent);
+                  newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
                   tradeHutManager.MarketFluctuate();
                }
                else

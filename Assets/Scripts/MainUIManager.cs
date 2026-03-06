@@ -8,20 +8,22 @@ public class MainUIManager : MonoBehaviour
 {
 
    // Buttons on the main UI
-   public Button   MainMenuButton;
+   public Button MainMenuButton;
    public Button[] DropdownButtons;
-   public Button   InventoryButton;
-   public Button   victoryButton;
-   public Button   NextButton;
+   public Button InventoryButton;
+   public Button victoryButton;
+   public Button NextButton;
 
    // UI elements on main UI
    [SerializeField] private TextMeshProUGUI pearCountText;
    [SerializeField] private TextMeshProUGUI oreCountText;
-   [SerializeField] private Transform       erroPanel;
-   [SerializeField] private GameObject      victoryPanel;
+   [SerializeField] private Transform erroPanel;
+   [SerializeField] private GameObject victoryPanel;
 
    // State variable to track dropdown visibility
    private bool isVisible = false;
+   private int displayedPearlCount = 0;
+   private int displayedOreCount = 0;
 
    public static MainUIManager mainUI;
 
@@ -30,7 +32,7 @@ public class MainUIManager : MonoBehaviour
    {
       if (mainUI != null && mainUI != this)
          Destroy(this.gameObject);
-      else 
+      else
       {
          mainUI = this;
          DontDestroyOnLoad(this.gameObject);
@@ -52,13 +54,37 @@ public class MainUIManager : MonoBehaviour
          btn.gameObject.SetActive(false);
       }
       // Add listener to main menu button
-      MainMenuButton.onClick.AddListener(ToggleMenu);
+      MainMenuButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
+         ToggleMenu();
+      });
       InventoryButton.onClick.AddListener(() => {
+         //AudioManager.Instance.PlayClick(); 
          InventoryManager.Instance.ShowInventoryPanel();
       });
       victoryButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
          ShowVictoryPanel();
       });
+
+      if (NextButton != null)
+      {
+         NextButton.onClick.AddListener(() =>
+         {
+            if (AudioManager.Instance != null)
+               AudioManager.Instance.PlayClick();
+         });
+      }
+
+      if (victoryButton != null)
+      {
+         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
+         {
+            AudioManager.Instance.PlayClick();
+            victoryPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+         });
+      }
 
       ChangePearlCountText(InventoryManager.Instance.pearlCount);
       ChangeOreCountText(InventoryManager.Instance.oreCount);
@@ -78,37 +104,57 @@ public class MainUIManager : MonoBehaviour
    public void ChangePearlCountText(int newPearlCount)
    {
       if (pearCountText != null)
-         pearCountText.text = newPearlCount.ToString();
+      {
+         StartCoroutine(AnimateTopBarCounter(pearCountText, displayedPearlCount, newPearlCount, 0.5f, true));
+      }
    }
 
    // Changes the Ore count text on the main UI
    public void ChangeOreCountText(int newOreCount)
    {
       if (oreCountText != null)
-         oreCountText.text = newOreCount.ToString();
+      {
+         StartCoroutine(AnimateTopBarCounter(oreCountText, displayedOreCount, newOreCount, 0.5f, false));
+      }
    }
 
    //Shows the victory panel and sets up the buttons for the submarine assembly
    public void ShowVictoryPanel()
    {
+      bool isHeadReady,
+           isBodyReady;
+
       if (victoryPanel != null)
       {
          victoryPanel.SetActive(true);
-         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => {
-            victoryPanel.SetActive(false);
-            PopUpManager.Instance.EnablePlayerInput();
-         });
-
          PopUpManager.Instance.DisablePlayerInput();
 
-         // Activates the head
-         victoryPanel.transform.Find("SubmarineSkel/HeadButton").GetComponent<Button>().onClick.AddListener(() => ActivateHead());
+         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
+         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
+                                               && InventoryManager.Instance.pressureValveCount >= 5
+                                               && InventoryManager.Instance.precisionLensCount >= 5;
 
-         // Activates the body
-         victoryPanel.transform.Find("SubmarineSkel/BodyButton").GetComponent<Button>().onClick.AddListener(() => ActivateBody());
+         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
+         if (skeleton != null)
+         {
+            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
+            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
+            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
+         }
 
-         // Activates the tail
-         victoryPanel.transform.Find("SubmarineSkel/TailButton").GetComponent<Button>().onClick.AddListener(() => ActivateTail());
+         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
+         if (qestionMark != null)
+         {
+            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
+               qestionMark.gameObject.SetActive(false);
+            else
+               qestionMark.gameObject.SetActive(true);
+         }
+
+         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
+         {
+            ActivateFinalForm();
+         }
       }
    }
 
@@ -134,7 +180,7 @@ public class MainUIManager : MonoBehaviour
    }
 
    // Activates the body of the submarine
-   public void ActivateBody() 
+   public void ActivateBody()
    {
       if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
       {
@@ -155,9 +201,9 @@ public class MainUIManager : MonoBehaviour
    }
 
    // Activates the tail of the submarine
-   public void ActivateTail() 
+   public void ActivateTail()
    {
-      if(victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
+      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
       {
          victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
       }
@@ -176,7 +222,7 @@ public class MainUIManager : MonoBehaviour
    }
 
    // Activates the final form of the submarine when all parts are active
-   public void ActivateFinalForm() 
+   public void ActivateFinalForm()
    {
       victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
       victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
@@ -186,9 +232,9 @@ public class MainUIManager : MonoBehaviour
    public void GoBack()
    {
       if (SceneHistory.Instance != null)
-          SceneHistory.Instance.LoadPreviousScene();
+         SceneHistory.Instance.LoadPreviousScene();
       else
-          Debug.LogError("SceneHistory is missing from the scene!");
+         Debug.LogError("SceneHistory is missing from the scene!");
    }
 
    public void SetMainButtonsInteractable(bool interactable)
@@ -197,13 +243,36 @@ public class MainUIManager : MonoBehaviour
          MainMenuButton.interactable = interactable;
       if (InventoryButton != null)
          InventoryButton.interactable = interactable;
-      if (victoryButton != null)
-         victoryButton.interactable = interactable;
-      if (NextButton!= null)
+      //if (victoryButton != null)
+         //victoryButton.interactable = interactable;
+      if (NextButton != null)
          NextButton.interactable = interactable;
       if (DropdownButtons != null)
          foreach (var btn in DropdownButtons)
             if (btn != null)
                btn.interactable = interactable;
+   }
+
+   private System.Collections.IEnumerator AnimateTopBarCounter(TextMeshProUGUI textElement, int startValue, int endValue, float duration, bool isPearl)
+   {
+      float elapsedTime = 0f;
+
+      while (elapsedTime < duration)
+      {
+         elapsedTime += Time.deltaTime;
+         float currentValue = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+
+         if (textElement != null)
+            textElement.text = Mathf.RoundToInt(currentValue).ToString();
+
+         yield return null;
+      }
+
+      if (textElement != null)
+         textElement.text = endValue.ToString();
+
+      // Update our tracker variables
+      if (isPearl) displayedPearlCount = endValue;
+      else displayedOreCount = endValue;
    }
 }
