@@ -29,10 +29,10 @@ public class MapNode : ScriptableObject
    public MapNode nextNode; // The single node that the ship will move to after event decision
 
    [Header("End Game Settings")]
-   public bool isFinalNode;
-   public bool isLeftPath;
+   public bool isFinalNode; // Determines if current node is one of the two final nodes
+   public bool isLeftPath; // When on a final node, determines if it is the left one
 
-   // Reveals node on map
+   // Marks node as discovered and alerts all listening UI elements
    public void RevealNode()
    {
       if (!isExplored)
