@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class ExplorationUnitManager : MonoBehaviour
    public  bool isExploring      = false; // Determines if exploration is currently ongoing
    private bool isWaiting        = false; // Triggered when an event causes user to lose an exploration turn
 
+
+   public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
    public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
@@ -124,6 +127,11 @@ public class ExplorationUnitManager : MonoBehaviour
 
       }
       CloseExplorationPanel();
+      if (tutorialFunction)
+      {
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
+      }
    }
 
    //
@@ -288,6 +296,12 @@ public class ExplorationUnitManager : MonoBehaviour
          }
          // Open the decision panel UI
          decisionPanel.gameObject.SetActive(true);
+         if(tutorialFunction)
+         {
+            decisionPanel.Find("Arrow").gameObject.SetActive(true);
+            decisionPanel.Find("Arrow2").gameObject.SetActive(true);
+            decisionPanel.Find("FirstText").gameObject.SetActive(true);
+         }
 
          // Set up inventory button on decisionPanel
          Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
@@ -380,6 +394,17 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
+
+      if(tutorialFunction)
+      {
+         explorePanel.Find("Arrow").gameObject.SetActive(true);
+         explorePanel.Find("FirstText").gameObject.SetActive(true);
+      }
+      else
+      {
+         explorePanel.Find("Arrow").gameObject.SetActive(false);
+         explorePanel.Find("FirstText").gameObject.SetActive(false);
+      }
    }
 
    //
@@ -525,5 +550,12 @@ public class ExplorationUnitManager : MonoBehaviour
    public void CloseDecisionPanel()
    {
       decisionPanel.gameObject.SetActive(false);
+      if(tutorialFunction)
+      {
+         decisionPanel.Find("Arrow").gameObject.SetActive(false);
+         decisionPanel.Find("Arrow2").gameObject.SetActive(false);
+         decisionPanel.Find("FirstText").gameObject.SetActive(false);
+         HandleTutorial?.Invoke();
+      }
    }
 }

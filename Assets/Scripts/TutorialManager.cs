@@ -8,7 +8,7 @@ public class TutorialManager : MonoBehaviour
    [SerializeField] private GameObject   turnButton;       // Reference to the button that must be clicked to proceed
 
 
-   private static int  tutorialIndex   = 0;           // To track the current tutorial section
+   public int  tutorialIndex   = 4;           // To track the current tutorial section
    private static int  sectionIndex    = 0;           // To track the current section within a tutorial
    public         bool requiredButtonClicked = true;  // Flag to check if the required button has been clicked
    public         bool oreRefineryUpgrade    = false; // Flag to check if the ore refinery upgrade has been completed
@@ -32,6 +32,7 @@ public class TutorialManager : MonoBehaviour
       ForgeManager.HandleTutorial += HandleNextStep;
       InventoryManager.HandleTutorial += HandleNextStep;
       TradeHutManager.HandleTutorial += HandleNextStep;
+      ExplorationUnitManager.HandleTutorial += HandleNextStep;
    }
 
    private void OnDisable()
@@ -41,13 +42,14 @@ public class TutorialManager : MonoBehaviour
       ForgeManager.HandleTutorial -= HandleNextStep;
       InventoryManager.HandleTutorial -= HandleNextStep;
       TradeHutManager.HandleTutorial -= HandleNextStep;
+      ExplorationUnitManager.HandleTutorial -= HandleNextStep;
    }
 
    // Store the reference to the current part so we can toggle arrows from the event
    public GameObject currentActivePart;
 
    // Awake is called when the script instance is being loaded
-   private void Awake()
+   /*private void Awake()
    {
       while (tutorialIndex < tutorialSections.Length)
       {
@@ -62,12 +64,11 @@ public class TutorialManager : MonoBehaviour
          }
          tutorialIndex++;
       }
-   }
+   }*/
 
    // Start is called before the first frame update
    private void Start()
    {
-      tutorialIndex = 0;
       sectionIndex = 1;
       tutorialSections[tutorialIndex].SetActive(true);
       GoThroughSection(tutorialSections[tutorialIndex], sectionIndex);
@@ -168,6 +169,30 @@ public class TutorialManager : MonoBehaviour
                GoToNext();
             }
             break;
+         case 8:
+            if (tutorialSection.transform.Find("EighthPart") != null)
+            {
+               tutorialSection.transform.Find("SeventhPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("EighthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("EighthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
+         case 9:
+            if (tutorialSection.transform.Find("NinthPart") != null)
+            {
+               tutorialSection.transform.Find("EighthPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("NinthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("NinthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
       }
    }
 
@@ -229,6 +254,13 @@ public class TutorialManager : MonoBehaviour
       {
          requiredButtonClicked = false;
          tradeHutFunctionTwo = true;
+         currentActivePart = myPart;
+      }
+
+      if(myPart.transform.Find("Exploration") != null)
+      {
+         requiredButtonClicked = false;
+         explorationFunction = true;
          currentActivePart = myPart;
       }
    }
@@ -301,10 +333,9 @@ public class TutorialManager : MonoBehaviour
 
       if (explorationFunction == true)
       {
-         if(tag == "Exploration")
+         if (tag == "Exploration Unit")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            ExplorationUnitManager.Instance.tutorialFunction = true;
          }
          else
          {

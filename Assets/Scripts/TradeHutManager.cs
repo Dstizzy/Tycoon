@@ -161,6 +161,8 @@ public class TradeHutManager : MonoBehaviour
 
    private void Start()
    {
+      if(TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
+         tutorialFunctionOne = true;
       inv = InventoryManager.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
