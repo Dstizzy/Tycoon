@@ -1,6 +1,6 @@
 /* libraries                                                                                     */
 using System;
-
+using System.ComponentModel;
 using TMPro;
 
 using UnityEngine;
@@ -42,8 +42,8 @@ public class LabManager : MonoBehaviour
    public static bool bodyUnlocked = false;
    public static bool tailUnlocked = false;
 
-
    TradeHutManager tradeHutManager;
+   ShipManager shipManager;
 
    public static LabManager labManager;
 
@@ -238,7 +238,8 @@ public class LabManager : MonoBehaviour
                tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
                break;
-         };
+         }
+         ;
       }
    }
 
@@ -293,11 +294,11 @@ public class LabManager : MonoBehaviour
          }
          bodyUnlocked = true;
       }
-      /* Tier 1 missions have succession increased by 25%                                      */
+      /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
-         Debug.Log("Tier 1 missions increased by 25%");
-         tailUnlocked = true;
+         if (shipManager != null)
+            shipManager.ApplyLabShipBonus();
       }
       else
       {
@@ -326,15 +327,14 @@ public class LabManager : MonoBehaviour
             ForgeManager.Instance.UnlockOverclock();
          }
       }
-      /* Permanently increase gold by +15 per turn                                             */
+      /* Unlocks chance to find crafts on explorations                                         */
       else if (tabType == explorationTab)
-      {
-         Debug.Log("Permanently increase gold by +15 per turn");
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-      }
+         if (shipManager != null)
+            shipManager.UnlockTier2Choices();
+         else
+         {
+            Debug.Log("There is no tab");
+         }
    }
 
    public void ImplementTierThreeInnovation(GameObject tabType)
@@ -367,10 +367,11 @@ public class LabManager : MonoBehaviour
             ForgeManager.Instance.UnlockReduceCraftingTime();
          }
       }
-      /* Decrease search costs by 50%                                                          */
+      /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
       {
-         Debug.Log("Decrease search costs by 50%");
+         if (shipManager != null)
+            shipManager.ApplyLabRewardBonus();
       }
       else
       {
