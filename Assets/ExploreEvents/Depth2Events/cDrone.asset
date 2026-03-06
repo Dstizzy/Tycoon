@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: HydroChimney
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: A white smoke vent is spewing hot minerals, forming crystal towers
+  m_Name: cDrone
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: A lost scavenger drone with loot is trapped under a rock inside a
+    cave
   choiceA:
-    buttonText: Smash the towers to collect all crystals
-    pearlChange: 20
-    oreChange: 0
+    buttonText: Smash the drone to collect the parts
+    pearlChange: 5
+    oreChange: 10
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -29,11 +31,12 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
-    healthDamage: -15
+    healthDamage: 0
   choiceB:
-    buttonText: Collect loose crystals
+    buttonText: Send your crew out to safely retrieve it's loot
     pearlChange: 0
     oreChange: 0
+    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -42,7 +45,7 @@ MonoBehaviour:
     maxPearl: 0
     minOre: 0
     maxOre: 0
-    requiresLabTier: 0
+    requiresLabTier: 1
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
