@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -48,23 +49,8 @@ public class TutorialManager : MonoBehaviour
    // Store the reference to the current part so we can toggle arrows from the event
    public GameObject currentActivePart;
 
-   // Awake is called when the script instance is being loaded
-   /*private void Awake()
-   {
-      while (tutorialIndex < tutorialSections.Length)
-      {
-         if (tutorialSections[tutorialIndex] == null)
-         {
-            Debug.LogError($"Tutorial section at index {tutorialIndex} is not assigned in the inspector.");
-            return;
-         }
-         else
-         {
-            tutorialSections[tutorialIndex].SetActive(false);
-         }
-         tutorialIndex++;
-      }
-   }*/
+   // Event to start tutorial parts that can only be handled in other managers
+   public static event Action HandleExplorationTutorial;
 
    // Start is called before the first frame update
    private void Start()
@@ -262,6 +248,7 @@ public class TutorialManager : MonoBehaviour
          requiredButtonClicked = false;
          explorationFunction = true;
          currentActivePart = myPart;
+         HandleExplorationTutorial?.Invoke();
       }
    }
 

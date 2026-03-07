@@ -27,6 +27,9 @@ public class PopUpManager : MonoBehaviour
    public static bool IsBuildingBlocked = false;
    public bool tutorialRefinery = false;
 
+   // This event is invoked whenever the hovered tag changes, passing the new tag as a parameter
+   public static event Action<string> OnHoverTagChanged;
+
    public static PopUpManager Instance { get; private set; }
 
    // Added for CameraDragPan update(off when the pop up window is open)
@@ -58,9 +61,6 @@ public class PopUpManager : MonoBehaviour
          playerActions.Dispose();
       }
    }
-
-   // This event is invoked whenever the hovered tag changes, passing the new tag as a parameter
-   public static event Action<string> OnHoverTagChanged;
 
    private void OnBuildingHover(InputAction.CallbackContext context)
    {

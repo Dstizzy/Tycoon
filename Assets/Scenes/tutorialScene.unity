@@ -15352,7 +15352,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 1.128, y: -0.128, z: 180.851}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1653, y: -60.194}
+  m_AnchoredPosition: {x: -1638, y: -237}
   m_SizeDelta: {x: 291.7824, y: 225.6113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &406559036
@@ -21026,9 +21026,6 @@ MonoBehaviour:
   SellPanel: {fileID: 861274323}
   SellWindow: {fileID: 1725632038}
   InfoPanel: {fileID: 1967665516}
-  UpgradePanel: {fileID: 869968658}
-  MysteryBoxPanel: {fileID: 0}
-  tradeHutLevelText: {fileID: 0}
   BuyPanel: {fileID: 773797495}
   RecycleButton: {fileID: 1822026032}
   currrentNewsTickerMessage: 
@@ -68727,7 +68724,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1857089476
 RectTransform:
   m_ObjectHideFlags: 0

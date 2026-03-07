@@ -35,20 +35,12 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject productionTab;
    [SerializeField] private GameObject explorationTab;
 
-   [SerializeField] private Transform infoPanel;
-   [SerializeField] private GameObject pathButtons;
-   [SerializeField] private GameObject initialTab;
-   [SerializeField] private GameObject commerceTab;
-   [SerializeField] private GameObject productionTab;
-   [SerializeField] private GameObject explorationTab;
-
 
    /* Public variables                                                                          */
    public static int currentCommerceTier { get; private set; } = 0;
    public static bool headUnlocked = false;
    public static bool bodyUnlocked = false;
    public static bool tailUnlocked = false;
-   public static int  currentCommerceTier { get; private set; } = 0;
    public        bool tutorialFunction = false; // Checks if the lab function has been explained in the tutorial
 
 

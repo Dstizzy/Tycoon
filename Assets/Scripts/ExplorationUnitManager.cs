@@ -53,11 +53,18 @@ public class ExplorationUnitManager : MonoBehaviour
          explorePanel.gameObject.SetActive(false);
    }
 
+   public void Start()
+   {
+      if(TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
+         tutorialFunction = true;
+   }
+
    //
    private void OnEnable()
    {
       // Listen for the ship's death to instantly end an exploration
       ShipManager.OnShipDeath += HandleExplorationDone;
+      TutorialManager.HandleExplorationTutorial += ChangeTutorialState;
    }
 
    //
@@ -65,6 +72,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       // lean up listener to prevent memory leaks
       ShipManager.OnShipDeath -= HandleExplorationDone;
+      TutorialManager.HandleExplorationTutorial -= ChangeTutorialState;
    }
 
    private void Update()
@@ -76,7 +84,15 @@ public class ExplorationUnitManager : MonoBehaviour
             lastProcessedTurn = TurnManager.Instance.currentTurn;
             HandleNewTurn();
          }
+      if (TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
+         tutorialFunction = true;
    }
+
+   public void ChangeTutorialState()
+   {
+      tutorialFunction = true;
+   }
+
 
    // Activates the requested exploration unit panel
    public void RequestExplorationUnitPanel(int buttonID)
@@ -126,12 +142,12 @@ public class ExplorationUnitManager : MonoBehaviour
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
 
       }
-      CloseExplorationPanel();
       if (tutorialFunction)
       {
          tutorialFunction = false;
          HandleTutorial?.Invoke();
       }
+      CloseExplorationPanel();
    }
 
    //
@@ -521,6 +537,11 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       explorePanel.gameObject.SetActive(false);
 
+      if (tutorialFunction)
+      {
+         HandleTutorial?.Invoke();
+      }
+
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
       PopUpManager.Instance.EnablePlayerInput();
@@ -550,11 +571,13 @@ public class ExplorationUnitManager : MonoBehaviour
    public void CloseDecisionPanel()
    {
       decisionPanel.gameObject.SetActive(false);
+
       if(tutorialFunction)
       {
          decisionPanel.Find("Arrow").gameObject.SetActive(false);
          decisionPanel.Find("Arrow2").gameObject.SetActive(false);
          decisionPanel.Find("FirstText").gameObject.SetActive(false);
+         tutorialFunction = false;
          HandleTutorial?.Invoke();
       }
    }
