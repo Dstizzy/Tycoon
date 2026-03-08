@@ -3791,7 +3791,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 1458363839}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &105822603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17470,7 +17470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 186240198}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &615802349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23167,7 +23167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 111418966}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &776191991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27216,7 +27216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 226142790}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &959387429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28407,7 +28407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 475336044}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &996997002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29065,8 +29065,6 @@ MonoBehaviour:
   scenarioText: {fileID: 195162804}
   choiceAText: {fileID: 713033626}
   choiceBText: {fileID: 1611827552}
-  buttonA: {fileID: 0}
-  buttonB: {fileID: 0}
 --- !u!114 &1009872305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29089,7 +29087,7 @@ MonoBehaviour:
   decisionHealthText: {fileID: 667521785}
   exploreFuelText: {fileID: 1200219010}
   exploreHealthText: {fileID: 1166267639}
-  shipLevel: 1
+  isTier2Unlocked: 0
 --- !u!114 &1009872306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29158,7 +29156,6 @@ MonoBehaviour:
   shipInventory: {fileID: 0}
   depthWarningText: {fileID: 0}
   exploreShipIcon: {fileID: 804107266}
-  lastProcessedTurn: -1
   isExploring: 0
 --- !u!1 &1016563081
 GameObject:
@@ -36951,6 +36948,7 @@ MonoBehaviour:
   minSize: 3
   maxSize: 25
   panVerticalTightness: 0.98
+  panHorizontalTightness: 0.98
 --- !u!114 &1140468270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36967,6 +36965,7 @@ MonoBehaviour:
   targetTag: 
   targetPanScript: {fileID: 0}
   margin: 2
+  centerCameraOnStart: 1
 --- !u!114 &1140468271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39849,7 +39848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 461554096}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &1224046508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40595,7 +40594,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1.12, y: 1.07}
+  m_AnchoredPosition: {x: 6.74, y: -1.36}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1264901147
@@ -48933,7 +48932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 1941910778}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &1573815963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59728,7 +59727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 2132447275}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &2039877099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61058,7 +61057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 2085438350}
+  InfoPopUp: {fileID: 0}
 --- !u!114 &2104977134
 MonoBehaviour:
   m_ObjectHideFlags: 0
