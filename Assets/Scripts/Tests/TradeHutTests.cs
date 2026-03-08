@@ -263,7 +263,7 @@ public class TradeHutTests : InputTestFixture {
        yield return new WaitForEndOfFrame();
    
        // 2. Setup: Ensure player can afford the Tier 1 upgrade
-       InventoryManager.Instance.TryAddPearl(LabManager.T1_PEARL);
+       InventoryManager.Instance.TryAddPearl(LabManager.T1_COMM_PEARL);
        
        // 3. Purchase Tier 1 Commerce Innovation via Lab Logic
        // Accessing private commerceTab via reflection
