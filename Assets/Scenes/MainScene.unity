@@ -7802,6 +7802,7 @@ MonoBehaviour:
   minSize: 3
   maxSize: 25
   panVerticalTightness: 0.98
+  panHorizontalTightness: 0.98
 --- !u!114 &264605922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7817,7 +7818,8 @@ MonoBehaviour:
   autoCalculate: 1
   targetTag: 
   targetPanScript: {fileID: 0}
-  margin: 2
+  margin: 0
+  centerCameraOnStart: 1
 --- !u!1 &265536186
 GameObject:
   m_ObjectHideFlags: 0
@@ -51116,8 +51118,6 @@ MonoBehaviour:
   scenarioText: {fileID: 1454535417}
   choiceAText: {fileID: 1511911695}
   choiceBText: {fileID: 969046677}
-  buttonA: {fileID: 0}
-  buttonB: {fileID: 0}
 --- !u!114 &1699829495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51140,7 +51140,7 @@ MonoBehaviour:
   decisionHealthText: {fileID: 411947377}
   exploreFuelText: {fileID: 1394652411}
   exploreHealthText: {fileID: 487945362}
-  shipLevel: 1
+  isTier2Unlocked: 0
 --- !u!114 &1699829496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51209,7 +51209,6 @@ MonoBehaviour:
   shipInventory: {fileID: 0}
   depthWarningText: {fileID: 0}
   exploreShipIcon: {fileID: 263672192}
-  lastProcessedTurn: -1
   isExploring: 0
 --- !u!1 &1704076718
 GameObject:
