@@ -25,9 +25,9 @@ TagManager:
   - Precision Lens
   - Mercenary Engineer
   - Raw Ore Chunk
-  - Tier 2 Blueprint
   - IdleIndicator
-  - Tier 3 Blueprint
+  - Industrial Blueprint
+  - Clockwork Blueprint
   layers:
   - Default
   - TransparentFX

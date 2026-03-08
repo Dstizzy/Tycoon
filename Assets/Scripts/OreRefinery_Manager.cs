@@ -10,10 +10,10 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public static OreRefinery_Manager Instance { get; private set; }
 
-   const int INFO_BUTTON = 1;
+   const int INFO_BUTTON    = 1;
    const int UPGRADE_BUTTON = 2;
    const int STARTING_LEVEL = 1;
-   const int ENDING_LEVEL = 4;
+   const int ENDING_LEVEL   = 4;
 
    [SerializeField] private Transform infoPanel;
    [SerializeField] private Transform upgradePanel;
@@ -184,9 +184,23 @@ public class OreRefinery_Manager : MonoBehaviour
    public void OpenJamPanel()
    {
       jamPanel.SetActive(true);
-      jamPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseJamPanel());
-      jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(1));
-      jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>().onClick.AddListener(() => PayForUnjamming(2));
+
+      // Get the buttons
+      Button exitBtn = jamPanel.transform.Find("ExitButton").GetComponent<Button>();
+      Button unjamBtn = jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>();
+      Button payItBtn = jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>();
+
+      // Clear and Re-assign Exit Button
+      exitBtn.onClick.RemoveAllListeners();
+      exitBtn.onClick.AddListener(() => CloseJamPanel());
+
+      // Clear and Re-assign Patch Kit Button
+      unjamBtn.onClick.RemoveAllListeners();
+      unjamBtn.onClick.AddListener(() => PayForUnjamming(1));
+
+      // Clear and Re-assign Pay Button
+      payItBtn.onClick.RemoveAllListeners();
+      payItBtn.onClick.AddListener(() => PayForUnjamming(2));
 
       PopUpManager.Instance.DisablePlayerInput();
    }
@@ -199,6 +213,7 @@ public class OreRefinery_Manager : MonoBehaviour
          {
             IsBlocked = false;
             buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
+            DeactivateJamButton();
             CloseJamPanel();
             Debug.Log("Ore Refinery unjammed successfully.");
             ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
@@ -214,7 +229,9 @@ public class OreRefinery_Manager : MonoBehaviour
          {
             IsBlocked = false;
             buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
+            DeactivateJamButton();
             CloseJamPanel();
+            ticker.ShowTicker("Ore Refinery unjammed successfully.", Color.green, MessageTypes.ResultMessage);
             Debug.Log("Ore Refinery unjammed successfully.");
          }
          else

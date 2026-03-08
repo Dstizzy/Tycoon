@@ -10,41 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: HarpoonMerchant
+  m_Name: cSunkenShip
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: You've come across a travelling merchant.
+  description: You have come across a sunken ship.
   choiceA:
-    buttonText: Purchase one harpoon for 15 pearls.
-    pearlChange: -15
+    buttonText: 'Strip the deck of the ship: +10-35 ore'
+    pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 1
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
-    minOre: 0
-    maxOre: 0
+    minOre: 10
+    maxOre: 35
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Make no trades.
+    buttonText: 'Search captain''s quarters: +0-20 pearls'
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
-    maxPearl: 0
+    maxPearl: 20
     minOre: 0
     maxOre: 0
+    requiresLabTier: 1
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

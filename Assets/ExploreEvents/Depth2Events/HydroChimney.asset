@@ -15,18 +15,17 @@ MonoBehaviour:
   description: A white smoke vent is spewing hot minerals, forming crystal towers
   choiceA:
     buttonText: Smash the towers to collect all crystals
-    pearlChange: 0
+    pearlChange: 20
     oreChange: 0
-    crystalChange: 25
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
@@ -35,16 +34,15 @@ MonoBehaviour:
     buttonText: Collect loose crystals
     pearlChange: 0
     oreChange: 0
-    crystalChange: 5
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

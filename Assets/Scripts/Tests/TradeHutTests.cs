@@ -188,7 +188,7 @@ public class TradeHutTests : InputTestFixture {
       yield return new WaitForSeconds(1.0f);
 
       // 4. Find the Blueprint UI button and CLICK it
-      var blueprintUI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.TIER_2_BLUEPRINT));
+      var blueprintUI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.CLOCKWORK_BLUEPRINT_TAG));
       Assert.IsNotNull(blueprintUI, "Tier 2 Blueprint UI button not found in Buy Panel.");
 
       Button buyButton = blueprintUI.Find("ItemButton").GetComponent<Button>();
