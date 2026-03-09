@@ -187,7 +187,6 @@ public class TradeHutManager : MonoBehaviour
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
       sellValueText.text = itemValue.ToString();
 
-      tradeItemTransform.Find("ItemName").GetComponent<TextMeshProUGUI>().text  = itemTag.Equals(ENGINE_TAG) ? "   " + ENGINE_TAG : itemTag;
       tradeItemTransform.Find("ItemShadow").GetComponent<Image>().sprite        = itemSprite;
       tradeItemTransform.Find("ItemShadow").gameObject.SetActive(false);
 
@@ -228,7 +227,6 @@ public class TradeHutManager : MonoBehaviour
      if(itemTag != CRUDE_TOOL_TAG && itemTag != HARPOON_TAG) 
      {
          tradeItemTransform.Find("ItemButton").gameObject.SetActive(false);
-         tradeItemTransform.Find("ItemName").gameObject.SetActive(false);
          tradeItemTransform.Find("ItemCount").gameObject.SetActive(false);
          tradeItemTransform.Find("ItemValue").gameObject.SetActive(false);
          tradeItemTransform.Find("Pearl_Icon").gameObject.SetActive(false);

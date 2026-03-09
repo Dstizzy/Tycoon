@@ -8,7 +8,7 @@ using static TradeHutManager;
 public class Item {
 
    /* Public static properties                                          */
-   private static int crudeToolSellValue     { get; set; } = 30;
+   private static int crudeToolSellValue     { get; set; } = BASE_CRUDE_TOOL_SELL_VALUE;
    private static int harpoonSellValue       { get; set; } = 60;
    private static int pressureValveSellValue { get; set; } = 180;
    private static int divingBellSellValue    { get; set; } = 250;
@@ -21,18 +21,18 @@ public class Item {
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 15;
-   public const int BASE_HARPON_SELL_VALUE         = 20;
-   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 60;
-   public const int BASE_ENGINE_VALUE              = 150;
+   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 30;
+   public const int BASE_HARPON_SELL_VALUE         = 60;
+   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 180;
+   public const int BASE_ENGINE_VALUE              = 900;
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 40;
+   public const int MAX_CRUDE_TOOL_VALUE           = 60;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 50;
+   public const int MAX_HARPOON_VALUE              = 120;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 130;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 360;
    public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 310;
+   public const int MAX_ENGINE_VALUE               = 1800;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
