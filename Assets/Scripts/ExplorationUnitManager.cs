@@ -53,13 +53,7 @@ public class ExplorationUnitManager : MonoBehaviour
          explorePanel.gameObject.SetActive(false);
    }
 
-   public void Start()
-   {
-      if(TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
-         tutorialFunction = true;
-   }
-
-   //
+   // Event Adder
    private void OnEnable()
    {
       // Listen for the ship's death to instantly end an exploration
@@ -67,7 +61,7 @@ public class ExplorationUnitManager : MonoBehaviour
       TutorialManager.HandleExplorationTutorial += ChangeTutorialState;
    }
 
-   //
+   // Event destroyer
    private void OnDisable()
    {
       // lean up listener to prevent memory leaks
@@ -84,8 +78,6 @@ public class ExplorationUnitManager : MonoBehaviour
             lastProcessedTurn = TurnManager.Instance.currentTurn;
             HandleNewTurn();
          }
-      if (TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
-         tutorialFunction = true;
    }
 
    public void ChangeTutorialState()
@@ -203,12 +195,14 @@ public class ExplorationUnitManager : MonoBehaviour
                              string textB, UnityAction actionB, bool interactableB,
                              string textC, UnityAction actionC, bool interactableC)
    {
+      Debug.Log("Sets up buttons");
       Transform container = decisionPanel.Find("ButtonContainer");
 
       // Sets up choice 1 (always exists)
       Button button1 = container.Find("Choice1").GetComponent<Button>();
       if (button1 != null)
       {
+         Debug.Log("Choice1");
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
          button1.interactable = interactableA;
@@ -319,6 +313,11 @@ public class ExplorationUnitManager : MonoBehaviour
             decisionPanel.Find("FirstText").gameObject.SetActive(true);
          }
 
+         SetupButtons(
+               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true);
+
          // Set up inventory button on decisionPanel
          Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
          inventoryButton.onClick.RemoveAllListeners();
@@ -330,7 +329,8 @@ public class ExplorationUnitManager : MonoBehaviour
          returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
 
          // Handle a directional node decision
-         if(current.type == MapNode.NodeType.Directional)
+         Debug.Log("Made it to Set up Buttons");
+         if (current.type == MapNode.NodeType.Directional)
          {
             eventController.scenarioText.text = current.navigationStory;
 
@@ -570,13 +570,15 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the decision panel
    public void CloseDecisionPanel()
    {
+      Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
 
-      if(tutorialFunction)
+      if (tutorialFunction)
       {
-         decisionPanel.Find("Arrow").gameObject.SetActive(false);
-         decisionPanel.Find("Arrow2").gameObject.SetActive(false);
-         decisionPanel.Find("FirstText").gameObject.SetActive(false);
+         if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
+         if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
+         if (decisionPanel.Find("FirstText")) decisionPanel.Find("FirstText").gameObject.SetActive(false);
+
          tutorialFunction = false;
          HandleTutorial?.Invoke();
       }
