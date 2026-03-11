@@ -1,10 +1,9 @@
-using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
-   public static MapManager Instance; // Allows other scripts to easily access the map
+   public static MapManager Instance { get; private set; } // Allows other scripts to easily access the map
    public MapNode startingNode; // Map node that the launches from
    public MapNode currentNode; // Node the shp is currently resting on
    public bool winningPathIsLeft; // Determines which final node path holds vessel piece
@@ -39,7 +38,7 @@ public class MapManager : MonoBehaviour
       shipManager.SetDepth(currentNode.nodeDepth);
 
       // Move ship icon to new node on map in both explore and decision panels
-      if(exploreShipIcon != null && decisionShipIcon != null)
+      if (exploreShipIcon != null && decisionShipIcon != null)
       {
          exploreShipIcon.anchoredPosition = currentNode.mapPosition;
          decisionShipIcon.anchoredPosition = currentNode.mapPosition;

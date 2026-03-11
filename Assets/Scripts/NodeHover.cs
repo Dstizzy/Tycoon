@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     /* Inspector Variables                                                                       */
-    [SerializeField] private GameObject tierInfoPopUp; /* Panel that gets activated upon hover   */
+    [SerializeField] private GameObject InfoPopUp; /* Panel that gets activated upon hover   */
 
 
     /* Implements interface function for entering the game object with mouse                     */
@@ -25,13 +25,13 @@ public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     /* Sets the info panel active upon hovering over this object                                 */
     private void OnPointerEnter(PointerEventData EventData)
     {
-        tierInfoPopUp.SetActive(true);
+        InfoPopUp.SetActive(true);
     }
 
     /* Sets the info panel inactive upon exiting this object                                     */
     private void OnPointerExit(PointerEventData EventData)
     {
-        tierInfoPopUp.SetActive(false);
+        InfoPopUp.SetActive(false);
     }
 
     

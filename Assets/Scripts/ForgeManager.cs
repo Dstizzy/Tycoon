@@ -74,6 +74,9 @@ public class ForgeManager : MonoBehaviour
    [SerializeField] private GameObject activeQueuePanel;
    [SerializeField] private TextMeshProUGUI queueText;
 
+   [Header("Idle Indicator")]
+   [SerializeField] private GameObject craftIdleIndicator;
+
    /* Private state variables */
    private Transform currentCraftWindow;
    private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
@@ -98,6 +101,8 @@ public class ForgeManager : MonoBehaviour
       // Link to turn system
       if (TurnManager.Instance != null)
          TurnManager.OnTurnEnded += ProcessCraftingQueue;
+
+      UpdateIdleIndicator();
    }
 
    private void OnDestroy()
@@ -569,25 +574,25 @@ public class ForgeManager : MonoBehaviour
       switch (type)
       {
          case Item.ItemType.CrudeTool:
-            turns = isLabTier3Unlocked ? 1 : 2;
+            turns = 1;
             break;
          case Item.ItemType.Harpoon:
-            turns = isLabTier3Unlocked ? 1 : 2;
+            turns = 1;
             break;
          case Item.ItemType.PatchKit:
-            turns = isLabTier3Unlocked ? 1 : 2;
+            turns = 1;
             break;
          case Item.ItemType.PressureValve:
             turns = isLabTier3Unlocked ? 1 : 2;
             break;
          case Item.ItemType.DivingBell:
-            turns = 3;
+            turns = 2;
             break;
          case Item.ItemType.Engine:
-            turns = 4;
+            turns = 3;
             break;
          case Item.ItemType.PrecisionLens:
-            turns = 5;
+            turns = 3;
             break;
          default:
             turns = 1;
@@ -628,9 +633,15 @@ public class ForgeManager : MonoBehaviour
                activeJobs.RemoveAt(jobCount);
                ticker.ShowTicker($"Crafting Complete: {job.itemName}",Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
+
+               if (ticker != null)
+               {
+                  ticker.ShowTicker($"Finish crafting {job.itemName} x {job.amount}", Color.green, TickerSystem.MessageTypes.ResultMessage);
+               }
             }
          }
       }
+      UpdateIdleIndicator();
    }
 
    private void DeliverItem(CraftingJob job)
@@ -714,34 +725,41 @@ public class ForgeManager : MonoBehaviour
       if (hasCraftedThisTurn)
       {
          Debug.Log("Already crafted this turn!");
-         if (errorPanel != null)
-         {
-            errorPanel.SetActive(true);
-            Debug.Log("Warning activated for craft more than 1 item this turn.");
-         }
+         ticker.ShowTicker("You can only craft once per turn!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+
          if (craftButtonObject != null)
             craftButtonObject.SetActive(false);
+
+         CloseAllTierPanels();
+
+         if (currentCraftWindow != null)
+            Destroy(currentCraftWindow.gameObject);
+
+         CloseForgePanel(CRAFT_BUTTON);
+
          return;
       }
+
       if (stagingItems.Count == 0) return;
 
       int totalCost = 0;
       bool isOverclocked = (currentOverclockToggle != null && currentOverclockToggle.isOn);
 
-      // 1. Calculate Total Cost
+      // Calculate Total Cost
       foreach (var type in stagingItems)
       {
          totalCost += GetItemCost(type);
       }
 
-      // 2. Check Affordability
+      // Check Affordability
       if (InventoryManager.Instance.TrySpendOre(totalCost))
       {
          hasCraftedThisTurn = true;
 
-         string popupMessage = "<b>Successfully Queued!</b>\n\n";
+         string successMessage = "Successfully Queued: ";
+         List<string> itemNames = new List<string>();
 
-         // 3. Process Each Item
+         // Process Each Item
          foreach (var type in stagingItems)
          {
             int amount = isOverclocked ? 2 : 1;
@@ -758,23 +776,27 @@ public class ForgeManager : MonoBehaviour
             activeJobs.Add(job);
             Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
 
-            // Add the item to our popup text
-            popupMessage += $"- {job.itemName} x {amount} in {turns} turns.\n";
+            itemNames.Add($"{amount}x {job.itemName}");
          }
+         successMessage += string.Join(", ", itemNames);
 
-         if (activeQueuePanel != null && queueText != null)
-         {
-            queueText.text = popupMessage;
-            activeQueuePanel.SetActive(true);
-         }
+         ticker.ShowTicker(successMessage, Color.green, TickerSystem.MessageTypes.ResultMessage);
+
          stagingItems.Clear();
          UpdateStagingUI();
 
          if (currentOverclockToggle != null) currentOverclockToggle.isOn = false;
+
+         UpdateIdleIndicator();
+
+         CloseAllTierPanels();
+         if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
+         CloseForgePanel(CRAFT_BUTTON);
       }
       else
       {
          Debug.Log("Not enough ore for all items!");
+         ticker.ShowTicker("Not enough ore to craft!", Color.red, TickerSystem.MessageTypes.ResultMessage);
       }
    }
    private int GetItemCost(Item.ItemType type)
@@ -840,5 +862,12 @@ public class ForgeManager : MonoBehaviour
 
 
       return;
+   }
+   public void UpdateIdleIndicator()
+   {
+      if (craftIdleIndicator != null)
+      {
+         craftIdleIndicator.SetActive(activeJobs.Count == 0);
+      }
    }
 }

@@ -1,6 +1,6 @@
 /* libraries                                                                                     */
 using System;
-
+using System.ComponentModel;
 using TMPro;
 
 using UnityEngine;
@@ -18,12 +18,25 @@ public class LabManager : MonoBehaviour
    public const int TIER_TWO = 2;
    public const int TIER_THREE = 3;
 
-   public const int T1_PEARL = 400;
-   public const int T1_LENS = 2;
-   public const int T2_PEARL = 1000;
-   public const int T2_LENS = 5;
-   public const int T3_PEARL = 3000;
-   public const int T3_LENS = 10;
+   public const int T1_COMM_PEARL = 100;
+   public const int T1_PROD_PEARL = 150;
+   public const int T1_EXPL_PEARL = 200;
+   public const int T2_COMM_PEARL = 300;
+   public const int T2_PROD_PEARL = 400;
+   public const int T2_EXPL_PEARL = 500;
+   public const int T3_COMM_PEARL = 800;
+   public const int T3_PROD_PEARL = 1000;
+   public const int T3_EXPL_PEARL = 1200;
+
+   public const int T1_COMM_CRUDE_TOOL = 1;
+   public const int T2_COMM_PRESSURE_VALVE = 2;
+   public const int T3_COMM_LENS = 1;
+   public const int T1_PROD_PATCH_KIT = 1;
+   public const int T2_PROD_HARPOON = 2;
+   public const int T3_PROD_ENGINE = 1;
+   public const int T1_EXPL_HARPOON = 1;
+   public const int T2_EXPL_DIVING_BELL = 1;
+   public const int T3_EXPL_DIVING_BELL = 2;
 
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
@@ -42,8 +55,8 @@ public class LabManager : MonoBehaviour
    public static bool bodyUnlocked = false;
    public static bool tailUnlocked = false;
 
-
    TradeHutManager tradeHutManager;
+   ShipManager shipManager;
 
    public static LabManager labManager;
 
@@ -191,13 +204,68 @@ public class LabManager : MonoBehaviour
       int pearlCost = 0, itemCost = 0;
       string requiredItem = "";
 
-
-      requiredItem = "Precision Lens"; // Put your commerce item requirement here if needed
-      switch (tier)
+      if (tab == commerceTab)
       {
-         case TIER_ONE: pearlCost = T1_PEARL; itemCost = T1_LENS; break;
-         case TIER_TWO: pearlCost = T2_PEARL; itemCost = T2_LENS; break;
-         case TIER_THREE: pearlCost = T3_PEARL; itemCost = T3_LENS; break;
+         switch (tier)
+         {
+            case TIER_ONE:
+               pearlCost    = T1_COMM_PEARL;
+               itemCost     = T1_COMM_CRUDE_TOOL;
+               requiredItem = "Crude Tool";
+               break;
+            case TIER_TWO:
+               pearlCost    = T2_COMM_PEARL;
+               itemCost     = T2_COMM_PRESSURE_VALVE;
+               requiredItem = "Pressure Valve";
+               break;
+            case TIER_THREE:
+               pearlCost    = T3_COMM_PEARL;
+               itemCost     = T3_COMM_LENS;
+               requiredItem = "Precision Lens";
+               break;
+         }
+      }
+      else if (tab == productionTab)
+      {
+         switch (tier)
+         {
+            case TIER_ONE:
+               pearlCost    = T1_PROD_PEARL;
+               itemCost     = T1_PROD_PATCH_KIT;
+               requiredItem = "Patch Kit";
+               break;
+            case TIER_TWO:
+               pearlCost    = T2_PROD_PEARL;
+               itemCost     = T2_PROD_HARPOON;
+               requiredItem = "Harpoon";
+               break;
+            case TIER_THREE:
+               pearlCost    = T3_PROD_PEARL;
+               itemCost     = T3_PROD_ENGINE;
+               requiredItem = "Engine";
+               break;
+         }
+      }
+      else if (tab == explorationTab)
+      {
+         switch (tier)
+         {
+            case TIER_ONE:
+               pearlCost    = T1_EXPL_PEARL;
+               itemCost     = T1_EXPL_HARPOON;
+               requiredItem = "Harpoon";
+               break;
+            case TIER_TWO:
+               pearlCost    = T2_EXPL_PEARL;
+               itemCost     = T2_EXPL_DIVING_BELL;
+               requiredItem = "Diving Bell";
+               break;
+            case TIER_THREE:
+               pearlCost    = T3_EXPL_PEARL;
+               itemCost     = T3_EXPL_DIVING_BELL;
+               requiredItem = "Diving Bell";
+               break;
+         }
       }
 
 
@@ -238,7 +306,8 @@ public class LabManager : MonoBehaviour
                tab.transform.Find("costContainer/tierThreeCost").gameObject.SetActive(false);
                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
                break;
-         };
+         }
+         ;
       }
    }
 
@@ -293,11 +362,11 @@ public class LabManager : MonoBehaviour
          }
          bodyUnlocked = true;
       }
-      /* Tier 1 missions have succession increased by 25%                                      */
+      /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
-         Debug.Log("Tier 1 missions increased by 25%");
-         tailUnlocked = true;
+         if (shipManager != null)
+            shipManager.ApplyLabShipBonus();
       }
       else
       {
@@ -326,15 +395,14 @@ public class LabManager : MonoBehaviour
             ForgeManager.Instance.UnlockOverclock();
          }
       }
-      /* Permanently increase gold by +15 per turn                                             */
+      /* Unlocks chance to find crafts on explorations                                         */
       else if (tabType == explorationTab)
-      {
-         Debug.Log("Permanently increase gold by +15 per turn");
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-      }
+         if (shipManager != null)
+            shipManager.UnlockTier2Choices();
+         else
+         {
+            Debug.Log("There is no tab");
+         }
    }
 
    public void ImplementTierThreeInnovation(GameObject tabType)
@@ -367,10 +435,11 @@ public class LabManager : MonoBehaviour
             ForgeManager.Instance.UnlockReduceCraftingTime();
          }
       }
-      /* Decrease search costs by 50%                                                          */
+      /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
       {
-         Debug.Log("Decrease search costs by 50%");
+         if (shipManager != null)
+            shipManager.ApplyLabRewardBonus();
       }
       else
       {

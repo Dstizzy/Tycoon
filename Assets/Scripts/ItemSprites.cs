@@ -44,9 +44,9 @@ public class ItemSprites : MonoBehaviour {
                return rareOre;
             case ItemType.PrecisionLens:
                return precisionLens;
-            case ItemType.Tier2BluePrint:
+            case ItemType.IndustrialBlueprint:
                return industrialBluePrint;
-            case ItemType.Tier3BluePrint:
+            case ItemType.ClockworkBlueprint:
                return clockworkBlueprint;
             case ItemType.MercenaryEngineer:
                return merceneryEngineer;

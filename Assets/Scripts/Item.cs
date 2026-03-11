@@ -8,10 +8,12 @@ using static TradeHutManager;
 public class Item {
 
    /* Public static properties                                          */
-   private static int crudeToolSellValue     { get; set; } = 15;
-   private static int harpoonSellValue       { get; set; } = 20;
-   private static int pressureValveSellValue { get; set; } = 60;
-   private static int engineSellValue        { get; set; } = 150;
+   private static int crudeToolSellValue     { get; set; } = BASE_CRUDE_TOOL_SELL_VALUE;
+   private static int harpoonSellValue       { get; set; } = 60;
+   private static int pressureValveSellValue { get; set; } = 180;
+   private static int divingBellSellValue    { get; set; } = 250;
+   private static int precisionLensSellValue { get; set; } = 600;
+   private static int engineSellValue        { get; set; } = 900;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int Tier2BluePrintPrice    { get; set; } = 500;
@@ -19,18 +21,18 @@ public class Item {
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 15;
-   public const int BASE_HARPON_SELL_VALUE         = 20;
-   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 60;
-   public const int BASE_ENGINE_VALUE              = 150;
+   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 30;
+   public const int BASE_HARPON_SELL_VALUE         = 60;
+   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 180;
+   public const int BASE_ENGINE_VALUE              = 900;
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 40;
+   public const int MAX_CRUDE_TOOL_VALUE           = 60;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 50;
+   public const int MAX_HARPOON_VALUE              = 120;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 130;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 360;
    public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 310;
+   public const int MAX_ENGINE_VALUE               = 1800;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -44,27 +46,24 @@ public class Item {
    const string ENGINE_DESCRIPTION               = 
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
-   const string RAW_ORE_CHUNK_DESCRIPTION             = 
-      "A rare and valuable ore found in deep underwater caves. " +
-      "Highly sought after for its unique properties and worth a significant amount.";
-   const string INDUSTRIAL_BLUEPRINT_DESCRIPTION =
-      "A blueprint containing advanced industrial designs. " +
-      "Valuable for manufacturing and engineering purposes.";
-   const string CLOCKWORK_BLUEPRINT_DESCRIPTION  = 
-      "A blueprint detailing intricate clockwork mechanisms. " +
-      "Highly prized by collectors and engineers alike.";
-   const string PATCH_KIT_DESCRIPTION =
+   const string RAW_ORE_CHUNK_DESCRIPTION        =
+      "Exchanges at the Trade Hut for pearls at a 1:1 ratio.";
+   const string PATCH_KIT_DESCRIPTION            =
      "A compact repair kit containing patches, resin and basic tools. " +
      "Used to repair equipment or as a component in crafting.";
-   const string MERCENARY_ENGINEER_DESCRIPTION =
-      "A hired specialist who can immediately complete a single crafting task when activated. " +
+   const string MERCENARY_ENGINEER_DESCRIPTION   =
+      "A specialist who can immediately craft a single item.  " +
       "Consumed on use — ideal when you need an item instantly.";
-   const string PRECISION_LENS_DESCRIPTION =
+   const string PRECISION_LENS_DESCRIPTION       =
      "A small optical component used to focus delicate mechanisms. " +
      "Required for precision assemblies; consumed during crafting.";
-   const string DIVING_BELL_DESCRIPTION =
+   const string DIVING_BELL_DESCRIPTION          =
       "A reinforced submersible chamber that enables the Exploration Unit. " +
       "Possessing a Diving Bell allows deployment of the unit for scouting and resource miss";
+   const string INDUSTRIAL_BLUEPRINT_DESCRIPTION =
+      "Unlocks tier 2 items recipes at the Forge.";
+   const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
+      "Unlocks tier 3 recipes at the Forge.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -77,8 +76,8 @@ public class Item {
         Engine,
         PrecisionLens,
         RawOreChunk,
-        Tier2BluePrint,
-        Tier3BluePrint,
+        IndustrialBlueprint,
+        ClockworkBlueprint,
         MercenaryEngineer
    }
 
@@ -92,6 +91,10 @@ public class Item {
                return harpoonSellValue;
            case ItemType.PressureValve:
               return pressureValveSellValue;
+           case ItemType.DivingBell:
+              return divingBellSellValue;
+           case ItemType.PrecisionLens:
+              return precisionLensSellValue;
            case ItemType.Engine:
                return engineSellValue;
            default:
@@ -106,9 +109,9 @@ public class Item {
       {
          case ItemType.RawOreChunk:
             return rawOrePrice;
-         case ItemType.Tier2BluePrint:
+         case ItemType.IndustrialBlueprint:
             return Tier2BluePrintPrice;
-         case ItemType.Tier3BluePrint:
+         case ItemType.ClockworkBlueprint:
             return Tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
@@ -134,9 +137,9 @@ public class Item {
             return ENGINE_DESCRIPTION;
          case ItemType.RawOreChunk:
             return RAW_ORE_CHUNK_DESCRIPTION;
-         case ItemType.Tier2BluePrint:
+         case ItemType.IndustrialBlueprint:
             return INDUSTRIAL_BLUEPRINT_DESCRIPTION;
-         case ItemType.Tier3BluePrint:
+         case ItemType.ClockworkBlueprint:
             return CLOCKWORK_BLUEPRINT_DESCRIPTION;
          case ItemType.MercenaryEngineer:
             return MERCENARY_ENGINEER_DESCRIPTION;
@@ -414,11 +417,11 @@ public class Item {
       rareOrePriceText.text = rawOrePrice.ToString();
 
       Tier2BluePrintPrice         -= (int)(Tier2BluePrintPrice * percent);
-      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_2_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(CLOCKWORK_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
       Tier2BluePrintPriceText.text = Tier2BluePrintPrice.ToString();
 
       Tier3BluePrintPrice         -= (int)(Tier3BluePrintPrice * percent);
-      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(TIER_3_BLUEPRINT)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
+      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
       Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
 
       mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);

@@ -103,19 +103,19 @@ TextureImporter:
       name: increase_button_0
       rect:
         serializedVersion: 2
-        x: 176
-        y: 28
-        width: 317
-        height: 318
+        x: 166
+        y: 30
+        width: 355
+        height: 313
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9bf6ecaa650a3a3e0800000000000000
+      spriteID: 9ec3a229965f0c444b70a01ea35ee0d6
       internalID: -2043613511802785863
       vertices: []
       indices: 
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 954cbc1762ebe5942b196c5d330efd9a
     internalID: 0
     vertices: []
     indices: 
