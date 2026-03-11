@@ -139,6 +139,24 @@ public class InventoryManager : MonoBehaviour
 
    public List<Transform> InventoryItems { get; private set; }
 
+   // Subscribes to the tutorial event when the object is enabled, allowing it to respond to changes in the tutorial state
+   public void OnEnable()
+   {
+      TutorialManager.HandleInventoryTutorial += ChangeTutorialState;
+   }
+
+   // Unsubscribes from the tutorial event when the object is disabled to prevent memory leaks and unintended behavior
+   public void OnDisable()
+   {
+      TutorialManager.HandleInventoryTutorial -= ChangeTutorialState;
+   }
+
+   // Toggles the tutorial state for the inventory, which can be used to show or hide tutorial elements based on the player's progress in the game
+   private void ChangeTutorialState()
+   {
+      tutorialFunction = true;
+   }
+
    /* Sets up the singleton instance and initializes the inventory panel state.    */
    private void Awake()
    {

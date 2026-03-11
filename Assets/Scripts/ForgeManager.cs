@@ -91,6 +91,24 @@ public class ForgeManager : MonoBehaviour
    public  bool       tutorialFunction   = false; // Checks if the forge function has been explained in the tutorial
    private bool       hasCraftedThisTurn = false;
 
+   // Subscribe to the tutorial event when enabled to trigger the tutorial state change when the player reaches the forge tutorial step
+   public void OnEnable()
+   {
+      TutorialManager.HandleForgeTutorial += ChangeTutorialState;
+   }
+
+   // Unsubscribe from the tutorial event when disabled to prevent memory leaks
+   public void OnDisable()
+   {
+      TutorialManager.HandleForgeTutorial -= ChangeTutorialState;
+   }
+
+   // Changes the tutorial state to true, allowing the tutorial to progress and certain UI elements to appear in the forge
+   private void ChangeTutorialState()
+   {
+      tutorialFunction = true;
+   }
+
    private void Start()
    {
       SetCraftItemButtons();

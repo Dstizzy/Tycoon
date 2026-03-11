@@ -34,6 +34,7 @@ public class TutorialManager : MonoBehaviour
       InventoryManager.HandleTutorial += HandleNextStep;
       TradeHutManager.HandleTutorial += HandleNextStep;
       ExplorationUnitManager.HandleTutorial += HandleNextStep;
+      LabManager.HandleTutorial += HandleNextStep;
    }
 
    private void OnDisable()
@@ -44,13 +45,19 @@ public class TutorialManager : MonoBehaviour
       InventoryManager.HandleTutorial -= HandleNextStep;
       TradeHutManager.HandleTutorial -= HandleNextStep;
       ExplorationUnitManager.HandleTutorial -= HandleNextStep;
+      LabManager.HandleTutorial -= HandleNextStep;
    }
 
    // Store the reference to the current part so we can toggle arrows from the event
    public GameObject currentActivePart;
 
    // Event to start tutorial parts that can only be handled in other managers
+   public static event Action HandleOreRefineryTutorial;
+   public static event Action HandleForgeTutorial;
+   public static event Action HandleInventoryTutorial;
+   public static event Action<int> HandleTradeHutTutorial;
    public static event Action HandleExplorationTutorial;
+   public static event Action<int> HandleLabTutorial;
 
    // Start is called before the first frame update
    private void Start()
@@ -213,6 +220,7 @@ public class TutorialManager : MonoBehaviour
          requiredButtonClicked = false;
          oreRefineryUpgrade = true;
          currentActivePart = myPart;
+         HandleOreRefineryTutorial?.Invoke();
       }
 
       if(myPart.transform.Find("Forge") != null)
@@ -220,13 +228,14 @@ public class TutorialManager : MonoBehaviour
          requiredButtonClicked = false;
          forgeFunction = true;
          currentActivePart = myPart;
+         HandleForgeTutorial?.Invoke();
       }
 
       if(myPart.transform.Find("Inventory") != null)
       {
          requiredButtonClicked = false;
-         InventoryManager.Instance.tutorialFunction = true;
          currentActivePart = myPart;
+         HandleInventoryTutorial?.Invoke();
       }
 
       if(myPart.transform.Find("TradeHut1") != null)
@@ -234,6 +243,7 @@ public class TutorialManager : MonoBehaviour
          requiredButtonClicked = false;
          tradeHutFunctionOne = true;
          currentActivePart = myPart;
+         HandleTradeHutTutorial?.Invoke(1);
       }
 
       if (myPart.transform.Find("TradeHut2") != null)
@@ -241,6 +251,7 @@ public class TutorialManager : MonoBehaviour
          requiredButtonClicked = false;
          tradeHutFunctionTwo = true;
          currentActivePart = myPart;
+         HandleTradeHutTutorial?.Invoke(2);
       }
 
       if(myPart.transform.Find("Exploration") != null)
@@ -249,6 +260,22 @@ public class TutorialManager : MonoBehaviour
          explorationFunction = true;
          currentActivePart = myPart;
          HandleExplorationTutorial?.Invoke();
+      }
+
+      if(myPart.transform.Find("Lab") != null)
+      {
+         requiredButtonClicked = false;
+         labFunction = true;
+         currentActivePart = myPart;
+         HandleLabTutorial?.Invoke(1);
+      }
+
+      if(myPart.transform.Find("Victory") != null)
+      {
+         requiredButtonClicked = false;
+         victoryFunction = true;
+         currentActivePart = myPart;
+         HandleLabTutorial?.Invoke(2);
       }
    }
 
@@ -271,7 +298,6 @@ public class TutorialManager : MonoBehaviour
          if(tag == "Ore Refinery")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            OreRefinery_Manager.Instance.tutorialUpgrade = true;
          }
          else
          {
@@ -284,7 +310,6 @@ public class TutorialManager : MonoBehaviour
          if(tag == "Forge")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            ForgeManager.Instance.tutorialFunction = true;
          }
          else
          {
@@ -297,7 +322,6 @@ public class TutorialManager : MonoBehaviour
          if(tag == "Trade Hut")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            TradeHutManager.Instance.tutorialFunctionOne = true;
          }
          else
          {
@@ -310,7 +334,6 @@ public class TutorialManager : MonoBehaviour
          if(tag == "Trade Hut")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            TradeHutManager.Instance.tutorialFunctionTwo = true;
          }
          else
          {
@@ -335,20 +358,6 @@ public class TutorialManager : MonoBehaviour
          if(tag == "Lab")
          {
             currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            LabManager.Instance.tutorialFunction = true;
-         }
-         else
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-         }
-      }
-
-      if(enemyFunction == true)
-      {
-         if(tag == "Enemy")
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-            TurnManager.Instance.tutorialFunction = true;
          }
          else
          {

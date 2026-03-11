@@ -83,7 +83,10 @@ public class TradeHutManager : MonoBehaviour
 
                     PEARL_REWARD_MINIMUM = 20,
                     PEARL_REWARD_MAXIMUM = 40,
-                    ORE_EXCHANGE_COST    = 10;
+                    ORE_EXCHANGE_COST    = 10,
+
+                    FIRST_TUTORIAL = 1,
+                    SECOND_TUTORIAL = 2;
                     
       
    public const string RAW_ORE_CHUNK_TAG      = "Raw Ore Chunk",
@@ -99,6 +102,25 @@ public class TradeHutManager : MonoBehaviour
    public static event Action HandleTutorial;
 
    public static TradeHutManager Instance;
+
+   public void OnEnable() 
+   {
+      TutorialManager.HandleTradeHutTutorial += ChangeTutorialState;
+   }
+
+   public void OnDisable() 
+   {
+      TutorialManager.HandleTradeHutTutorial -= ChangeTutorialState;
+   }
+
+   public void ChangeTutorialState(int tutorialType)
+   {
+      if (tutorialType == FIRST_TUTORIAL)
+         tutorialFunctionOne = true;
+
+      if (tutorialType == SECOND_TUTORIAL)
+         tutorialFunctionTwo = true;
+   }
 
    private void Awake() 
    {

@@ -96,8 +96,8 @@ public class PopUpManager : MonoBehaviour
       if (prevHoverObject != null && prevHoverObject != currentHoverObject)
       {
          // Report the tag of the object we just left (or "None" if we left to empty space)
-         string tagToReport = currentHoverObject.tag;
-         OnHoverTagChanged?.Invoke(tagToReport);
+         //string tagToReport = currentHoverObject.tag;
+         OnHoverTagChanged?.Invoke(currentHoverObject.tag);
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)

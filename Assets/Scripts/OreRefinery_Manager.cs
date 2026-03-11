@@ -35,6 +35,24 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public static event Action HandleTutorial;
 
+   // --- ADDED: Subscribe to tutorial event ---
+   public void OnEnable()
+   {
+      TutorialManager.HandleOreRefineryTutorial += ChangeTutorialState;
+   }
+
+   // --- ADDED: Unsubscribe when disabled ---
+   public void OnDisable()
+   {
+      TutorialManager.HandleOreRefineryTutorial -= ChangeTutorialState;
+   }
+
+   // Changes the tutorial state to allow the upgrade tutorial to show after the player has completed the Trade Hut tutorial
+   private void ChangeTutorialState()
+   {
+      tutorialUpgrade = true;
+   }
+
    private void Awake()
    {
       if (Instance != null && Instance != this)
