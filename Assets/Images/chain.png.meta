@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4e89c4f75603f024fb1756c32ceb59d6
+guid: ceaaf83159112df4e9fead710ed29c78
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2043613511802785863
-    second: increase_button_0
+      213: 1244476889673583485
+    second: chain_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: increase_button_0
+      name: chain_0
       rect:
         serializedVersion: 2
-        x: 166
-        y: 30
-        width: 355
-        height: 313
+        x: 170
+        y: 74
+        width: 299
+        height: 238
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 9ec3a229965f0c444b70a01ea35ee0d6
-      internalID: -2043613511802785863
+      spriteID: d7b4d2c3325454110800000000000000
+      internalID: 1244476889673583485
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 954cbc1762ebe5942b196c5d330efd9a
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      increase_button_0: -2043613511802785863
+      chain_0: 1244476889673583485
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
