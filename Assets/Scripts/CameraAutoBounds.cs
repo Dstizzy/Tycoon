@@ -15,6 +15,15 @@ public class CameraAutoBounds : MonoBehaviour
    [Tooltip("Value for margin at the boundary (Unit: Unit)")]
    public float margin = 2f;
 
+   // =====================================================================
+   // [ADDED] Whether to center the camera after calculating bounds
+   // =====================================================================
+   [Tooltip("Center the camera on the map after calculating bounds")]
+   public bool centerCameraOnStart = true;
+   // =====================================================================
+   // [END ADDED]
+   // =====================================================================
+
    void Awake()
    {
       // Only do essential component lookups in Awake
@@ -61,6 +70,20 @@ public class CameraAutoBounds : MonoBehaviour
          if (!string.IsNullOrEmpty(targetTag) && !r.CompareTag(targetTag))
             continue; // If a tag filter is set
 
+         // =====================================================================
+         // [ADDED] Exclude UI elements and particle systems
+         // =====================================================================
+         // Exclude renderers under UI Canvas
+         if (r.GetComponentInParent<Canvas>() != null)
+            continue;
+
+         // Exclude ParticleSystemRenderer (can affect background boundaries)
+         if (r is ParticleSystemRenderer)
+            continue;
+         // =====================================================================
+         // [END ADDED]
+         // =====================================================================
+
          Bounds b = r.bounds;
 
          if (first)
@@ -76,11 +99,32 @@ public class CameraAutoBounds : MonoBehaviour
          }
       }
 
+      // =====================================================================
+      // [ADDED] Apply margin to slightly reduce the boundaries
+      // =====================================================================
+      // Apply margin to the boundaries to remove extra space
+      min += new Vector2(margin, margin);
+      max -= new Vector2(margin, margin);
+      // =====================================================================
+      // [END ADDED]
+      // =====================================================================
+
       // Passing values to the CameraDragPan script
       targetPanScript.minWorld = min;
       targetPanScript.maxWorld = max;
       targetPanScript.clampToBounds = true;
 
       Debug.Log($"CameraAutoBounds: Automatic boundary calculation complete → min: {min}, max: {max}");
+
+      // =====================================================================
+      // [ADDED] Center the camera after setting the bounds
+      // =====================================================================
+      if (centerCameraOnStart)
+      {
+         targetPanScript.CenterCamera();
+      }
+      // =====================================================================
+      // [END ADDED]
+      // =====================================================================
    }
 }

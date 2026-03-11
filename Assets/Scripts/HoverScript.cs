@@ -81,8 +81,8 @@ public class HoverScript : MonoBehaviour {
         Vector2 mouseScreenPos = context.ReadValue<Vector2>();
         Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
-        raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
-        currentHoverObject = raycastHit2D.collider ? raycastHit2D.collider.transform : null;
+      raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero, Mathf.Infinity, Physics2D.AllLayers);
+      currentHoverObject = raycastHit2D.collider ? raycastHit2D.collider.transform : null;
 
         // Case A: Moved OFF object
         if (prevHoverObject != null && prevHoverObject != currentHoverObject) 
@@ -106,29 +106,37 @@ public class HoverScript : MonoBehaviour {
             }
         }
 
-        // Case B: Moved ONTO new object
-        if (currentHoverObject != null && currentHoverObject != prevHoverObject) 
-        {
-            SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
-            if (currentRenderer != null) {
-                currentRenderer.color = Color.red;
-                switch (currentHoverObject.tag) 
-               {
-                   case "Forge": 
-                      SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel); 
-                      break;
-                   case "Ore Refinery": 
-                      SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel); 
-                      break;
-                   case "Exploration Unit": 
-                      if (shipManager != null) 
-                         SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel); 
-                      break;
-                }
-            }
-        }
-        prevHoverObject = currentHoverObject;
-    }
+      // Case B: Moved ONTO new object
+      if (currentHoverObject != null && currentHoverObject != prevHoverObject)
+      {
+         SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
+         if (currentRenderer != null && currentHoverObject.tag != "IdleIndicator")
+         {
+            // Only turn it red if it's a building, not the indicator
+            currentRenderer.color = Color.red;
+         }
+
+         switch (currentHoverObject.tag) 
+         {
+            case "Forge": 
+               SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel); 
+               break;
+            case "Ore Refinery": 
+               SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel); 
+               break;
+            case "Exploration Unit": 
+               if (shipManager != null) 
+                     SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel); 
+               break;
+            case "IdleIndicator":
+               if (TickerSystem.Instance != null)
+                  TickerSystem.Instance.ShowTicker("Take a break: No item is currently being crafted!", Color.white, TickerSystem.MessageTypes.ResultMessage);
+               break;
+         }
+            
+      }
+      prevHoverObject = currentHoverObject;
+   }
 
    public void DisbaleHover() 
    {

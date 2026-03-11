@@ -188,7 +188,7 @@ public class TradeHutTests : InputTestFixture {
       yield return new WaitForSeconds(1.0f);
 
       // 4. Find the Blueprint UI button and CLICK it
-      var blueprintUI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.TIER_2_BLUEPRINT));
+      var blueprintUI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.CLOCKWORK_BLUEPRINT_TAG));
       Assert.IsNotNull(blueprintUI, "Tier 2 Blueprint UI button not found in Buy Panel.");
 
       Button buyButton = blueprintUI.Find("ItemButton").GetComponent<Button>();
@@ -263,7 +263,7 @@ public class TradeHutTests : InputTestFixture {
        yield return new WaitForEndOfFrame();
    
        // 2. Setup: Ensure player can afford the Tier 1 upgrade
-       InventoryManager.Instance.TryAddPearl(LabManager.T1_PEARL);
+       InventoryManager.Instance.TryAddPearl(LabManager.T1_COMM_PEARL);
        
        // 3. Purchase Tier 1 Commerce Innovation via Lab Logic
        // Accessing private commerceTab via reflection

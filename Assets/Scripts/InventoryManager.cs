@@ -82,11 +82,11 @@ public class InventoryManager : MonoBehaviour
                     ORE_POSITION = CRYSTAL_POSITION + 13,
 
                     CRUDE_TOOL_POSITION = 0,
-                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 13,
+                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 10,
                     PATCH_KIT_POSITION = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 13,
+                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
                     DIVING_BELL_POSITION = HARPOON_POSITION,
-                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 13,
+                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 10,
                     PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION,
                     MERCENARY_ENGINEER_POSITION = ENGINE_POSITION;
 
@@ -195,9 +195,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 5000;
+      pearlCount     = 0;
       crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = 1000;
+      oreCount       = 0;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -275,9 +275,11 @@ public class InventoryManager : MonoBehaviour
       /* Places the new resource entry in a horizontal row inside the inventory    */
       resourceRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, 0);
 
+      Transform visualGroup = resourceTransform.Find("VisualGroup");
+
       /* Populate the resource components with item-specific data                  */
-      resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
-      resourceWindowButton = resourceTransform.Find("ResourceButton").GetComponent<Button>();
+      visualGroup.Find("ResourceCount").GetComponent<TextMeshProUGUI>().text = " x" + resourceCount.ToString();
+      resourceWindowButton = visualGroup.Find("ResourceButton").GetComponent<Button>();
       resourceWindowButton.image.sprite = resourceSprite;
 
       /* Dynamically add listeners to the button, which creates the resource       */
@@ -290,16 +292,16 @@ public class InventoryManager : MonoBehaviour
       switch (resourceTag)
       {
          case PEARL_TAG:
-            PearlCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+            PearlCountText = visualGroup.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
             break;
          case CRYSTAL_TAG:
-            CrystalCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+            CrystalCountText = visualGroup.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
             break;
          case ORE_TAG:
-            OreCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+            OreCountText = visualGroup.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
             break;
          case RAW_ORE_CHUNK_TAG:
-            RaWOreChunkCountText = resourceTransform.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
+            RaWOreChunkCountText = visualGroup.Find("ResourceCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
@@ -364,36 +366,38 @@ public class InventoryManager : MonoBehaviour
       /* Places the new resource entry in a horizontal row inside the inventory    */
       craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, verticalIndex);
 
+      Transform visualGroup = craftTransform.Find("VisualGroup");
+
       /* Populate the resource components with item-specific data                  */
-      craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
-      craftWindowButton = craftTransform.Find("CraftButton").GetComponent<Button>();
+      visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>().text = " x" + craftCount.ToString();
+      craftWindowButton = visualGroup.Find("CraftButton").GetComponent<Button>();
       craftWindowButton.image.sprite = craftSprite;
 
       switch (craftTag)
       {
          case CRUDE_TOOL_TAG:
-            CrudeToolCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            CrudeToolCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case HARPOON_TAG:
-            HarpoonCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            HarpoonCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case PATCH_KIT_TAG:
-            PatchKitCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            PatchKitCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case PRESSURE_VALVE_TAG:
-            PressureValveCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            PressureValveCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case DIVING_BELL_TAG:
-            DivingBellCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            DivingBellCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case ENGINE_TAG:
-            EngineCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            EngineCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case PRECISION_LENS_TAG:
-            PrecisionLensCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            PrecisionLensCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          case MERCENARY_ENGINEER_TAG:
-            MercenaryEngineerCountText = craftTransform.Find("CraftCount").GetComponent<TextMeshProUGUI>();
+            MercenaryEngineerCountText = visualGroup.Find("CraftCount").GetComponent<TextMeshProUGUI>();
             break;
          default:
             Debug.LogError("Unknown craft");
