@@ -28,7 +28,7 @@ public class PopUpManager : MonoBehaviour
    public bool tutorialRefinery = false;
 
    // This event is invoked whenever the hovered tag changes, passing the new tag as a parameter
-   public static event Action<string> OnHoverTagChanged;
+   //public static event Action<string> OnHoverTagChanged;
 
    public static PopUpManager Instance { get; private set; }
 
@@ -97,7 +97,7 @@ public class PopUpManager : MonoBehaviour
       {
          // Report the tag of the object we just left (or "None" if we left to empty space)
          //string tagToReport = currentHoverObject.tag;
-         OnHoverTagChanged?.Invoke(currentHoverObject.tag);
+         //OnHoverTagChanged?.Invoke(currentHoverObject.tag);
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
@@ -210,7 +210,7 @@ public class PopUpManager : MonoBehaviour
       switch (buildingTransform.tag)
       {
          case "Trade Hut":
-            tradeHutManager.RequestTradeHutPanel(buttonId);
+            TradeHutManager.Instance.RequestTradeHutPanel(buttonId);
             break;
          case "Lab":
             labManager.RequestLabPanel(buttonId);

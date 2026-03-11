@@ -5,13 +5,13 @@ public class TagDetector : MonoBehaviour
    private void OnEnable()
    {
       // Subscribe to the event
-      PopUpManager.OnHoverTagChanged += HandleHoverChanged;
+      //PopUpManager.OnHoverTagChanged += HandleHoverChanged;
    }
 
    private void OnDisable()
    {
       // Unsubscribe to prevent memory leaks
-      PopUpManager.OnHoverTagChanged -= HandleHoverChanged;
+      //PopUpManager.OnHoverTagChanged -= HandleHoverChanged;
    }
 
    private void HandleHoverChanged(string tag)

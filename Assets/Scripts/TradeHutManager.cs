@@ -103,25 +103,6 @@ public class TradeHutManager : MonoBehaviour
 
    public static TradeHutManager Instance;
 
-   public void OnEnable() 
-   {
-      TutorialManager.HandleTradeHutTutorial += ChangeTutorialState;
-   }
-
-   public void OnDisable() 
-   {
-      TutorialManager.HandleTradeHutTutorial -= ChangeTutorialState;
-   }
-
-   public void ChangeTutorialState(int tutorialType)
-   {
-      if (tutorialType == FIRST_TUTORIAL)
-         tutorialFunctionOne = true;
-
-      if (tutorialType == SECOND_TUTORIAL)
-         tutorialFunctionTwo = true;
-   }
-
    private void Awake() 
    {
       SellItems = new();
@@ -175,7 +156,9 @@ public class TradeHutManager : MonoBehaviour
 
    private void Start()
    {
-      if(TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
+
+      Debug.Log("TradeHutManager Start() called");
+      if (TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
          tutorialFunctionOne = true;
       inv = InventoryManager.Instance;
 
@@ -190,6 +173,25 @@ public class TradeHutManager : MonoBehaviour
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.5f, CLOCKWORK_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, INDUSTRIAL_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
+   }
+
+   public void OnEnable()
+   {
+      TutorialManager.HandleTradeHutTutorial += ChangeTutorialState;
+   }
+
+   public void OnDisable()
+   {
+      TutorialManager.HandleTradeHutTutorial -= ChangeTutorialState;
+   }
+
+   public void ChangeTutorialState(int tutorialType)
+   {
+      if (tutorialType == FIRST_TUTORIAL)
+         tutorialFunctionOne = true;
+
+      if (tutorialType == SECOND_TUTORIAL)
+         tutorialFunctionTwo = true;
    }
 
    public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 

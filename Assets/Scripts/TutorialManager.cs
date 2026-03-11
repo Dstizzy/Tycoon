@@ -25,10 +25,10 @@ public class TutorialManager : MonoBehaviour
 
 
    public static TutorialManager Instance { get; private set; }
-
+   
    private void OnEnable()
    {
-      PopUpManager.OnHoverTagChanged += HandleGlobalHover;
+      //PopUpManager.OnHoverTagChanged += HandleGlobalHover;
       OreRefinery_Manager.HandleTutorial += HandleNextStep;
       ForgeManager.HandleTutorial += HandleNextStep;
       InventoryManager.HandleTutorial += HandleNextStep;
@@ -39,7 +39,7 @@ public class TutorialManager : MonoBehaviour
 
    private void OnDisable()
    {
-      PopUpManager.OnHoverTagChanged -= HandleGlobalHover;
+      //PopUpManager.OnHoverTagChanged -= HandleGlobalHover;
       OreRefinery_Manager.HandleTutorial -= HandleNextStep;
       ForgeManager.HandleTutorial -= HandleNextStep;
       InventoryManager.HandleTutorial -= HandleNextStep;
@@ -282,10 +282,10 @@ public class TutorialManager : MonoBehaviour
    public void HandleTurn()
    {
       requiredButtonClicked = true;
-      if (OreRefinery_Manager.Instance.IsBlocked == true)
+      /*if (OreRefinery_Manager.Instance.IsBlocked == true)
       {
          OreRefinery_Manager.Instance.IsBlocked = false;
-      }
+      }*/
       turnButton.GetComponent<Button>().onClick.RemoveListener(HandleTurn);
       GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
    }

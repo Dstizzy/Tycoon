@@ -38,6 +38,9 @@ public class LabManager : MonoBehaviour
    public const int T2_EXPL_DIVING_BELL = 1;
    public const int T3_EXPL_DIVING_BELL = 2;
 
+   public const int LAB_TUTORIAL = 1;
+   public const int VICTORY_TUTORIAL = 2;
+
    /* Inspector Variables                                                                       */
    [SerializeField] private Transform innovatePanel;
    [SerializeField] private Transform infoPanel;

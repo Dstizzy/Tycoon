@@ -137,10 +137,10 @@ public class TurnManager : MonoBehaviour
             }
          }
 
-         tradeHutManager.CraftMarketForesight();
+         //tradeHutManager.CraftMarketForesight();
 
          if (currentTurn == 2)
-            tradeHutManager.CraftMarketForesight();
+            //tradeHutManager.CraftMarketForesight();
 
          //// Natural flucuations
          //if(eventCountdown > 0 && eventCountdown != 5) 
