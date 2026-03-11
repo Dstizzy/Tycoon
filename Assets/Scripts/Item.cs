@@ -9,11 +9,11 @@ public class Item {
 
    /* Public static properties                                          */
    private static int crudeToolSellValue     { get; set; } = BASE_CRUDE_TOOL_SELL_VALUE;
-   private static int harpoonSellValue       { get; set; } = 60;
-   private static int pressureValveSellValue { get; set; } = 180;
-   private static int divingBellSellValue    { get; set; } = 250;
-   private static int precisionLensSellValue { get; set; } = 600;
-   private static int engineSellValue        { get; set; } = 900;
+   private static int harpoonSellValue       { get; set; } = BASE_HARPON_SELL_VALUE;
+   private static int pressureValveSellValue { get; set; } = BASE_PRESSURE_VALVE_SELL_VALUE;
+   private static int divingBellSellValue    { get; set; } = BASE_DIVING_BELL_SELL_VALUE;
+   private static int precisionLensSellValue { get; set; } = BASE_PRECISION_LENS_SELL_VALUE;
+   private static int engineSellValue        { get; set; } = BASE_ENGINE_VALUE;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int Tier2BluePrintPrice    { get; set; } = 500;
@@ -24,13 +24,20 @@ public class Item {
    public const int BASE_CRUDE_TOOL_SELL_VALUE     = 30;
    public const int BASE_HARPON_SELL_VALUE         = 60;
    public const int BASE_PRESSURE_VALVE_SELL_VALUE = 180;
+   public const int BASE_DIVING_BELL_SELL_VALUE    = 250;
+   public const int BASE_PRECISION_LENS_SELL_VALUE = 600;
    public const int BASE_ENGINE_VALUE              = 900;
+
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
    public const int MAX_CRUDE_TOOL_VALUE           = 60;
    public const int MIN_HARPOON_VALUE              = 0;
    public const int MAX_HARPOON_VALUE              = 120;
+   public const int MIN_DIVING_BELL_VALUE          = 0;
+   public const int MAX_DIVING_BELL_VALUE          = 500;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
    public const int MAX_PRESSURE_VALVE_VALUE       = 360;
+   public const int MIN_PRECISION_LENS_VALUE       = 0;
+   public const int MAX_PRECISION_LENS_VALUE       = 1200;
    public const int MIN_ENGINE_VALUE               = 0;
    public const int MAX_ENGINE_VALUE               = 1800;
 
@@ -212,6 +219,55 @@ public class Item {
       return;
    }
 
+   public static void TryIncreaseHarpoonSellValue(int amount) 
+   {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if (harpoonSellValue >= MAX_HARPOON_VALUE) 
+      {
+         Debug.LogError("Harpoon Sell Value is already at maximum!");
+         return;
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (harpoonSellValue + amount > MAX_HARPOON_VALUE) 
+      {
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_HARPOON_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      harpoonSellValue += amount;
+
+      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+
+      return;
+   }
+
+   public static void TryDecreaseHarpoonSellValue(int amount) 
+   {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (harpoonSellValue <= MIN_HARPOON_VALUE)
+      {
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         return;
+      }
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (harpoonSellValue - amount < MIN_HARPOON_VALUE) 
+      {
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_HARPOON_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      harpoonSellValue -= amount;
+
+      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+
+      return;
+   }
+
    public static void TryIncreasePressureValveValue(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
@@ -261,53 +317,79 @@ public class Item {
       return;
    }
 
-   public static void TryIncreaseHarpoonSellValue(int amount) 
+    // --- Diving Bell increase/decrease methods ---
+   public static void TryIncreaseDivingBellValue(int amount)
    {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (harpoonSellValue >= MAX_HARPOON_VALUE) 
+      if (divingBellSellValue >= MAX_DIVING_BELL_VALUE)
       {
-         Debug.LogError("Harpoon Sell Value is already at maximum!");
+         Debug.LogError("Diving Bell Sell Value is already at maximum!");
          return;
       }
 
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (harpoonSellValue + amount > MAX_HARPOON_VALUE) 
+      if (divingBellSellValue + amount > MAX_DIVING_BELL_VALUE)
       {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_HARPOON_VALUE}.");
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_DIVING_BELL_VALUE}.");
          return;
       }
 
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      harpoonSellValue += amount;
-
-      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
-
-      return;
+      divingBellSellValue += amount;
+      OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
    }
 
-   public static void TryDecreaseHarpoonSellValue(int amount) 
+   public static void TryDecreaseDivingBellValue(int amount)
    {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (harpoonSellValue <= MIN_HARPOON_VALUE)
+      if (divingBellSellValue <= MIN_DIVING_BELL_VALUE)
       {
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         Debug.LogError("Diving Bell Sell Value is already at minimum!");
          return;
       }
 
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (harpoonSellValue - amount < MIN_HARPOON_VALUE) 
+      if (divingBellSellValue - amount < MIN_DIVING_BELL_VALUE)
       {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_HARPOON_VALUE}.");
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_DIVING_BELL_VALUE}.");
          return;
       }
 
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      harpoonSellValue -= amount;
+      divingBellSellValue -= amount;
+      OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
+   }
 
-      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+   
 
-      return;
+   public static void TryIncreasePrecisionLensValue(int amount)
+   {
+      if (precisionLensSellValue >= MAX_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError("Precision Lens Sell Value is already at maximum!");
+         return;
+      }
+
+      if (precisionLensSellValue + amount > MAX_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_PRECISION_LENS_VALUE}.");
+         return;
+      }
+
+      precisionLensSellValue += amount;
+      OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
+   }
+
+   public static void TryDecreasePrecisionLensValue(int amount)
+   {
+      if (precisionLensSellValue <= MIN_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError("Precision Lens Sell Value is already at minimum!");
+         return;
+      }
+
+      if (precisionLensSellValue - amount < MIN_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_PRECISION_LENS_VALUE}.");
+         return;
+      }
+
+      precisionLensSellValue -= amount;
+      OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
    }
 
    public static void TryIncreaseEngineSellValue(int amount) 
