@@ -89,7 +89,13 @@ public class TradeHutManager : MonoBehaviour
 
                     PEARL_REWARD_MINIMUM = 20,
                     PEARL_REWARD_MAXIMUM = 40,
-                    ORE_EXCHANGE_COST    = 10;
+                    ORE_EXCHANGE_COST    = 10,
+                    
+                    MARKET_CHANCE_MIN = 0,
+                    MARKET_CHANCE_MAX = 100,
+
+                    WORLD_EVENT_RESET_TURN   = 1,
+                    WORLD_EVENT_PREVIEW_TURN = 4;
                     
       
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
@@ -240,7 +246,6 @@ public class TradeHutManager : MonoBehaviour
          tradeItemTransform.Find("ItemShadow").gameObject.SetActive(true);
          tradeItemTransform.Find("Chain").gameObject.SetActive(true);
      }
-
 
       // Dynamically add a listener to the button, which creates a sell window when clicked         
       itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
@@ -872,12 +877,12 @@ public class TradeHutManager : MonoBehaviour
    public void CraftMarketForesight() 
    {
   
-      crudeToolChance       = Rng.Next(1, 101);
-      harpoonChance         = Rng.Next(1, 101);
-      pressureValveChance   = Rng.Next(1, 101);
-      divingBellChance      = Rng.Next(1, 101);
-      precisionLensChance   = Rng.Next(1, 101);
-      engineChance          = Rng.Next(1, 101);
+      crudeToolChance     = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      harpoonChance       = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      pressureValveChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      divingBellChance    = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
 
       crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
       harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
@@ -1030,12 +1035,15 @@ public class TradeHutManager : MonoBehaviour
             baseVal = GetItemValue(ItemType.PrecisionLens);
             preview = baseVal;
 
-            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.PrecisionLensEvent) {
+            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.PrecisionLensEvent) 
+            {
                if (shiftDirection <= 50)
                   preview = baseVal - ((int)(BASE_PRECISION_LENS_SELL_VALUE));
                else
                   preview = baseVal + ((int)(BASE_PRECISION_LENS_SELL_VALUE));
-            } else {
+            } 
+            else 
+            {
                if (precisionLensChance <= 30)
                   preview = baseVal + precisionLensFluctuation;
                else
@@ -1173,7 +1181,7 @@ public class TradeHutManager : MonoBehaviour
          }
       }
 
-      // Clockwork sell value engine fluctuations
+      // Clockwork engine sell value engine fluctuations
       if (ForgeManager.Instance.hasTier3Blueprint) 
       {
          if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == 5) 
@@ -1197,6 +1205,7 @@ public class TradeHutManager : MonoBehaviour
             }
          }
 
+         // Precision Lens sell value engine fluctuations
          if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == 5)
          {
             if (shiftDirection <= 50)
@@ -1237,7 +1246,7 @@ public class TradeHutManager : MonoBehaviour
          finalWorldEvent = (int)(WorldEventTypes.HarpoonEvent);
 
       worldEvent     = Rng.Next(worldEvent1, finalWorldEvent + 1);
-      shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(1, 101);
+      shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
    }
 
    public void WorldEventNewsTickerText() 
