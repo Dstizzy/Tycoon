@@ -92,11 +92,7 @@ public class TradeHutManager : MonoBehaviour
                     ORE_EXCHANGE_COST    = 10,
                     
                     MARKET_CHANCE_MIN = 0,
-                    MARKET_CHANCE_MAX = 100,
-
-                    WORLD_EVENT_RESET_TURN   = 1,
-                    WORLD_EVENT_PREVIEW_TURN = 4;
-                    
+                    MARKET_CHANCE_MAX = 100;
       
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
@@ -429,10 +425,10 @@ public class TradeHutManager : MonoBehaviour
 
       switch (itemTag) 
       {
-         case CLOCKWORK_BLUEPRINT_TAG:
+         case INDUSTRIAL_BLUEPRINT_TAG:
             buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.IndustrialBlueprint).ToString();
             break;
-         case INDUSTRIAL_BLUEPRINT_TAG:
+         case CLOCKWORK_BLUEPRINT_TAG:
             buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.ClockworkBlueprint).ToString();
             break;
          case MERCENARY_ENGINEER_TAG:
@@ -902,7 +898,7 @@ public class TradeHutManager : MonoBehaviour
           preview;
 
       // Displays the crude tool sell value for the next turn
-      if (worldEvent == (int) WorldEventTypes.CrudeToolEvent  && TurnManager.Instance.eventCountdown == 4) 
+      if (worldEvent == (int) WorldEventTypes.CrudeToolEvent  && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN) 
          WorldEventForesight(crudeToolValueText);
       else 
       {
@@ -933,7 +929,7 @@ public class TradeHutManager : MonoBehaviour
       }
 
       // Displays the harpoon sell value for the next turn
-      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == 4)
+      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
          WorldEventForesight(harpoonValueText);
       else 
       {
@@ -966,7 +962,7 @@ public class TradeHutManager : MonoBehaviour
       if (ForgeManager.Instance.hasTier2Blueprint) 
       {
          // Displays the pressure valve sell value for the next turn
-         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == 4)
+         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
             WorldEventForesight(pressureValveValueText);
          else 
          {
@@ -997,7 +993,7 @@ public class TradeHutManager : MonoBehaviour
          }
 
           // Tier2 also surfaces Diving Bell
-         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == 4)
+         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
             WorldEventForesight(divingBellValueText);
          else
          {
@@ -1029,7 +1025,7 @@ public class TradeHutManager : MonoBehaviour
       {
 
          // Displays the precision lens sell value for the next turn (tier3)
-         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == 4)
+         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
             WorldEventForesight(precisionLensValueText);
          else {
             baseVal = GetItemValue(ItemType.PrecisionLens);
@@ -1056,7 +1052,7 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // Displays the engine sell value for the next turn
-         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == 4)
+         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
             WorldEventForesight(engineValueText);
          else 
          {
@@ -1092,7 +1088,7 @@ public class TradeHutManager : MonoBehaviour
    public void MarketFluctuate() 
    {
       // Crude Tool sell value fluctuations
-      if (worldEvent == (int)WorldEventTypes.CrudeToolEvent && TurnManager.Instance.eventCountdown == 5) 
+      if (worldEvent == (int)WorldEventTypes.CrudeToolEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
       {
          if(shiftDirection <= 50)
             TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
@@ -1101,7 +1097,7 @@ public class TradeHutManager : MonoBehaviour
       }
       else 
       {
-         if (lastResetTurn[ItemType.CrudeTool] && TurnManager.Instance.eventCountdown == 1)
+         if (lastResetTurn[ItemType.CrudeTool] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
             lastResetTurn[ItemType.CrudeTool] = false;
          else 
          {
@@ -1114,7 +1110,7 @@ public class TradeHutManager : MonoBehaviour
       }
 
       // Harpoon sell value fluctuations
-      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == 5) 
+      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
       {
          if (shiftDirection <= 50)
             TryIncreaseHarpoonSellValue(harpoonFluctuation);
@@ -1139,7 +1135,7 @@ public class TradeHutManager : MonoBehaviour
       if (ForgeManager.Instance.hasTier2Blueprint) 
       {
          // Pressure Valve sell value  fluctuations
-         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == 5) 
+         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
          {
             if (shiftDirection <= 50)
                TryIncreasePressureValveValue(pressureValveFluctuation);
@@ -1148,7 +1144,7 @@ public class TradeHutManager : MonoBehaviour
          } 
          else 
          {
-            if (lastResetTurn[ItemType.PressureValve] && TurnManager.Instance.eventCountdown == 1)
+            if (lastResetTurn[ItemType.PressureValve] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
                lastResetTurn[ItemType.PressureValve] = false;
             else 
             {
@@ -1161,7 +1157,7 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // Diving Bell sell value  fluctuations
-         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == 5)
+         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN)
          {
             if (shiftDirection <= 50)
                TryIncreaseDivingBellValue(divingBellFluctuation);
@@ -1170,7 +1166,7 @@ public class TradeHutManager : MonoBehaviour
          }
          else
          {
-            if (lastResetTurn[ItemType.DivingBell] && TurnManager.Instance.eventCountdown == 1)
+            if (lastResetTurn[ItemType.DivingBell] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
                lastResetTurn[ItemType.DivingBell] = false;
             else
                if (divingBellChance <= 30)
@@ -1184,7 +1180,7 @@ public class TradeHutManager : MonoBehaviour
       // Clockwork engine sell value engine fluctuations
       if (ForgeManager.Instance.hasTier3Blueprint) 
       {
-         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == 5) 
+         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
          {
             if (shiftDirection <= 50) 
                TryDecreaseEnginesSellValue(engineFluctuation);
@@ -1193,7 +1189,7 @@ public class TradeHutManager : MonoBehaviour
          } 
          else 
          {
-            if (lastResetTurn[ItemType.Engine] && TurnManager.Instance.eventCountdown == 1)
+            if (lastResetTurn[ItemType.Engine] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
                lastResetTurn[ItemType.Engine] = false;
             else 
             {
@@ -1206,7 +1202,7 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // Precision Lens sell value engine fluctuations
-         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == 5)
+         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN)
          {
             if (shiftDirection <= 50)
                TryIncreasePrecisionLensValue(precisionLensFluctuation);
@@ -1215,7 +1211,7 @@ public class TradeHutManager : MonoBehaviour
          }
          else
          {
-            if (lastResetTurn[ItemType.PrecisionLens] && TurnManager.Instance.eventCountdown == 1)
+            if (lastResetTurn[ItemType.PrecisionLens] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
                lastResetTurn[ItemType.PrecisionLens] = false;
             else 
             {
@@ -1481,8 +1477,10 @@ public class TradeHutManager : MonoBehaviour
    }
 
    // Handles the main button clicks (Trade, Info, Upgrade) to open the corresponding panel
-   public void RequestTradeHutPanel(int buttonID) {
-      switch (buttonID) {
+   public void RequestTradeHutPanel(int buttonID) 
+   {
+      switch (buttonID) 
+      {
          case TRADE_BUTTON:
             ShowTradePanel();
 

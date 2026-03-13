@@ -16,8 +16,8 @@ public class Item {
    private static int engineSellValue        { get; set; } = BASE_ENGINE_VALUE;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
-   private static int Tier2BluePrintPrice    { get; set; } = 500;
-   private static int Tier3BluePrintPrice    { get; set; } = 2000;
+   private static int tier2BluePrintPrice    { get; set; } = 500;
+   private static int tier3BluePrintPrice    { get; set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
@@ -117,9 +117,9 @@ public class Item {
          case ItemType.RawOreChunk:
             return rawOrePrice;
          case ItemType.IndustrialBlueprint:
-            return Tier2BluePrintPrice;
+            return tier2BluePrintPrice;
          case ItemType.ClockworkBlueprint:
-            return Tier3BluePrintPrice;
+            return tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
          default:
@@ -442,7 +442,7 @@ public class Item {
    public static void TryIncreaseTier2BlueprintPrice(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
-      if ( Tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
+      if ( tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
       {
          Debug.LogError("Crude Tool Sell Value is already at maximum!");
          return;
@@ -489,26 +489,9 @@ public class Item {
 
    public static void ApplyDiscountToBuyItems(float percent) 
    {
-      TextMeshProUGUI rareOrePriceText           = new();
-      TextMeshProUGUI Tier2BluePrintPriceText    = new();
-      TextMeshProUGUI Tier3BluePrintPriceText    = new();
-      TextMeshProUGUI mercenaryEngineerPriceText = new();
-
-      rawOrePrice          -= (int)(rawOrePrice * percent);
-      rareOrePriceText      = Instance.BuyItems.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      rareOrePriceText.text = rawOrePrice.ToString();
-
-      Tier2BluePrintPrice         -= (int)(Tier2BluePrintPrice * percent);
-      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(CLOCKWORK_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      Tier2BluePrintPriceText.text = Tier2BluePrintPrice.ToString();
-
-      Tier3BluePrintPrice         -= (int)(Tier3BluePrintPrice * percent);
-      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
-
-      mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);
-      mercenaryEngineerPriceText      = Instance.BuyItems.Find(item => item.CompareTag(InventoryManager.MERCENARY_ENGINEER_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      mercenaryEngineerPriceText.text = mercenaryEngineerPrice.ToString();
+      //rawOrePrice          -= (int)(rawOrePrice * percent);
+      tier2BluePrintPrice    -= (int)(tier2BluePrintPrice * percent);
+      tier3BluePrintPrice    -= (int)(tier3BluePrintPrice * percent);
+      mercenaryEngineerPrice -= (int)(mercenaryEngineerPrice * percent);
    }
-
 }
