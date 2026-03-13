@@ -196,7 +196,7 @@ public class TradeHutTests : InputTestFixture {
        // =========================================================
        // TEST 1: BUY TIER 2 BLUEPRINT
        // =========================================================
-       var tier2UI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.TIER_2_BLUEPRINT));
+       var tier2UI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INDUSTRIAL_BLUEPRINT_TAG));
        tier2UI.Find("ItemButton").GetComponent<Button>().onClick.Invoke();
        yield return new WaitForSeconds(0.5f);
        
@@ -213,7 +213,7 @@ public class TradeHutTests : InputTestFixture {
        // =========================================================
        // TEST 2: BUY TIER 3 BLUEPRINT
        // =========================================================
-       var tier3UI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.TIER_3_BLUEPRINT));
+       var tier3UI = TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.CLOCKWORK_BLUEPRINT_TAG));
        tier3UI.Find("ItemButton").GetComponent<Button>().onClick.Invoke();
        yield return new WaitForSeconds(0.5f);
        
