@@ -109,6 +109,12 @@ public class TurnManager : MonoBehaviour
             tradeHutManager.WorldEventNewsTickerText();
             newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
             
+            if(tradeHutManager.isInsurancePolicyActive && tradeHutManager.shiftDirection > 50) 
+            {
+               InventoryManager.Instance.TryAddPearl(TradeHutManager.INSURANCE_POLICY_PAYOUT);
+               tradeHutManager.isInsurancePolicyActive = false;
+            }
+
             // World Event fluctuation
             tradeHutManager.MarketFluctuate();
 

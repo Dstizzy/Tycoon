@@ -65,12 +65,13 @@ public class TradeHutManager : MonoBehaviour
                precisionLensChance,
                engineChance,
 
-               shiftDirection,
                worldEvent;
 
    // Public variables
    public int marketShiftMax = 0,
               marketShiftMin = 0;
+   public int shiftDirection { get; private set; } 
+
 
    // Constants
    public const int ENDING_LEVEL   = 5,  
@@ -92,13 +93,17 @@ public class TradeHutManager : MonoBehaviour
                     ORE_EXCHANGE_COST    = 10,
                     
                     MARKET_CHANCE_MIN = 0,
-                    MARKET_CHANCE_MAX = 100;
+                    MARKET_CHANCE_MAX = 100,
+
+                    INSURANCE_POLICY_PAYOUT = 500;
       
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
-                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint";
-   
-   public bool isTier3BuffACtive  = false;
+                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
+                       INSURANCE_POLICY_TAG = "Insurance Policy";
+
+   public bool isTier3BuffACtive       = false,
+               isInsurancePolicyActive = false;
 
    private InventoryManager inv;
 
@@ -170,6 +175,7 @@ public class TradeHutManager : MonoBehaviour
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.5f, INDUSTRIAL_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, CLOCKWORK_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
+      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), 0.0f, INSURANCE_POLICY_TAG, -65);
    }
 
    public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 
@@ -292,6 +298,9 @@ public class TradeHutManager : MonoBehaviour
             if (index >= 0)
                infoText.text = GetItemDescription(ItemType.MercenaryEngineer).Substring(0, index + 1).Trim();
             break;
+         case INSURANCE_POLICY_TAG:
+            infoText.text = GetItemDescription(ItemType.InsurancePolicy);
+            break;
          default:
             Debug.LogError("Unkown item: " + itemTag);
             break;
@@ -323,10 +332,7 @@ public class TradeHutManager : MonoBehaviour
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
       RectTransform sellItemRectTransform = sellItemTransform.GetComponent<RectTransform>();
 
-
       sellItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
-
-      
 
       // Populate item properties
       sellItemTransform.tag = itemTag;
@@ -401,12 +407,10 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-
-
       // Populate item properties
-      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
-      buyItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text      = itemTag;
-      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
+      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite        = itemSprite;
+      buyItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemTag;
+      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite     = currencySprite;
 
       switch(itemTag) 
       {
@@ -436,6 +440,9 @@ public class TradeHutManager : MonoBehaviour
             break;
          case RAW_ORE_CHUNK_TAG:
             buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+            break;
+         case INSURANCE_POLICY_TAG:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.InsurancePolicy).ToString();
             break;
          default:
             Debug.LogError("Unkown item: " + itemTag);
@@ -555,10 +562,10 @@ public class TradeHutManager : MonoBehaviour
          ticker.ShowTicker("Transaction failed or no items selected.", Color.red, MessageTypes.ResultMessage);
       }
 
-      crudeToolSellCount = MIN_SELL_ITEM_COUNT;
-      harpoonSellCount   = MIN_SELL_ITEM_COUNT;
+      crudeToolSellCount     = MIN_SELL_ITEM_COUNT;
+      harpoonSellCount       = MIN_SELL_ITEM_COUNT;
       pressureValveSellCount = MIN_SELL_ITEM_COUNT;
-      engineSellCount    = MIN_SELL_ITEM_COUNT;
+      engineSellCount        = MIN_SELL_ITEM_COUNT;
       
       // Destroy the instantiated sell window and remove the reference                                
       if (currentSellItem != null) 
@@ -670,6 +677,12 @@ public class TradeHutManager : MonoBehaviour
             if(inv.mercenaryEngineerCount == MAX_MERCENARY_ENGINEER_COUNT)
                BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
             ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
+         }
+
+         if(currentBuyItem.CompareTag(INSURANCE_POLICY_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.InsurancePolicy)))
+         { 
+            isInsurancePolicyActive = true;
+            ticker.ShowTicker("Purchased Insurance Policy.", Color.green, MessageTypes.ResultMessage);
          }
       }
 
