@@ -74,7 +74,7 @@ public class ExplorationUnitManager : MonoBehaviour
             {
                exploreButton.onClick.RemoveAllListeners();
                bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-               bool canExplore = !isExploring && hasDivingBell;
+               bool canExplore = !isExploring;//&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
                   if (!isExploring)
