@@ -150,9 +150,9 @@ public class ShipManager : MonoBehaviour
       if (decisionFuelText != null)
          decisionFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
       if (decisionHealthText != null)
-         decisionHealthText.text = $"health: {currentHealth}/{maxHealth}";
+         decisionHealthText.text = $"{currentHealth}/{maxHealth}";
       if (exploreFuelText != null)
-         exploreFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
+         exploreFuelText.text = $"{currentFuel}/{maxFuel}";
       if (exploreHealthText != null)
          exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
    }
