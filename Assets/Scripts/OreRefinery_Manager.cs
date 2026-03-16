@@ -95,19 +95,9 @@ public class OreRefinery_Manager : MonoBehaviour
             infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
             break;
          case UPGRADE_BUTTON:
-            if (tutorialUpgrade == true)
-            {
-               ShowTutorialPart();
-               upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => 
-               {
-                  tutorialUpgrade = false;
-                  upgradePanel.Find("Arrow2").gameObject.SetActive(false);
-                  HandleTutorial?.Invoke();
-               });
-            }
             ShowUpgradePanel();
             upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinery());
-            upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
+            upgradePanel.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
    
             break;
          default:
@@ -146,14 +136,12 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       upgradePanel.gameObject.SetActive(true);
 
+      if(tutorialUpgrade)
+         upgradePanel.Find("Arrow").gameObject.SetActive(true);
+
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
       PopUpManager.Instance.DisablePlayerInput();
-   }
-
-   private void ShowTutorialPart()
-   {
-      upgradePanel.Find("Arrow2").gameObject.SetActive(true);
    }
 
    private void CloseInfoPanel()
@@ -166,6 +154,13 @@ public class OreRefinery_Manager : MonoBehaviour
    private void CloseUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(false);
+
+      if(tutorialUpgrade)
+      {
+         tutorialUpgrade = false;
+         upgradePanel.Find("Arrow").gameObject.SetActive(false);
+         HandleTutorial?.Invoke();
+      }
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
