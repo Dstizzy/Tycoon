@@ -20,7 +20,7 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI decisionResults; // Describes an event choice's results
    [SerializeField] private TextMeshProUGUI shipInventory; // Lists the ship's current inventory
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
-   [SerializeField] private GameObject exploreFullPanelImage; // Visual representation of ship on map
+ //  [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
 
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to next turn
 
@@ -62,13 +62,6 @@ public class ExplorationUnitManager : MonoBehaviour
       TurnManager.OnTurnEnded -= HandleNewTurn;
    }
 
-   // 
-   private void UpdateExplorePanel()
-   {
-      if(exploreFullPanelImage != null)
-         exploreFullPanelImage.SetActive(!isExploring);
-   }
-
    // Activates the requested exploration unit panel
    public void RequestExplorationUnitPanel(int buttonID)
    {
@@ -80,8 +73,8 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-               bool canExplore = !isExploring;//&& hasDivingBell;
+               bool hasDivingBell = InventoryManager.Instance.divingBellCount == 0;
+               bool canExplore = !isExploring && hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
                   if (!isExploring)
@@ -118,9 +111,11 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
-      UpdateExplorePanel();
       if (MapManager.Instance.startingNode != null)
+      {
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
+
+      }
       CloseExplorationPanel();
    }
 
@@ -343,7 +338,6 @@ public class ExplorationUnitManager : MonoBehaviour
    public void HandleExplorationDone()
    {
       isExploring = false;
-      UpdateExplorePanel();
       nextTurnDestination = null;
       SetDecisionInteractable(true);
    }
