@@ -28,6 +28,7 @@ TagManager:
   - IdleIndicator
   - Industrial Blueprint
   - Clockwork Blueprint
+  - Insurance Policy
   layers:
   - Default
   - TransparentFX
