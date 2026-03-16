@@ -261,8 +261,8 @@ public class OreRefinery_Manager : MonoBehaviour
       {
          Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
          IsBlocked = true;
-         ActivateJamButton();
-         ActivateJamSymbol();
+         //ActivateJamButton();
+         //ActivateJamSymbol();
       }
 
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);

@@ -688,87 +688,103 @@ public class TradeHutManager : MonoBehaviour
    // Increments the count for the item being sold and updates the UI
    public void IncreaseSellItemCount(Transform item) 
    {
-      switch (item.tag) 
-      {
-         case CRUDE_TOOL_TAG:
-            if (crudeToolSellCount < MAX_SELL_ITEM_COUNT && crudeToolSellCount < inv.crudeToolCount ) 
-            {
-               crudeToolSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
-            }
-            break;
-         case HARPOON_TAG:
-            if (harpoonSellCount < MAX_SELL_ITEM_COUNT && harpoonSellCount < inv.harpoonCount) 
-            {
-               harpoonSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (harpoonSellCount * GetItemValue(ItemType.Harpoon)).ToString();
-            }
-            break;
-         case PRESSURE_VALVE_TAG:
-            if (pressureValveSellCount < MAX_SELL_ITEM_COUNT && pressureValveSellCount < inv.pressureValveCount) 
-            {
-               pressureValveSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveSellCount * GetItemValue(ItemType.PressureValve)).ToString();
-            }
-            break;
-         case ENGINE_TAG:
-            if (engineSellCount < MAX_SELL_ITEM_COUNT && engineSellCount < inv.engineCount) 
-            {
-               engineSellCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
-            }
-            break;
-         default:
-            Debug.LogError("Unknown item tag: " + item.tag);
-            break;
-      }
+      AdjustSellQuantity(item, 1);
    }
 
    // Decrements the count for the item being sold and updates the UI
    public void DecreaseSellItemCount(Transform item) 
    {
+      AdjustSellQuantity(item, -1);
+   }
+
+   public void AdjustSellQuantity(Transform item, int quantityChange) 
+   {
+      ItemType itemType = ItemType.CrudeTool;
+      int      current  = 0;
+      int      owned    = 0;
+
       switch (item.tag) 
       {
          case CRUDE_TOOL_TAG:
-            if (crudeToolSellCount > MIN_SELL_ITEM_COUNT) 
-            {
-               crudeToolSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
-            }
+            current  = crudeToolSellCount;
+            owned    = inv. crudeToolCount;
+            itemType = ItemType.CrudeTool;
             break;
          case HARPOON_TAG:
-            if (harpoonSellCount > MIN_SELL_ITEM_COUNT) 
-            {
-               harpoonSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + harpoonSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.Harpoon)).ToString();
-            }
+            current = harpoonSellCount;
+            owned = inv.harpoonCount;
+            itemType = ItemType.Harpoon;
             break;
          case PRESSURE_VALVE_TAG:
-            if (pressureValveSellCount > MIN_SELL_ITEM_COUNT) 
-            {
-               pressureValveSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + pressureValveSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (pressureValveSellCount * GetItemValue(ItemType.PressureValve)).ToString();
-            }
+            current = pressureValveSellCount;
+            owned = inv.pressureValveCount;
+            itemType = ItemType.PressureValve;
             break;
          case ENGINE_TAG:
-            if (engineSellCount > MIN_SELL_ITEM_COUNT) 
-            {
-               engineSellCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + engineSellCount.ToString();
-               item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (engineSellCount * GetItemValue(ItemType.Engine)).ToString();
-            }
+            current = engineSellCount;
+            owned = inv.engineCount;
+            itemType = ItemType.Engine;
             break;
          default:
             Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
+      
+      if (quantityChange > 0)
+      {
+         if (current < MAX_SELL_ITEM_COUNT && current < owned)
+            current += 1;
+         else
+         {
+            if (owned > 0)
+               ticker.ShowTicker($"Cannot select that many — you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
+            else
+               ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
+
+            return;
+         }
+      } 
+      else 
+      {
+         if (current > MIN_SELL_ITEM_COUNT) 
+            current -= 1;
+         else 
+         {
+            if (owned > 0)
+               ticker.ShowTicker($"Nothing selected to remove — you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
+            else
+               ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
+
+            return;
+         }
+      }
+
+      switch (tag)
+      {
+         case CRUDE_TOOL_TAG:
+           crudeToolSellCount = current; 
+           break;
+         case HARPOON_TAG: 
+           harpoonSellCount = current; 
+           break;
+         case PRESSURE_VALVE_TAG: 
+           pressureValveSellCount = current; 
+           break;
+         case DIVING_BELL_TAG: 
+           divingBellSellCount = current; 
+           break;
+         case PRECISION_LENS_TAG: 
+           precisionLensSellCount = current; 
+           break;
+         case ENGINE_TAG: 
+           engineSellCount = current; 
+           break;
+      }
+       
+      item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + current.ToString();
+      item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (current * GetItemValue(itemType)).ToString();
+
+      return;
    }
 
    // Increments the count for the item being bought and updates the UI
@@ -1088,7 +1104,7 @@ public class TradeHutManager : MonoBehaviour
    public void MarketFluctuate() 
    {
       // Crude Tool sell value fluctuations
-      if (worldEvent == (int)WorldEventTypes.CrudeToolEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
+      if (worldEvent == (int)WorldEventTypes.CrudeToolEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
       {
          if(shiftDirection <= 50)
             TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
@@ -1110,7 +1126,7 @@ public class TradeHutManager : MonoBehaviour
       }
 
       // Harpoon sell value fluctuations
-      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
+      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
       {
          if (shiftDirection <= 50)
             TryIncreaseHarpoonSellValue(harpoonFluctuation);
@@ -1135,7 +1151,7 @@ public class TradeHutManager : MonoBehaviour
       if (ForgeManager.Instance.hasTier2Blueprint) 
       {
          // Pressure Valve sell value  fluctuations
-         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
+         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
          {
             if (shiftDirection <= 50)
                TryIncreasePressureValveValue(pressureValveFluctuation);
@@ -1157,7 +1173,7 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // Diving Bell sell value  fluctuations
-         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN)
+         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
          {
             if (shiftDirection <= 50)
                TryIncreaseDivingBellValue(divingBellFluctuation);
@@ -1180,7 +1196,7 @@ public class TradeHutManager : MonoBehaviour
       // Clockwork engine sell value engine fluctuations
       if (ForgeManager.Instance.hasTier3Blueprint) 
       {
-         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN) 
+         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
          {
             if (shiftDirection <= 50) 
                TryDecreaseEnginesSellValue(engineFluctuation);
@@ -1202,7 +1218,7 @@ public class TradeHutManager : MonoBehaviour
          }
 
          // Precision Lens sell value engine fluctuations
-         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TRUN)
+         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
          {
             if (shiftDirection <= 50)
                TryIncreasePrecisionLensValue(precisionLensFluctuation);
