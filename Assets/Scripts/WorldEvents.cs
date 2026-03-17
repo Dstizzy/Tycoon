@@ -10,6 +10,10 @@ public class WorldEvents {
                    WORLD_EVENT_RESET_TURN         = 1,
                    WORLD_EVENT_PREVIEW_TURN       = 4,
                    WORLD_EVENT_ACTIVE_TRUN        = 5;
+  public const int WORLD_EVENT_RESET_TURN   = 1,
+                   WORLD_EVENT_PREVIEW_TURN = 4,
+                   WORLD_EVENT_ACTIVE_TURN  = 5;
+                    
 
    public enum WorldEventTypes {
       CrudeToolEvent,

@@ -20,7 +20,7 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI decisionResults; // Describes an event choice's results
    [SerializeField] private TextMeshProUGUI shipInventory; // Lists the ship's current inventory
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
-   [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
+ //  [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
 
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to next turn
 
@@ -73,7 +73,7 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               bool hasDivingBell = InventoryManager.Instance.divingBellCount == 0;
                bool canExplore = !isExploring && hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)

@@ -12,32 +12,32 @@ public class TurnManager : MonoBehaviour
 
    // Constants
    const int MANUALRESETWAIT = 3;
-   const int STARTINGTURN    = 1;
-   const int ENDINGTURN      = 80;
+   const int STARTINGTURN = 1;
+   const int ENDINGTURN = 80;
 
 
    // Static fields
    public static System.Random random = new System.Random(); // Random number generator
-   public static int       randomNumber;                     // Random number for various calculations
-   public static int       jamTurnCounter;                   // Counter for turns during a jam
-   public static bool      manualResetOption     = false;    // Flag for manual reset option
-   public static int       heatLevel;                        // Current heat level
-   public static int       enemyAttackPercentage = 0;        // Percentage chance of enemy attack each turn
-   public static bool      userDefends;                      // Flag indicating if the user defends against enemy attacks 
+   public static int randomNumber;                     // Random number for various calculations
+   public static int jamTurnCounter;                   // Counter for turns during a jam
+   public static bool manualResetOption = false;    // Flag for manual reset option
+   public static int heatLevel;                        // Current heat level
+   public static int enemyAttackPercentage = 0;        // Percentage chance of enemy attack each turn
+   public static bool userDefends;                      // Flag indicating if the user defends against enemy attacks 
    private TradeHutManager tradeHutManager;                  // Trade hut manager instance 
-   public TickerSystem     newsTicker;                       // The wolrd event news ticker panel
+   public TickerSystem newsTicker;                       // The wolrd event news ticker panel
 
 
    // Public Unity fields
    [Header("Turn Setting")]
-   public int             currentTurn    = STARTINGTURN;   // The current turn number, starting from 1.
-   public int             maxTurns       = ENDINGTURN;     // The maximum number of turns before the game ends.
+   public int currentTurn = STARTINGTURN;   // The current turn number, starting from 1.
+   public int maxTurns = ENDINGTURN;     // The maximum number of turns before the game ends.
    public TextMeshProUGUI turnText;                        // The UI text element to display the current turn.
-   public int             eventCountdown = 1;              // Turn countdown until next world event
+   public int eventCountdown = 1;              // Turn countdown until next world event
 
    [Header("UI/Game Status")]
-   public Button          endTurnButton;                   // The button to disable when the game ends.
-   private bool           _isGameActive  = true;           // Tracks if the game is currently in progress.
+   public Button endTurnButton;                   // The button to disable when the game ends.
+   private bool _isGameActive = true;           // Tracks if the game is currently in progress.
 
    [Header("Enemy Settings")]
    [SerializeField] private GameObject optionalEnemyPanel; // The enemy panel UI element.
@@ -69,7 +69,7 @@ public class TurnManager : MonoBehaviour
          // DontDestroyOnLoad(gameObject); 
       }
 
-      if(newsTicker == null)
+      if (newsTicker == null)
          Debug.Log("Ticker is not assigned in the Inspector");
    }
 
@@ -96,71 +96,42 @@ public class TurnManager : MonoBehaviour
       if (currentTurn > maxTurns)
       {
          EndGame();
+         return;
       }
       else
       {
          UpdateTurnUI();
-
          HandleJamming();
          HandleEnemy();
 
-         if (eventCountdown == 5) 
+         // Handle world event reset
+         if (eventCountdown == 1) 
          {
-            tradeHutManager.WorldEventNewsTickerText();
-            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
-            
-            if(tradeHutManager.isInsurancePolicyActive && tradeHutManager.shiftDirection > 50) 
-            {
-               InventoryManager.Instance.TryAddPearl(TradeHutManager.INSURANCE_POLICY_PAYOUT);
-               tradeHutManager.isInsurancePolicyActive = false;
-            }
-
-            // World Event fluctuation
-            tradeHutManager.MarketFluctuate();
-
-            eventCountdown = 0;
-         } 
-         else 
-         {
-            if (eventCountdown == 1) 
-            {
-               tradeHutManager.ResetWorldEventShifts();
-               tradeHutManager.WorldEventChance();
-               tradeHutManager.MarketFluctuate();
-            } 
-            else 
-            {
-               if (eventCountdown >= 3 && eventCountdown <= 5) 
-               {
-                  newsTicker.gameObject.SetActive(true);
-                  tradeHutManager.WorldEventNewsTickerText();
-                  newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
-                  tradeHutManager.MarketFluctuate();
-               }
-               else
-                  tradeHutManager.MarketFluctuate();
-            }
+            tradeHutManager.ResetWorldEventShifts();
+            tradeHutManager.WorldEventChance();
          }
 
+         // Apply the market shift
+         tradeHutManager.MarketFluctuate();
+
+         // Handle the News Ticker for World Events
+         if (eventCountdown >= 3 && eventCountdown <= 5) 
+         {
+            newsTicker.gameObject.SetActive(true);
+            tradeHutManager.WorldEventNewsTickerText();
+            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+         }
+
+         // Predict the next turn
          tradeHutManager.CraftMarketForesight();
 
-         if (currentTurn == 2)
-            tradeHutManager.CraftMarketForesight();
-
-         //// Natural flucuations
-         //if(eventCountdown > 0 && eventCountdown != 5) 
-         //{
-         //   TradeHutManager.Instance.MarketFluctuate();
-         //   TradeHutManager.Instance.CraftMarketForesight();
-         //}
-
-         Debug.Log("Turn" + currentTurn + "Start");
-
-
-         // Add logic for the next turn here (e.g., start
-         // enemy turn, reset unit actions, etc.)
+         // Reset countdown if we just finished the event turn
+         if (eventCountdown == 5)
+            eventCountdown = 0;
 
          OnTurnEnded?.Invoke();
+         // Add logic for the next turn here (e.g., start
+         // enemy turn, reset unit actions, etc.)
       }
    }
 
@@ -194,7 +165,7 @@ public class TurnManager : MonoBehaviour
    // Handles the jamming logic for the Ore Refinery at the start of each turn
    public void HandleJamming()
    {
-      if(OreRefinery_Manager.Instance.IsBlocked == false)
+      if (OreRefinery_Manager.Instance.IsBlocked == false)
       {
          randomNumber = random.Next(1, 100);
          if (randomNumber < OreRefinery_Manager.Instance.jammingChance)
@@ -204,9 +175,9 @@ public class TurnManager : MonoBehaviour
       }
       else
       {
-         if(manualResetOption == true)
+         if (manualResetOption == true)
          {
-            if(jamTurnCounter > 0)
+            if (jamTurnCounter > 0)
                jamTurnCounter--;
             else
             {
@@ -214,7 +185,7 @@ public class TurnManager : MonoBehaviour
                OreRefinery_Manager.Instance.DeactivateJamSymbol();
                manualResetOption = false;
             }
-         }      
+         }
       }
    }
 
@@ -238,15 +209,15 @@ public class TurnManager : MonoBehaviour
 
       HandleHeat();
       HandleProgressBar();
-      if(heatLevel <= 40)
+      if (heatLevel <= 40)
       {
          enemyAttackPercentage = 0;
       }
-      else if(heatLevel >= 41 && heatLevel < 70)
+      else if (heatLevel >= 41 && heatLevel < 70)
       {
          enemyAttackPercentage = 5;
       }
-      else if(heatLevel >= 71 && heatLevel < 99)
+      else if (heatLevel >= 71 && heatLevel < 99)
       {
          enemyAttackPercentage = 15;
       }
@@ -255,21 +226,34 @@ public class TurnManager : MonoBehaviour
          enemyAttackPercentage = 70;
       }
 
+
       randomNumber = random.Next(1, 100);
       if (randomNumber < enemyAttackPercentage)
       {
          PopUpManager.Instance.DisablePlayerInput();
+
          if (InventoryManager.Instance.harpoonCount > 0)
          {
             optionalEnemyPanel.SetActive(true);
-            optionalEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>().onClick.AddListener(() => 
+
+            Button yesBtn = optionalEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>();
+            yesBtn.onClick.RemoveAllListeners();
+            yesBtn.onClick.AddListener(() =>
             {
-               userDefends = true;
+               InventoryManager.Instance.TryUseHarpoon(1);
+
+               heatLevel = 0;
+               DeactivateHeatNodes();
+
                optionalEnemyPanel.SetActive(false);
+               PopUpManager.Instance.EnablePlayerInput();
             });
-            optionalEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>().onClick.AddListener(() => 
+
+            Button noBtn = optionalEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>();
+            noBtn.onClick.RemoveAllListeners();
+            noBtn.onClick.AddListener(() =>
             {
-               userDefends = false;
+               ApplyKrakenPenalty();
                optionalEnemyPanel.SetActive(false);
                PopUpManager.Instance.EnablePlayerInput();
             });
@@ -277,41 +261,37 @@ public class TurnManager : MonoBehaviour
          else
          {
             forcedEnemyPanel.SetActive(true);
-            forcedEnemyPanel.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => 
+            Button forcedBtn = forcedEnemyPanel.transform.Find("Button").GetComponent<Button>();
+            forcedBtn.onClick.RemoveAllListeners();
+            forcedBtn.onClick.AddListener(() =>
             {
-               userDefends = false;
+               ApplyKrakenPenalty();
                forcedEnemyPanel.SetActive(false);
                PopUpManager.Instance.EnablePlayerInput();
             });
          }
-         if (userDefends)
-         {
-            heatLevel = 0;
-            DeactivateHeatNodes();
-         }
-         else
-         {
-            InventoryManager.Instance.TrySpendOre((int)(InventoryManager.Instance.oreCount / 2));
-            InventoryManager.Instance.TrySpendPearl((int)(InventoryManager.Instance.pearlCount / 4));
-            JamRefinery();
-            heatLevel = 10;
-            DeactivateHeatNodes();
-            heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);
-         }
-
-
       }
+   }
+
+   private void ApplyKrakenPenalty()
+   {
+      InventoryManager.Instance.TrySpendOre((int)(InventoryManager.Instance.oreCount / 2));
+      InventoryManager.Instance.TrySpendPearl((int)(InventoryManager.Instance.pearlCount / 4));
+      JamRefinery();
+      heatLevel = 10;
+      DeactivateHeatNodes();
+      heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);
    }
 
    // Increases the heat level each turn
    public void HandleHeat()
    {
       heatLevel += 5;
-      if(OreRefinery_Manager.Instance.IsBlocked || manualResetOption)
+      if (OreRefinery_Manager.Instance.IsBlocked || manualResetOption)
          heatLevel += 10;
 
       // Active Forge +2 per forge
-      
+
       // Exploration Unit + 3
 
       // Building Count + 2
@@ -325,57 +305,57 @@ public class TurnManager : MonoBehaviour
    // Updates the heat level progress bar UI element
    public void HandleProgressBar()
    {
-      if(heatProgressBar != null)
+      if (heatProgressBar != null)
       {
          if (heatLevel >= 8)
          {
             heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);
          }
-         if(heatLevel >= 16)
+         if (heatLevel >= 16)
          {
             heatProgressBar.transform.Find("Node2").gameObject.SetActive(true);
          }
-         if(heatLevel >= 24)
+         if (heatLevel >= 24)
          {
             heatProgressBar.transform.Find("Node3").gameObject.SetActive(true);
          }
-         if(heatLevel >= 32)
+         if (heatLevel >= 32)
          {
             heatProgressBar.transform.Find("Node4").gameObject.SetActive(true);
          }
-         if(heatLevel >= 40)
+         if (heatLevel >= 40)
          {
             heatProgressBar.transform.Find("Node5").gameObject.SetActive(true);
          }
-         if(heatLevel >= 48)
+         if (heatLevel >= 48)
          {
             heatProgressBar.transform.Find("Node6").gameObject.SetActive(true);
          }
-         if(heatLevel >= 56)
+         if (heatLevel >= 56)
          {
             heatProgressBar.transform.Find("Node7").gameObject.SetActive(true);
          }
-         if(heatLevel >= 64)
+         if (heatLevel >= 64)
          {
             heatProgressBar.transform.Find("Node8").gameObject.SetActive(true);
          }
-         if(heatLevel >= 72)
+         if (heatLevel >= 72)
          {
             heatProgressBar.transform.Find("Node9").gameObject.SetActive(true);
          }
-         if(heatLevel >= 80)
+         if (heatLevel >= 80)
          {
             heatProgressBar.transform.Find("Node10").gameObject.SetActive(true);
          }
-         if(heatLevel >= 88)
+         if (heatLevel >= 88)
          {
             heatProgressBar.transform.Find("Node11").gameObject.SetActive(true);
          }
-         if(heatLevel >= 96)
+         if (heatLevel >= 96)
          {
             heatProgressBar.transform.Find("Node12").gameObject.SetActive(true);
          }
-         if(heatLevel >= 100)
+         if (heatLevel >= 100)
          {
             heatProgressBar.transform.Find("Node13").gameObject.SetActive(true);
          }
