@@ -5,8 +5,13 @@ using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
-   [SerializeField] private GameObject[] tutorialSections; // Array to hold all tutorial sections for easy management
-   [SerializeField] private GameObject   turnButton;       // Reference to the button that must be clicked to proceed
+   [SerializeField] private GameObject[] tutorialSections;  // Array to hold all tutorial sections for easy management
+   [SerializeField] private GameObject   oreRefineryCanvas; // building canvas of the ore refinery
+   [SerializeField] private GameObject   forgeCanvas;       // building canvas of the forge
+   [SerializeField] private GameObject   tradeHutCanvas;    // building canvas of the trade hut
+   [SerializeField] private GameObject   explorationCanvas; // building canvas of the exploration
+   [SerializeField] private GameObject   labCanvas;         // building canvas of the lab
+   [SerializeField] private GameObject   turnButton;        // Reference to the button that must be clicked to proceed
 
 
    public int  tutorialIndex   = 4;           // To track the current tutorial section
@@ -28,7 +33,7 @@ public class TutorialManager : MonoBehaviour
    
    private void OnEnable()
    {
-      //PopUpManager.OnHoverTagChanged += HandleGlobalHover;
+      PopUpManager.OnHoverTagChanged += HandleGlobalHover;
       OreRefinery_Manager.HandleTutorial += HandleNextStep;
       ForgeManager.HandleTutorial += HandleNextStep;
       InventoryManager.HandleTutorial += HandleNextStep;
@@ -39,7 +44,7 @@ public class TutorialManager : MonoBehaviour
 
    private void OnDisable()
    {
-      //PopUpManager.OnHoverTagChanged -= HandleGlobalHover;
+      PopUpManager.OnHoverTagChanged -= HandleGlobalHover;
       OreRefinery_Manager.HandleTutorial -= HandleNextStep;
       ForgeManager.HandleTutorial -= HandleNextStep;
       InventoryManager.HandleTutorial -= HandleNextStep;
@@ -49,7 +54,8 @@ public class TutorialManager : MonoBehaviour
    }
 
    // Store the reference to the current part so we can toggle arrows from the event
-   public GameObject currentActivePart;
+   public GameObject currentActivePart = null;
+   public GameObject currentActiveSection = null;
 
    // Event to start tutorial parts that can only be handled in other managers
    public static event Action HandleOreRefineryTutorial;
@@ -75,6 +81,11 @@ public class TutorialManager : MonoBehaviour
       {
          if(Mouse.current.leftButton.wasPressedThisFrame)
          {
+            if(currentActivePart != null)
+            {
+               currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
+               currentActivePart = null;
+            }
             GoThroughSection(tutorialSections[tutorialIndex], sectionIndex);
             sectionIndex++;
          }
@@ -186,6 +197,66 @@ public class TutorialManager : MonoBehaviour
                GoToNext();
             }
             break;
+         case 10:
+            if (tutorialSection.transform.Find("TenthPart") != null)
+            {
+               tutorialSection.transform.Find("NinthPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("TenthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("TenthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
+         case 11:
+            if (tutorialSection.transform.Find("EleventhPart") != null)
+            {
+               tutorialSection.transform.Find("TenthPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("EleventhPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("EleventhPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
+         case 12:
+            if (tutorialSection.transform.Find("TwelvthPart") != null)
+            {
+               tutorialSection.transform.Find("EleventhPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("TwelvthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("TwelvthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
+         case 13:
+            if (tutorialSection.transform.Find("ThirteenthPart") != null)
+            {
+               tutorialSection.transform.Find("TwelvthPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("ThirteenthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("ThirteenthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
+         case 14:
+            if (tutorialSection.transform.Find("FourteenthPart") != null)
+            {
+               tutorialSection.transform.Find("ThirteenthPart").gameObject.SetActive(false);
+               tutorialSection.transform.Find("FourteenthPart").gameObject.SetActive(true);
+               DoAllChecks(tutorialSection.transform.Find("FourteenthPart").gameObject);
+            }
+            else
+            {
+               GoToNext();
+            }
+            break;
       }
    }
 
@@ -209,83 +280,65 @@ public class TutorialManager : MonoBehaviour
    // Method to perform all necessary checks for the current tutorial part
    private void DoAllChecks(GameObject myPart)
    {
-      if(myPart.transform.Find("Turn") != null)
+      requiredButtonClicked = false;
+      currentActiveSection = myPart;
+      if (myPart.transform.Find("OreRefinery") != null)
       {
-         requiredButtonClicked = false;
-         turnButton.GetComponent<Button>().onClick.AddListener(HandleTurn);
+         oreRefineryCanvas.transform.Find("Arrow").gameObject.SetActive(true);
+         currentActivePart = oreRefineryCanvas;
+         requiredButtonClicked = true;
       }
-
-      if(myPart.transform.Find("OreRefinery") != null)
-      {
-         requiredButtonClicked = false;
-         oreRefineryUpgrade = true;
-         currentActivePart = myPart;
-         HandleOreRefineryTutorial?.Invoke();
-      }
-
       if(myPart.transform.Find("Forge") != null)
       {
-         requiredButtonClicked = false;
-         forgeFunction = true;
-         currentActivePart = myPart;
-         HandleForgeTutorial?.Invoke();
+         forgeCanvas.transform.Find("Arrow").gameObject.SetActive(true);
+         currentActivePart = forgeCanvas;
+         requiredButtonClicked = true;
       }
-
-      if(myPart.transform.Find("Inventory") != null)
+      if(myPart.transform.Find("TradeHut") != null)
       {
-         requiredButtonClicked = false;
-         currentActivePart = myPart;
-         HandleInventoryTutorial?.Invoke();
+         tradeHutCanvas.transform.Find("Arrow").gameObject.SetActive(true);
+         currentActivePart = tradeHutCanvas;
+         requiredButtonClicked = true;
       }
-
-      if(myPart.transform.Find("TradeHut1") != null)
-      {
-         requiredButtonClicked = false;
-         tradeHutFunctionOne = true;
-         currentActivePart = myPart;
-         HandleTradeHutTutorial?.Invoke(1);
-      }
-
-      if (myPart.transform.Find("TradeHut2") != null)
-      {
-         requiredButtonClicked = false;
-         tradeHutFunctionTwo = true;
-         currentActivePart = myPart;
-         HandleTradeHutTutorial?.Invoke(2);
-      }
-
       if(myPart.transform.Find("Exploration") != null)
       {
-         requiredButtonClicked = false;
-         explorationFunction = true;
-         currentActivePart = myPart;
-         HandleExplorationTutorial?.Invoke();
+         explorationCanvas.transform.Find("Arrow").gameObject.SetActive(true);
+         currentActivePart = explorationCanvas;
+         requiredButtonClicked = true;
       }
-
       if(myPart.transform.Find("Lab") != null)
       {
-         requiredButtonClicked = false;
-         labFunction = true;
-         currentActivePart = myPart;
-         HandleLabTutorial?.Invoke(1);
+         labCanvas.transform.Find("Arrow").gameObject.SetActive(true);
+         currentActivePart = labCanvas;
+         requiredButtonClicked = true;
       }
-
-      if(myPart.transform.Find("Victory") != null)
+      if(myPart.transform.Find("Turn") != null)
       {
-         requiredButtonClicked = false;
-         victoryFunction = true;
-         currentActivePart = myPart;
-         HandleLabTutorial?.Invoke(2);
+         turnButton.GetComponent<Button>().onClick.AddListener(HandleTurn);
+         return;
       }
-   }
+      if(myPart.transform.Find("ForgeExample") != null)
+      {
+         forgeCanvas.transform.Find("Arrow2").gameObject.SetActive(true);
+         forgeFunction = true;
+         requiredButtonClicked = true;
+      }
+      if(myPart.transform.Find("TradeHutExample") != null)
+      {
+         tradeHutCanvas.transform.Find("Arrow2").gameObject.SetActive(true);
+         tradeHutFunctionOne = true;
+         requiredButtonClicked = true;
+      }
+      if (requiredButtonClicked == false)
+      {
+         currentActivePart = null;
+         requiredButtonClicked = true;
+      }
+   }   
 
    public void HandleTurn()
    {
       requiredButtonClicked = true;
-      /*if (OreRefinery_Manager.Instance.IsBlocked == true)
-      {
-         OreRefinery_Manager.Instance.IsBlocked = false;
-      }*/
       turnButton.GetComponent<Button>().onClick.RemoveListener(HandleTurn);
       GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
    }
@@ -293,27 +346,15 @@ public class TutorialManager : MonoBehaviour
    // Method to handle global hover events and toggle arrows based on the current tutorial part
    public void HandleGlobalHover(string tag)
    {
-      if(oreRefineryUpgrade == true)
-      {
-         if(tag == "Ore Refinery")
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-         }
-         else
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-         }
-      }
-
       if(forgeFunction == true)
       {
          if(tag == "Forge")
          {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
+            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(true);
          }
          else
          {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
+            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(false);
          }
       }
 
@@ -321,11 +362,11 @@ public class TutorialManager : MonoBehaviour
       {
          if(tag == "Trade Hut")
          {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
+            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(true);
          }
          else
          {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
+            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(false);
          }
       }
 
@@ -333,51 +374,13 @@ public class TutorialManager : MonoBehaviour
       {
          if(tag == "Trade Hut")
          {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
+            currentActiveSection.transform.Find("Arrow").gameObject.SetActive(true);
          }
          else
          {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
+            currentActiveSection.transform.Find("Arrow").gameObject.SetActive(false);
          }
       }
-
-      if (explorationFunction == true)
-      {
-         if (tag == "Exploration Unit")
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-         }
-         else
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-         }
-      }
-
-      if(labFunction == true)
-      {
-         if(tag == "Lab")
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-         }
-         else
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-         }
-      }
-
-      if(victoryFunction == true)
-      {
-         if(tag == "Victory")
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(true);
-         }
-         else
-         {
-            currentActivePart.transform.Find("Arrow").gameObject.SetActive(false);
-         }
-      }
-
-
    }
 
    // Method to handle the next step in the tutorial when the required button is clicked

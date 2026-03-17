@@ -32,6 +32,8 @@ public class PopUpManager : MonoBehaviour
 
    public static PopUpManager Instance { get; private set; }
 
+   public static event Action<string> OnHoverTagChanged;
+
    // Added for CameraDragPan update(off when the pop up window is open)
    /* This flag is used by the Camera script to disable */
    /* panning and zooming while a window is open.       */
@@ -96,8 +98,8 @@ public class PopUpManager : MonoBehaviour
       if (prevHoverObject != null && prevHoverObject != currentHoverObject)
       {
          // Report the tag of the object we just left (or "None" if we left to empty space)
-         //string tagToReport = currentHoverObject.tag;
-         //OnHoverTagChanged?.Invoke(currentHoverObject.tag);
+         string tagToReport = currentHoverObject.tag;
+         OnHoverTagChanged?.Invoke(tagToReport);
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
          if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
