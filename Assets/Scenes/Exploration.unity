@@ -31327,10 +31327,10 @@ RectTransform:
   - {fileID: 896461797}
   m_Father: {fileID: 834341019}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 245.20325, y: -38.22665}
+  m_SizeDelta: {x: 98.0813, y: 76.4533}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &849912583
 MonoBehaviour:
@@ -38275,7 +38275,6 @@ MonoBehaviour:
   decisionResults: {fileID: 1913223713}
   shipInventory: {fileID: 1884688419}
   depthWarningText: {fileID: 195850244}
-  exploreFullPanelImage: {fileID: 1147876436}
   isExploring: 0
 --- !u!1 &1040075026
 GameObject:
@@ -42425,10 +42424,10 @@ RectTransform:
   - {fileID: 820074726}
   m_Father: {fileID: 834341019}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 49.04065, y: -38.22665}
+  m_SizeDelta: {x: 98.0813, y: 76.4533}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1193702777
 MonoBehaviour:
@@ -61661,7 +61660,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1905510165
 RectTransform:
   m_ObjectHideFlags: 0
@@ -62627,10 +62626,10 @@ RectTransform:
   - {fileID: 802895368}
   m_Father: {fileID: 834341019}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 147.12195, y: -38.22665}
+  m_SizeDelta: {x: 98.0813, y: 76.4533}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1913826442
 MonoBehaviour:
