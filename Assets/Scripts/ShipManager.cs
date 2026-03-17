@@ -148,13 +148,13 @@ public class ShipManager : MonoBehaviour
    private void UpdateShipUI()
    {
       if (decisionFuelText != null)
-         decisionFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
+         decisionFuelText.text = $"{currentFuel}/{maxFuel}";
       if (decisionHealthText != null)
          decisionHealthText.text = $"{currentHealth}/{maxHealth}";
       if (exploreFuelText != null)
          exploreFuelText.text = $"{currentFuel}/{maxFuel}";
       if (exploreHealthText != null)
-         exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
+         exploreHealthText.text = $"{currentHealth}/{maxHealth}";
    }
 
    // Applies permanent stat boosts to the ship
