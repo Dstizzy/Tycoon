@@ -330,28 +330,29 @@ public class LabManager : MonoBehaviour
    /* Spend certain amount of resources and give corresponding innovations                     */
    public bool PerformBuy(int pearlCost, int itemCost, string itemName)
    {
-      // Check to see if there is enough pearls
-      if (InventoryManager.Instance.pearlCount < pearlCost)
-      {
-         Debug.Log("Not enough pearls!");
-         return false;
-      }
-
+      bool isSuccess = true;
+      
       // Try to spend the item if necessary
       if (!string.IsNullOrEmpty(itemName) && itemCost > 0)
       {
          Debug.Log("First Crude tool to spend: " + itemCost.ToString());
+
          // Link to inventory to spend the item
          if (!InventoryManager.Instance.TrySpendItem(itemName, itemCost))
          {
             Debug.Log($"Not enough {itemName} to spend!");
-            return false;
+            isSuccess = false;
          }
       }
 
-      // Spend the pearls
-      InventoryManager.Instance.TrySpendPearl(pearlCost);
-      return true;
+      // Check to see if there is enough pearls and spend them if there are
+      if (InventoryManager.Instance.TrySpendPearl(pearlCost)) 
+      {
+         Debug.Log("Not enough pearls!");
+         isSuccess = false;
+      }
+
+      return isSuccess;
    }
 
    public void ImplementTierOneInnovation(GameObject tabType)
