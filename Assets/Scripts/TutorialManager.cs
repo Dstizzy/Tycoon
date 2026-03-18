@@ -19,7 +19,7 @@ public class TutorialManager : MonoBehaviour
    public         bool requiredButtonClicked = true;  // Flag to check if the required button has been clicked
    public         bool oreRefineryUpgrade    = false; // Flag to check if the ore refinery upgrade has been completed
    public         bool forgeFunction         = false; // Checks if the forge function has been explained
-   public         bool tradeHutFunctionOne   = false; // Checks if the first trade hut function has been explained
+   public         bool tradeHutFunction      = false; // Checks if the trade hut function has been explained
    public         bool tradeHutFunctionTwo   = false; // Checks if the second trade hut function has been explained
    public         bool explorationFunction   = false; // Checks if the exploration function has been explained
    public         bool labFunction           = false; // Checks if the lab function has been explained
@@ -315,21 +315,24 @@ public class TutorialManager : MonoBehaviour
       if(myPart.transform.Find("Turn") != null)
       {
          turnButton.GetComponent<Button>().onClick.AddListener(HandleTurn);
-         return;
+         
       }
       if(myPart.transform.Find("ForgeExample") != null)
       {
          forgeCanvas.transform.Find("Arrow2").gameObject.SetActive(true);
+         forgeCanvas.transform.Find("HoverHere").gameObject.SetActive(true);
          forgeFunction = true;
-         requiredButtonClicked = true;
+         HandleForgeTutorial?.Invoke();
       }
       if(myPart.transform.Find("TradeHutExample") != null)
       {
-         tradeHutCanvas.transform.Find("Arrow2").gameObject.SetActive(true);
-         tradeHutFunctionOne = true;
-         requiredButtonClicked = true;
+         tradeHutCanvas.transform.Find("Arrow").gameObject.SetActive(true);
+         tradeHutCanvas.transform.Find("HoverHere").gameObject.SetActive(true);
+         tradeHutFunction = true;
+         HandleTradeHutTutorial?.Invoke(1);
       }
-      if (requiredButtonClicked == false)
+      if(myPart.transform.Find("Turn") == null && myPart.transform.Find("ForgeExample") == null 
+         && myPart.transform.Find("TradeHutExample") == null && requiredButtonClicked == false)
       {
          currentActivePart = null;
          requiredButtonClicked = true;
@@ -350,35 +353,23 @@ public class TutorialManager : MonoBehaviour
       {
          if(tag == "Forge")
          {
-            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(true);
+            forgeCanvas.transform.Find("Arrow3").gameObject.SetActive(true);
          }
          else
          {
-            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(false);
+            forgeCanvas.transform.Find("Arrow3").gameObject.SetActive(false);
          }
       }
 
-      if(tradeHutFunctionOne == true)
+      if(tradeHutFunction == true)
       {
          if(tag == "Trade Hut")
          {
-            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(true);
+            tradeHutCanvas.transform.Find("Arrow2").gameObject.SetActive(true);
          }
          else
          {
-            currentActiveSection.transform.Find("Arrow2").gameObject.SetActive(false);
-         }
-      }
-
-      if(tradeHutFunctionTwo == true)
-      {
-         if(tag == "Trade Hut")
-         {
-            currentActiveSection.transform.Find("Arrow").gameObject.SetActive(true);
-         }
-         else
-         {
-            currentActiveSection.transform.Find("Arrow").gameObject.SetActive(false);
+            tradeHutCanvas.transform.Find("Arrow2").gameObject.SetActive(false);
          }
       }
    }
@@ -387,9 +378,20 @@ public class TutorialManager : MonoBehaviour
    public void HandleNextStep()
    {
       requiredButtonClicked = true;
-      if(oreRefineryUpgrade == true)
+      if(forgeFunction == true)
       {
-         oreRefineryUpgrade = false;
+         forgeFunction = false;
+         forgeCanvas.transform.Find("Arrow2").gameObject.SetActive(false);
+         forgeCanvas.transform.Find("HoverHere").gameObject.SetActive(false);
+         forgeCanvas.transform.Find("Arrow3").gameObject.SetActive(false);
+      }
+      if(tradeHutFunction == true)
+      {
+         tradeHutFunction = false;
+         tradeHutCanvas.transform.Find("Arrow").gameObject.SetActive(false);
+         tradeHutCanvas.transform.Find("HoverHere").gameObject.SetActive(false);
+         tradeHutCanvas.transform.Find("Arrow2").gameObject.SetActive(false);
+
       }
 
       GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);

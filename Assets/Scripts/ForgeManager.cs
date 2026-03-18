@@ -239,9 +239,8 @@ public class ForgeManager : MonoBehaviour
       // 3. Add the item
       if(tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
-         craftPanel.transform.Find("Arrow2").gameObject.SetActive(false);
-         craftPanel.transform.Find("TutorialText").gameObject.SetActive(false);
-         craftPanel.transform.Find("Arrow3").gameObject.SetActive(true);
+         craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
+         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
       }
       stagingItems.Add(itemType);
 
@@ -403,7 +402,7 @@ public class ForgeManager : MonoBehaviour
    {
       craftPanel.gameObject.SetActive(true);
       if(tutorialFunction)
-         craftPanel.transform.Find("Arrow").gameObject.SetActive(true);
+         craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -579,9 +578,8 @@ public class ForgeManager : MonoBehaviour
             tier1Panel.SetActive(true);
             if(tutorialFunction)
             {
-               craftPanel.transform.Find("Arrow").gameObject.SetActive(false);
-               craftPanel.transform.Find("TutorialText").gameObject.SetActive(true);
-               craftPanel.transform.Find("Arrow2").gameObject.SetActive(true);
+               craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
+               craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
             }
             break;
 
@@ -835,7 +833,7 @@ public class ForgeManager : MonoBehaviour
       }
       if(tutorialFunction)
       {
-         craftPanel.transform.Find("Arrow3").gameObject.SetActive(false);
+         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
          CloseCraftPanel();
          tutorialFunction = false;
          HandleTutorial?.Invoke();

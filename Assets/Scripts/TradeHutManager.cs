@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using TMPro;
-
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -158,8 +158,6 @@ public class TradeHutManager : MonoBehaviour
    {
 
       Debug.Log("TradeHutManager Start() called");
-      if (TutorialManager.Instance.tutorialGoing && TutorialManager.Instance.explorationFunction)
-         tutorialFunctionOne = true;
       inv = InventoryManager.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), -1.0f, CRUDE_TOOL_TAG);
@@ -344,13 +342,10 @@ public class TradeHutManager : MonoBehaviour
          currentSellItem = null;
       }
 
-      if(tutorialFunctionTwo && itemTag == CRUDE_TOOL_TAG && SellPanel.Find("Arrow3").gameObject.activeSelf)
+      if(tutorialFunctionOne && itemTag == CRUDE_TOOL_TAG && SellPanel.Find("TutorialPart3").gameObject.activeSelf)
       {
-         SellPanel.Find("Arrow3").gameObject.SetActive(false);
-         SellPanel.Find("ThirdText").gameObject.SetActive(false);
-         SellPanel.Find("FourthText").gameObject.SetActive(false);
-         SellPanel.Find("Arrow4").gameObject.SetActive(true);
-         SellPanel.Find("FifthText").gameObject.SetActive(true);
+         SellPanel.Find("TutorialPart3").gameObject.SetActive(false);
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
       }
 
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
@@ -475,6 +470,12 @@ public class TradeHutManager : MonoBehaviour
                }
                else 
                   crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+
+               if(tutorialFunctionOne)
+               {
+                  SellPanel.Find("TutorialPart5").gameObject.SetActive(false);
+                  SellPanel.Find("TutorialPart6").gameObject.SetActive(true);
+               }
             }
             break;
       
@@ -681,6 +682,11 @@ public class TradeHutManager : MonoBehaviour
                crudeToolSellCount += 1;
                item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + crudeToolSellCount.ToString();
                item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (crudeToolSellCount * GetItemValue(ItemType.CrudeTool)).ToString();
+            }
+            if(tutorialFunctionOne && crudeToolSellCount == 1)
+            {
+               SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
+               SellPanel.Find("TutorialPart5").gameObject.SetActive(true);
             }
             break;
          case HARPOON_TAG:
@@ -1367,32 +1373,35 @@ public class TradeHutManager : MonoBehaviour
          CloseBuyPanel();
       }
 
-      if(tutorialFunctionOne)
-      {
-         SellPanel.Find("Arrow").gameObject.SetActive(true);
-         SellPanel.Find("Arrow2").gameObject.SetActive(true);
-         SellPanel.Find("FirstText").gameObject.SetActive(true);
-         SellPanel.Find("SecondText").gameObject.SetActive(true);
-      }
+         /*if(tutorialFunctionTwo)
+         {
+            SellPanel.Find("Arrow").gameObject.SetActive(false);
+            SellPanel.Find("Arrow2").gameObject.SetActive(false);
+            SellPanel.Find("FirstText").gameObject.SetActive(false);
+            SellPanel.Find("SecondText").gameObject.SetActive(false);
+            SellPanel.Find("Arrow3").gameObject.SetActive(true);
+            SellPanel.Find("ThirdText").gameObject.SetActive(true);
+            SellPanel.Find("FourthText").gameObject.SetActive(true);
+         }*/
 
-      if(tutorialFunctionTwo)
-      {
-         SellPanel.Find("Arrow").gameObject.SetActive(false);
-         SellPanel.Find("Arrow2").gameObject.SetActive(false);
-         SellPanel.Find("FirstText").gameObject.SetActive(false);
-         SellPanel.Find("SecondText").gameObject.SetActive(false);
-         SellPanel.Find("Arrow3").gameObject.SetActive(true);
-         SellPanel.Find("ThirdText").gameObject.SetActive(true);
-         SellPanel.Find("FourthText").gameObject.SetActive(true);
-      }
-
-      // Destroy the instantiated buy item/window instance if it exists
-      if (currentBuyItem != null) 
+         // Destroy the instantiated buy item/window instance if it exists
+         if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
          currentBuyItem = null;
       }
       SellPanel.gameObject.SetActive(true);
+
+      if (tutorialFunctionOne)
+      {
+         if (BuyPanel.Find("TutorialPart2").gameObject.activeSelf)
+         {
+            BuyPanel.Find("TutorialPart2").gameObject.SetActive(false);
+            SellPanel.Find("TutorialPart3").gameObject.SetActive(true);
+         }
+         else
+            SellPanel.Find("TutorialPart1").gameObject.SetActive(true);
+      }
    }
 
    public void ShowBuyPanel() 
@@ -1405,14 +1414,10 @@ public class TradeHutManager : MonoBehaviour
          CloseSellPanel();
       }
 
-      if(tutorialFunctionTwo)
+      if(tutorialFunctionOne)
       {
-         SellPanel.Find("Arrow4").gameObject.SetActive(false);
-         SellPanel.Find("FourthText").gameObject.SetActive(false);
-         SellPanel.Find("FifthText").gameObject.SetActive(false);
-         BuyPanel.Find("Arrow5").gameObject.SetActive(true);
-         BuyPanel.Find("SixthText").gameObject.SetActive(true);
-         BuyPanel.Find("SeventhText").gameObject.SetActive(true);
+         SellPanel.Find("TutorialPart1").gameObject.SetActive(false);
+         BuyPanel.Find("TutorialPart2").gameObject.SetActive(true);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
@@ -1444,10 +1449,7 @@ public class TradeHutManager : MonoBehaviour
    {
       if(tutorialFunctionOne)
       {
-         SellPanel.Find("Arrow").gameObject.SetActive(false);
-         SellPanel.Find("Arrow2").gameObject.SetActive(false);
-         SellPanel.Find("FirstText").gameObject.SetActive(false);
-         SellPanel.Find("SecondText").gameObject.SetActive(false);
+         SellPanel.Find("TutorialPart6").gameObject.SetActive(false);
          tutorialFunctionOne = false;
          HandleTutorial?.Invoke();
       }

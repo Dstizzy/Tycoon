@@ -1,3 +1,4 @@
+using Codice.Client.BaseCommands.WkStatus.Printers;
 using System;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
@@ -7,7 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.WSA;
 
-public class PopUpManager : MonoBehaviour 
+public class PopUpManager : MonoBehaviour
 {
    [SerializeField] private GameObject[] buildingButtonsPreFab;
    [SerializeField] private Camera cam;
@@ -17,22 +18,18 @@ public class PopUpManager : MonoBehaviour
    [SerializeField] private ForgeManager forgeManager;
    [SerializeField] private LabManager labManager;
 
-   public Transform prevHoverObject;
-   public Transform currentHoverObject;
+   private Transform prevHoverObject;
+   private Transform currentHoverObject;
 
-   public List<GameObject> popUps;
+   private List<GameObject> popUps;
    private PlayerActions playerActions;
    private List<RaycastResult> raycastResults = new List<RaycastResult>();
-   public Transform buildingTransform;
+   public static Transform buildingTransform;
    public static bool IsBuildingBlocked = false;
-   public bool tutorialRefinery = false;
-
-   // This event is invoked whenever the hovered tag changes, passing the new tag as a parameter
-   //public static event Action<string> OnHoverTagChanged;
-
-   public static PopUpManager Instance { get; private set; }
 
    public static event Action<string> OnHoverTagChanged;
+
+   public static PopUpManager Instance { get; private set; }
 
    // Added for CameraDragPan update(off when the pop up window is open)
    /* This flag is used by the Camera script to disable */
@@ -63,7 +60,6 @@ public class PopUpManager : MonoBehaviour
          playerActions.Dispose();
       }
    }
-
    private void OnBuildingHover(InputAction.CallbackContext context)
    {
       if (cam == null)
@@ -97,17 +93,14 @@ public class PopUpManager : MonoBehaviour
       /* Case A: Mouse moved OFF the previous object (either to empty space or a new object)                                                          */
       if (prevHoverObject != null && prevHoverObject != currentHoverObject)
       {
-         // Report the tag of the object we just left (or "None" if we left to empty space)
-         string tagToReport = currentHoverObject.tag;
-         OnHoverTagChanged?.Invoke(tagToReport);
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
-         if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
-          //  OreRefinery_Manager.Instance.DeactivateJamButton();
-         if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
-         {
-           // OreRefinery_Manager.Instance.DeactivateManualResetCounter();
-         }
+         if (prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
+            //  OreRefinery_Manager.Instance.DeactivateJamButton();
+            if (prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
+            {
+               // OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+            }
          buildingTransform = null; // Clear the reference to the old building
       }
 
@@ -117,16 +110,17 @@ public class PopUpManager : MonoBehaviour
          // The mouse is entering a new object. Open the pop-up for the new object.
          // We don't need to call ClosePopUps() here because it was handled in Case A.
          buildingTransform = currentHoverObject;
+         OnHoverTagChanged?.Invoke(currentHoverObject.tag);
 
          if (OreRefinery_Manager.Instance.IsBlocked && currentHoverObject.tag == "Ore Refinery")
          {
-            if(TurnManager.manualResetOption)
+            if (TurnManager.manualResetOption)
             {
-               OreRefinery_Manager.Instance.ActivateManualResetCounter();
+               //OreRefinery_Manager.Instance.ActivateManualResetCounter();
             }
             else
             {
-               OreRefinery_Manager.Instance.ActivateJamButton();
+               //OreRefinery_Manager.Instance.ActivateJamButton();
             }
          }
          else
@@ -212,7 +206,7 @@ public class PopUpManager : MonoBehaviour
       switch (buildingTransform.tag)
       {
          case "Trade Hut":
-            TradeHutManager.Instance.RequestTradeHutPanel(buttonId);
+            tradeHutManager.RequestTradeHutPanel(buttonId);
             break;
          case "Lab":
             labManager.RequestLabPanel(buttonId);
