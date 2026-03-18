@@ -623,7 +623,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Chain").gameObject.SetActive(false);
       
-            ticker.ShowTicker("Purchased Tier 2 Blueprint ó Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 2 Blueprint ÅEPressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Tier 3 Blueprint purchase flow
@@ -654,7 +654,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Chain").gameObject.SetActive(false);
            
-            ticker.ShowTicker("Purchased Tier 3 Blueprint ó Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 3 Blueprint ÅEEngine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Mercenary Engineer purchase flow
@@ -737,7 +737,7 @@ public class TradeHutManager : MonoBehaviour
          else
          {
             if (owned > 0)
-               ticker.ShowTicker($"Cannot select that many ó you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Cannot select that many ÅEyou only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
 
@@ -751,7 +751,7 @@ public class TradeHutManager : MonoBehaviour
          else 
          {
             if (owned > 0)
-               ticker.ShowTicker($"Nothing selected to remove ó you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Nothing selected to remove ÅEyou own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
 
