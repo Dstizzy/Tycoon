@@ -16,6 +16,7 @@ public class Item {
    private static int engineSellValue        { get; set; } = BASE_ENGINE_VALUE;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
+   private static int insurancePolicyPrice   { get; set; } = 100;
    private static int tier2BluePrintPrice    { get; set; } = 500;
    private static int tier3BluePrintPrice    { get; set; } = 2000;
 
@@ -71,6 +72,8 @@ public class Item {
       "Unlocks tier 2 items recipes at the Forge.";
    const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
       "Unlocks tier 3 recipes at the Forge.";
+   const string INSURANCE_POLICY_DESCRIPTION =
+   "Pays a 500?pearl payout if the an item in the sell market crashes within the next 5 turns.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -85,7 +88,8 @@ public class Item {
         RawOreChunk,
         IndustrialBlueprint,
         ClockworkBlueprint,
-        MercenaryEngineer
+        MercenaryEngineer,
+        InsurancePolicy
    }
 
     public static int GetItemValue(ItemType itemType) 
@@ -122,6 +126,8 @@ public class Item {
             return tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
+         case ItemType.InsurancePolicy:
+            return insurancePolicyPrice;
          default:
             Debug.LogError($"Unknown Item: `{itemType}`");
             return 0;
@@ -154,6 +160,8 @@ public class Item {
             return PRECISION_LENS_DESCRIPTION;
          case ItemType.DivingBell:
             return DIVING_BELL_DESCRIPTION;
+         case ItemType.InsurancePolicy:
+            return INSURANCE_POLICY_DESCRIPTION;
          default:
             Debug.LogError("No description available.");
             return "No description available.";
