@@ -34,23 +34,15 @@ public class TutorialManager : MonoBehaviour
    private void OnEnable()
    {
       PopUpManager.OnHoverTagChanged += HandleGlobalHover;
-      OreRefinery_Manager.HandleTutorial += HandleNextStep;
       ForgeManager.HandleTutorial += HandleNextStep;
-      InventoryManager.HandleTutorial += HandleNextStep;
       TradeHutManager.HandleTutorial += HandleNextStep;
-      ExplorationUnitManager.HandleTutorial += HandleNextStep;
-      LabManager.HandleTutorial += HandleNextStep;
    }
 
    private void OnDisable()
    {
       PopUpManager.OnHoverTagChanged -= HandleGlobalHover;
-      OreRefinery_Manager.HandleTutorial -= HandleNextStep;
       ForgeManager.HandleTutorial -= HandleNextStep;
-      InventoryManager.HandleTutorial -= HandleNextStep;
       TradeHutManager.HandleTutorial -= HandleNextStep;
-      ExplorationUnitManager.HandleTutorial -= HandleNextStep;
-      LabManager.HandleTutorial -= HandleNextStep;
    }
 
    // Store the reference to the current part so we can toggle arrows from the event
@@ -58,12 +50,8 @@ public class TutorialManager : MonoBehaviour
    public GameObject currentActiveSection = null;
 
    // Event to start tutorial parts that can only be handled in other managers
-   public static event Action HandleOreRefineryTutorial;
    public static event Action HandleForgeTutorial;
-   public static event Action HandleInventoryTutorial;
    public static event Action<int> HandleTradeHutTutorial;
-   public static event Action HandleExplorationTutorial;
-   public static event Action<int> HandleLabTutorial;
 
    // Start is called before the first frame update
    private void Start()

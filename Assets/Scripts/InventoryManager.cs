@@ -133,21 +133,7 @@ public class InventoryManager : MonoBehaviour
    /* Delegate for when the crystal count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnOreCountChanged;
 
-   public static event Action HandleTutorial;
-
    public List<Transform> InventoryItems { get; private set; }
-
-   // Subscribes to the tutorial event when the object is enabled, allowing it to respond to changes in the tutorial state
-   public void OnEnable()
-   {
-      TutorialManager.HandleInventoryTutorial += ChangeTutorialState;
-   }
-
-   // Unsubscribes from the tutorial event when the object is disabled to prevent memory leaks and unintended behavior
-   public void OnDisable()
-   {
-      TutorialManager.HandleInventoryTutorial -= ChangeTutorialState;
-   }
 
    // Toggles the tutorial state for the inventory, which can be used to show or hide tutorial elements based on the player's progress in the game
    private void ChangeTutorialState()
@@ -1305,7 +1291,6 @@ public class InventoryManager : MonoBehaviour
       if(tutorialFunction)
       {
          InventoryPanel.transform.Find("Arrow3").gameObject.SetActive(false);
-         HandleTutorial?.Invoke();
          tutorialFunction = false;
       }
    }

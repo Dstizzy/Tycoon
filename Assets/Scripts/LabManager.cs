@@ -67,30 +67,6 @@ public class LabManager : MonoBehaviour
    public static LabManager labManager { get; private set; }
    public static LabManager Instance { get; private set; }
 
-   // Event that handles tutorial switch
-   public static event Action HandleTutorial;
-
-   // Subscribe to events when enabled to change the state of the lab tutorial when the event is invoked in the tutorial manager
-   public void OnEnable()
-   {
-      TutorialManager.HandleLabTutorial += ChangeTutorialState;
-   }
-
-   // Unsubscribe from events when disabled to prevent errors and memory leaks
-   public void OnDisable()
-   {
-      TutorialManager.HandleLabTutorial -= ChangeTutorialState;
-   }
-
-   // Change the state of the lab tutorial when the event is invoked in the tutorial manager
-   public void ChangeTutorialState(int tutorialType)
-   {
-      if(tutorialType == LAB_TUTORIAL)
-         labTutorialFunction = true;
-
-      if(tutorialType == VICTORY_TUTORIAL)
-         victoryTutorialFunction = true;
-   }
 
    // Check if all required game objects exist and are in there required states                 
    private void Awake()
@@ -586,7 +562,6 @@ public class LabManager : MonoBehaviour
       {
          commerceTab.transform.Find("LabTutorialText").gameObject.SetActive(false);
          labTutorialFunction = false;
-         HandleTutorial?.Invoke();
       }
 
       pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.RemoveAllListeners();

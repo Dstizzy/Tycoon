@@ -43,8 +43,6 @@ public class ExplorationUnitManager : MonoBehaviour
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
 
    public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
-   public  bool isExploring      = false; // Determines if exploration is currently ongoing
-   private bool isWaiting        = false; // Triggered when an event causes user to lose an exploration turn
 
 
    public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration

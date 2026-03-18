@@ -2,6 +2,7 @@
 using System;
 using TMPro;
 
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,33 +41,11 @@ public class OreRefinery_Manager : MonoBehaviour
    public bool IsBlocked       = false;
    public bool tutorialUpgrade = false;
 
-   public int jammingChance = 0;
-
-   public bool IsBlocked = false;
-
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
    public int NextUpgradeCostInOre { get; private set; }
 
-   public static event Action HandleTutorial;
-
-   // --- ADDED: Subscribe to tutorial event ---
-   public void OnEnable()
-   {
-      TutorialManager.HandleOreRefineryTutorial += ChangeTutorialState;
-   }
-
-   // --- ADDED: Unsubscribe when disabled ---
-   public void OnDisable()
-   {
-      TutorialManager.HandleOreRefineryTutorial -= ChangeTutorialState;
-   }
-
    // Changes the tutorial state to allow the upgrade tutorial to show after the player has completed the Trade Hut tutorial
-   private void ChangeTutorialState()
-   {
-      tutorialUpgrade = true;
-   }
 
    private void Awake()
    {
@@ -231,13 +210,6 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       upgradePanel.gameObject.SetActive(false);
 
-      if(tutorialUpgrade)
-      {
-         tutorialUpgrade = false;
-         upgradePanel.Find("Arrow").gameObject.SetActive(false);
-         HandleTutorial?.Invoke();
-      }
-
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
@@ -355,7 +327,7 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void ProduceOres()
    {
-      int roll = Random.Range(0, 100);
+      int roll = UnityEngine.Random.Range(0, 100);
 
       if (roll < jammingChance)
       {
