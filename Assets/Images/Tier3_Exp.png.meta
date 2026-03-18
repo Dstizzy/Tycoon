@@ -1,0 +1,858 @@
+fileFormatVersion: 2
+guid: 9f0ba4bf07ce54893b336c1ad4244cb3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5227450919933706960
+    second: Tier3_Exp_0
+  - first:
+      213: -6648090605182519851
+    second: Tier3_Exp_1
+  - first:
+      213: 6092122093353205986
+    second: Tier3_Exp_2
+  - first:
+      213: 5093892937169261383
+    second: Tier3_Exp_3
+  - first:
+      213: -1172558915989936294
+    second: Tier3_Exp_4
+  - first:
+      213: 5425122470566766651
+    second: Tier3_Exp_5
+  - first:
+      213: 3611534710638981514
+    second: Tier3_Exp_6
+  - first:
+      213: -5249686490928514566
+    second: Tier3_Exp_7
+  - first:
+      213: -6308762384194640854
+    second: Tier3_Exp_8
+  - first:
+      213: -739896486399085943
+    second: Tier3_Exp_9
+  - first:
+      213: -8088208613682554424
+    second: Tier3_Exp_10
+  - first:
+      213: -5645080916214102714
+    second: Tier3_Exp_11
+  - first:
+      213: -6178017146518344552
+    second: Tier3_Exp_12
+  - first:
+      213: -313337171198008017
+    second: Tier3_Exp_13
+  - first:
+      213: -138732309454284011
+    second: Tier3_Exp_14
+  - first:
+      213: 1054702814012077683
+    second: Tier3_Exp_15
+  - first:
+      213: 2629133451571722509
+    second: Tier3_Exp_16
+  - first:
+      213: -3649901881392849356
+    second: Tier3_Exp_17
+  - first:
+      213: -5046354420401501191
+    second: Tier3_Exp_18
+  - first:
+      213: -6621593310959383671
+    second: Tier3_Exp_19
+  - first:
+      213: -8374062910877007260
+    second: Tier3_Exp_20
+  - first:
+      213: -4858988818969682404
+    second: Tier3_Exp_21
+  - first:
+      213: -5451943164485044275
+    second: Tier3_Exp_22
+  - first:
+      213: 7545415435818378825
+    second: Tier3_Exp_23
+  - first:
+      213: 4925267612315688629
+    second: Tier3_Exp_24
+  - first:
+      213: -5101495388963341152
+    second: Tier3_Exp_25
+  - first:
+      213: -636448535111305183
+    second: Tier3_Exp_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tier3_Exp_0
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 7
+        width: 742
+        height: 907
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03dff84a51d5477b0800000000000000
+      internalID: -5227450919933706960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_1
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 4
+        width: 497
+        height: 904
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d5fb7351dc3db3a0800000000000000
+      internalID: -6648090605182519851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_2
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 383
+        width: 40
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e080a634c09b8450800000000000000
+      internalID: 6092122093353205986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_3
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 396
+        width: 37
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74358d343a421b640800000000000000
+      internalID: 5093892937169261383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_4
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 380
+        width: 32
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a57e33ed0eb3abfe0800000000000000
+      internalID: -1172558915989936294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_5
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 357
+        width: 25
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b382f19b428e94b40800000000000000
+      internalID: 5425122470566766651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_6
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 197
+        width: 118
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8131a14fafbe1230800000000000000
+      internalID: 3611534710638981514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_7
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 308
+        width: 58
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af9f90653fd5527b0800000000000000
+      internalID: -5249686490928514566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_8
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 294
+        width: 12
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a246bbd6906c278a0800000000000000
+      internalID: -6308762384194640854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_9
+      rect:
+        serializedVersion: 2
+        x: 618
+        y: 297
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9827f95d01c5bb5f0800000000000000
+      internalID: -739896486399085943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_10
+      rect:
+        serializedVersion: 2
+        x: 620
+        y: 311
+        width: 23
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c952387e19e0cf80800000000000000
+      internalID: -8088208613682554424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_11
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 205
+        width: 123
+        height: 137
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 645c8bcc0d4a8a1b0800000000000000
+      internalID: -5645080916214102714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_12
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 274
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89c60854326434aa0800000000000000
+      internalID: -6178017146518344552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_13
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 23
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2521dfb08dc6abf0800000000000000
+      internalID: -313337171198008017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_14
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 263
+        width: 35
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51b9b1813bf131ef0800000000000000
+      internalID: -138732309454284011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_15
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 257
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3767bcc0f9e03ae00800000000000000
+      internalID: 1054702814012077683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_16
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 250
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d097708c1fe8c7420800000000000000
+      internalID: 2629133451571722509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_17
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 241
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43e9c8ea391f85dc0800000000000000
+      internalID: -3649901881392849356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_18
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 238
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fb0f31346fb7f9b0800000000000000
+      internalID: -5046354420401501191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_19
+      rect:
+        serializedVersion: 2
+        x: 622
+        y: 208
+        width: 37
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98bc92567ff5b14a0800000000000000
+      internalID: -6621593310959383671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_20
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 181
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4620766762a59cb80800000000000000
+      internalID: -8374062910877007260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_21
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 186
+        width: 13
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1e97b5c967619cb0800000000000000
+      internalID: -4858988818969682404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_22
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 194
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc7ff39d39ec654b0800000000000000
+      internalID: -5451943164485044275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_23
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 202
+        width: 15
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94624be8c53b6b860800000000000000
+      internalID: 7545415435818378825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_24
+      rect:
+        serializedVersion: 2
+        x: 623
+        y: 181
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5be10d75cc01a5440800000000000000
+      internalID: 4925267612315688629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_25
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 172
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0acfb8df8f8d339b0800000000000000
+      internalID: -5101495388963341152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tier3_Exp_26
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 163
+        width: 23
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1287fdaed61ea27f0800000000000000
+      internalID: -636448535111305183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 65b4494b8302549eea68e301af8fdbdb
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Tier3_Exp_0: -5227450919933706960
+      Tier3_Exp_1: -6648090605182519851
+      Tier3_Exp_10: -8088208613682554424
+      Tier3_Exp_11: -5645080916214102714
+      Tier3_Exp_12: -6178017146518344552
+      Tier3_Exp_13: -313337171198008017
+      Tier3_Exp_14: -138732309454284011
+      Tier3_Exp_15: 1054702814012077683
+      Tier3_Exp_16: 2629133451571722509
+      Tier3_Exp_17: -3649901881392849356
+      Tier3_Exp_18: -5046354420401501191
+      Tier3_Exp_19: -6621593310959383671
+      Tier3_Exp_2: 6092122093353205986
+      Tier3_Exp_20: -8374062910877007260
+      Tier3_Exp_21: -4858988818969682404
+      Tier3_Exp_22: -5451943164485044275
+      Tier3_Exp_23: 7545415435818378825
+      Tier3_Exp_24: 4925267612315688629
+      Tier3_Exp_25: -5101495388963341152
+      Tier3_Exp_26: -636448535111305183
+      Tier3_Exp_3: 5093892937169261383
+      Tier3_Exp_4: -1172558915989936294
+      Tier3_Exp_5: 5425122470566766651
+      Tier3_Exp_6: 3611534710638981514
+      Tier3_Exp_7: -5249686490928514566
+      Tier3_Exp_8: -6308762384194640854
+      Tier3_Exp_9: -739896486399085943
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

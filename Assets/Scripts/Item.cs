@@ -73,7 +73,7 @@ public class Item {
    const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
       "Unlocks tier 3 recipes at the Forge.";
    const string INSURANCE_POLICY_DESCRIPTION =
-   "Pays a 500?pearl payout if the an item in the sell market crashes within the next 5 turns.";
+      "Pays a 500 pearl payout if the an item in the sell market crashes within the next 5 turns.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
