@@ -12296,7 +12296,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &426796684
 Canvas:
   m_ObjectHideFlags: 0
@@ -21562,15 +21562,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 735777797}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.6, y: 4.6, z: 0}
-  m_LocalScale: {x: 5.125928, y: 5.125928, z: 5.125928}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -411.6263, y: -220.74588, z: 0}
+  m_LocalScale: {x: 4.729807, y: 4.729807, z: 4.729807}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2144051921}
   - {fileID: 1232707562}
   - {fileID: 426796681}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1270702886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &735777799
 CircleCollider2D:
@@ -27929,7 +27929,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OK
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -42147,8 +42147,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -63}
-  m_SizeDelta: {x: 160, y: 50}
+  m_AnchoredPosition: {x: 0, y: -58.996674}
+  m_SizeDelta: {x: 154.177, y: 39.0819}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1233488257
 MonoBehaviour:
@@ -42207,14 +42207,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 613198103376010289, guid: d6b849ea6253b094bbab340860f43747, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -43472,6 +43472,7 @@ RectTransform:
   - {fileID: 324236003}
   - {fileID: 1087527359}
   - {fileID: 376135227}
+  - {fileID: 735777798}
   - {fileID: 1906626448}
   - {fileID: 473553150}
   - {fileID: 558055221}
@@ -52018,7 +52019,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 19}
+  m_AnchoredPosition: {x: 0, y: 5}
   m_SizeDelta: {x: 300, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1402198777
@@ -52041,7 +52042,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8071019117159164733, guid: 74f0434bc13c6ee448e0f13f1bd41cf3, type: 3}
+  m_Sprite: {fileID: 491302187794180581, guid: dad992f5a358d3a4793cd3c951a23be2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -57309,8 +57310,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 25}
-  m_SizeDelta: {x: 200, y: 125}
+  m_AnchoredPosition: {x: 0, y: 4.6195}
+  m_SizeDelta: {x: 200, y: 54.396}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1596556138
 MonoBehaviour:
@@ -57341,8 +57342,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4282664018
+  m_fontColor: {r: 0.3207547, g: 0.26729557, b: 0.26729557, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -57359,8 +57360,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 17
+  m_fontSizeBase: 17
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -60989,7 +60990,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1740613231
 RectTransform:
   m_ObjectHideFlags: 0
@@ -72989,7 +72990,6 @@ SceneRoots:
   - {fileID: 446068961}
   - {fileID: 816863240}
   - {fileID: 1108480722}
-  - {fileID: 735777798}
   - {fileID: 729307935}
   - {fileID: 762203958}
   - {fileID: 710838381}
