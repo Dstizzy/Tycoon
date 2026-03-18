@@ -170,11 +170,14 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 5000;
-      oreCount       = 5000;
-      crudeToolCount = MIN_CRUDE_TOOL_COUNT;
-      harpoonCount   = MIN_HARPOON_COUNT;
-      engineCount    = MIN_ENGINE_COUNT;
+      pearlCount         = 0;
+      oreCount           = 0;
+      crudeToolCount     = MIN_CRUDE_TOOL_COUNT;
+      harpoonCount       = MIN_HARPOON_COUNT;
+      pressureValveCount = MIN_PRESSURE_VALVE_COUNT;
+      divingBellCount    = MIN_DIVING_BELL_COUNT;
+      precisionLensCount = MIN_PRECISION_LENS_COUNT;
+      engineCount        = MIN_ENGINE_COUNT;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */

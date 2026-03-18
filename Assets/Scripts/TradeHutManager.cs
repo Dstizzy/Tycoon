@@ -100,7 +100,7 @@ public class TradeHutManager : MonoBehaviour
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
                        CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
-                       INSURANCE_POLICY_TAG = "Insurance Policy";
+                       INSURANCE_POLICY_TAG     = "Insurance Policy";
 
    public bool isTier3BuffACtive       = false,
                isInsurancePolicyActive = false;
@@ -1048,15 +1048,15 @@ public class TradeHutManager : MonoBehaviour
    private void ApplyStoredShift(
       ItemType itemType, WorldEventTypes eventType,
       int change, int fluctuation, 
-      Action<int> increaseMethod, Action<int> decreaseMethod)
+      Action<int> increaseSellValueMethod, Action<int> decreaseSellValueMethod)
    {
        // Is it the active World Event turn?
        if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
        {
            if (shiftDirection <= 50) 
-              increaseMethod(GetItemValue(itemType));
+              increaseSellValueMethod(GetItemValue(itemType));
            else 
-              decreaseMethod(GetItemValue(itemType));
+              decreaseSellValueMethod(GetItemValue(itemType));
        }
 
        // Is it a post-event Reset Turn? (Skip natural fluctuation)
@@ -1067,10 +1067,10 @@ public class TradeHutManager : MonoBehaviour
            else
            {
                if (change <= 30) 
-                  increaseMethod(fluctuation);
+                  increaseSellValueMethod(fluctuation);
                else 
                   if (change <= 60) 
-                     decreaseMethod(fluctuation);
+                     decreaseSellValueMethod(fluctuation);
            }
        }
    }
