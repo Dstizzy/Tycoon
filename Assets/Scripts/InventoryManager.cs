@@ -170,8 +170,8 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 0;
-      oreCount       = 0;
+      pearlCount     = 5000;
+      oreCount       = 5000;
       crudeToolCount = MIN_CRUDE_TOOL_COUNT;
       harpoonCount   = MIN_HARPOON_COUNT;
       engineCount    = MIN_ENGINE_COUNT;
@@ -744,7 +744,7 @@ public class InventoryManager : MonoBehaviour
       }
 
       newCrudeToolCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newCrudeToolCount.text = " x" + crudeToolCount.ToString();
+      newCrudeToolCount.text  = " x" + crudeToolCount.ToString();
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
       return isSuccess;
@@ -1263,6 +1263,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TrySpendItem(string itemName, int amount)
    {
+      Debug.Log("Second Crude tool to spend: " + amount.ToString());
       switch (itemName)
       {
          // Resources

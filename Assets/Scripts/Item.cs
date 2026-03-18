@@ -29,17 +29,17 @@ public class Item {
    public const int BASE_ENGINE_VALUE              = 900;
 
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 60;
+   public const int MAX_CRUDE_TOOL_VALUE           = 90;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 120;
-   public const int MIN_DIVING_BELL_VALUE          = 0;
-   public const int MAX_DIVING_BELL_VALUE          = 500;
+   public const int MAX_HARPOON_VALUE              = 180;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 360;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 540;
+   public const int MIN_DIVING_BELL_VALUE          = 0;
+   public const int MAX_DIVING_BELL_VALUE          = 750;
    public const int MIN_PRECISION_LENS_VALUE       = 0;
-   public const int MAX_PRECISION_LENS_VALUE       = 1200;
+   public const int MAX_PRECISION_LENS_VALUE       = 1800;
    public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 1800;
+   public const int MAX_ENGINE_VALUE               = 2700;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
