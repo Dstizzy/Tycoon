@@ -759,7 +759,7 @@ public class TradeHutManager : MonoBehaviour
          }
       }
 
-      switch (tag)
+      switch (item.tag)
       {
          case CRUDE_TOOL_TAG:
            crudeToolSellCount = current; 
