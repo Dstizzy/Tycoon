@@ -50,6 +50,7 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject commerceTab;
    [SerializeField] private GameObject productionTab;
    [SerializeField] private GameObject explorationTab;
+                    private TickerSystem ticker;
 
 
    // Public variables                                                                          
@@ -94,6 +95,8 @@ public class LabManager : MonoBehaviour
    // Check if all required game objects exist and are in there required states                 
    private void Awake()
    {
+      ticker = TickerSystem.Instance;
+
       if (labManager != null && labManager != this)
          Destroy(this.gameObject);
       else
@@ -230,20 +233,27 @@ public class LabManager : MonoBehaviour
    // Show the corresponding path tab upon clicking the path button
    private void ShowPath(GameObject tab)
    {
-      initialTab.gameObject.SetActive(false);
-      tab.gameObject.SetActive(true);
-
-      if(labTutorialFunction)
-      {
-         tab.transform.Find("LabTutorialText").gameObject.SetActive(true);
-      }
-      else
-      {
-         tab.transform.Find("backArrow").GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
-      }
-      tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
-      tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
-      tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
+       initialTab.gameObject.SetActive(false);
+       tab.gameObject.SetActive(true);
+   
+       // Get the buttons
+       Button backBtn = tab.transform.Find("backArrow").GetComponent<Button>();
+       Button t1Btn = tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>();
+       Button t2Btn = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>();
+       Button t3Btn = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>();
+   
+       // Clear and Re-assign
+       backBtn.onClick.RemoveAllListeners();
+       backBtn.onClick.AddListener(() => BackToInitialTab(tab));
+   
+       t1Btn.onClick.RemoveAllListeners();
+       t1Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
+   
+       t2Btn.onClick.RemoveAllListeners();
+       t2Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
+   
+       t3Btn.onClick.RemoveAllListeners();
+       t3Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
    }
 
    // Handle the innovation purchase and unlocking of the next tier node upon clicking the buy button
@@ -355,34 +365,35 @@ public class LabManager : MonoBehaviour
                tab.transform.Find("costContainer/tierThreeImages").gameObject.SetActive(false);
                break;
          }
-         ;
       }
    }
 
    // Spend certain amount of resources and give corresponding innovations                    
    public bool PerformBuy(int pearlCost, int itemCost, string itemName)
    {
-      // Check to see if there is enough pearls
-      if (InventoryManager.Instance.pearlCount < pearlCost)
-      {
-         Debug.Log("Not enough pearls!");
-         return false;
-      }
-
+      bool isSuccess = true;
+      
       // Try to spend the item if necessary
       if (!string.IsNullOrEmpty(itemName) && itemCost > 0)
       {
+         Debug.Log("First Crude tool to spend: " + itemCost.ToString());
+
          // Link to inventory to spend the item
          if (!InventoryManager.Instance.TrySpendItem(itemName, itemCost))
          {
             Debug.Log($"Not enough {itemName} to spend!");
-            return false;
+            isSuccess = false;
          }
       }
 
-      // Spend the pearls
-      InventoryManager.Instance.TrySpendPearl(pearlCost);
-      return true;
+      // Check to see if there is enough pearls and spend them if there are
+      if (InventoryManager.Instance.TrySpendPearl(pearlCost)) 
+      {
+         Debug.Log("Not enough pearls!");
+         isSuccess = false;
+      }
+
+      return isSuccess;
    }
 
    // Implement the innovation effects and changes to the game based on the innovation purchased
@@ -400,6 +411,8 @@ public class LabManager : MonoBehaviour
 
          ApplyDiscountToBuyItems(.2f);
          headUnlocked = true;
+
+         ticker.ShowTicker("Commerce Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       // Permanently reduce gold spent on refinery upkeep by 50%                               
       else if (tabType == productionTab)
@@ -410,13 +423,17 @@ public class LabManager : MonoBehaviour
             OreRefinery_Manager.Instance.ReduceJamming(5);
          }
          bodyUnlocked = true;
+
+         ticker.ShowTicker("Product Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
          if (shipManager != null)
             shipManager.ApplyLabShipBonus();
-      }
+
+         ticker.ShowTicker("Exploration Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+      } 
       else
       {
          Debug.Log("There is no tab");

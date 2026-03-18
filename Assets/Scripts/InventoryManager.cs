@@ -78,8 +78,7 @@ public class InventoryManager : MonoBehaviour
 
    public const int RESOURCE_SPACING = 30,
                     PEARL_POSITION = 0,
-                    CRYSTAL_POSITION = PEARL_POSITION + 13,
-                    ORE_POSITION = CRYSTAL_POSITION + 13,
+                    ORE_POSITION = PEARL_POSITION + 13,
 
                     CRUDE_TOOL_POSITION = 0,
                     HARPOON_POSITION = CRUDE_TOOL_POSITION + 10,
@@ -106,7 +105,6 @@ public class InventoryManager : MonoBehaviour
 
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
    public int pearlCount { get; private set; }
-   public int crystalCount { get; private set; }
    public int oreCount { get; private set; }
 
    public int crudeToolCount { get; private set; }
@@ -195,30 +193,31 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount     = 0;
-      crystalCount   = MIN_CRYSTAL_COUNT;
-      oreCount       = 0;
-      crudeToolCount = MIN_CRUDE_TOOL_COUNT;
-      harpoonCount   = MIN_HARPOON_COUNT;
-      engineCount    = MIN_ENGINE_COUNT;
+      pearlCount         = 0;
+      oreCount           = 0;
+      crudeToolCount     = MIN_CRUDE_TOOL_COUNT;
+      harpoonCount       = MIN_HARPOON_COUNT;
+      pressureValveCount = MIN_PRESSURE_VALVE_COUNT;
+      divingBellCount    = MIN_DIVING_BELL_COUNT;
+      precisionLensCount = MIN_PRECISION_LENS_COUNT;
+      engineCount        = MIN_ENGINE_COUNT;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
    private void Start()
    {
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, PEARL_TAG);
-      CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Crystal), CRYSTAL_POSITION, CRYSTAL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
       //CreateResource(GetItemSprite(ItemType.RawOreChunk), ORE_POSITION + 10, RAW_ORE_CHUNK_TAG); 
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
       CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
-      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
-      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
+      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
+      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
@@ -247,9 +246,6 @@ public class InventoryManager : MonoBehaviour
       {
          case PEARL_TAG:
             resourceCount = pearlCount;
-            break;
-         case CRYSTAL_TAG:
-            resourceCount = crystalCount;
             break;
          case ORE_TAG:
             resourceCount = oreCount;
@@ -444,10 +440,6 @@ public class InventoryManager : MonoBehaviour
             resourceCount = pearlCount;
             resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Pearl);
             break;
-         case CRYSTAL_TAG:
-            resourceCount = crystalCount;
-            resourceInfo = resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Crystal);
-            break;
          case ORE_TAG:
             resourceCount = oreCount;
             resourceInfo = Resources.GetResourceDescription(Resources.ResourceType.Ore);
@@ -617,56 +609,56 @@ public class InventoryManager : MonoBehaviour
       return isSuccess;
    }
 
-   public bool TryAddCrystal(int crystalAmount)
-   {
-      bool isSuccess = false;
+   //public bool TryAddCrystal(int crystalAmount)
+   //{
+   //   bool isSuccess = false;
 
-      if (crystalCount >= MAX_CRYSTAL_COUNT)
-      {
-         Debug.LogError("Crystal count is at maximum!");
-         ticker.ShowTicker("CRystal count is at maximum!", Color.red, MessageTypes.ResultMessage);
-      }
-      else
-         if ((crystalCount + crystalAmount) > MAX_CRYSTAL_COUNT)
-         ticker.ShowTicker("Cannot add crystals - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
-      else
-      {
-         crystalCount += crystalAmount;
-         isSuccess = true;
-      }
+   //   if (crystalCount >= MAX_CRYSTAL_COUNT)
+   //   {
+   //      Debug.LogError("Crystal count is at maximum!");
+   //      ticker.ShowTicker("CRystal count is at maximum!", Color.red, MessageTypes.ResultMessage);
+   //   }
+   //   else
+   //      if ((crystalCount + crystalAmount) > MAX_CRYSTAL_COUNT)
+   //      ticker.ShowTicker("Cannot add crystals - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
+   //   else
+   //   {
+   //      crystalCount += crystalAmount;
+   //      isSuccess = true;
+   //   }
 
-      OnCrystalCountChanged?.Invoke(crystalCount);
-      CrystalCountText.text = " x" + crystalCount.ToString();
+   //   OnCrystalCountChanged?.Invoke(crystalCount);
+   //   CrystalCountText.text = " x" + crystalCount.ToString();
 
-      return isSuccess;
-   }
+   //   return isSuccess;
+   //}
 
-   public bool TrySpendCrystal(int crystalAmount)
-   {
-      bool isSuccess = false;
+   //public bool TrySpendCrystal(int crystalAmount)
+   //{
+   //   bool isSuccess = false;
 
-      if (crystalCount <= MIN_CRYSTAL_COUNT)
-      {
-         ticker.ShowTicker("Crystal count is at minimum", Color.red, MessageTypes.ResultMessage);
-         Debug.LogError("Crystal count is at minimum!");
-      }
-      else
-         if (crystalCount < crystalAmount)
-      {
-         ticker.ShowTicker($"Cannot spend crystals, only {crystalCount} available!", Color.red, MessageTypes.ResultMessage);
-         Debug.LogError("Not enough crystals to spend!");
-      }
-      else
-      {
-         crystalCount -= crystalAmount;
-         isSuccess = true;
-      }
+   //   if (crystalCount <= MIN_CRYSTAL_COUNT)
+   //   {
+   //      ticker.ShowTicker("Crystal count is at minimum", Color.red, MessageTypes.ResultMessage);
+   //      Debug.LogError("Crystal count is at minimum!");
+   //   }
+   //   else
+   //      if (crystalCount < crystalAmount)
+   //   {
+   //      ticker.ShowTicker($"Cannot spend crystals, only {crystalCount} available!", Color.red, MessageTypes.ResultMessage);
+   //      Debug.LogError("Not enough crystals to spend!");
+   //   }
+   //   else
+   //   {
+   //      crystalCount -= crystalAmount;
+   //      isSuccess = true;
+   //   }
 
-      OnCrystalCountChanged?.Invoke(crystalCount);
-      CrystalCountText.text = " x" + crystalCount.ToString();
+   //   OnCrystalCountChanged?.Invoke(crystalCount);
+   //   CrystalCountText.text = " x" + crystalCount.ToString();
 
-      return isSuccess;
-   }
+   //   return isSuccess;
+   //}
 
    public bool TryAddOre(int oreAmount)
    {
@@ -785,7 +777,7 @@ public class InventoryManager : MonoBehaviour
       }
 
       newCrudeToolCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(CRUDE_TOOL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      newCrudeToolCount.text = " x" + crudeToolCount.ToString();
+      newCrudeToolCount.text  = " x" + crudeToolCount.ToString();
       CrudeToolCountText.text = " x" + crudeToolCount.ToString();
 
       return isSuccess;
@@ -1320,13 +1312,14 @@ public class InventoryManager : MonoBehaviour
 
    public bool TrySpendItem(string itemName, int amount)
    {
+      Debug.Log("Second Crude tool to spend: " + amount.ToString());
       switch (itemName)
       {
          // Resources
          case PEARL_TAG:
             return TrySpendPearl(amount);
-         case CRYSTAL_TAG:
-            return TrySpendCrystal(amount);
+         //case CRYSTAL_TAG:
+         //   return TrySpendCrystal(amount);
          case ORE_TAG:
             return TrySpendOre(amount);
 

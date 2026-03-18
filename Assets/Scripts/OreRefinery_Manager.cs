@@ -29,6 +29,10 @@ public class OreRefinery_Manager : MonoBehaviour
    public bool IsBlocked       = false;
    public bool tutorialUpgrade = false;
 
+   public int jammingChance = 0;
+
+   public bool IsBlocked = false;
+
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
    public int NextUpgradeCostInOre { get; private set; }
@@ -286,6 +290,16 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void ProduceOres()
    {
+      int roll = Random.Range(0, 100);
+
+      if (roll < jammingChance)
+      {
+         Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
+         IsBlocked = true;
+         //ActivateJamButton();
+         //ActivateJamSymbol();
+      }
+
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }
 

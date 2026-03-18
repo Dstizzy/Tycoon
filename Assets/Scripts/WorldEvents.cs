@@ -1,5 +1,3 @@
-using Unity.VisualScripting;
-
 using UnityEngine;
 
 public class WorldEvents {
@@ -8,11 +6,17 @@ public class WorldEvents {
              TURN_4 = 4,
              TURN_5 = 5;
 
+  public const int WORLD_EVENT_RESET_PREVIEW_TURN = 0,
+                   WORLD_EVENT_RESET_TURN         = 1,
+                   WORLD_EVENT_PREVIEW_TURN       = 4,
+                   WORLD_EVENT_ACTIVE_TURN        = 5;
    public enum WorldEventTypes {
       CrudeToolEvent,
       HarpoonEvent,
       PressureValveEvent,
-      ClockworkEngineEvent
+      DivingBellEvent,
+      PrecisionLensEvent,
+      ClockworkEngineEvent,
    }
 
    public static string GetCrudeToolTickerMessage(int shiftDriection) 
@@ -67,7 +71,7 @@ public class WorldEvents {
             break;
          case TURN_5:
             if (shiftDirection <= 50)
-            tickerMessage = "MIGRATION EVENT: Leviathans breaching! Harpoon prices Doubled!";
+               tickerMessage = "MIGRATION EVENT: Leviathans breaching! Harpoon prices Doubled!";
             else
                tickerMessage = "PEACE EVENT: The beasts are gone. Harpoon value crashed!";
             break;
@@ -88,7 +92,7 @@ public class WorldEvents {
          case TURN_3:
             if (shiftDirection <= 50)
                tickerMessage = "Geothermal vents are fluctuating. Minor tremors felt in the lower districts";
-           else
+            else
                tickerMessage = "Seismic activity at an all-time low. The vents are dormant.";
             break;
          case TURN_4:
@@ -102,6 +106,38 @@ public class WorldEvents {
                tickerMessage = "SEISMIC EVENT: Pressure spikes detected! Valve demand Doubled!";
             else
                tickerMessage = "STABILITY EVENT: Zero pressure incidents. Valve market dead.";
+            break;
+         default:
+            Debug.LogError("Unknown turn number");
+            break;
+      }
+
+      return tickerMessage;
+   }
+
+   public static string GetDivingBellTickerMessage(int shiftDirection)
+   {
+      string tickerMessage = "";
+
+      switch (TurnManager.Instance.eventCountdown)
+      {
+         case TURN_3:
+            if (shiftDirection <= 50)
+               tickerMessage = "New trench openings reported — survey crews request additional submersibles.";
+            else
+               tickerMessage = "Survey lanes are clear. No new deployment orders from exploration teams.";
+            break;
+         case TURN_4:
+            if (shiftDirection <= 50)
+               tickerMessage = "Deep caverns discovered: Exploration units mobilizing for salvage and mapping.";
+            else
+               tickerMessage = "Calm seas around survey sites. Explorers delay deployments until next window.";
+            break;
+         case TURN_5:
+            if (shiftDirection <= 50)
+               tickerMessage = "DEPLOYMENT EVENT: Exploration surge! Diving Bell demand Doubled!";
+            else
+               tickerMessage = "LULL EVENT: Survey work on hold. Diving Bell prices slump.";
             break;
          default:
             Debug.LogError("Unknown turn number");
@@ -134,6 +170,38 @@ public class WorldEvents {
                tickerMessage = "STAGNATION EVENT: Dead calm waters. Engine prices Doubled!";
             else
                tickerMessage = "FLOW EVENT: Free travel currents active. Engine demand plummeted.";
+            break;
+         default:
+            Debug.LogError("Unknown turn number");
+            break;
+      }
+
+      return tickerMessage;
+   }
+
+   public static string GetPrecisionLensTickerMessage(int shiftDirection)
+   {
+      string tickerMessage = "";
+
+      switch (TurnManager.Instance.eventCountdown)
+      {
+         case TURN_3:
+            if (shiftDirection <= 50)
+               tickerMessage = "Optics workshops report increased demand for fine components.";
+            else
+               tickerMessage = "Precision work quiet — instrument orders remain steady.";
+            break;
+         case TURN_4:
+            if (shiftDirection <= 50)
+               tickerMessage = "Research labs announce a high-precision initiative; parts requisitions rising.";
+            else
+               tickerMessage = "Calibration schedules cleared — no urgent optics orders.";
+            break;
+         case TURN_5:
+            if (shiftDirection <= 50)
+               tickerMessage = "BREAKTHROUGH EVENT: Precision Lens demand Doubled for scientific programs!";
+            else
+               tickerMessage = "OVERCAPACITY EVENT: Surplus optics available. Precision Lens prices fall.";
             break;
          default:
             Debug.LogError("Unknown turn number");

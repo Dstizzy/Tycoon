@@ -9,30 +9,38 @@ public class Item {
 
    /* Public static properties                                          */
    private static int crudeToolSellValue     { get; set; } = BASE_CRUDE_TOOL_SELL_VALUE;
-   private static int harpoonSellValue       { get; set; } = 60;
-   private static int pressureValveSellValue { get; set; } = 180;
-   private static int divingBellSellValue    { get; set; } = 250;
-   private static int precisionLensSellValue { get; set; } = 600;
-   private static int engineSellValue        { get; set; } = 900;
+   private static int harpoonSellValue       { get; set; } = BASE_HARPON_SELL_VALUE;
+   private static int pressureValveSellValue { get; set; } = BASE_PRESSURE_VALVE_SELL_VALUE;
+   private static int divingBellSellValue    { get; set; } = BASE_DIVING_BELL_SELL_VALUE;
+   private static int precisionLensSellValue { get; set; } = BASE_PRECISION_LENS_SELL_VALUE;
+   private static int engineSellValue        { get; set; } = BASE_ENGINE_VALUE;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
-   private static int Tier2BluePrintPrice    { get; set; } = 500;
-   private static int Tier3BluePrintPrice    { get; set; } = 2000;
+   private static int insurancePolicyPrice   { get; set; } = 100;
+   private static int tier2BluePrintPrice    { get; set; } = 500;
+   private static int tier3BluePrintPrice    { get; set; } = 2000;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
    public const int BASE_CRUDE_TOOL_SELL_VALUE     = 30;
    public const int BASE_HARPON_SELL_VALUE         = 60;
    public const int BASE_PRESSURE_VALVE_SELL_VALUE = 180;
+   public const int BASE_DIVING_BELL_SELL_VALUE    = 250;
+   public const int BASE_PRECISION_LENS_SELL_VALUE = 600;
    public const int BASE_ENGINE_VALUE              = 900;
+
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 60;
+   public const int MAX_CRUDE_TOOL_VALUE           = 90;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 120;
+   public const int MAX_HARPOON_VALUE              = 180;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 360;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 540;
+   public const int MIN_DIVING_BELL_VALUE          = 0;
+   public const int MAX_DIVING_BELL_VALUE          = 750;
+   public const int MIN_PRECISION_LENS_VALUE       = 0;
+   public const int MAX_PRECISION_LENS_VALUE       = 1800;
    public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 1800;
+   public const int MAX_ENGINE_VALUE               = 2700;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -64,6 +72,8 @@ public class Item {
       "Unlocks tier 2 items recipes at the Forge.";
    const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
       "Unlocks tier 3 recipes at the Forge.";
+   const string INSURANCE_POLICY_DESCRIPTION =
+      "Pays a 500 pearl payout if the an item in the sell market crashes within the next 5 turns.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -78,7 +88,8 @@ public class Item {
         RawOreChunk,
         IndustrialBlueprint,
         ClockworkBlueprint,
-        MercenaryEngineer
+        MercenaryEngineer,
+        InsurancePolicy
    }
 
     public static int GetItemValue(ItemType itemType) 
@@ -110,11 +121,13 @@ public class Item {
          case ItemType.RawOreChunk:
             return rawOrePrice;
          case ItemType.IndustrialBlueprint:
-            return Tier2BluePrintPrice;
+            return tier2BluePrintPrice;
          case ItemType.ClockworkBlueprint:
-            return Tier3BluePrintPrice;
+            return tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
+         case ItemType.InsurancePolicy:
+            return insurancePolicyPrice;
          default:
             Debug.LogError($"Unknown Item: `{itemType}`");
             return 0;
@@ -147,6 +160,8 @@ public class Item {
             return PRECISION_LENS_DESCRIPTION;
          case ItemType.DivingBell:
             return DIVING_BELL_DESCRIPTION;
+         case ItemType.InsurancePolicy:
+            return INSURANCE_POLICY_DESCRIPTION;
          default:
             Debug.LogError("No description available.");
             return "No description available.";
@@ -212,6 +227,55 @@ public class Item {
       return;
    }
 
+   public static void TryIncreaseHarpoonSellValue(int amount) 
+   {
+      // 1. Check if adding the amount would exceed the MAX_VALUE
+      if (harpoonSellValue >= MAX_HARPOON_VALUE) 
+      {
+         Debug.LogError("Harpoon Sell Value is already at maximum!");
+         return;
+      }
+
+      // 2. Check if the *new* value would exceed the maximum.
+      // We use Math.Max to see what the new value will be if clamped, and compare it.
+      if (harpoonSellValue + amount > MAX_HARPOON_VALUE) 
+      {
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_HARPOON_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
+      harpoonSellValue += amount;
+
+      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+
+      return;
+   }
+
+   public static void TryDecreaseHarpoonSellValue(int amount) 
+   {
+      // 1. Check if the value is already at the MIN_VALUE
+      if (harpoonSellValue <= MIN_HARPOON_VALUE)
+      {
+         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         return;
+      }
+
+      // 2. Check if subtracting the amount would drop below the minimum.
+      if (harpoonSellValue - amount < MIN_HARPOON_VALUE) 
+      {
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_HARPOON_VALUE}.");
+         return;
+      }
+
+      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
+      harpoonSellValue -= amount;
+
+      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+
+      return;
+   }
+
    public static void TryIncreasePressureValveValue(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
@@ -261,53 +325,79 @@ public class Item {
       return;
    }
 
-   public static void TryIncreaseHarpoonSellValue(int amount) 
+    // --- Diving Bell increase/decrease methods ---
+   public static void TryIncreaseDivingBellValue(int amount)
    {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (harpoonSellValue >= MAX_HARPOON_VALUE) 
+      if (divingBellSellValue >= MAX_DIVING_BELL_VALUE)
       {
-         Debug.LogError("Harpoon Sell Value is already at maximum!");
+         Debug.LogError("Diving Bell Sell Value is already at maximum!");
          return;
       }
 
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (harpoonSellValue + amount > MAX_HARPOON_VALUE) 
+      if (divingBellSellValue + amount > MAX_DIVING_BELL_VALUE)
       {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_HARPOON_VALUE}.");
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_DIVING_BELL_VALUE}.");
          return;
       }
 
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      harpoonSellValue += amount;
-
-      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
-
-      return;
+      divingBellSellValue += amount;
+      OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
    }
 
-   public static void TryDecreaseHarpoonSellValue(int amount) 
+   public static void TryDecreaseDivingBellValue(int amount)
    {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (harpoonSellValue <= MIN_HARPOON_VALUE)
+      if (divingBellSellValue <= MIN_DIVING_BELL_VALUE)
       {
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
+         Debug.LogError("Diving Bell Sell Value is already at minimum!");
          return;
       }
 
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (harpoonSellValue - amount < MIN_HARPOON_VALUE) 
+      if (divingBellSellValue - amount < MIN_DIVING_BELL_VALUE)
       {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_HARPOON_VALUE}.");
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_DIVING_BELL_VALUE}.");
          return;
       }
 
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      harpoonSellValue -= amount;
+      divingBellSellValue -= amount;
+      OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
+   }
 
-      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+   
 
-      return;
+   public static void TryIncreasePrecisionLensValue(int amount)
+   {
+      if (precisionLensSellValue >= MAX_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError("Precision Lens Sell Value is already at maximum!");
+         return;
+      }
+
+      if (precisionLensSellValue + amount > MAX_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_PRECISION_LENS_VALUE}.");
+         return;
+      }
+
+      precisionLensSellValue += amount;
+      OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
+   }
+
+   public static void TryDecreasePrecisionLensValue(int amount)
+   {
+      if (precisionLensSellValue <= MIN_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError("Precision Lens Sell Value is already at minimum!");
+         return;
+      }
+
+      if (precisionLensSellValue - amount < MIN_PRECISION_LENS_VALUE)
+      {
+         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_PRECISION_LENS_VALUE}.");
+         return;
+      }
+
+      precisionLensSellValue -= amount;
+      OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
    }
 
    public static void TryIncreaseEngineSellValue(int amount) 
@@ -360,7 +450,7 @@ public class Item {
    public static void TryIncreaseTier2BlueprintPrice(int amount) 
    {
       // 1. Check if adding the amount would exceed the MAX_VALUE
-      if ( Tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
+      if ( tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
       {
          Debug.LogError("Crude Tool Sell Value is already at maximum!");
          return;
@@ -407,26 +497,9 @@ public class Item {
 
    public static void ApplyDiscountToBuyItems(float percent) 
    {
-      TextMeshProUGUI rareOrePriceText           = new();
-      TextMeshProUGUI Tier2BluePrintPriceText    = new();
-      TextMeshProUGUI Tier3BluePrintPriceText    = new();
-      TextMeshProUGUI mercenaryEngineerPriceText = new();
-
-      rawOrePrice          -= (int)(rawOrePrice * percent);
-      rareOrePriceText      = Instance.BuyItems.Find(item => item.CompareTag(RAW_ORE_CHUNK_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      rareOrePriceText.text = rawOrePrice.ToString();
-
-      Tier2BluePrintPrice         -= (int)(Tier2BluePrintPrice * percent);
-      Tier2BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(CLOCKWORK_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      Tier2BluePrintPriceText.text = Tier2BluePrintPrice.ToString();
-
-      Tier3BluePrintPrice         -= (int)(Tier3BluePrintPrice * percent);
-      Tier3BluePrintPriceText      = Instance.BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      Tier3BluePrintPriceText.text = Tier3BluePrintPrice.ToString();
-
-      mercenaryEngineerPrice         -= (int)(mercenaryEngineerPrice * percent);
-      mercenaryEngineerPriceText      = Instance.BuyItems.Find(item => item.CompareTag(InventoryManager.MERCENARY_ENGINEER_TAG)).Find("ItemValue").GetComponent<TextMeshProUGUI>();
-      mercenaryEngineerPriceText.text = mercenaryEngineerPrice.ToString();
+      //rawOrePrice          -= (int)(rawOrePrice * percent);
+      tier2BluePrintPrice    -= (int)(tier2BluePrintPrice * percent);
+      tier3BluePrintPrice    -= (int)(tier3BluePrintPrice * percent);
+      mercenaryEngineerPrice -= (int)(mercenaryEngineerPrice * percent);
    }
-
 }
