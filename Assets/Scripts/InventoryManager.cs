@@ -198,12 +198,12 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
-      CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
-      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
-      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
+      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
+      //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
+      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
+      //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
+      //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
       if (PatchKitCountText != null)
          PatchKitCountText.transform.parent.gameObject.SetActive(false);
@@ -1292,43 +1292,6 @@ public class InventoryManager : MonoBehaviour
       {
          InventoryPanel.transform.Find("Arrow3").gameObject.SetActive(false);
          tutorialFunction = false;
-      }
-   }
-
-   public bool TrySpendItem(string itemName, int amount)
-   {
-      Debug.Log("Second Crude tool to spend: " + amount.ToString());
-      switch (itemName)
-      {
-         // Resources
-         case PEARL_TAG:
-            return TrySpendPearl(amount);
-         //case CRYSTAL_TAG:
-         //   return TrySpendCrystal(amount);
-         case ORE_TAG:
-            return TrySpendOre(amount);
-
-         // Crafted Items
-         case CRUDE_TOOL_TAG:
-            return TryUseCrudeTool(amount);
-         case HARPOON_TAG:
-            return TryUseHarpoon(amount);
-         case PATCH_KIT_TAG:
-            return TryUsePatchKit(amount);
-         case PRESSURE_VALVE_TAG:
-            return TryUsePressureValve(amount);
-         case DIVING_BELL_TAG:
-            return TryUseDivingBell(amount);
-         case ENGINE_TAG:
-            return TryUseEngine(amount);
-         case PRECISION_LENS_TAG:
-            return TryUsePrecisionLens(amount);
-         //case RAW_ORE_CHUNK_TAG:
-         //return TryUseRawOreChunk(amount);
-
-         default:
-            Debug.LogError($"TrySpendItem: Unknown item type '{itemName}'");
-            return false;
       }
    }
 

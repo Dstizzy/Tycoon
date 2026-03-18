@@ -586,9 +586,7 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
       
-      Debug.Log("total sell value: " + totalSellValue);
       // Recieves pearls and show success ticker only if something sold
-      // Change this logic at the bottom of SellItem()
       if (totalSellValue > 0) 
       {
          inv.TryAddPearl(totalSellValue);
@@ -596,7 +594,7 @@ public class TradeHutManager : MonoBehaviour
       } else 
       {
          // Check if the user actually tried to sell something but failed 
-         // vs. not selecting anything at all.
+         // or not selecting anything at all.
          ticker.ShowTicker("Transaction failed or no items selected.", Color.red, MessageTypes.ResultMessage);
       }
 

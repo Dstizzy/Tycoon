@@ -61,8 +61,10 @@ public class LabManager : MonoBehaviour
    public        bool labTutorialFunction     = false;
    public        bool victoryTutorialFunction = false;
 
-   TradeHutManager tradeHutManager;
-   ShipManager shipManager;
+   // Private instances
+   TradeHutManager  tradeHutManager;
+   ShipManager      shipManager;
+   InventoryManager inv;
 
    public static LabManager labManager { get; private set; }
    public static LabManager Instance { get; private set; }
@@ -71,7 +73,6 @@ public class LabManager : MonoBehaviour
    // Check if all required game objects exist and are in there required states                 
    private void Awake()
    {
-      ticker = TickerSystem.Instance;
 
       if (labManager != null && labManager != this)
          Destroy(this.gameObject);
@@ -81,13 +82,24 @@ public class LabManager : MonoBehaviour
          DontDestroyOnLoad(this.gameObject);
       }
 
-      tradeHutManager = TradeHutManager.Instance;
 
-      if (tradeHutManager == null)
-         Debug.LogError("Insance is not initialized");
+      if (TradeHutManager.Instance == null)
+         Debug.LogError("Trade Hut instance is not initialized");
+      else
+         tradeHutManager = TradeHutManager.Instance;
+      
+      if (InventoryManager.Instance == null)
+         Debug.LogError("Inventory instance is not initialized");
+      else
+         inv    = InventoryManager.Instance;
+      
+      if (TickerSystem.Instance == null)
+         Debug.LogError("Ticker instance is not initialized");
+      else
+          ticker = TickerSystem.Instance;
 
 
-      // Set the info panel to inactive if it exists                                           
+      /* Set the info panel to inactive if it exists                                           */
       if (infoPanel == null)
       {
          Debug.LogError("Info Panel is not assigned in the Inspector!");
@@ -235,27 +247,33 @@ public class LabManager : MonoBehaviour
    // Handle the innovation purchase and unlocking of the next tier node upon clicking the buy button
    private void HandleInnovation(GameObject tab, int tier)
    {
-      int pearlCost = 0, itemCost = 0;
       string requiredItem = "";
+      int    pearlCost    = 0, 
+             itemCost     = 0;
+
+      Func<int, bool> useItemMethod = null;
 
       if (tab == commerceTab)
       {
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost    = T1_COMM_PEARL;
-               itemCost     = T1_COMM_CRUDE_TOOL;
-               requiredItem = "Crude Tool";
+               pearlCost     = T1_COMM_PEARL;
+               itemCost      = T1_COMM_CRUDE_TOOL;
+               requiredItem  = "Crude Tool";
+               useItemMethod = inv.TryUseCrudeTool;
                break;
             case TIER_TWO:
-               pearlCost    = T2_COMM_PEARL;
-               itemCost     = T2_COMM_PRESSURE_VALVE;
-               requiredItem = "Pressure Valve";
+               pearlCost     = T2_COMM_PEARL;
+               itemCost      = T2_COMM_PRESSURE_VALVE;
+               requiredItem  = "Pressure Valve";
+               useItemMethod = inv.TryUsePressureValve;
                break;
             case TIER_THREE:
-               pearlCost    = T3_COMM_PEARL;
-               itemCost     = T3_COMM_LENS;
-               requiredItem = "Precision Lens";
+               pearlCost     = T3_COMM_PEARL;
+               itemCost      = T3_COMM_LENS;
+               requiredItem  = "Precision Lens";
+               useItemMethod = inv.TryUsePrecisionLens;
                break;
          }
       }
@@ -264,19 +282,22 @@ public class LabManager : MonoBehaviour
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost    = T1_PROD_PEARL;
-               itemCost     = T1_PROD_PATCH_KIT;
-               requiredItem = "Patch Kit";
+               pearlCost     = T1_PROD_PEARL;
+               itemCost      = T1_PROD_PATCH_KIT;
+               requiredItem  = "Patch Kit";
+               useItemMethod = inv.TryUsePatchKit;
                break;
             case TIER_TWO:
-               pearlCost    = T2_PROD_PEARL;
-               itemCost     = T2_PROD_HARPOON;
-               requiredItem = "Harpoon";
+               pearlCost     = T2_PROD_PEARL;
+               itemCost      = T2_PROD_HARPOON;
+               requiredItem  = "Harpoon";
+               useItemMethod = inv.TryUseHarpoon;
                break;
             case TIER_THREE:
-               pearlCost    = T3_PROD_PEARL;
-               itemCost     = T3_PROD_ENGINE;
-               requiredItem = "Engine";
+               pearlCost     = T3_PROD_PEARL;
+               itemCost      = T3_PROD_ENGINE;
+               requiredItem  = "Engine";
+               useItemMethod = inv.TryUseEngine;
                break;
          }
       }
@@ -285,26 +306,29 @@ public class LabManager : MonoBehaviour
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost    = T1_EXPL_PEARL;
-               itemCost     = T1_EXPL_HARPOON;
-               requiredItem = "Harpoon";
+               pearlCost     = T1_EXPL_PEARL;
+               itemCost      = T1_EXPL_HARPOON;
+               requiredItem  = "Harpoon";
+               useItemMethod = inv.TryUseHarpoon;
                break;
             case TIER_TWO:
-               pearlCost    = T2_EXPL_PEARL;
-               itemCost     = T2_EXPL_DIVING_BELL;
-               requiredItem = "Diving Bell";
+               pearlCost     = T2_EXPL_PEARL;
+               itemCost      = T2_EXPL_DIVING_BELL;
+               requiredItem  = "Diving Bell";
+               useItemMethod = inv.TryUseDivingBell;
                break;
             case TIER_THREE:
-               pearlCost    = T3_EXPL_PEARL;
-               itemCost     = T3_EXPL_DIVING_BELL;
-               requiredItem = "Diving Bell";
+               pearlCost     = T3_EXPL_PEARL;
+               itemCost      = T3_EXPL_DIVING_BELL;
+               requiredItem  = "Diving Bell";
+               useItemMethod = inv.TryUseDivingBell;
                break;
          }
       }
 
 
       // Attempt to unlock tiers with the corresponding cost
-      if (PerformBuy(pearlCost, itemCost, requiredItem))
+      if (PerformBuy(pearlCost, itemCost, requiredItem, useItemMethod))
       {
          switch (tier)
          {
@@ -344,29 +368,31 @@ public class LabManager : MonoBehaviour
       }
    }
 
-   // Spend certain amount of resources and give corresponding innovations                    
-   public bool PerformBuy(int pearlCost, int itemCost, string itemName)
+   /* Spend certain amount of resources and give corresponding innovations                     */
+   public bool PerformBuy(int pearlCost, int itemCost, string itemName, Func<int, bool> useItemMethod)
    {
-      bool isSuccess = true;
+      bool isSuccess = false;
       
-      // Try to spend the item if necessary
-      if (!string.IsNullOrEmpty(itemName) && itemCost > 0)
+      if(useItemMethod == null) 
+         Debug.LogError("Use item methods was not found.");
+      else
       {
-         Debug.Log("First Crude tool to spend: " + itemCost.ToString());
-
          // Link to inventory to spend the item
-         if (!InventoryManager.Instance.TrySpendItem(itemName, itemCost))
+         if((inv.pearlCount >= pearlCost))
          {
-            Debug.Log($"Not enough {itemName} to spend!");
-            isSuccess = false;
+            if (useItemMethod(itemCost) && inv.TrySpendPearl(pearlCost)) 
+               isSuccess = true;
+            else 
+            {
+               Debug.Log($"Not enough {itemName}s to spend!");
+               ticker.ShowTicker($"Not enough {itemName}s to spend!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+            }
+         } 
+         else 
+         {
+            Debug.LogError("Not enough pearls to spend");
+            ticker.ShowTicker("Not enough pearls to spend", Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
-      }
-
-      // Check to see if there is enough pearls and spend them if there are
-      if (InventoryManager.Instance.TrySpendPearl(pearlCost)) 
-      {
-         Debug.Log("Not enough pearls!");
-         isSuccess = false;
       }
 
       return isSuccess;
