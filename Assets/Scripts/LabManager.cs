@@ -365,11 +365,17 @@ public class LabManager : MonoBehaviour
          {
             if (useItemMethod(itemCost) && inv.TrySpendPearl(pearlCost)) 
                isSuccess = true;
-            else
-               Debug.Log($"Not enough {itemName} to spend!");
+            else 
+            {
+               Debug.Log($"Not enough {itemName}s to spend!");
+               ticker.ShowTicker($"Not enough {itemName}s to spend!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+            }
          } 
          else 
+         {
             Debug.LogError("Not enough pearls to spend");
+            ticker.ShowTicker("Not enough pearls to spend", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         }
       }
 
       return isSuccess;
