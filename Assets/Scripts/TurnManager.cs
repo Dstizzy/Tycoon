@@ -96,63 +96,38 @@ public class TurnManager : MonoBehaviour
       if (currentTurn > maxTurns)
       {
          EndGame();
+         return;
       }
       else
       {
          UpdateTurnUI();
-
          HandleJamming();
          HandleEnemy();
 
-         if (eventCountdown == 5)
+         // Handle world event reset
+         if (eventCountdown == 1) 
          {
+            tradeHutManager.ResetWorldEventShifts();
+            tradeHutManager.WorldEventChance();
+         }
+
+         // Apply the market shift
+         tradeHutManager.MarketFluctuate();
+
+         // Handle the News Ticker for World Events
+         if (eventCountdown >= 3 && eventCountdown <= 5) 
+         {
+            newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
             newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
-
-            // World Event fluctuation
-            tradeHutManager.MarketFluctuate();
-
-            eventCountdown = 0;
-         }
-         else
-         {
-            if (eventCountdown == 1)
-            {
-               tradeHutManager.ResetWorldEventShifts();
-               tradeHutManager.WorldEventChance();
-               tradeHutManager.MarketFluctuate();
-            }
-            else
-            {
-               if (eventCountdown >= 3 && eventCountdown <= 5)
-               {
-                  newsTicker.gameObject.SetActive(true);
-                  tradeHutManager.WorldEventNewsTickerText();
-                  newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
-                  tradeHutManager.MarketFluctuate();
-               }
-               else
-                  tradeHutManager.MarketFluctuate();
-            }
          }
 
+         // Predict the next turn
          tradeHutManager.CraftMarketForesight();
 
-         if (currentTurn == 2)
-            tradeHutManager.CraftMarketForesight();
-
-         //// Natural flucuations
-         //if(eventCountdown > 0 && eventCountdown != 5) 
-         //{
-         //   TradeHutManager.Instance.MarketFluctuate();
-         //   TradeHutManager.Instance.CraftMarketForesight();
-         //}
-
-         Debug.Log("Turn" + currentTurn + "Start");
-
-
-         // Add logic for the next turn here (e.g., start
-         // enemy turn, reset unit actions, etc.)
+         // Reset countdown if we just finished the event turn
+         if (eventCountdown == 5)
+            eventCountdown = 0;
 
          OnTurnEnded?.Invoke();
       }

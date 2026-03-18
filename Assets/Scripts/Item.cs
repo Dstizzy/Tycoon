@@ -16,6 +16,7 @@ public class Item {
    private static int engineSellValue        { get; set; } = BASE_ENGINE_VALUE;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
+   private static int insurancePolicyPrice   { get; set; } = 100;
    private static int tier2BluePrintPrice    { get; set; } = 500;
    private static int tier3BluePrintPrice    { get; set; } = 2000;
 
@@ -29,17 +30,17 @@ public class Item {
    public const int BASE_ENGINE_VALUE              = 900;
 
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 60;
+   public const int MAX_CRUDE_TOOL_VALUE           = 90;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 120;
-   public const int MIN_DIVING_BELL_VALUE          = 0;
-   public const int MAX_DIVING_BELL_VALUE          = 500;
+   public const int MAX_HARPOON_VALUE              = 180;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 360;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 540;
+   public const int MIN_DIVING_BELL_VALUE          = 0;
+   public const int MAX_DIVING_BELL_VALUE          = 750;
    public const int MIN_PRECISION_LENS_VALUE       = 0;
-   public const int MAX_PRECISION_LENS_VALUE       = 1200;
+   public const int MAX_PRECISION_LENS_VALUE       = 1800;
    public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 1800;
+   public const int MAX_ENGINE_VALUE               = 2700;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -71,6 +72,8 @@ public class Item {
       "Unlocks tier 2 items recipes at the Forge.";
    const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
       "Unlocks tier 3 recipes at the Forge.";
+   const string INSURANCE_POLICY_DESCRIPTION =
+   "Pays a 500?pearl payout if the an item in the sell market crashes within the next 5 turns.";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -85,7 +88,8 @@ public class Item {
         RawOreChunk,
         IndustrialBlueprint,
         ClockworkBlueprint,
-        MercenaryEngineer
+        MercenaryEngineer,
+        InsurancePolicy
    }
 
     public static int GetItemValue(ItemType itemType) 
@@ -122,6 +126,8 @@ public class Item {
             return tier3BluePrintPrice;
          case ItemType.MercenaryEngineer:
             return mercenaryEngineerPrice;
+         case ItemType.InsurancePolicy:
+            return insurancePolicyPrice;
          default:
             Debug.LogError($"Unknown Item: `{itemType}`");
             return 0;
@@ -154,6 +160,8 @@ public class Item {
             return PRECISION_LENS_DESCRIPTION;
          case ItemType.DivingBell:
             return DIVING_BELL_DESCRIPTION;
+         case ItemType.InsurancePolicy:
+            return INSURANCE_POLICY_DESCRIPTION;
          default:
             Debug.LogError("No description available.");
             return "No description available.";
