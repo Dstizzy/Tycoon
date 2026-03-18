@@ -94,21 +94,21 @@ public class TradeHutManager : MonoBehaviour
                     
                     MARKET_CHANCE_MIN = 0,
                     MARKET_CHANCE_MAX = 100,
+         
+                    FIRST_TUTORIAL   = 1,
+                    SECOND_TUTORIAL = 2,
 
                     INSURANCE_POLICY_PAYOUT = 500;
       
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
-                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint";
+                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
+                       INSURANCE_POLICY_TAG     = "Insurance Policy";
    
    public bool isTier3BuffACtive   = false;
    public bool tutorialFunctionOne = false;
    public bool tutorialFunctionTwo = false;
-                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
-                       INSURANCE_POLICY_TAG     = "Insurance Policy";
-
-   public bool isTier3BuffACtive       = false,
-               isInsurancePolicyActive = false;
+   public bool isInsurancePolicyActive = false;
 
    private InventoryManager inv;
 
