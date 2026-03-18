@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 using TMPro;
 
 using UnityEngine;
@@ -14,13 +15,23 @@ public class OreRefinery_Manager : MonoBehaviour
    const int INFO_BUTTON    = 1;
    const int UPGRADE_BUTTON = 2;
    const int STARTING_LEVEL = 1;
-   const int ENDING_LEVEL   = 4;
+   const int ENDING_LEVEL   = 3;
 
    [SerializeField] private Transform infoPanel;
    [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;
    [SerializeField] private GameObject jamPanel;
    public TextMeshProUGUI oreRefineryLevelText;
+
+   [Header("Ore Visuals")]
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
+   [SerializeField] private List<Sprite> oreLevelSprites;
+
+   [Header("Upgrade Costs")]
+   [SerializeField] private int level2PearlCost = 100;
+   [SerializeField] private int level2OreCost = 50;
+   [SerializeField] private int level3PearlCost = 100;
+   [SerializeField] private int level3OreCost = 50;
 
    TickerSystem ticker;
 
@@ -96,14 +107,23 @@ public class OreRefinery_Manager : MonoBehaviour
       {
          case INFO_BUTTON:
             ShowInfoPanel();
-            infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
+            Button exitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
+            exitBtn.onClick.RemoveAllListeners(); 
+            exitBtn.onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
             break;
+
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeOreRefinery());
-            upgradePanel.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
-   
+
+            Button yesBtn = upgradePanel.Find("YesButton").GetComponent<Button>();
+            yesBtn.onClick.RemoveAllListeners(); 
+            yesBtn.onClick.AddListener(() => UpgradeOreRefinery());
+
+            Button cancelBtn = upgradePanel.transform.Find("CancelButton").GetComponent<Button>();
+            cancelBtn.onClick.RemoveAllListeners(); 
+            cancelBtn.onClick.AddListener(() => CloseOreRefinoryPanel(UPGRADE_BUTTON));
             break;
+
          default:
             Debug.Log("Building Panel: Unknown button ID.");
             break;
@@ -145,7 +165,59 @@ public class OreRefinery_Manager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
-      PopUpManager.Instance.DisablePlayerInput();
+
+      if (oreLevel < ENDING_LEVEL)
+      {
+         int targetLevel = oreLevel + 1;
+         Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+
+         if (mainTextTransform != null)
+         {
+            TextMeshProUGUI upgradeText = mainTextTransform.GetComponent<TextMeshProUGUI>();
+            upgradeText.text = $"Would you like to upgrade to lvl {targetLevel}?";
+         }
+
+         Transform pearlTextObj = upgradePanel.Find("PearlCostText");
+         if (pearlTextObj != null)
+         {
+            pearlTextObj.gameObject.SetActive(true);
+            pearlTextObj.GetComponent<TextMeshProUGUI>().text = NextUpgradeCostInPearls.ToString();
+         }
+
+         Transform oreTextObj = upgradePanel.Find("OreCostText");
+         if (oreTextObj != null)
+         {
+            oreTextObj.gameObject.SetActive(true);
+            oreTextObj.GetComponent<TextMeshProUGUI>().text = NextUpgradeCostInOre.ToString();
+         }
+
+         Transform imagesObj = upgradePanel.Find("UpgradePanelImages");
+         if (imagesObj != null) imagesObj.gameObject.SetActive(true);
+
+         Button yesBtn = upgradePanel.Find("YesButton").GetComponent<Button>();
+         if (yesBtn != null) yesBtn.gameObject.SetActive(true);
+      }
+      else
+      {
+         Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+         if (mainTextTransform != null)
+         {
+            TextMeshProUGUI upgradeText = mainTextTransform.GetComponent<TextMeshProUGUI>();
+            upgradeText.text = "Max Level Reached!";
+         }
+
+         Transform pearlTextObj = upgradePanel.Find("PearlCostText");
+         if (pearlTextObj != null) pearlTextObj.gameObject.SetActive(false);
+
+         Transform oreTextObj = upgradePanel.Find("OreCostText");
+         if (oreTextObj != null) oreTextObj.gameObject.SetActive(false);
+
+         Transform imagesObj = upgradePanel.Find("UpgradePanelImages");
+         if (imagesObj != null) imagesObj.gameObject.SetActive(false);
+
+         Button yesBtn = upgradePanel.Find("YesButton").GetComponent<Button>();
+         if (yesBtn != null) yesBtn.gameObject.SetActive(false);
+      }
    }
 
    private void CloseInfoPanel()
@@ -170,34 +242,27 @@ public class OreRefinery_Manager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
-   // --- ADDED: Unsubscribe when destroyed ---
-   //private void OnDestroy()
    private void CalculateRefineryValues()
    {
-      // Ore production logic
       switch (oreLevel)
       {
          case 1:
-            Debug.Log("Ore Refinery Level 1: Produces 10 Ore per turn. Upgrade Cost: 100 Pearls + 50 ore.");
+            Debug.Log($"Ore Refinery Level 1: Produces 10 Ore per turn.");
             CurrentOreProduction = 10;
-            NextUpgradeCostInPearls = 100;
-            NextUpgradeCostInOre = 50;
+            NextUpgradeCostInPearls = level2PearlCost;
+            NextUpgradeCostInOre = level2OreCost;
             break;
          case 2:
-            Debug.Log("Ore Refinery Level 2: Produces 25 Ore per turn. Upgrade Cost: 350 pearls + 1 patch kit.");
+            Debug.Log($"Ore Refinery Level 2: Produces 25 Ore per turn.");
             CurrentOreProduction = 25;
-            NextUpgradeCostInPearls = 350;
-            //NextUpgradeCostInPatchKits = 1; Need to implement Patch Kits in InventoryManager
+            NextUpgradeCostInPearls = level3PearlCost;
+            NextUpgradeCostInOre = level3OreCost;
             break;
          case 3:
-            Debug.Log("Ore Refinery Level 3: Produces 60 Ore per turn. Upgrade Cost: 1000 pearls + 1 precision lens");
+            Debug.Log("Ore Refinery Level 3: Produces 60 Ore per turn. MAX LEVEL.");
             CurrentOreProduction = 60;
-            NextUpgradeCostInPearls = 1000;
-            //NextUpgradeCostInPrecisionLens = 1; Need to implement Precision Lens in InventoryManager
-            break;
-         case 4:
-            Debug.Log("Ore Refinery Level 4: Produces 150 Ore per turn.");
-            CurrentOreProduction = 150;
+            NextUpgradeCostInPearls = 0;
+            NextUpgradeCostInOre = 0;
             break;
          default:
             Debug.Log("Unknown Ore Refinery Level.");
@@ -331,14 +396,18 @@ public class OreRefinery_Manager : MonoBehaviour
          InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
          
          oreLevel++;
+         UpdateOreRefinerySprites();
          CalculateRefineryValues();
 
          oreRefineryLevelText.text = "Level " + oreLevel.ToString();
          Debug.Log($"Ore Refinery upgraded to level {oreLevel}!");
          ticker.ShowTicker($"Ore Refinery upgraded to level {oreLevel}!", Color.green, MessageTypes.ResultMessage);
-         
-         if(oreLevel == ENDING_LEVEL)
+
+         if (oreLevel == ENDING_LEVEL)
+         {
             InventoryManager.Instance.OreRefineryUpgradeIcon.gameObject.SetActive(false);
+         }
+         CloseOreRefinoryPanel(UPGRADE_BUTTON);
       }
       else
       {
@@ -361,5 +430,16 @@ public class OreRefinery_Manager : MonoBehaviour
    public void DeactivateJamSymbol()
    {
       buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
+   }
+
+   private void UpdateOreRefinerySprites()
+   {
+      int index = oreLevel - 1;
+
+      if (buildingSpriteRenderer != null && index < oreLevelSprites.Count)
+      {
+         buildingSpriteRenderer.sprite = oreLevelSprites[index];
+         Debug.Log($"Forge Visuals Updated to Level {oreLevel}");
+      }
    }
 }

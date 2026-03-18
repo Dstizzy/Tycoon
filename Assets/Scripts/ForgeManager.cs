@@ -33,8 +33,8 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
-   public const int LEVEL_2_PEARL_COST = 500;
-   public const int LEVEL_3_PEARL_COST = 800;
+   public const int LEVEL_2_PEARL_COST = 300;
+   public const int LEVEL_3_PEARL_COST = 700;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
@@ -77,6 +77,10 @@ public class ForgeManager : MonoBehaviour
 
    [Header("Idle Indicator")]
    [SerializeField] private GameObject craftIdleIndicator;
+
+   [Header("Forge Visuals")]
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer; 
+   [SerializeField] private List<Sprite> forgeLevelSprites;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -177,6 +181,8 @@ public class ForgeManager : MonoBehaviour
             activeQueuePanel.SetActive(false);
          }
       }
+
+      UpdateForgeSprites();
    }
 
    private void CreateCraftWindow(Transform container)
@@ -354,12 +360,15 @@ public class ForgeManager : MonoBehaviour
          if (forgeLevel < ENDING_LEVEL)
          {
             forgeLevel += 1;
+            UpdateForgeSprites();
          }
 
          if(forgeLevel == ENDING_LEVEL)
             InventoryManager.Instance.ForgeUpgradeIcon.gameObject.SetActive(false);
 
          forgeLevelText.text = "Level " + forgeLevel.ToString();
+         Debug.Log($"Forge upgraded to level {forgeLevel}!");
+         ticker.ShowTicker($"Forge upgraded to level {forgeLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
       }
@@ -375,6 +384,17 @@ public class ForgeManager : MonoBehaviour
          }
          Debug.Log("Not enough pearls to upgrade!");
 
+      }
+   }
+
+   private void UpdateForgeSprites()
+   {
+      int index = forgeLevel - 1;
+
+      if (buildingSpriteRenderer != null && index < forgeLevelSprites.Count)
+      {
+         buildingSpriteRenderer.sprite = forgeLevelSprites[index];
+         Debug.Log($"Forge Visuals Updated to Level {forgeLevel}");
       }
    }
 
@@ -488,12 +508,12 @@ public class ForgeManager : MonoBehaviour
 
       if (forgeLevel == 1)
       {
-         upgradeCost = 500;
+         upgradeCost = 300;
          upgradeExplanation = "Bonus: Unlocks a 2nd simultaneous crafting slot!";
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 800;
+         upgradeCost = 700;
          upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
       }
 
