@@ -65,12 +65,13 @@ public class TradeHutManager : MonoBehaviour
                precisionLensChance,
                engineChance,
 
-               shiftDirection,
                worldEvent;
 
    // Public variables
    public int marketShiftMax = 0,
               marketShiftMin = 0;
+   public int shiftDirection { get; private set; } 
+
 
    // Constants
    public const int ENDING_LEVEL   = 5,  
@@ -92,13 +93,17 @@ public class TradeHutManager : MonoBehaviour
                     ORE_EXCHANGE_COST    = 10,
                     
                     MARKET_CHANCE_MIN = 0,
-                    MARKET_CHANCE_MAX = 100;
+                    MARKET_CHANCE_MAX = 100,
+
+                    INSURANCE_POLICY_PAYOUT = 500;
       
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
-                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint";
-   
-   public bool isTier3BuffACtive  = false;
+                       CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
+                       INSURANCE_POLICY_TAG     = "Insurance Policy";
+
+   public bool isTier3BuffACtive       = false,
+               isInsurancePolicyActive = false;
 
    private InventoryManager inv;
 
@@ -170,6 +175,7 @@ public class TradeHutManager : MonoBehaviour
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.5f, INDUSTRIAL_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, CLOCKWORK_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
+      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), 0.0f, INSURANCE_POLICY_TAG, -65);
    }
 
    public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 
@@ -292,6 +298,9 @@ public class TradeHutManager : MonoBehaviour
             if (index >= 0)
                infoText.text = GetItemDescription(ItemType.MercenaryEngineer).Substring(0, index + 1).Trim();
             break;
+         case INSURANCE_POLICY_TAG:
+            infoText.text = GetItemDescription(ItemType.InsurancePolicy);
+            break;
          default:
             Debug.LogError("Unkown item: " + itemTag);
             break;
@@ -323,10 +332,7 @@ public class TradeHutManager : MonoBehaviour
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
       RectTransform sellItemRectTransform = sellItemTransform.GetComponent<RectTransform>();
 
-
       sellItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * 0, 0);
-
-      
 
       // Populate item properties
       sellItemTransform.tag = itemTag;
@@ -401,12 +407,10 @@ public class TradeHutManager : MonoBehaviour
 
       buyItemTransfrom.tag = itemTag;
 
-
-
       // Populate item properties
-      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite             = itemSprite;
-      buyItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text      = itemTag;
-      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite          = currencySprite;
+      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite        = itemSprite;
+      buyItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemTag;
+      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite     = currencySprite;
 
       switch(itemTag) 
       {
@@ -436,6 +440,9 @@ public class TradeHutManager : MonoBehaviour
             break;
          case RAW_ORE_CHUNK_TAG:
             buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+            break;
+         case INSURANCE_POLICY_TAG:
+            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.InsurancePolicy).ToString();
             break;
          default:
             Debug.LogError("Unkown item: " + itemTag);
@@ -555,10 +562,10 @@ public class TradeHutManager : MonoBehaviour
          ticker.ShowTicker("Transaction failed or no items selected.", Color.red, MessageTypes.ResultMessage);
       }
 
-      crudeToolSellCount = MIN_SELL_ITEM_COUNT;
-      harpoonSellCount   = MIN_SELL_ITEM_COUNT;
+      crudeToolSellCount     = MIN_SELL_ITEM_COUNT;
+      harpoonSellCount       = MIN_SELL_ITEM_COUNT;
       pressureValveSellCount = MIN_SELL_ITEM_COUNT;
-      engineSellCount    = MIN_SELL_ITEM_COUNT;
+      engineSellCount        = MIN_SELL_ITEM_COUNT;
       
       // Destroy the instantiated sell window and remove the reference                                
       if (currentSellItem != null) 
@@ -671,6 +678,12 @@ public class TradeHutManager : MonoBehaviour
                BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
             ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
          }
+
+         if(currentBuyItem.CompareTag(INSURANCE_POLICY_TAG) && inv.TrySpendPearl(GetItemPrice(ItemType.InsurancePolicy)))
+         { 
+            isInsurancePolicyActive = true;
+            ticker.ShowTicker("Purchased Insurance Policy.", Color.green, MessageTypes.ResultMessage);
+         }
       }
 
       // Clean up the buy window instance if one was open
@@ -711,18 +724,18 @@ public class TradeHutManager : MonoBehaviour
             itemType = ItemType.CrudeTool;
             break;
          case HARPOON_TAG:
-            current = harpoonSellCount;
-            owned = inv.harpoonCount;
+            current  = harpoonSellCount;
+            owned    = inv.harpoonCount;
             itemType = ItemType.Harpoon;
             break;
          case PRESSURE_VALVE_TAG:
-            current = pressureValveSellCount;
-            owned = inv.pressureValveCount;
+            current  = pressureValveSellCount;
+            owned    = inv.pressureValveCount;
             itemType = ItemType.PressureValve;
             break;
          case ENGINE_TAG:
-            current = engineSellCount;
-            owned = inv.engineCount;
+            current  = engineSellCount;
+            owned    = inv.engineCount;
             itemType = ItemType.Engine;
             break;
          default:
@@ -888,359 +901,178 @@ public class TradeHutManager : MonoBehaviour
    
    public void CraftMarketForesight() 
    {
-  
-      crudeToolChance     = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-      harpoonChance       = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-      pressureValveChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-      divingBellChance    = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-      precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-      engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+       // 1. Roll all chances and fluctuations for the upcoming turn ONCE
+       crudeToolChance     = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+       harpoonChance       = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+       pressureValveChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+       divingBellChance    = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+       precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+       engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+   
+       crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       divingBellFluctuation    = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       precisionLensFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
+   
+       // 2. Update UI Previews based on these exact rolls
+       UpdatePreviewUI(
+          ItemType.CrudeTool, WorldEventTypes.CrudeToolEvent, CRUDE_TOOL_TAG,
+          crudeToolChance, crudeToolFluctuation, BASE_CRUDE_TOOL_SELL_VALUE,
+          MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE);
 
-      crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
-      harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
-      pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-      divingBellFluctuation    = Rng.Next(marketShiftMin, marketShiftMax + 1);
-      precisionLensFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-      engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       UpdatePreviewUI(
+          ItemType.Harpoon, WorldEventTypes.HarpoonEvent, HARPOON_TAG,
+          harpoonChance, harpoonFluctuation, BASE_HARPON_SELL_VALUE,
+          MIN_HARPOON_VALUE, MAX_HARPOON_VALUE);
+   
+       if (ForgeManager.Instance.hasTier2Blueprint) 
+       {
+           UpdatePreviewUI(
+              ItemType.PressureValve, WorldEventTypes.PressureValveEvent, PRESSURE_VALVE_TAG,
+              pressureValveChance, pressureValveFluctuation, BASE_PRESSURE_VALVE_SELL_VALUE,
+              MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE);
 
-      TextMeshProUGUI crudeToolValueText     = SellItems.Find(d => d.CompareTag(CRUDE_TOOL_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      harpoonValueText       = SellItems.Find(d => d.CompareTag(HARPOON_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      pressureValveValueText = SellItems.Find(d => d.CompareTag(PRESSURE_VALVE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      divingBellValueText    = SellItems.Find(d => d.CompareTag(DIVING_BELL_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      precisionLensValueText = SellItems.Find(d => d.CompareTag(PRECISION_LENS_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>(),
-                      engineValueText        = SellItems.Find(d => d.CompareTag(ENGINE_TAG)).Find("NextValue").GetComponent<TextMeshProUGUI>();
+           UpdatePreviewUI(
+              ItemType.DivingBell, WorldEventTypes.DivingBellEvent, DIVING_BELL_TAG,
+              divingBellChance, divingBellFluctuation,BASE_DIVING_BELL_SELL_VALUE,
+              MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE);
+       }
+   
+       if (ForgeManager.Instance.hasTier3Blueprint) 
+       {
+           UpdatePreviewUI(
+              ItemType.PrecisionLens, WorldEventTypes.PrecisionLensEvent, PRECISION_LENS_TAG,
+              precisionLensChance, precisionLensFluctuation,BASE_PRECISION_LENS_SELL_VALUE,
+              MIN_PRECISION_LENS_VALUE, MAX_PRECISION_LENS_VALUE);
 
-      int baseVal,
-          preview;
-
-      // Displays the crude tool sell value for the next turn
-      if (worldEvent == (int) WorldEventTypes.CrudeToolEvent  && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN) 
-         WorldEventForesight(crudeToolValueText);
-      else 
-      {
-         baseVal = GetItemValue(ItemType.CrudeTool);
-         preview = baseVal;
-
-         if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.CrudeToolEvent) 
+           UpdatePreviewUI(
+              ItemType.Engine, WorldEventTypes.ClockworkEngineEvent, ENGINE_TAG,
+              engineChance, engineFluctuation, BASE_ENGINE_VALUE,
+              MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
+       }
+   }
+   
+   // Helper method to keep your UI updates clean and perfectly matched to the math
+   private void UpdatePreviewUI(
+      ItemType itemType, WorldEventTypes eventType, string itemTag,
+      int chance, int fluctuation, int baseValue,
+      int minSellCost, int maxSellCost)
+   {
+       int currentVal = GetItemValue(itemType);
+       int preview    = currentVal;
+   
+       // Check if the NEXT turn is the actual World Event (Turn 5)
+       if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
+       {
+           if (shiftDirection <= 50) 
+              preview += currentVal;
+           else 
+              preview -= currentVal;
+       }
+       else
+       {
+         // Standard Fluctuation Preview
+         if (worldEvent == (int) eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
          {
-            if (shiftDirection <= 50)
-               preview = baseVal - ((int)(BASE_CRUDE_TOOL_SELL_VALUE));
+            if(shiftDirection <= 50)
+               preview = currentVal - baseValue;
             else
-               preview = baseVal + ((int)(BASE_CRUDE_TOOL_SELL_VALUE));
-         } 
-         else 
-         {
-            if (crudeToolChance <= 30)
-               preview = baseVal + crudeToolFluctuation;
-            else
-               if (crudeToolChance <= 60)
-                  preview = baseVal - crudeToolFluctuation;
+              preview  = currentVal + baseValue;
          }
-
-         // clamp so UI never shows out-of-range values
-         preview = Mathf.Clamp(preview, MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE);
-
-         // always write the UI (avoids leaving stale negative text when conditions skip)
-         crudeToolValueText.text = "Next Value: " + preview.ToString();
-      }
-
-      // Displays the harpoon sell value for the next turn
-      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
-         WorldEventForesight(harpoonValueText);
-      else 
-      {
-         baseVal = GetItemValue(ItemType.Harpoon);
-         preview = baseVal; // default to current
-
-         if(TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.HarpoonEvent) 
-         {
-            if (shiftDirection <= 50)
-               preview = baseVal - ((int)(BASE_HARPON_SELL_VALUE));
-            else
-               preview = baseVal + ((int)(BASE_HARPON_SELL_VALUE));
-         }
-          else 
-          {
-            if (harpoonChance <= 30)
-                   preview = baseVal + harpoonFluctuation;
-                else 
-                   if (harpoonChance <= 60)
-                      preview = baseVal - harpoonFluctuation;
-          }
-          
-          // clamp so UI never shows out-of-range values
-          preview = Mathf.Clamp(preview, MIN_HARPOON_VALUE, MAX_HARPOON_VALUE);
-
-         // always write the UI (avoids leaving stale negative text when conditions skip)
-         harpoonValueText.text = "Next Value: " + preview.ToString();
-      }
-
-      if (ForgeManager.Instance.hasTier2Blueprint) 
-      {
-         // Displays the pressure valve sell value for the next turn
-         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
-            WorldEventForesight(pressureValveValueText);
-         else 
-         {
-            baseVal = GetItemValue(ItemType.PressureValve);
-            preview = baseVal; // default to current
-
-            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.PressureValveEvent) 
-            {
-               if (shiftDirection <= 50)
-                  preview = baseVal - ((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
-               else
-                  preview = baseVal + ((int)(BASE_PRESSURE_VALVE_SELL_VALUE));
-            }
-            else 
-            {
-               if (pressureValveChance <= 30)
-                  preview = baseVal + pressureValveFluctuation;
-               else
-                  if (pressureValveChance <= 60)
-                     preview = baseVal - pressureValveFluctuation;
-            }
-
-            // clamp so UI never shows out-of-range values
-            preview = Mathf.Clamp(preview, MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE);
-
-            // always write the UI (avoids leaving stale negative text when conditions skip)
-            pressureValveValueText.text = "Next Value: " + preview.ToString();
-         }
-
-          // Tier2 also surfaces Diving Bell
-         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
-            WorldEventForesight(divingBellValueText);
          else
-         {
-            baseVal = GetItemValue(ItemType.DivingBell);
-            preview = baseVal;
-
-            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.DivingBellEvent)
-            {
-               if (shiftDirection <= 50)
-                  preview = baseVal - ((int)(BASE_DIVING_BELL_SELL_VALUE));
-               else
-                  preview = baseVal + ((int)(BASE_DIVING_BELL_SELL_VALUE));
-            }
-            else
-            {
-               if (divingBellChance <= 30)
-                  preview = baseVal + divingBellFluctuation;
-               else
-                  if (divingBellChance <= 60)
-                     preview = baseVal - divingBellFluctuation;
-            }
-
-            preview = Mathf.Clamp(preview, MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE);
-            divingBellValueText.text = "Next Value: " + preview.ToString();
-         }
-      }
-
-      if (ForgeManager.Instance.hasTier3Blueprint) 
-      {
-
-         // Displays the precision lens sell value for the next turn (tier3)
-         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
-            WorldEventForesight(precisionLensValueText);
-         else {
-            baseVal = GetItemValue(ItemType.PrecisionLens);
-            preview = baseVal;
-
-            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.PrecisionLensEvent) 
-            {
-               if (shiftDirection <= 50)
-                  preview = baseVal - ((int)(BASE_PRECISION_LENS_SELL_VALUE));
-               else
-                  preview = baseVal + ((int)(BASE_PRECISION_LENS_SELL_VALUE));
-            } 
+         { 
+            if (chance <= 30) 
+               preview += fluctuation;
             else 
-            {
-               if (precisionLensChance <= 30)
-                  preview = baseVal + precisionLensFluctuation;
-               else
-                  if (precisionLensChance <= 60)
-                  preview = baseVal - precisionLensFluctuation;
-            }
-
-            preview = Mathf.Clamp(preview, MIN_PRECISION_LENS_VALUE, MAX_PRECISION_LENS_VALUE);
-            precisionLensValueText.text = "Next Value: " + preview.ToString();
+              if (chance <= 60) 
+                 preview -= fluctuation;
          }
+       }
+   
+       preview = Mathf.Clamp(preview, minSellCost, maxSellCost);
+       
+       Transform itemUI = SellItems.Find(item => item.CompareTag(itemTag));
 
-         // Displays the engine sell value for the next turn
-         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
-            WorldEventForesight(engineValueText);
-         else 
-         {
-            baseVal = GetItemValue(ItemType.Engine);
-            preview = baseVal; // default to current
-
-            if (TurnManager.Instance.eventCountdown == 0 && worldEvent == (int)WorldEventTypes.ClockworkEngineEvent) 
-            {
-               if (shiftDirection <= 50)
-                  preview = baseVal - ((int)(BASE_ENGINE_VALUE));
-               else
-                  preview = baseVal + ((int)(BASE_ENGINE_VALUE));
-            } 
-            else 
-            {
-               if (engineChance <= 30)
-                  preview = baseVal + engineFluctuation;
-               else
-                  if (engineChance <= 60)
-                     preview = baseVal - engineFluctuation;
-            }
-
-            // clamp so UI never shows out-of-range values
-            preview = Mathf.Clamp(preview, MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
-
-            // always write the UI (avoids leaving stale negative text when conditions skip)
-            engineValueText.text = "Next Value: " + preview.ToString();
-         }
-      }
+       if(itemUI != null)
+           itemUI.Find("NextValue").GetComponent<TextMeshProUGUI>().text = "Next Value: " + preview.ToString();
+       else
+         Debug.LogError("Current Item is null");
    }
 
    // Shifts the sell market each turn and during world events
-   public void MarketFluctuate() 
+  public void MarketFluctuate() 
    {
-      // Crude Tool sell value fluctuations
-      if (worldEvent == (int)WorldEventTypes.CrudeToolEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
-      {
-         if(shiftDirection <= 50)
-            TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
-         else 
-            TryDecreaseCrudeToolSellValue(crudeToolFluctuation);
-      }
-      else 
-      {
-         if (lastResetTurn[ItemType.CrudeTool] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
-            lastResetTurn[ItemType.CrudeTool] = false;
-         else 
-         {
-            if (crudeToolChance <= 30)
-               TryIncreaseCrudeToolSellValue(crudeToolFluctuation);
-            else
-               if(crudeToolChance <= 60) 
-                  TryDecreaseCrudeToolSellValue(crudeToolFluctuation);
-         }
-      }
+       // Apply Tier 1
+       ApplyStoredShift(
+          ItemType.CrudeTool, WorldEventTypes.CrudeToolEvent, 
+          crudeToolChance, crudeToolFluctuation, 
+          TryIncreaseCrudeToolSellValue, TryDecreaseCrudeToolSellValue);
+       
+      ApplyStoredShift(
+         ItemType.Harpoon, WorldEventTypes.HarpoonEvent, 
+         harpoonChance, harpoonFluctuation, 
+         TryIncreaseHarpoonSellValue, TryDecreaseHarpoonSellValue);
+   
+       // Apply Tier 2
+       if (ForgeManager.Instance.hasTier2Blueprint) 
+       {
+           ApplyStoredShift(
+              ItemType.PressureValve, WorldEventTypes.PressureValveEvent, 
+              pressureValveChance, pressureValveFluctuation, 
+              TryIncreasePressureValveValue, TryDecreasePressureValveValue);
 
-      // Harpoon sell value fluctuations
-      if (worldEvent == (int)WorldEventTypes.HarpoonEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
-      {
-         if (shiftDirection <= 50)
-            TryIncreaseHarpoonSellValue(harpoonFluctuation);
-         else
-            TryDecreaseHarpoonSellValue(harpoonFluctuation);
-      } 
-      else 
-      {
-         if (lastResetTurn[ItemType.Harpoon] && TurnManager.Instance.eventCountdown == 1)
-            lastResetTurn[ItemType.Harpoon] = false;
-         else 
-         {
-            if (harpoonChance <= 30) 
-               TryIncreaseHarpoonSellValue(harpoonFluctuation);
-            else 
-               if(harpoonChance <= 60) 
-                  TryDecreaseHarpoonSellValue(harpoonFluctuation);
-         }
-      }
-     
-      // Tier 2 items sell value  fluctuations
-      if (ForgeManager.Instance.hasTier2Blueprint) 
-      {
-         // Pressure Valve sell value  fluctuations
-         if (worldEvent == (int)WorldEventTypes.PressureValveEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
-         {
-            if (shiftDirection <= 50)
-               TryIncreasePressureValveValue(pressureValveFluctuation);
-            else
-               TryDecreasePressureValveValue(pressureValveFluctuation);
-         } 
-         else 
-         {
-            if (lastResetTurn[ItemType.PressureValve] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
-               lastResetTurn[ItemType.PressureValve] = false;
-            else 
-            {
-               if (pressureValveChance <= 30) 
-                  TryIncreasePressureValveValue(pressureValveFluctuation);
+           ApplyStoredShift(
+              ItemType.DivingBell, WorldEventTypes.DivingBellEvent, 
+              divingBellChance, divingBellFluctuation, 
+              TryIncreaseDivingBellValue, TryDecreaseDivingBellValue);
+       }
+   
+       // Apply Tier 3
+       if (ForgeManager.Instance.hasTier3Blueprint) 
+       {
+           ApplyStoredShift(
+              ItemType.PrecisionLens, WorldEventTypes.PrecisionLensEvent, 
+              precisionLensChance, precisionLensFluctuation, 
+              TryIncreasePrecisionLensValue, TryDecreasePrecisionLensValue);
+
+           ApplyStoredShift(
+              ItemType.Engine, WorldEventTypes.ClockworkEngineEvent, 
+              engineChance, engineFluctuation, 
+              TryIncreaseEngineSellValue, TryDecreaseEnginesSellValue);
+       }
+   }
+   
+   // Helper method to execute the exact math we promised the player
+   private void ApplyStoredShift(
+      ItemType itemType, WorldEventTypes eventType,
+      int change, int fluctuation, 
+      Action<int> increaseSellValueMethod, Action<int> decreaseSellValueMethod)
+   {
+       // Is it the active World Event turn?
+       if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
+       {
+           if (shiftDirection <= 50) 
+              increaseSellValueMethod(GetItemValue(itemType));
+           else 
+              decreaseSellValueMethod(GetItemValue(itemType));
+       }
+
+       // Is it a post-event Reset Turn? (Skip natural fluctuation)
+       else 
+       { 
+          if (lastResetTurn.ContainsKey(itemType) && lastResetTurn[itemType] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
+              lastResetTurn[itemType] = false;
+           else
+           {
+               if (change <= 30) 
+                  increaseSellValueMethod(fluctuation);
                else 
-                  if(pressureValveChance <= 60) 
-                     TryDecreasePressureValveValue(pressureValveFluctuation);
-            }
-         }
-
-         // Diving Bell sell value  fluctuations
-         if (worldEvent == (int)WorldEventTypes.DivingBellEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
-         {
-            if (shiftDirection <= 50)
-               TryIncreaseDivingBellValue(divingBellFluctuation);
-            else
-               TryDecreaseDivingBellValue(divingBellFluctuation);
-         }
-         else
-         {
-            if (lastResetTurn[ItemType.DivingBell] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
-               lastResetTurn[ItemType.DivingBell] = false;
-            else
-               if (divingBellChance <= 30)
-                   TryIncreaseDivingBellValue(divingBellFluctuation);
-                else
-                   if (divingBellChance <= 60)
-                      TryDecreaseDivingBellValue(divingBellFluctuation);
-         }
-      }
-
-      // Clockwork engine sell value engine fluctuations
-      if (ForgeManager.Instance.hasTier3Blueprint) 
-      {
-         if (worldEvent == (int)WorldEventTypes.ClockworkEngineEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
-         {
-            if (shiftDirection <= 50) 
-               TryDecreaseEnginesSellValue(engineFluctuation);
-            else 
-               TryDecreaseEnginesSellValue(engineFluctuation);
-         } 
-         else 
-         {
-            if (lastResetTurn[ItemType.Engine] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
-               lastResetTurn[ItemType.Engine] = false;
-            else 
-            {
-               if (engineChance <= 30) 
-                  TryIncreaseEngineSellValue(engineFluctuation);
-               else 
-                  if(engineChance <= 60) 
-                     TryDecreaseEnginesSellValue(engineFluctuation);
-            }
-         }
-
-         // Precision Lens sell value engine fluctuations
-         if (worldEvent == (int)WorldEventTypes.PrecisionLensEvent && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
-         {
-            if (shiftDirection <= 50)
-               TryIncreasePrecisionLensValue(precisionLensFluctuation);
-            else
-               TryDecreasePrecisionLensValue(precisionLensFluctuation);
-         }
-         else
-         {
-            if (lastResetTurn[ItemType.PrecisionLens] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
-               lastResetTurn[ItemType.PrecisionLens] = false;
-            else 
-            {
-               if (precisionLensChance <= 30)
-                  TryIncreasePrecisionLensValue(precisionLensFluctuation);
-               else
-                  if (precisionLensChance <= 60)
-                     TryDecreasePrecisionLensValue(precisionLensFluctuation);
-            }
-         }
-      }
-
-      return;
+                  if (change <= 60) 
+                     decreaseSellValueMethod(fluctuation);
+           }
+       }
    }
 
    // Determines world event selection and shift direction for the next cycle.
@@ -1254,8 +1086,8 @@ public class TradeHutManager : MonoBehaviour
       else
          if(ForgeManager.Instance.hasTier2Blueprint)
             finalWorldEvent = (int)(WorldEventTypes.DivingBellEvent);
-      else
-         finalWorldEvent = (int)(WorldEventTypes.HarpoonEvent);
+         else
+            finalWorldEvent = (int)(WorldEventTypes.HarpoonEvent);
 
       worldEvent     = Rng.Next(worldEvent1, finalWorldEvent + 1);
       shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
@@ -1282,96 +1114,6 @@ public class TradeHutManager : MonoBehaviour
             break;
          case (int)WorldEventTypes.PrecisionLensEvent:
             currrentNewsTickerMessage = GetPrecisionLensTickerMessage(shiftDirection);
-            break;
-         default:
-            Debug.LogError("Unknown Event");
-            break;
-      }
-   }
-
-   // Displays the next world event's market fluctuations
-   public void WorldEventForesight(TextMeshProUGUI sellValueText) 
-   {
-      int preview; 
-
-      switch (worldEvent) 
-      { 
-         // Crude tool world event foresight
-         case (int) WorldEventTypes.CrudeToolEvent:
-            crudeToolFluctuation = GetItemValue(ItemType.CrudeTool);
-
-            if (shiftDirection <= 50)
-               preview = GetItemValue(ItemType.CrudeTool) + crudeToolFluctuation;
-            else
-               preview = GetItemValue(ItemType.CrudeTool) - crudeToolFluctuation;
-
-            preview = Mathf.Clamp(preview, MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE);
-            sellValueText.text = "Next Value: " + preview.ToString();
-            break;
-
-         // Harpoon world event foresight
-         case (int) WorldEventTypes.HarpoonEvent:
-            harpoonFluctuation = GetItemValue(ItemType.Harpoon);
-
-            if (shiftDirection <= 50)
-               preview = GetItemValue(ItemType.Harpoon) + harpoonFluctuation;
-            else
-               preview = GetItemValue(ItemType.Harpoon) - harpoonFluctuation;
-
-            preview = Mathf.Clamp(preview, MIN_HARPOON_VALUE, MAX_HARPOON_VALUE);
-            sellValueText.text = "Next Value: " + preview.ToString();
-            break;
-
-         // Pressure valve world event foresight
-         case (int)WorldEventTypes.PressureValveEvent:
-            pressureValveFluctuation = GetItemValue(ItemType.PressureValve);
-
-            if (shiftDirection <= 50)
-               preview = GetItemValue(ItemType.PressureValve) + pressureValveFluctuation;
-            else
-               preview = GetItemValue(ItemType.PressureValve) - pressureValveFluctuation;
-
-            preview = Mathf.Clamp(preview, MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE);
-            sellValueText.text = "Next Value: " + preview.ToString();
-            break;
-
-         // Diving Bell foresight
-         case (int)WorldEventTypes.DivingBellEvent:
-            divingBellFluctuation = GetItemValue(ItemType.DivingBell);
-
-            if (shiftDirection <= 50)
-               preview = GetItemValue(ItemType.DivingBell) + divingBellFluctuation;
-            else
-               preview = GetItemValue(ItemType.DivingBell) - divingBellFluctuation;
-
-            preview = Mathf.Clamp(preview, MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE);
-            sellValueText.text = "Next Value: " + preview.ToString();
-            break;
-
-         // Precision Lens foresight
-         case (int)WorldEventTypes.PrecisionLensEvent:
-            precisionLensFluctuation = GetItemValue(ItemType.PrecisionLens);
-
-            if (shiftDirection <= 50)
-               preview = GetItemValue(ItemType.PrecisionLens) + precisionLensFluctuation;
-            else
-               preview = GetItemValue(ItemType.PrecisionLens) - precisionLensFluctuation;
-
-            preview = Mathf.Clamp(preview, MIN_PRECISION_LENS_VALUE, MAX_PRECISION_LENS_VALUE);
-            sellValueText.text = "Next Value: " + preview.ToString();
-            break;
-
-         // Engine world event foresight
-         case (int)WorldEventTypes.ClockworkEngineEvent:
-            engineFluctuation = GetItemValue(ItemType.Engine);
-
-            if (shiftDirection <= 50)
-               preview = GetItemValue(ItemType.Engine) + engineFluctuation;
-            else
-               preview = GetItemValue(ItemType.Engine) - engineFluctuation;
-
-            preview = Mathf.Clamp(preview, MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
-            sellValueText.text = "Next Value: " + preview.ToString();
             break;
          default:
             Debug.LogError("Unknown Event");
@@ -1554,8 +1296,8 @@ public class TradeHutManager : MonoBehaviour
       TradePanels.gameObject.SetActive(true);
       ShowSellPanel();
 
-      if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      //if (MainUIManager.mainUI != null)
+      //   MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void ShowInfoPanel() 
