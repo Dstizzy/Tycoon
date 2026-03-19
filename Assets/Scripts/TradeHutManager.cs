@@ -738,6 +738,11 @@ public class TradeHutManager : MonoBehaviour
    public void IncreaseSellItemCount(Transform item) 
    {
       AdjustSellQuantity(item, 1);
+      if(tutorialFunctionOne)
+      {
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
+      }
    }
 
    // Decrements the count for the item being sold and updates the UI
