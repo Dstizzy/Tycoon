@@ -672,8 +672,8 @@ Transform:
   m_GameObject: {fileID: 28295534}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.75, y: 1.29, z: 0}
-  m_LocalScale: {x: 0.76043385, y: 0.6835051, z: 1}
+  m_LocalPosition: {x: -1, y: 1.76, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 952983952}
@@ -725,7 +725,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -2416697193792783716, guid: cdb762988ff5aa349bffb7a19e2ae10d, type: 3}
+  m_Sprite: {fileID: -3306025559836093694, guid: 4c3f3567c672e498988bdd4f885a9791, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2691,7 +2691,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.3, y: 0.89256, z: 0}
-  m_LocalScale: {x: 0.365944, y: 0.3551888, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 112571072}
@@ -2743,7 +2743,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 8326958556244897843, guid: 0de6efca42bf2e94389d1ed59406b1f9, type: 3}
+  m_Sprite: {fileID: -2472546952532732975, guid: 03cb00a3ccecb4b27b6c38f8b9e36a12, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -27069,7 +27069,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -4067076154242366233, guid: 7cb7e46c3016ec244994811680a79658, type: 3}
+  m_Sprite: {fileID: 3887344174053154279, guid: 10b3f455b96bf46cabc92efae7dd30ea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -49248,8 +49248,11 @@ MonoBehaviour:
   decisionResults: {fileID: 1216424801}
   shipInventory: {fileID: 0}
   depthWarningText: {fileID: 0}
-  buildingSpriteRenderer: {fileID: 0}
-  explorationLevelSprites: []
+  buildingSpriteRenderer: {fileID: 28295536}
+  explorationLevelSprites:
+  - {fileID: -3306025559836093694, guid: 4c3f3567c672e498988bdd4f885a9791, type: 3}
+  - {fileID: -4130161463944704471, guid: 4a7603d75b38041d2a72f254982c6563, type: 3}
+  - {fileID: -5227450919933706960, guid: 9f0ba4bf07ce54893b336c1ad4244cb3, type: 3}
   explorationLevelText: {fileID: 0}
   isExploring: 0
   tutorialFunction: 0
@@ -61142,8 +61145,11 @@ MonoBehaviour:
   buildingCanvas: {fileID: 894411504}
   jamPanel: {fileID: 915192106}
   oreRefineryLevelText: {fileID: 1900072246}
-  buildingSpriteRenderer: {fileID: 0}
-  oreLevelSprites: []
+  buildingSpriteRenderer: {fileID: 82078139}
+  oreLevelSprites:
+  - {fileID: -2472546952532732975, guid: 03cb00a3ccecb4b27b6c38f8b9e36a12, type: 3}
+  - {fileID: -2320852388074000531, guid: a3e3b56104ac048d283468784e59ff59, type: 3}
+  - {fileID: 7530612607578742135, guid: b5fa7ba6a85924e65ad8a7b06131d803, type: 3}
   level2PearlCost: 100
   level2OreCost: 50
   level3PearlCost: 100
@@ -61423,7 +61429,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.7276, y: 2.2439, z: -0.002}
-  m_LocalScale: {x: 1.1089578, y: 1.0417489, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1102698752}
@@ -61475,7 +61481,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -6324880435504713953, guid: 8d0e667bcac6e8d4e854085716b2e807, type: 3}
+  m_Sprite: {fileID: 5500306299836703345, guid: 96fb14985011545d6b0caeb17a70c2c1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -62647,8 +62653,11 @@ MonoBehaviour:
   activeQueuePanel: {fileID: 1042587879}
   queueText: {fileID: 1094978144}
   craftIdleIndicator: {fileID: 581409658}
-  buildingSpriteRenderer: {fileID: 0}
-  forgeLevelSprites: []
+  buildingSpriteRenderer: {fileID: 758375104}
+  forgeLevelSprites:
+  - {fileID: 3887344174053154279, guid: 10b3f455b96bf46cabc92efae7dd30ea, type: 3}
+  - {fileID: 7478325844829965894, guid: 6cd075e154e5845308a08dbd7269833f, type: 3}
+  - {fileID: 2861465360449321257, guid: a87bedcaa66ed492e9411cf8c3f6ffa9, type: 3}
   tutorialFunction: 0
 --- !u!1 &1659931218
 GameObject:
@@ -83319,7 +83328,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: -5758331134792255297, guid: 12dbd391f1b2f784880e96dca2ffa505, type: 3}
+  m_Sprite: {fileID: 4230942673428301107, guid: 95fd6a9ed433d4d14ac4cdad7c404d0a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
