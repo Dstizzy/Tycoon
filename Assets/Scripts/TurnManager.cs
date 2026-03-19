@@ -16,7 +16,7 @@ public class TurnManager : MonoBehaviour
    const int ENDINGTURN = 80;
 
 
-   // Static fields
+   // Variables
    public static System.Random random = new System.Random(); // Random number generator
    public static int randomNumber;                     // Random number for various calculations
    public static int jamTurnCounter;                   // Counter for turns during a jam
@@ -130,8 +130,6 @@ public class TurnManager : MonoBehaviour
             eventCountdown = 0;
 
          OnTurnEnded?.Invoke();
-         // Add logic for the next turn here (e.g., start
-         // enemy turn, reset unit actions, etc.)
       }
    }
 

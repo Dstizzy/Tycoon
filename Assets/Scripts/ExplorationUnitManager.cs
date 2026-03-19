@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,6 +24,11 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
  //  [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
 
+   [Header("Exploration Visuals")]
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
+   [SerializeField] private List<Sprite> explorationLevelSprites;
+   [SerializeField] private TextMeshProUGUI explorationLevelText;
+
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to next turn
 
    // ID constants for the base menu buttons
@@ -29,11 +36,17 @@ public class ExplorationUnitManager : MonoBehaviour
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
    const int UPGRADE_PEARLS = 100;
-
+   const int LEVEL2_PEARL_COST = 200;
+   const int LEVEL3_PEARL_COST = 500;
+   const int MAX_SHIP_LEVEL = 3;
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
 
-   //
+   public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
+
+
+   public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
+   public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
       // Verify all panels are assigned and disable them at startup
@@ -47,15 +60,23 @@ public class ExplorationUnitManager : MonoBehaviour
       else
          explorePanel.gameObject.SetActive(false);
    }
+   private void Start()
+   {
+      UpdateExplorationSprites();
+      if (explorationLevelText != null && shipManager != null)
+      {
+         explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+      }
+   }
 
-   //
+   // Event Adder
    private void OnEnable()
    {
       ShipManager.OnShipDeath += HandleExplorationDone;
       TurnManager.OnTurnEnded += HandleNewTurn;
    }
 
-   //
+   // Event destroyer
    private void OnDisable()
    {
       ShipManager.OnShipDeath -= HandleExplorationDone;
@@ -92,12 +113,7 @@ public class ExplorationUnitManager : MonoBehaviour
             if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
-               bool hasEnoughPearls = InventoryManager.Instance != null && InventoryManager.Instance.pearlCount >= UPGRADE_PEARLS;
-               bool isNotMaxLevel = shipManager.shipLevel < 3;
-               bool canUpgrade = !isExploring && hasEnoughPearls && isNotMaxLevel;
-               yesButton.interactable = canUpgrade;
-               if (canUpgrade)
-                  yesButton.onClick.AddListener(() => ConfirmUpgrade());
+               yesButton.onClick.AddListener(() => ConfirmUpgrade());
             }
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
@@ -116,16 +132,43 @@ public class ExplorationUnitManager : MonoBehaviour
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
 
       }
+      if (tutorialFunction)
+      {
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
+      }
       CloseExplorationPanel();
    }
 
    //
    public void ConfirmUpgrade()
    {
-      InventoryManager.Instance.TrySpendPearl(UPGRADE_PEARLS);
-      shipManager.UpgradeShip();
-      upgradePanel.gameObject.SetActive(false);
+      int upgradeCost = GetUpgradeCost();
 
+      if (shipManager.shipLevel < MAX_SHIP_LEVEL && InventoryManager.Instance.TrySpendPearl(upgradeCost))
+      {
+         shipManager.UpgradeShip();
+         UpdateExplorationSprites();
+
+         if (explorationLevelText != null)
+            explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+
+         if (shipManager.shipLevel == MAX_SHIP_LEVEL)
+            InventoryManager.Instance.ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+
+         Debug.Log($"Exploration Unit upgraded to level {shipManager.shipLevel}!");
+         if (TickerSystem.Instance != null)
+         {
+            TickerSystem.Instance.ShowTicker($"Exploration Unit upgraded to level {shipManager.shipLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         }
+
+         CloseUpgradePanel();
+         PopUpManager.Instance.EnablePlayerInput();
+      }
+      else
+      {
+         Debug.Log("Not enough pearls to upgrade!");
+      }
    }
 
    // Checks if exploration is entering a new depth tier when ship is not currently at safe level
@@ -170,12 +213,14 @@ public class ExplorationUnitManager : MonoBehaviour
                              string textB, UnityAction actionB, bool interactableB,
                              string textC, UnityAction actionC, bool interactableC)
    {
+      Debug.Log("Sets up buttons");
       Transform container = decisionPanel.Find("ButtonContainer");
 
       // Sets up choice 1 (always exists)
       Button button1 = container.Find("Choice1").GetComponent<Button>();
       if (button1 != null)
       {
+         Debug.Log("Choice1");
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
          button1.interactable = interactableA;
@@ -279,6 +324,17 @@ public class ExplorationUnitManager : MonoBehaviour
          }
          // Open the decision panel UI
          decisionPanel.gameObject.SetActive(true);
+         if(tutorialFunction)
+         {
+            decisionPanel.Find("Arrow").gameObject.SetActive(true);
+            decisionPanel.Find("Arrow2").gameObject.SetActive(true);
+            decisionPanel.Find("FirstText").gameObject.SetActive(true);
+         }
+
+         SetupButtons(
+               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true);
 
          // Set up inventory button on decisionPanel
          Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
@@ -381,6 +437,17 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
+
+      if(tutorialFunction)
+      {
+         explorePanel.Find("Arrow").gameObject.SetActive(true);
+         explorePanel.Find("FirstText").gameObject.SetActive(true);
+      }
+      else
+      {
+         explorePanel.Find("Arrow").gameObject.SetActive(false);
+         explorePanel.Find("FirstText").gameObject.SetActive(false);
+      }
    }
 
    //
@@ -396,6 +463,40 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+
+      int upgradeCost = GetUpgradeCost();
+      Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+      TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
+      Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
+
+      Transform pearlTextObj = upgradePanel.Find("PearlCostText");
+      if (pearlTextObj != null)
+      {
+         pearlTextObj.gameObject.SetActive(true);
+         pearlTextObj.GetComponent<TextMeshProUGUI>().text = upgradeCost.ToString();
+      }
+
+      if (shipManager.shipLevel < MAX_SHIP_LEVEL)
+      {
+         if (upgradeText != null)
+         {
+            int targetLevel = shipManager.shipLevel + 1;
+            upgradeText.text = $"Would you like to upgrade to lvl {targetLevel}?";
+         }
+         yesButton.gameObject.SetActive(true);
+         yesButton.interactable = !isExploring && (InventoryManager.Instance.pearlCount >= upgradeCost);
+      }
+      else
+      {
+         if (upgradeText != null)
+            upgradeText.text = "Max Level Reached!";
+
+         if (pearlTextObj != null) pearlTextObj.gameObject.SetActive(false);
+         Transform imagesObj = upgradePanel.Find("UpgradePanelImages");
+         if (imagesObj != null) imagesObj.gameObject.SetActive(false);
+
+         yesButton.gameObject.SetActive(false);
+      }
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -516,6 +617,11 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       explorePanel.gameObject.SetActive(false);
 
+      if (tutorialFunction)
+      {
+         HandleTutorial?.Invoke();
+      }
+
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
       PopUpManager.Instance.EnablePlayerInput();
@@ -544,6 +650,38 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the decision panel
    public void CloseDecisionPanel()
    {
+      Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
+
+      if (tutorialFunction)
+      {
+         if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
+         if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
+         if (decisionPanel.Find("FirstText")) decisionPanel.Find("FirstText").gameObject.SetActive(false);
+
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
+      }
+   }
+
+   private void UpdateExplorationSprites()
+   {
+      if (shipManager == null) return;
+
+      // Calculate index based on current ship level (Level 1 = Index 0)
+      int index = shipManager.shipLevel - 1;
+
+      if (buildingSpriteRenderer != null && index >= 0 && index < explorationLevelSprites.Count)
+      {
+         buildingSpriteRenderer.sprite = explorationLevelSprites[index];
+         Debug.Log($"Exploration Visuals Updated to Level {shipManager.shipLevel}");
+      }
+   }
+
+   private int GetUpgradeCost()
+   {
+      if (shipManager.shipLevel == 1) return LEVEL2_PEARL_COST;
+      if (shipManager.shipLevel == 2) return LEVEL3_PEARL_COST;
+      return 0;
    }
 }

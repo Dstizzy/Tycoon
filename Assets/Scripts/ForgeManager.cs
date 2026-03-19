@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public class CraftingJob
@@ -32,8 +33,8 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
-   public const int LEVEL_2_PEARL_COST = 500;
-   public const int LEVEL_3_PEARL_COST = 800;
+   public const int LEVEL_2_PEARL_COST = 300;
+   public const int LEVEL_3_PEARL_COST = 700;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;
@@ -77,6 +78,10 @@ public class ForgeManager : MonoBehaviour
    [Header("Idle Indicator")]
    [SerializeField] private GameObject craftIdleIndicator;
 
+   [Header("Forge Visuals")]
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer; 
+   [SerializeField] private List<Sprite> forgeLevelSprites;
+
    /* Private state variables */
    private Transform currentCraftWindow;
    private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
@@ -86,10 +91,30 @@ public class ForgeManager : MonoBehaviour
    private GameObject craftButtonObject;
 
 
+   public static event Action HandleTutorial;
    public static ForgeManager Instance { get; private set; }
-   public static int forgeLevel = STARTING_LEVEL;
 
-   private bool hasCraftedThisTurn = false;
+   public static int  forgeLevel         = STARTING_LEVEL;
+   public  bool       tutorialFunction   = false; // Checks if the forge function has been explained in the tutorial
+   private bool       hasCraftedThisTurn = false;
+
+   // Subscribe to the tutorial event when enabled to trigger the tutorial state change when the player reaches the forge tutorial step
+   public void OnEnable()
+   {
+      TutorialManager.HandleForgeTutorial += ChangeTutorialState;
+   }
+
+   // Unsubscribe from the tutorial event when disabled to prevent memory leaks
+   public void OnDisable()
+   {
+      TutorialManager.HandleForgeTutorial -= ChangeTutorialState;
+   }
+
+   // Changes the tutorial state to true, allowing the tutorial to progress and certain UI elements to appear in the forge
+   private void ChangeTutorialState()
+   {
+      tutorialFunction = true;
+   }
 
    private void Start()
    {
@@ -156,6 +181,8 @@ public class ForgeManager : MonoBehaviour
             activeQueuePanel.SetActive(false);
          }
       }
+
+      UpdateForgeSprites();
    }
 
    private void CreateCraftWindow(Transform container)
@@ -216,6 +243,11 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 3. Add the item
+      if(tutorialFunction && itemType == Item.ItemType.CrudeTool)
+      {
+         craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
+         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
+      }
       stagingItems.Add(itemType);
 
       // 4. Determine Container
@@ -328,12 +360,15 @@ public class ForgeManager : MonoBehaviour
          if (forgeLevel < ENDING_LEVEL)
          {
             forgeLevel += 1;
+            UpdateForgeSprites();
          }
 
          if(forgeLevel == ENDING_LEVEL)
             InventoryManager.Instance.ForgeUpgradeIcon.gameObject.SetActive(false);
 
          forgeLevelText.text = "Level " + forgeLevel.ToString();
+         Debug.Log($"Forge upgraded to level {forgeLevel}!");
+         ticker.ShowTicker($"Forge upgraded to level {forgeLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
          CloseUpgradePanel();
          PopUpManager.Instance.EnablePlayerInput();
       }
@@ -349,6 +384,17 @@ public class ForgeManager : MonoBehaviour
          }
          Debug.Log("Not enough pearls to upgrade!");
 
+      }
+   }
+
+   private void UpdateForgeSprites()
+   {
+      int index = forgeLevel - 1;
+
+      if (buildingSpriteRenderer != null && index < forgeLevelSprites.Count)
+      {
+         buildingSpriteRenderer.sprite = forgeLevelSprites[index];
+         Debug.Log($"Forge Visuals Updated to Level {forgeLevel}");
       }
    }
 
@@ -375,6 +421,8 @@ public class ForgeManager : MonoBehaviour
    private void ShowCraftPanel()
    {
       craftPanel.gameObject.SetActive(true);
+      if(tutorialFunction)
+         craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -460,12 +508,12 @@ public class ForgeManager : MonoBehaviour
 
       if (forgeLevel == 1)
       {
-         upgradeCost = 500;
+         upgradeCost = 300;
          upgradeExplanation = "Bonus: Unlocks a 2nd simultaneous crafting slot!";
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 800;
+         upgradeCost = 700;
          upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
       }
 
@@ -548,6 +596,11 @@ public class ForgeManager : MonoBehaviour
       {
          case TIER_1:
             tier1Panel.SetActive(true);
+            if(tutorialFunction)
+            {
+               craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
+               craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
+            }
             break;
 
          case TIER_2:
@@ -797,6 +850,13 @@ public class ForgeManager : MonoBehaviour
       {
          Debug.Log("Not enough ore for all items!");
          ticker.ShowTicker("Not enough ore to craft!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+      }
+      if(tutorialFunction)
+      {
+         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
+         CloseCraftPanel();
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
       }
    }
    private int GetItemCost(Item.ItemType type)
