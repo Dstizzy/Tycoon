@@ -6002,6 +6002,9 @@ MonoBehaviour:
   decisionResults: {fileID: 1328417304}
   shipInventory: {fileID: 0}
   depthWarningText: {fileID: 0}
+  buildingSpriteRenderer: {fileID: 0}
+  explorationLevelSprites: []
+  explorationLevelText: {fileID: 0}
   isExploring: 0
 --- !u!1 &166893761
 GameObject:
@@ -8853,6 +8856,12 @@ MonoBehaviour:
   buildingCanvas: {fileID: 130318832}
   jamPanel: {fileID: 1628563536}
   oreRefineryLevelText: {fileID: 176782936}
+  buildingSpriteRenderer: {fileID: 0}
+  oreLevelSprites: []
+  level2PearlCost: 100
+  level2OreCost: 50
+  level3PearlCost: 100
+  level3OreCost: 50
   oreLevel: 1
   jammingChance: 10
   IsBlocked: 0
@@ -36045,8 +36054,8 @@ MonoBehaviour:
   BuyPanel: {fileID: 1693748244}
   RecycleButton: {fileID: 1867103341}
   currrentNewsTickerMessage: 
-  marketShiftMax: 2
-  marketShiftMin: 1
+  marketShiftMax: 1.2
+  marketShiftMin: 1.06
   isTier3BuffACtive: 0
   isInsurancePolicyActive: 0
 --- !u!222 &1139987562
@@ -49299,6 +49308,8 @@ MonoBehaviour:
   activeQueuePanel: {fileID: 1310829917}
   queueText: {fileID: 1243308996}
   craftIdleIndicator: {fileID: 2106337524}
+  buildingSpriteRenderer: {fileID: 0}
+  forgeLevelSprites: []
 --- !u!1 &1550260826
 GameObject:
   m_ObjectHideFlags: 0
