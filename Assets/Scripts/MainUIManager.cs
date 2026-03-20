@@ -98,6 +98,13 @@ public class MainUIManager : MonoBehaviour
       isVisible = !isVisible;
       DropdownButtons[0].gameObject.SetActive(isVisible);
       DropdownButtons[1].gameObject.SetActive(isVisible);
+      DropdownButtons[2].gameObject.SetActive(isVisible);
+      DropdownButtons[2].onClick.AddListener(() => ToggleTutorial());
+   }
+
+   public void ToggleTutorial()
+   {
+      //ChangeTutorial?.Invoke();
    }
 
    // Changes the Pearl count text on the main UI

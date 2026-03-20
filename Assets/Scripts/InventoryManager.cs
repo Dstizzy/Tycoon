@@ -121,6 +121,9 @@ public class InventoryManager : MonoBehaviour
    private Transform currentResource,
                      currentCraft;
 
+   public bool tutorialFunction = false;
+   
+
    /* Delegate for when the pearl count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnPearlCountChanged;
 
@@ -131,6 +134,12 @@ public class InventoryManager : MonoBehaviour
    public Action<int> OnOreCountChanged;
 
    public List<Transform> InventoryItems { get; private set; }
+
+   // Toggles the tutorial state for the inventory, which can be used to show or hide tutorial elements based on the player's progress in the game
+   private void ChangeTutorialState()
+   {
+      tutorialFunction = true;
+   }
 
    /* Sets up the singleton instance and initializes the inventory panel state.    */
    private void Awake()
@@ -461,6 +470,13 @@ public class InventoryManager : MonoBehaviour
       {
          Destroy(currentCraft.gameObject);
          currentCraft = null;
+      }
+
+      if (tutorialFunction && craftTag == CRUDE_TOOL_TAG)
+      {
+         InventoryPanel.transform.Find("Arrow3").gameObject.SetActive(true);
+         InventoryPanel.transform.Find("Arrow2").gameObject.SetActive(false);
+         InventoryPanel.transform.Find("TutorialText").gameObject.SetActive(false);
       }
 
       craftTransform.tag = craftTag;
@@ -1195,6 +1211,10 @@ public class InventoryManager : MonoBehaviour
    {
       InventoryPanel.gameObject.SetActive(true);
       ResourcePanel.gameObject.SetActive(true);
+      if (tutorialFunction)
+      {
+         InventoryPanel.transform.Find("Arrow").gameObject.SetActive(true);
+      }
       // Added for camera fix
       PopUpManager.Instance.DisablePlayerInput();
 
@@ -1257,11 +1277,22 @@ public class InventoryManager : MonoBehaviour
          CloseResourcePanel();
 
       CraftsPanel.gameObject.SetActive(true);
+      if(tutorialFunction)
+      {
+         InventoryPanel.transform.Find("Arrow").gameObject.SetActive(false);
+         InventoryPanel.transform.Find("Arrow2").gameObject.SetActive(true);
+         InventoryPanel.transform.Find("TutorialText").gameObject.SetActive(true);
+      }
    }
 
    private void CloseCraftsPanel()
    {
       CraftsPanel.gameObject.SetActive(false);
+      if(tutorialFunction)
+      {
+         InventoryPanel.transform.Find("Arrow3").gameObject.SetActive(false);
+         tutorialFunction = false;
+      }
    }
 
    private void CheckUpgradeResources()

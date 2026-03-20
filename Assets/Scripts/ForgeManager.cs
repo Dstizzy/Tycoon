@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public class CraftingJob
@@ -90,10 +91,30 @@ public class ForgeManager : MonoBehaviour
    private GameObject craftButtonObject;
 
 
+   public static event Action HandleTutorial;
    public static ForgeManager Instance { get; private set; }
-   public static int forgeLevel = STARTING_LEVEL;
 
-   private bool hasCraftedThisTurn = false;
+   public static int  forgeLevel         = STARTING_LEVEL;
+   public  bool       tutorialFunction   = false; // Checks if the forge function has been explained in the tutorial
+   private bool       hasCraftedThisTurn = false;
+
+   // Subscribe to the tutorial event when enabled to trigger the tutorial state change when the player reaches the forge tutorial step
+   public void OnEnable()
+   {
+      TutorialManager.HandleForgeTutorial += ChangeTutorialState;
+   }
+
+   // Unsubscribe from the tutorial event when disabled to prevent memory leaks
+   public void OnDisable()
+   {
+      TutorialManager.HandleForgeTutorial -= ChangeTutorialState;
+   }
+
+   // Changes the tutorial state to true, allowing the tutorial to progress and certain UI elements to appear in the forge
+   private void ChangeTutorialState()
+   {
+      tutorialFunction = true;
+   }
 
    private void Start()
    {
@@ -222,6 +243,11 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 3. Add the item
+      if(tutorialFunction && itemType == Item.ItemType.CrudeTool)
+      {
+         craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
+         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
+      }
       stagingItems.Add(itemType);
 
       // 4. Determine Container
@@ -395,6 +421,8 @@ public class ForgeManager : MonoBehaviour
    private void ShowCraftPanel()
    {
       craftPanel.gameObject.SetActive(true);
+      if(tutorialFunction)
+         craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -568,6 +596,11 @@ public class ForgeManager : MonoBehaviour
       {
          case TIER_1:
             tier1Panel.SetActive(true);
+            if(tutorialFunction)
+            {
+               craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
+               craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
+            }
             break;
 
          case TIER_2:
@@ -817,6 +850,13 @@ public class ForgeManager : MonoBehaviour
       {
          Debug.Log("Not enough ore for all items!");
          ticker.ShowTicker("Not enough ore to craft!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+      }
+      if(tutorialFunction)
+      {
+         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
+         CloseCraftPanel();
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
       }
    }
    private int GetItemCost(Item.ItemType type)
