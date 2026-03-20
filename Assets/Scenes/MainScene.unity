@@ -87888,8 +87888,8 @@ MonoBehaviour:
   BuyPanel: {fileID: 984686158}
   RecycleButton: {fileID: 1353724859}
   currrentNewsTickerMessage: 
-  marketShiftMax: 2
-  marketShiftMin: 1
+  marketShiftMax: 1.2
+  marketShiftMin: 1.06
   isTier3BuffACtive: 0
   tutorialFunctionOne: 0
   tutorialFunctionTwo: 0
