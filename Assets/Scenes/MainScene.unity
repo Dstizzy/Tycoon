@@ -4297,6 +4297,7 @@ RectTransform:
   - {fileID: 25863394}
   - {fileID: 1813076234}
   - {fileID: 1925224073}
+  - {fileID: 166029255}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5494,6 +5495,9 @@ MonoBehaviour:
   decisionResults: {fileID: 1220418114}
   shipInventory: {fileID: 707743735}
   depthWarningText: {fileID: 1965478562}
+  buildingSpriteRenderer: {fileID: 0}
+  explorationLevelSprites: []
+  explorationLevelText: {fileID: 0}
   isExploring: 0
 --- !u!1 &135963674
 GameObject:
@@ -6736,14 +6740,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 979480455}
-  - {fileID: 1470190673}
-  - {fileID: 709379037}
-  - {fileID: 1696841247}
-  - {fileID: 1833948096}
-  - {fileID: 381296870}
-  - {fileID: 1342209773}
+  m_Children: []
   m_Father: {fileID: 114618280}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -6766,8 +6763,8 @@ MonoBehaviour:
   startingNode: {fileID: 11400000, guid: bef1dd1c5ff4f124cb5cc50c194e1379, type: 2}
   currentNode: {fileID: 0}
   winningPathIsLeft: 0
-  exploreShipIcon: {fileID: 866942405}
-  decisionShipIcon: {fileID: 837834997}
+  exploreShipIcon: {fileID: 0}
+  decisionShipIcon: {fileID: 0}
   shipManager: {fileID: 166029258}
   allNodesInGame: []
 --- !u!114 &166029257
@@ -6782,9 +6779,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c8efbc96f6b60498a36ca61cf78a84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventUIController
-  scenarioText: {fileID: 1250775036}
-  choiceAText: {fileID: 169227424}
-  choiceBText: {fileID: 329371446}
+  scenarioText: {fileID: 0}
+  choiceAText: {fileID: 0}
+  choiceBText: {fileID: 0}
 --- !u!114 &166029258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6798,15 +6795,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipManager
   explorationUnitManager: {fileID: 166029260}
-  fuelPanel: {fileID: 1833948096}
-  healthPanel: {fileID: 381296870}
+  fuelPanel: {fileID: 0}
+  healthPanel: {fileID: 0}
   confirmReturnPanel: {fileID: 0}
   finalRewardsPanel: {fileID: 0}
   finalRewards: {fileID: 0}
-  decisionFuelText: {fileID: 184101010}
-  decisionHealthText: {fileID: 447988151}
-  exploreFuelText: {fileID: 1214259608}
-  exploreHealthText: {fileID: 925789527}
+  decisionFuelText: {fileID: 0}
+  decisionHealthText: {fileID: 0}
+  exploreFuelText: {fileID: 0}
+  exploreHealthText: {fileID: 0}
   isTier2Unlocked: 0
 --- !u!114 &166029259
 MonoBehaviour:
@@ -6865,18 +6862,19 @@ MonoBehaviour:
   eventDatabase: {fileID: 166029259}
   eventController: {fileID: 166029257}
   shipManager: {fileID: 166029258}
-  explorePanel: {fileID: 1470190673}
-  upgradePanel: {fileID: 1696841247}
-  infoPanel: {fileID: 709379037}
-  decisionPanel: {fileID: 979480455}
-  decisionResultsPanel: {fileID: 1342209773}
+  explorePanel: {fileID: 0}
+  upgradePanel: {fileID: 0}
+  infoPanel: {fileID: 0}
+  decisionPanel: {fileID: 0}
+  decisionResultsPanel: {fileID: 0}
   newDepthPanel: {fileID: 0}
   inventoryPanel: {fileID: 0}
-  decisionResults: {fileID: 1328417304}
+  decisionResults: {fileID: 0}
   shipInventory: {fileID: 0}
   depthWarningText: {fileID: 0}
-  isExploring: 0
-  isExploring: 0
+  buildingSpriteRenderer: {fileID: 0}
+  explorationLevelSprites: []
+  explorationLevelText: {fileID: 0}
   isExploring: 0
 --- !u!1 &166893761
 GameObject:
@@ -9670,6 +9668,12 @@ MonoBehaviour:
   buildingCanvas: {fileID: 130318832}
   jamPanel: {fileID: 1628563536}
   oreRefineryLevelText: {fileID: 176782936}
+  buildingSpriteRenderer: {fileID: 0}
+  oreLevelSprites: []
+  level2PearlCost: 100
+  level2OreCost: 50
+  level3PearlCost: 100
+  level3OreCost: 50
   oreLevel: 1
   jammingChance: 10
   IsBlocked: 0
@@ -43790,6 +43794,8 @@ MonoBehaviour:
   precisionLens: {fileID: 2870322122652898633, guid: 4917f840ee489cd40a9516c12789732f, type: 3}
   rareOre: {fileID: -5284811538944271241, guid: 54d54257d2968134b9f6946e3d8f9542, type: 3}
   industrialBluePrint: {fileID: -1646138214832153251, guid: 3068f515cedeb5f4fb8a38459fbc6113, type: 3}
+  clockworkBlueprint: {fileID: 0}
+  merceneryEngineer: {fileID: 0}
   insurancePolicy: {fileID: 6858282456046168796, guid: 20c1eab0915c8294597d23f0d32e881e, type: 3}
 --- !u!1 &1269174828
 GameObject:
@@ -43821,7 +43827,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 588840488}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -43925,8 +43931,6 @@ CanvasRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1269174828}
-  m_CullTransparentMesh: 1
   m_GameObject: {fileID: 1269174828}
   m_CullTransparentMesh: 1
 --- !u!1 &1270290467
@@ -53634,6 +53638,8 @@ MonoBehaviour:
   activeQueuePanel: {fileID: 1310829917}
   queueText: {fileID: 1243308996}
   craftIdleIndicator: {fileID: 2106337524}
+  buildingSpriteRenderer: {fileID: 0}
+  forgeLevelSprites: []
 --- !u!1 &1550260826
 GameObject:
   m_ObjectHideFlags: 0
@@ -73697,3 +73703,4 @@ SceneRoots:
   - {fileID: 1520875901}
   - {fileID: 114618280}
   - {fileID: 1385532179}
+  - {fileID: 1269174829}

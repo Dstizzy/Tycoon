@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3_03Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 3_03
-  mapPosition: {x: 171, y: 50}
+  mapPosition: {x: 175, y: 0}
   isExplored: 0
   nodeDepth: 3
   type: 1
@@ -23,4 +23,8 @@ MonoBehaviour:
   pathA: {fileID: 11400000, guid: fa2d20a7317048248b27ba6da571467d, type: 2}
   choiceBText: Explroe the right cave
   pathB: {fileID: 11400000, guid: d35d22b9fe6816246a9613308a862b89, type: 2}
+  choiceCText: 
+  pathC: {fileID: 0}
   nextNode: {fileID: 0}
+  isFinalNode: 0
+  isLeftPath: 0
