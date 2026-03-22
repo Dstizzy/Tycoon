@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System;
 using TMPro;
+
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +19,7 @@ public class OreRefinery_Manager : MonoBehaviour
    const int ENDING_LEVEL   = 3;
 
    [SerializeField] private Transform infoPanel;
-   [SerializeField] private Transform upgradePanel;
+   [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;
    [SerializeField] private GameObject jamPanel;
    public TextMeshProUGUI oreRefineryLevelText;
@@ -34,16 +36,16 @@ public class OreRefinery_Manager : MonoBehaviour
 
    TickerSystem ticker;
 
-   public int oreLevel = STARTING_LEVEL;
-
-   public int jammingChance = 0;
-
-   public bool IsBlocked = false;
+   public int  oreLevel        = STARTING_LEVEL;
+   public int  jammingChance   = 15;
+   public bool IsBlocked       = false;
+   public bool tutorialUpgrade = false;
 
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
-
    public int NextUpgradeCostInOre { get; private set; }
+
+   // Changes the tutorial state to allow the upgrade tutorial to show after the player has completed the Trade Hut tutorial
 
    private void Awake()
    {
@@ -136,6 +138,9 @@ public class OreRefinery_Manager : MonoBehaviour
    private void ShowUpgradePanel()
    {
       upgradePanel.gameObject.SetActive(true);
+
+      if(tutorialUpgrade)
+         upgradePanel.Find("Arrow").gameObject.SetActive(true);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -322,7 +327,7 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void ProduceOres()
    {
-      int roll = Random.Range(0, 100);
+      int roll = UnityEngine.Random.Range(0, 100);
 
       if (roll < jammingChance)
       {

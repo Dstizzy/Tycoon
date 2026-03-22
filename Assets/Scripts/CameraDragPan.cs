@@ -52,7 +52,7 @@ public class CameraDragPan : MonoBehaviour
    private bool dragging = false;
 
    // [ADDED] Initialization flag
-   private bool isInitialized = false;
+   //private bool isInitialized = false;
    // [END ADDED]
 
 
@@ -82,7 +82,7 @@ public class CameraDragPan : MonoBehaviour
       // Clamp to bounds
       ClampToBounds();
 
-      isInitialized = true;
+      //isInitialized = true;
       Debug.Log($"[CameraDragPan] Camera centered → Position: {transform.position}");
    }
    // =====================================================================

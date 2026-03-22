@@ -1,3 +1,5 @@
+using Codice.Client.BaseCommands.WkStatus.Printers;
+using System;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -6,7 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.WSA;
 
-public class PopUpManager : MonoBehaviour 
+public class PopUpManager : MonoBehaviour
 {
    [SerializeField] private GameObject[] buildingButtonsPreFab;
    [SerializeField] private Camera cam;
@@ -24,6 +26,8 @@ public class PopUpManager : MonoBehaviour
    private List<RaycastResult> raycastResults = new List<RaycastResult>();
    public static Transform buildingTransform;
    public static bool IsBuildingBlocked = false;
+
+   public static event Action<string> OnHoverTagChanged;
 
    public static PopUpManager Instance { get; private set; }
 
@@ -91,12 +95,12 @@ public class PopUpManager : MonoBehaviour
       {
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
-         if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
-          //  OreRefinery_Manager.Instance.DeactivateJamButton();
-         if(prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
-         {
-           // OreRefinery_Manager.Instance.DeactivateManualResetCounter();
-         }
+         if (prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
+            //  OreRefinery_Manager.Instance.DeactivateJamButton();
+            if (prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
+            {
+               // OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+            }
          buildingTransform = null; // Clear the reference to the old building
       }
 
@@ -106,10 +110,11 @@ public class PopUpManager : MonoBehaviour
          // The mouse is entering a new object. Open the pop-up for the new object.
          // We don't need to call ClosePopUps() here because it was handled in Case A.
          buildingTransform = currentHoverObject;
+         OnHoverTagChanged?.Invoke(currentHoverObject.tag);
 
          if (OreRefinery_Manager.Instance.IsBlocked && currentHoverObject.tag == "Ore Refinery")
          {
-            if(TurnManager.manualResetOption)
+            if (TurnManager.manualResetOption)
             {
                //OreRefinery_Manager.Instance.ActivateManualResetCounter();
             }

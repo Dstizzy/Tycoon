@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -41,7 +42,11 @@ public class ExplorationUnitManager : MonoBehaviour
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
 
-   //
+   public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
+
+
+   public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
+   public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
       // Verify all panels are assigned and disable them at startup
@@ -64,14 +69,14 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
-   //
+   // Event Adder
    private void OnEnable()
    {
       ShipManager.OnShipDeath += HandleExplorationDone;
       TurnManager.OnTurnEnded += HandleNewTurn;
    }
 
-   //
+   // Event destroyer
    private void OnDisable()
    {
       ShipManager.OnShipDeath -= HandleExplorationDone;
@@ -127,6 +132,11 @@ public class ExplorationUnitManager : MonoBehaviour
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
 
       }
+      if (tutorialFunction)
+      {
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
+      }
       CloseExplorationPanel();
    }
 
@@ -144,7 +154,16 @@ public class ExplorationUnitManager : MonoBehaviour
             explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
 
          if (shipManager.shipLevel == MAX_SHIP_LEVEL)
-            InventoryManager.Instance.ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+         {
+            if (InventoryManager.Instance.ExplorationUnitUpgradeIcon != null)
+            {
+               InventoryManager.Instance.ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+            }
+            else
+            {
+               Debug.LogWarning("ExplorationUnitUpgradeIcon is not assigned in the InventoryManager!");
+            }
+         }
 
          Debug.Log($"Exploration Unit upgraded to level {shipManager.shipLevel}!");
          if (TickerSystem.Instance != null)
@@ -203,12 +222,14 @@ public class ExplorationUnitManager : MonoBehaviour
                              string textB, UnityAction actionB, bool interactableB,
                              string textC, UnityAction actionC, bool interactableC)
    {
+      Debug.Log("Sets up buttons");
       Transform container = decisionPanel.Find("ButtonContainer");
 
       // Sets up choice 1 (always exists)
       Button button1 = container.Find("Choice1").GetComponent<Button>();
       if (button1 != null)
       {
+         Debug.Log("Choice1");
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
          button1.interactable = interactableA;
@@ -312,6 +333,17 @@ public class ExplorationUnitManager : MonoBehaviour
          }
          // Open the decision panel UI
          decisionPanel.gameObject.SetActive(true);
+         if(tutorialFunction)
+         {
+            decisionPanel.Find("Arrow").gameObject.SetActive(true);
+            decisionPanel.Find("Arrow2").gameObject.SetActive(true);
+            decisionPanel.Find("FirstText").gameObject.SetActive(true);
+         }
+
+         SetupButtons(
+               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true);
 
          // Set up inventory button on decisionPanel
          Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
@@ -414,6 +446,17 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
+
+      if(tutorialFunction)
+      {
+         explorePanel.Find("Arrow").gameObject.SetActive(true);
+         explorePanel.Find("FirstText").gameObject.SetActive(true);
+      }
+      else
+      {
+         explorePanel.Find("Arrow").gameObject.SetActive(false);
+         explorePanel.Find("FirstText").gameObject.SetActive(false);
+      }
    }
 
    //
@@ -583,6 +626,11 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       explorePanel.gameObject.SetActive(false);
 
+      if (tutorialFunction)
+      {
+         HandleTutorial?.Invoke();
+      }
+
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
       PopUpManager.Instance.EnablePlayerInput();
@@ -611,7 +659,18 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the decision panel
    public void CloseDecisionPanel()
    {
+      Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
+
+      if (tutorialFunction)
+      {
+         if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
+         if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
+         if (decisionPanel.Find("FirstText")) decisionPanel.Find("FirstText").gameObject.SetActive(false);
+
+         tutorialFunction = false;
+         HandleTutorial?.Invoke();
+      }
    }
 
    private void UpdateExplorationSprites()
