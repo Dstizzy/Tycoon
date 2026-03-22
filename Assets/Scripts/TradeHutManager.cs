@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using TMPro;
-
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,7 +50,7 @@ public class TradeHutManager : MonoBehaviour
 
                rawOreExchange            = 0,
                mercenaryEngineerBuyCount = 0,
-       
+
                crudeToolFluctuation,
                harpoonFluctuation,
                divingBellFluctuation,
@@ -68,8 +68,8 @@ public class TradeHutManager : MonoBehaviour
                worldEvent;
 
    // Public variables
-   public int marketShiftMax = 0,
-              marketShiftMin = 0;
+   public float marketShiftMax = 1.2f,
+                marketShiftMin = 1.06f;
    public int shiftDirection { get; private set; } 
 
 
@@ -94,6 +94,9 @@ public class TradeHutManager : MonoBehaviour
                     
                     MARKET_CHANCE_MIN = 0,
                     MARKET_CHANCE_MAX = 100,
+         
+                    FIRST_TUTORIAL   = 1,
+                    SECOND_TUTORIAL = 2,
 
                     INSURANCE_POLICY_PAYOUT = 500;
       
@@ -101,11 +104,15 @@ public class TradeHutManager : MonoBehaviour
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
                        CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
                        INSURANCE_POLICY_TAG     = "Insurance Policy";
-
-   public bool isTier3BuffACtive       = false,
-               isInsurancePolicyActive = false;
+   
+   public bool isTier3BuffACtive   = false;
+   public bool tutorialFunctionOne = false;
+   public bool tutorialFunctionTwo = false;
+   public bool isInsurancePolicyActive = false;
 
    private InventoryManager inv;
+
+   public static event Action HandleTutorial;
 
    public static TradeHutManager Instance;
 
@@ -176,6 +183,25 @@ public class TradeHutManager : MonoBehaviour
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, CLOCKWORK_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), 0.0f, INSURANCE_POLICY_TAG, -65);
+   }
+
+   public void OnEnable()
+   {
+      TutorialManager.HandleTradeHutTutorial += ChangeTutorialState;
+   }
+
+   public void OnDisable()
+   {
+      TutorialManager.HandleTradeHutTutorial -= ChangeTutorialState;
+   }
+
+   public void ChangeTutorialState(int tutorialType)
+   {
+      if (tutorialType == FIRST_TUTORIAL)
+         tutorialFunctionOne = true;
+
+      if (tutorialType == SECOND_TUTORIAL)
+         tutorialFunctionTwo = true;
    }
 
    public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 
@@ -327,6 +353,12 @@ public class TradeHutManager : MonoBehaviour
       {
          Destroy(currentSellItem.gameObject);
          currentSellItem = null;
+      }
+
+      if(tutorialFunctionOne && itemTag == CRUDE_TOOL_TAG && SellPanel.Find("TutorialPart3").gameObject.activeSelf)
+      {
+         SellPanel.Find("TutorialPart3").gameObject.SetActive(false);
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
       }
 
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
@@ -497,6 +529,12 @@ public class TradeHutManager : MonoBehaviour
                }
                else 
                   crudeToolSellCount = MIN_SELL_ITEM_COUNT;
+
+               if(tutorialFunctionOne)
+               {
+                  SellPanel.Find("TutorialPart5").gameObject.SetActive(false);
+                  SellPanel.Find("TutorialPart6").gameObject.SetActive(true);
+               }
             }
             break;
       
@@ -700,6 +738,11 @@ public class TradeHutManager : MonoBehaviour
    public void IncreaseSellItemCount(Transform item) 
    {
       AdjustSellQuantity(item, 1);
+      if(tutorialFunctionOne)
+      {
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
+      }
    }
 
    // Decrements the count for the item being sold and updates the UI
@@ -907,12 +950,12 @@ public class TradeHutManager : MonoBehaviour
        precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
        engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
    
-       crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       divingBellFluctuation    = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       precisionLensFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       crudeToolFluctuation     = GetItemSellValueFluctuation(BASE_CRUDE_TOOL_SELL_VALUE);
+       harpoonFluctuation       = GetItemSellValueFluctuation(BASE_HARPON_SELL_VALUE);
+       pressureValveFluctuation = GetItemSellValueFluctuation(BASE_PRESSURE_VALVE_SELL_VALUE);
+       divingBellFluctuation    = GetItemSellValueFluctuation(BASE_DIVING_BELL_SELL_VALUE);
+       precisionLensFluctuation = GetItemSellValueFluctuation(BASE_PRECISION_LENS_SELL_VALUE);
+       engineFluctuation        = GetItemSellValueFluctuation(BASE_ENGINE_VALUE);
    
        // 2. Update UI Previews based on these exact rolls
        UpdatePreviewUI(
@@ -951,6 +994,20 @@ public class TradeHutManager : MonoBehaviour
               MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
        }
    }
+
+   private int GetItemSellValueFluctuation(int itemBaseValue) 
+   {
+      int fluctuation = itemBaseValue;
+      float currentShift;
+
+      currentShift = (float)Rng.NextDouble() * (marketShiftMax - marketShiftMin) + marketShiftMin;
+
+      Debug.Log("Fluctuation: " + currentShift.ToString());
+
+      fluctuation = (int) Math.Abs(((float)fluctuation - ((float)itemBaseValue * currentShift)));
+
+      return fluctuation;
+   }
    
    // Helper method to keep your UI updates clean and perfectly matched to the math
    private void UpdatePreviewUI(
@@ -971,7 +1028,6 @@ public class TradeHutManager : MonoBehaviour
        }
        else
        {
-         // Standard Fluctuation Preview
          if (worldEvent == (int) eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
          {
             if(shiftDirection <= 50)
@@ -979,6 +1035,7 @@ public class TradeHutManager : MonoBehaviour
             else
               preview  = currentVal + baseValue;
          }
+         // Standard Fluctuation Previewx
          else
          { 
             if (chance <= 30) 
@@ -1294,8 +1351,8 @@ public class TradeHutManager : MonoBehaviour
       TradePanels.gameObject.SetActive(true);
       ShowSellPanel();
 
-      //if (MainUIManager.mainUI != null)
-      //   MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void ShowInfoPanel() 
@@ -1316,13 +1373,35 @@ public class TradeHutManager : MonoBehaviour
          CloseBuyPanel();
       }
 
-      // Destroy the instantiated buy item/window instance if it exists
-      if (currentBuyItem != null) 
+         /*if(tutorialFunctionTwo)
+         {
+            SellPanel.Find("Arrow").gameObject.SetActive(false);
+            SellPanel.Find("Arrow2").gameObject.SetActive(false);
+            SellPanel.Find("FirstText").gameObject.SetActive(false);
+            SellPanel.Find("SecondText").gameObject.SetActive(false);
+            SellPanel.Find("Arrow3").gameObject.SetActive(true);
+            SellPanel.Find("ThirdText").gameObject.SetActive(true);
+            SellPanel.Find("FourthText").gameObject.SetActive(true);
+         }*/
+
+         // Destroy the instantiated buy item/window instance if it exists
+         if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
          currentBuyItem = null;
       }
       SellPanel.gameObject.SetActive(true);
+
+      if (tutorialFunctionOne)
+      {
+         if (BuyPanel.Find("TutorialPart2").gameObject.activeSelf)
+         {
+            BuyPanel.Find("TutorialPart2").gameObject.SetActive(false);
+            SellPanel.Find("TutorialPart3").gameObject.SetActive(true);
+         }
+         else
+            SellPanel.Find("TutorialPart1").gameObject.SetActive(true);
+      }
    }
 
    public void ShowBuyPanel() 
@@ -1333,6 +1412,12 @@ public class TradeHutManager : MonoBehaviour
             CloseSellWindow();
 
          CloseSellPanel();
+      }
+
+      if(tutorialFunctionOne)
+      {
+         SellPanel.Find("TutorialPart1").gameObject.SetActive(false);
+         BuyPanel.Find("TutorialPart2").gameObject.SetActive(true);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
@@ -1362,6 +1447,20 @@ public class TradeHutManager : MonoBehaviour
 
    private void CloseTradePanel() 
    {
+      if(tutorialFunctionOne)
+      {
+         SellPanel.Find("TutorialPart6").gameObject.SetActive(false);
+         tutorialFunctionOne = false;
+         HandleTutorial?.Invoke();
+      }
+
+      if(tutorialFunctionTwo && SellPanel.Find("Arrow4").gameObject.activeSelf)
+      {
+         BuyPanel.Find("Arrow4").gameObject.SetActive(false);
+         BuyPanel.Find("SixthText").gameObject.SetActive(false);
+         BuyPanel.Find("SeventhText").gameObject.SetActive(false);
+         HandleTutorial?.Invoke();
+      }
 
       // Destroy the instantiated sell item/window instance if it exists
       if (currentSellItem != null) 
