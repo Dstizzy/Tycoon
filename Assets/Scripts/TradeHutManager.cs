@@ -1002,8 +1002,6 @@ public class TradeHutManager : MonoBehaviour
 
       currentShift = (float)Rng.NextDouble() * (marketShiftMax - marketShiftMin) + marketShiftMin;
 
-      Debug.Log("Fluctuation: " + currentShift.ToString());
-
       fluctuation = (int) Math.Abs(((float)fluctuation - ((float)itemBaseValue * currentShift)));
 
       return fluctuation;
