@@ -179,13 +179,13 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 0;
-      oreCount           = 0;
-      crudeToolCount     = MIN_CRUDE_TOOL_COUNT;
+      pearlCount         = 5000;
+      oreCount           = 5000;
+      crudeToolCount     = 1;
       harpoonCount       = MIN_HARPOON_COUNT;
-      pressureValveCount = MIN_PRESSURE_VALVE_COUNT;
+      pressureValveCount = 2;
       divingBellCount    = MIN_DIVING_BELL_COUNT;
-      precisionLensCount = MIN_PRECISION_LENS_COUNT;
+      precisionLensCount = 2;
       engineCount        = MIN_ENGINE_COUNT;
    }
 
@@ -198,7 +198,7 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
+      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
       //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);

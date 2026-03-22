@@ -50,7 +50,7 @@ public class TradeHutManager : MonoBehaviour
 
                rawOreExchange            = 0,
                mercenaryEngineerBuyCount = 0,
-       
+
                crudeToolFluctuation,
                harpoonFluctuation,
                divingBellFluctuation,
@@ -68,8 +68,8 @@ public class TradeHutManager : MonoBehaviour
                worldEvent;
 
    // Public variables
-   public int marketShiftMax = 0,
-              marketShiftMin = 0;
+   public float marketShiftMax = 1.2f,
+                marketShiftMin = 1.06f;
    public int shiftDirection { get; private set; } 
 
 
@@ -950,12 +950,12 @@ public class TradeHutManager : MonoBehaviour
        precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
        engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
    
-       crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       divingBellFluctuation    = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       precisionLensFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       crudeToolFluctuation     = GetItemSellValueFluctuation(BASE_CRUDE_TOOL_SELL_VALUE);
+       harpoonFluctuation       = GetItemSellValueFluctuation(BASE_HARPON_SELL_VALUE);
+       pressureValveFluctuation = GetItemSellValueFluctuation(BASE_PRESSURE_VALVE_SELL_VALUE);
+       divingBellFluctuation    = GetItemSellValueFluctuation(BASE_DIVING_BELL_SELL_VALUE);
+       precisionLensFluctuation = GetItemSellValueFluctuation(BASE_PRECISION_LENS_SELL_VALUE);
+       engineFluctuation        = GetItemSellValueFluctuation(BASE_ENGINE_VALUE);
    
        // 2. Update UI Previews based on these exact rolls
        UpdatePreviewUI(
@@ -994,6 +994,20 @@ public class TradeHutManager : MonoBehaviour
               MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
        }
    }
+
+   private int GetItemSellValueFluctuation(int itemBaseValue) 
+   {
+      int fluctuation = itemBaseValue;
+      float currentShift;
+
+      currentShift = (float)Rng.NextDouble() * (marketShiftMax - marketShiftMin) + marketShiftMin;
+
+      Debug.Log("Fluctuation: " + currentShift.ToString());
+
+      fluctuation = (int) Math.Abs(((float)fluctuation - ((float)itemBaseValue * currentShift)));
+
+      return fluctuation;
+   }
    
    // Helper method to keep your UI updates clean and perfectly matched to the math
    private void UpdatePreviewUI(
@@ -1014,7 +1028,6 @@ public class TradeHutManager : MonoBehaviour
        }
        else
        {
-         // Standard Fluctuation Preview
          if (worldEvent == (int) eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
          {
             if(shiftDirection <= 50)
@@ -1022,6 +1035,7 @@ public class TradeHutManager : MonoBehaviour
             else
               preview  = currentVal + baseValue;
          }
+         // Standard Fluctuation Previewx
          else
          { 
             if (chance <= 30) 
@@ -1337,8 +1351,8 @@ public class TradeHutManager : MonoBehaviour
       TradePanels.gameObject.SetActive(true);
       ShowSellPanel();
 
-      //if (MainUIManager.mainUI != null)
-      //   MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void ShowInfoPanel() 
