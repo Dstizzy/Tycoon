@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 153f55341f3c7d44692ccb397464ec25
+guid: da2a621b5941ac04e9bf5b0169ed1f2c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6514354986498078296
-    second: cloudCover_0
+      213: 6547344450215345161
+    second: trade_panel_exit_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cloudCover_0
+      name: trade_panel_exit_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 28
-        width: 623
-        height: 325
+        x: 165
+        y: 16
+        width: 339
+        height: 339
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 856330f7853a76a50800000000000000
-      internalID: 6514354986498078296
+      spriteID: 90cf5319617dcda50800000000000000
+      internalID: 6547344450215345161
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      cloudCover_0: 6514354986498078296
+      trade_panel_exit_0: 6547344450215345161
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

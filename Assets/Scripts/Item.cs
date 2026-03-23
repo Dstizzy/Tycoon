@@ -17,8 +17,8 @@ public class Item {
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int insurancePolicyPrice   { get; set; } = 100;
-   private static int tier2BluePrintPrice    { get; set; } = 500;
-   private static int tier3BluePrintPrice    { get; set; } = 2000;
+   private static int tier2BluePrintPrice    { get; set; } = 300;
+   private static int tier3BluePrintPrice    { get; set; } = 500;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
@@ -501,5 +501,27 @@ public class Item {
       tier2BluePrintPrice    -= (int)(tier2BluePrintPrice * percent);
       tier3BluePrintPrice    -= (int)(tier3BluePrintPrice * percent);
       mercenaryEngineerPrice -= (int)(mercenaryEngineerPrice * percent);
+   }
+
+   // Resets all static prices and events back to default for a new game
+   public static void ResetPrices() 
+   {
+      // Reset Sell Values
+      crudeToolSellValue     = BASE_CRUDE_TOOL_SELL_VALUE;
+      harpoonSellValue       = BASE_HARPON_SELL_VALUE;
+      pressureValveSellValue = BASE_PRESSURE_VALVE_SELL_VALUE;
+      divingBellSellValue    = BASE_DIVING_BELL_SELL_VALUE;
+      precisionLensSellValue = BASE_PRECISION_LENS_SELL_VALUE;
+      engineSellValue        = BASE_ENGINE_VALUE;
+
+      // Reset Buy Prices (hardcoded defaults from your initializers)
+      rawOrePrice            = 1;
+      mercenaryEngineerPrice = 100;
+      insurancePolicyPrice   = 100;
+      tier2BluePrintPrice    = 500;
+      tier3BluePrintPrice    = 2000;
+
+      // Clear the static action delegate to prevent memory leaks/missing references
+      OnItemValueChange = null;
    }
 }

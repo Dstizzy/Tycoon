@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -120,7 +119,6 @@ public class TradeHutManager : MonoBehaviour
    {
       SellItems = new();
       BuyItems  = new();
-      ticker    = TickerSystem.Instance;
 
       // Initialize lastResetTurn for every ItemType so lookups are safe
       foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
@@ -169,7 +167,8 @@ public class TradeHutManager : MonoBehaviour
 
    private void Start()
    {
-      inv = InventoryManager.Instance;
+      inv    = InventoryManager.Instance;
+      ticker = TickerSystem.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 3.0f, HARPOON_TAG);
@@ -514,6 +513,7 @@ public class TradeHutManager : MonoBehaviour
       string successMessage = "",
              itemTag        = currentSellItem ? currentSellItem.tag : string.Empty;
 
+      Debug.Log("Harpoon sell count " + harpoonSellCount.ToString());
       switch (itemTag) 
       {
          // Tier 1 items
@@ -587,11 +587,12 @@ public class TradeHutManager : MonoBehaviour
       }
       
       // Recieves pearls and show success ticker only if something sold
-      if (totalSellValue > 0) 
+      if (totalSellValue > 0)
       {
          inv.TryAddPearl(totalSellValue);
          ticker.ShowTicker(successMessage, Color.green, MessageTypes.ResultMessage);
-      } else 
+      } 
+      else 
       {
          // Check if the user actually tried to sell something but failed 
          // or not selecting anything at all.
@@ -646,7 +647,7 @@ public class TradeHutManager : MonoBehaviour
 
             // Adds new craftable items to the inventory/craft list (pressure valve, diving bell)
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
 
             // Removes the tier 2 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).gameObject.SetActive(false);
@@ -666,7 +667,13 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Chain").gameObject.SetActive(false);
       
+<<<<<<< HEAD
             ticker.ShowTicker("Purchased Tier 2 Blueprint ・Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
+=======
+            if(ticker == null)
+               Debug.LogError("Ticker is null");
+            ticker.ShowTicker("Purchased Tier 2 Blueprint ・Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
+>>>>>>> 5c5812ddf0e89684d96e6ac2e5baf83a4f936589
          }
 
          // Tier 3 Blueprint purchase flow
@@ -680,7 +687,7 @@ public class TradeHutManager : MonoBehaviour
 
             // Adds new craftable items (engine, precision lens) to inventory/craft list
             inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-            inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+            inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
 
             // Reveals the tier 3 items on the sell panel and enable its UI controls
             SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemButton").gameObject.SetActive(true);
@@ -706,7 +713,7 @@ public class TradeHutManager : MonoBehaviour
              inv.TryAddMercenaryEngineer(mercenaryEngineerBuyCount)) 
          {
             if(inv.InventoryItems?.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)) == null)
-               inv.CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
+               inv.CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
             ForgeManager.Instance.hasMercenaryEngineer = inv.mercenaryEngineerCount > 0 ? true: false;
 
@@ -741,7 +748,7 @@ public class TradeHutManager : MonoBehaviour
       if(tutorialFunctionOne)
       {
          SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
-         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
+         SellPanel.Find("TutorialPart5").gameObject.SetActive(true);
       }
    }
 
@@ -794,8 +801,6 @@ public class TradeHutManager : MonoBehaviour
                ticker.ShowTicker($"Cannot select that many ・you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
-
-            return;
          }
       } 
       else 
@@ -808,8 +813,6 @@ public class TradeHutManager : MonoBehaviour
                ticker.ShowTicker($"Nothing selected to remove ・you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
-
-            return;
          }
       }
 
@@ -833,6 +836,9 @@ public class TradeHutManager : MonoBehaviour
          case ENGINE_TAG: 
            engineSellCount = current; 
            break;
+         default:
+            Debug.LogError("Unkown item: " + item.tag);
+            break;
       }
        
       item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + current.ToString();
@@ -1001,8 +1007,6 @@ public class TradeHutManager : MonoBehaviour
       float currentShift;
 
       currentShift = (float)Rng.NextDouble() * (marketShiftMax - marketShiftMin) + marketShiftMin;
-
-      Debug.Log("Fluctuation: " + currentShift.ToString());
 
       fluctuation = (int) Math.Abs(((float)fluctuation - ((float)itemBaseValue * currentShift)));
 

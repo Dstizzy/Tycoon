@@ -35,17 +35,16 @@ public class ExplorationUnitManager : MonoBehaviour
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
-   const int UPGRADE_PEARLS = 100;
    const int LEVEL2_PEARL_COST = 200;
    const int LEVEL3_PEARL_COST = 500;
    const int MAX_SHIP_LEVEL = 3;
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
+   private int lastProcessedTurn = 0;
+   private bool skipFirstTurn = false;
 
-   public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
+  // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
-
-   public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
    public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
@@ -66,6 +65,17 @@ public class ExplorationUnitManager : MonoBehaviour
       if (explorationLevelText != null && shipManager != null)
       {
          explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+      }
+   }
+
+   void Update()
+   {
+      if (isExploring && TurnManager.Instance.currentTurn > lastProcessedTurn)
+      {
+         // A new turn has started, but we wait until the UI is clear
+        
+            lastProcessedTurn = TurnManager.Instance.currentTurn;
+            HandleNewTurn();
       }
    }
 
@@ -94,12 +104,14 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               bool hasDivingBell = InventoryManager.Instance.divingBellCount == 0;
-               bool canExplore = !isExploring && hasDivingBell;
+  //             bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               bool canExplore = !isExploring; //&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
-                  if (!isExploring)
-                     exploreButton.onClick.AddListener(() => StartExploration());
+               {
+                  exploreButton.onClick.AddListener(() => StartExploration());
+                  Debug.Log("Exploration Start button clicked");
+               }
             }
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
             break;
@@ -109,12 +121,12 @@ public class ExplorationUnitManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
-            if (yesButton != null)
+            //Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
+            /*if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
-            }
+            }*/
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
          default:
@@ -126,17 +138,19 @@ public class ExplorationUnitManager : MonoBehaviour
    // Starts exploration, gets the starting node, and queues the first move
    public void StartExploration()
    {
+      Debug.Log("Exploration started");
       isExploring = true;
+      lastProcessedTurn = TurnManager.Instance.currentTurn;
+      skipFirstTurn = true;
       if (MapManager.Instance.startingNode != null)
       {
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
-
       }
-      if (tutorialFunction)
-      {
-         tutorialFunction = false;
-         HandleTutorial?.Invoke();
-      }
+//      if (tutorialFunction)
+ //     {
+ //        tutorialFunction = false;
+ //        HandleTutorial?.Invoke();
+ //     }
       CloseExplorationPanel();
    }
 
@@ -301,6 +315,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles map movements and spawning new events
    public void HandleNewTurn()
    {
+      Debug.Log("New turn detected in exploration");
       if (isExploring)
       {
          // Handle if user lost a turn
@@ -333,12 +348,12 @@ public class ExplorationUnitManager : MonoBehaviour
          }
          // Open the decision panel UI
          decisionPanel.gameObject.SetActive(true);
-         if(tutorialFunction)
-         {
-            decisionPanel.Find("Arrow").gameObject.SetActive(true);
-            decisionPanel.Find("Arrow2").gameObject.SetActive(true);
-            decisionPanel.Find("FirstText").gameObject.SetActive(true);
-         }
+       //  if(tutorialFunction)
+       //  {
+       //     decisionPanel.Find("Arrow").gameObject.SetActive(true);
+       //     decisionPanel.Find("Arrow2").gameObject.SetActive(true);
+        //    decisionPanel.Find("FirstText").gameObject.SetActive(true);
+       //  }
 
          SetupButtons(
                current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
@@ -447,7 +462,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
 
-      if(tutorialFunction)
+  /*    if(tutorialFunction)
       {
          explorePanel.Find("Arrow").gameObject.SetActive(true);
          explorePanel.Find("FirstText").gameObject.SetActive(true);
@@ -457,7 +472,7 @@ public class ExplorationUnitManager : MonoBehaviour
          explorePanel.Find("Arrow").gameObject.SetActive(false);
          explorePanel.Find("FirstText").gameObject.SetActive(false);
       }
-   }
+ */  }
 
    //
    private void ShowInfoPanel()
@@ -473,7 +488,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       upgradePanel.gameObject.SetActive(true);
 
-      int upgradeCost = GetUpgradeCost();
+      /*int upgradeCost = GetUpgradeCost();
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
       TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
       Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
@@ -508,7 +523,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
 
       if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);*/
    }
 
    // Shows the event results panel with the all results from an event
@@ -626,10 +641,10 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       explorePanel.gameObject.SetActive(false);
 
-      if (tutorialFunction)
-      {
-         HandleTutorial?.Invoke();
-      }
+   //   if (tutorialFunction)
+   //   {
+    //     HandleTutorial?.Invoke();
+    //  }
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -662,7 +677,7 @@ public class ExplorationUnitManager : MonoBehaviour
       Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
 
-      if (tutorialFunction)
+   /*   if (tutorialFunction)
       {
          if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
          if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
@@ -671,7 +686,7 @@ public class ExplorationUnitManager : MonoBehaviour
          tutorialFunction = false;
          HandleTutorial?.Invoke();
       }
-   }
+ */  }
 
    private void UpdateExplorationSprites()
    {

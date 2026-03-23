@@ -179,13 +179,13 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 5000;
-      oreCount           = 5000;
-      crudeToolCount     = 1;
+      pearlCount         = MIN_PEARL_COUNT;
+      oreCount           = MIN_ORE_COUNT;
+      crudeToolCount     = MIN_CRUDE_TOOL_COUNT;
       harpoonCount       = MIN_HARPOON_COUNT;
-      pressureValveCount = 2;
+      pressureValveCount = MIN_PRESSURE_VALVE_COUNT;
       divingBellCount    = MIN_DIVING_BELL_COUNT;
-      precisionLensCount = 2;
+      precisionLensCount = MIN_PRECISION_LENS_COUNT;
       engineCount        = MIN_ENGINE_COUNT;
    }
 
@@ -221,12 +221,15 @@ public class InventoryManager : MonoBehaviour
    public void CreateResource(Sprite resourceSprite, int positionIndex, string resourceTag)
    {
       Transform resourceTransform,
-                    resourceContainer = ResourcePanel.Find("ResourceContainer").GetComponent<Transform>(),
-                    resourceTemplate = resourceContainer.Find("ResourceTemplate").GetComponent<Transform>();
+                resourceContainer = ResourcePanel.Find("ResourceContainer").GetComponent<Transform>(),
+                resourceTemplate = resourceContainer.Find("ResourceTemplate").GetComponent<Transform>();
 
       Button resourceWindowButton;
       RectTransform resourceRectTransform;
       int resourceCount;
+
+
+      resourceTemplate.gameObject.SetActive(false);
 
       switch (resourceTag)
       {
@@ -241,13 +244,14 @@ public class InventoryManager : MonoBehaviour
             break;
          default:
             Debug.LogError("Unknown resource tag: " + resourceTag);
-            resourceCount = 0;
-            break;
+            return;
       }
 
       /* Instantiate the resource template and set its position in the container   */
       /* Transform of the newly created resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½     */
       resourceTransform = Instantiate(resourceTemplate, resourceContainer);
+      if (resourceTransform == null)
+         Debug.LogError("Error 2");
 
       /* RectTransform for positioning the new resource UI element. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ï¿½     */
       resourceRectTransform = resourceTransform.GetComponent<RectTransform>();
@@ -1066,7 +1070,7 @@ public class InventoryManager : MonoBehaviour
          else
          {
             isSuccess = true;
-            pressureValveCount += pressureValveAmount;
+            pressureValveCount -= pressureValveAmount;
          }
       }
 
@@ -1132,7 +1136,7 @@ public class InventoryManager : MonoBehaviour
          else
          {
             isSuccess = true;
-            engineCount += engineAmount;
+            engineCount -= engineAmount;
          }
       }
 
