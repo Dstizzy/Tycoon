@@ -11,14 +11,12 @@ public class MainUIManager : MonoBehaviour
    public Button MainMenuButton;
    public Button[] DropdownButtons;
    public Button InventoryButton;
-   public Button victoryButton;
    public Button NextButton;
 
    // UI elements on main UI
    [SerializeField] private TextMeshProUGUI pearCountText;
    [SerializeField] private TextMeshProUGUI oreCountText;
    [SerializeField] private Transform erroPanel;
-   [SerializeField] private GameObject victoryPanel;
    [SerializeField] private GameObject tutorial;
 
    // State variable to track dropdown visibility
@@ -63,10 +61,6 @@ public class MainUIManager : MonoBehaviour
          //AudioManager.Instance.PlayClick(); 
          InventoryManager.Instance.ShowInventoryPanel();
       });
-      victoryButton.onClick.AddListener(() => {
-         AudioManager.Instance.PlayClick(); 
-         ShowVictoryPanel();
-      });
 
       if (NextButton != null)
       {
@@ -74,16 +68,6 @@ public class MainUIManager : MonoBehaviour
          {
             if (AudioManager.Instance != null)
                AudioManager.Instance.PlayClick();
-         });
-      }
-
-      if (victoryButton != null)
-      {
-         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
-         {
-            AudioManager.Instance.PlayClick();
-            victoryPanel.SetActive(false);
-            PopUpManager.Instance.EnablePlayerInput();
          });
       }
 
@@ -127,117 +111,6 @@ public class MainUIManager : MonoBehaviour
       {
          StartCoroutine(AnimateTopBarCounter(oreCountText, displayedOreCount, newOreCount, 0.5f, false));
       }
-   }
-
-   //Shows the victory panel and sets up the buttons for the submarine assembly
-   public void ShowVictoryPanel()
-   {
-      bool isHeadReady,
-           isBodyReady;
-
-      if (victoryPanel != null)
-      {
-         victoryPanel.SetActive(true);
-         PopUpManager.Instance.DisablePlayerInput();
-
-         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
-         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
-                                               && InventoryManager.Instance.pressureValveCount >= 5
-                                               && InventoryManager.Instance.precisionLensCount >= 5;
-
-         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
-         if (skeleton != null)
-         {
-            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
-            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
-            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
-         }
-
-         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
-         if (qestionMark != null)
-         {
-            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
-               qestionMark.gameObject.SetActive(false);
-            else
-               qestionMark.gameObject.SetActive(true);
-         }
-
-         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
-         {
-            ActivateFinalForm();
-         }
-      }
-   }
-
-   // Activates the head of the submarine
-   public void ActivateHead()
-   {
-      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
-      {
-         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
-      }
-
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(false);
-         else
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
-      }
-   }
-
-   // Activates the body of the submarine
-   public void ActivateBody()
-   {
-      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
-      {
-         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
-      }
-
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(false);
-         else
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(true);
-      }
-   }
-
-   // Activates the tail of the submarine
-   public void ActivateTail()
-   {
-      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
-      {
-         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
-      }
-
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(false);
-         else
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
-      }
-   }
-
-   // Activates the final form of the submarine when all parts are active
-   public void ActivateFinalForm()
-   {
-      victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
-      victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
    }
 
    public void GoToStartScreen()

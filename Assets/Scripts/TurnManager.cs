@@ -101,7 +101,7 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
-         HandleJamming();
+         //HandleJamming();
          HandleEnemy();
 
          // Handle world event reset
@@ -168,7 +168,7 @@ public class TurnManager : MonoBehaviour
          randomNumber = random.Next(1, 100);
          if (randomNumber < OreRefinery_Manager.Instance.jammingChance)
          {
-            JamRefinery();
+            //JamRefinery();
          }
       }
       else
@@ -275,7 +275,7 @@ public class TurnManager : MonoBehaviour
    {
       InventoryManager.Instance.TrySpendOre((int)(InventoryManager.Instance.oreCount / 2));
       InventoryManager.Instance.TrySpendPearl((int)(InventoryManager.Instance.pearlCount / 4));
-      JamRefinery();
+      //JamRefinery();
       heatLevel = 10;
       DeactivateHeatNodes();
       heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);

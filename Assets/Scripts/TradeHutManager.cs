@@ -744,7 +744,7 @@ public class TradeHutManager : MonoBehaviour
       if(tutorialFunctionOne)
       {
          SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
-         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
+         SellPanel.Find("TutorialPart5").gameObject.SetActive(true);
       }
    }
 

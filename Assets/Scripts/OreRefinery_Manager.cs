@@ -37,7 +37,7 @@ public class OreRefinery_Manager : MonoBehaviour
    TickerSystem ticker;
 
    public int  oreLevel        = STARTING_LEVEL;
-   public int  jammingChance   = 15;
+   public int  jammingChance   = 0;
    public bool IsBlocked       = false;
    public bool tutorialUpgrade = false;
 
@@ -329,13 +329,13 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       int roll = UnityEngine.Random.Range(0, 100);
 
-      if (roll < jammingChance)
+      /*if (roll < jammingChance)
       {
          Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
          IsBlocked = true;
          //ActivateJamButton();
          //ActivateJamSymbol();
-      }
+      }*/
 
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }
