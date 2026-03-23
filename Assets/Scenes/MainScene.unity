@@ -9799,7 +9799,7 @@ MonoBehaviour:
   commerceTab: {fileID: 1362078862}
   productionTab: {fileID: 715027667}
   explorationTab: {fileID: 1531381670}
-  victoryPanel: {fileID: 0}
+  victoryPanel: {fileID: 1320842705}
   labTutorialFunction: 0
   victoryTutorialFunction: 0
 --- !u!1 &273069171
@@ -26869,7 +26869,7 @@ MonoBehaviour:
   explorationUnitManager: {fileID: 1265069758}
   oreRefineryManager: {fileID: 1615957297}
   forgeManager: {fileID: 1658009883}
-  labManager: {fileID: 0}
+  labManager: {fileID: 272157699}
 --- !u!4 &778966727
 Transform:
   m_ObjectHideFlags: 0
@@ -51580,7 +51580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1397342172
 RectTransform:
   m_ObjectHideFlags: 0
