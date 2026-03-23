@@ -41,6 +41,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
    private int lastProcessedTurn = 0;
+   private bool skipFirstTurn = false;
 
   // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
@@ -141,10 +142,11 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       Debug.Log("Exploration started");
       isExploring = true;
+      lastProcessedTurn = TurnManager.Instance.currentTurn;
+      skipFirstTurn = true;
       if (MapManager.Instance.startingNode != null)
       {
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
-
       }
 //      if (tutorialFunction)
  //     {
