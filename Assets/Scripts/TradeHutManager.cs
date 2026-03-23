@@ -514,6 +514,7 @@ public class TradeHutManager : MonoBehaviour
       string successMessage = "",
              itemTag        = currentSellItem ? currentSellItem.tag : string.Empty;
 
+      Debug.Log("Harpoon sell count " + harpoonSellCount.ToString());
       switch (itemTag) 
       {
          // Tier 1 items
@@ -587,11 +588,12 @@ public class TradeHutManager : MonoBehaviour
       }
       
       // Recieves pearls and show success ticker only if something sold
-      if (totalSellValue > 0) 
+      if (totalSellValue > 0)
       {
          inv.TryAddPearl(totalSellValue);
          ticker.ShowTicker(successMessage, Color.green, MessageTypes.ResultMessage);
-      } else 
+      } 
+      else 
       {
          // Check if the user actually tried to sell something but failed 
          // or not selecting anything at all.
@@ -796,8 +798,6 @@ public class TradeHutManager : MonoBehaviour
                ticker.ShowTicker($"Cannot select that many — you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
-
-            return;
          }
       } 
       else 
@@ -810,12 +810,10 @@ public class TradeHutManager : MonoBehaviour
                ticker.ShowTicker($"Nothing selected to remove — you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
-
-            return;
          }
       }
 
-      switch (tag)
+      switch (item.tag)
       {
          case CRUDE_TOOL_TAG:
            crudeToolSellCount = current; 
@@ -835,6 +833,9 @@ public class TradeHutManager : MonoBehaviour
          case ENGINE_TAG: 
            engineSellCount = current; 
            break;
+         default:
+            Debug.LogError("Unkown item: " + item.tag);
+            break;
       }
        
       item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + current.ToString();
