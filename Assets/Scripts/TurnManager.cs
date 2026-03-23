@@ -275,7 +275,7 @@ public class TurnManager : MonoBehaviour
    {
       InventoryManager.Instance.TrySpendOre((int)(InventoryManager.Instance.oreCount / 2));
       InventoryManager.Instance.TrySpendPearl((int)(InventoryManager.Instance.pearlCount / 4));
-      JamRefinery();
+      //JamRefinery();
       heatLevel = 10;
       DeactivateHeatNodes();
       heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);

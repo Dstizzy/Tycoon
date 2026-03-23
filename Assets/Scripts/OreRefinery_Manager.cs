@@ -37,7 +37,7 @@ public class OreRefinery_Manager : MonoBehaviour
    TickerSystem ticker;
 
    public int  oreLevel        = STARTING_LEVEL;
-   public int  jammingChance   = 15;
+   public int  jammingChance   = 0;
    public bool IsBlocked       = false;
    public bool tutorialUpgrade = false;
 
