@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 2_08Event
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 2_08
-  mapPosition: {x: 9, y: 27}
+  mapPosition: {x: 17, y: -19}
   isExplored: 0
   nodeDepth: 2
   type: 0
@@ -22,4 +22,8 @@ MonoBehaviour:
   pathA: {fileID: 0}
   choiceBText: 
   pathB: {fileID: 0}
+  choiceCText: 
+  pathC: {fileID: 0}
   nextNode: {fileID: 11400000, guid: 679338c95f452174e8f71a3799ef4c6b, type: 2}
+  isFinalNode: 0
+  isLeftPath: 0

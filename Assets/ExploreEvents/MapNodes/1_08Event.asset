@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 1_08Event
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_08
-  mapPosition: {x: -22, y: 93}
+  mapPosition: {x: -10, y: 40}
   isExplored: 0
   nodeDepth: 1
   type: 0
