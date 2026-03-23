@@ -19,6 +19,7 @@ public class MainUIManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI oreCountText;
    [SerializeField] private Transform erroPanel;
    [SerializeField] private GameObject victoryPanel;
+   [SerializeField] private GameObject tutorial;
 
    // State variable to track dropdown visibility
    private bool isVisible = false;
@@ -98,12 +99,16 @@ public class MainUIManager : MonoBehaviour
       isVisible = !isVisible;
       DropdownButtons[0].gameObject.SetActive(isVisible);
       DropdownButtons[1].gameObject.SetActive(isVisible);
-      //DropdownButtons[2].gameObject.SetActive(isVisible);
+      DropdownButtons[2].gameObject.SetActive(isVisible);
       //DropdownButtons[2].onClick.AddListener(() => ToggleTutorial());
    }
 
    public void ToggleTutorial()
    {
+      if(tutorial.gameObject.activeSelf)
+         tutorial.gameObject.SetActive(false);
+      else 
+         tutorial.gameObject.SetActive(true);
       //ChangeTutorial?.Invoke();
    }
 
