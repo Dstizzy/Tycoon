@@ -381,10 +381,11 @@ public class LabManager : MonoBehaviour
          Debug.LogError("Use item methods was not found.");
          ticker.ShowTicker($"{itemName}s have not been unlocked!", Color.red, TickerSystem.MessageTypes.ResultMessage);
 
-      } else
+      } 
+      else
       {
          // Link to inventory to spend the item
-         if((inv.pearlCount >= pearlCost))
+         if(inv.pearlCount >= pearlCost)
          {
             if (useItemMethod(itemCost) && inv.TrySpendPearl(pearlCost)) 
                isSuccess = true;
@@ -450,8 +451,11 @@ public class LabManager : MonoBehaviour
    public void ImplementTierTwoInnovation(GameObject tabType)
    {
       // Grant action to gameple 50 gold for 60% chance to get 250 back                       
-      if (tabType == commerceTab)
+      if (tabType == commerceTab) 
+      {
          tradeHutManager.RecycleButton.gameObject.SetActive(true);
+         ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+      }
 
       // Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a
       //    bonus item upon crafting a single item                                             
@@ -462,16 +466,21 @@ public class LabManager : MonoBehaviour
          {
             ForgeManager.Instance.UnlockOverclock();
          }
+         ticker.ShowTicker("Product Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       /* Unlocks chance to find crafts on explorations                                         */
-      else if (tabType == explorationTab)
+      else 
+      {
+         if (tabType == explorationTab) 
+         { 
+            if (shipManager != null)
+               shipManager.UnlockTier2Choices();
+            else
+               Debug.Log("There is no tab");
+            ticker.ShowTicker("Exploration Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+          }
+      }
 
-         if (shipManager != null)
-            shipManager.UnlockTier2Choices();
-         else
-         {
-            Debug.Log("There is no tab");
-         }
    }
 
    // Permanently increase the sell value of all items by 20%, remove negative world events from the trade hut, and unlock tier 3 innovation
@@ -487,9 +496,6 @@ public class LabManager : MonoBehaviour
          initialTab.transform.Find("commerceLine").gameObject.SetActive(true);
          HandleFlask();
 
-         tradeHutManager.marketShiftMin = 5;
-         tradeHutManager.marketShiftMax = 10;
-
          // Removes the negative world events
          tradeHutManager.isTier3BuffACtive = true;
 
@@ -498,6 +504,8 @@ public class LabManager : MonoBehaviour
          TryIncreaseHarpoonSellValue(harpoonSellValueIncrease);
          TryIncreasePressureValveValue(pressureValveSellValueIncrease);
          TryIncreaseEngineSellValue(engineSellValueIncrease);
+
+         ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       // Unlock tier 3 itme (Artifact); Crafting results in two items being made               
       else if (tabType == productionTab)
@@ -510,6 +518,7 @@ public class LabManager : MonoBehaviour
          {
             ForgeManager.Instance.UnlockReduceCraftingTime();
          }
+         ticker.ShowTicker("Product Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
@@ -519,7 +528,9 @@ public class LabManager : MonoBehaviour
 
          if (shipManager != null)
             shipManager.ApplyLabRewardBonus();
-      }
+
+         ticker.ShowTicker("Exploration Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+      } 
       else
       {
          Debug.Log("There is no tab");
