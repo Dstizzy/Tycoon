@@ -329,13 +329,13 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       int roll = UnityEngine.Random.Range(0, 100);
 
-      if (roll < jammingChance)
+      /*if (roll < jammingChance)
       {
          Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
          IsBlocked = true;
          //ActivateJamButton();
          //ActivateJamSymbol();
-      }
+      }*/
 
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }
