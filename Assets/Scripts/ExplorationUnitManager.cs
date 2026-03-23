@@ -85,14 +85,12 @@ public class ExplorationUnitManager : MonoBehaviour
    private void OnEnable()
    {
       ShipManager.OnShipDeath += HandleExplorationDone;
-      TurnManager.OnTurnEnded += HandleNewTurn;
    }
 
    // Event destroyer
    private void OnDisable()
    {
       ShipManager.OnShipDeath -= HandleExplorationDone;
-      TurnManager.OnTurnEnded -= HandleNewTurn;
    }
 
    // Activates the requested exploration unit panel
@@ -106,8 +104,8 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-               bool canExplore = !isExploring && hasDivingBell;
+               //      bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               bool canExplore = !isExploring; // && hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
                {

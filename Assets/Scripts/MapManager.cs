@@ -7,7 +7,6 @@ public class MapManager : MonoBehaviour
    public MapNode startingNode; // Map node that the launches from
    public MapNode currentNode; // Node the shp is currently resting on
    public bool winningPathIsLeft; // Determines which final node path holds vessel piece
-   public RectTransform exploreShipIcon; // UI ship icon on explorePanel map
    public RectTransform decisionShipIcon; // UI ship icon on decisionPanel map
    [SerializeField] private ShipManager shipManager; // Reference to update ship's depth when it moves
 
@@ -38,11 +37,8 @@ public class MapManager : MonoBehaviour
       shipManager.SetDepth(currentNode.nodeDepth);
 
       // Move ship icon to new node on map in both explore and decision panels
-      if (exploreShipIcon != null && decisionShipIcon != null)
-      {
-         exploreShipIcon.anchoredPosition = currentNode.mapPosition;
+      if (decisionShipIcon != null)
          decisionShipIcon.anchoredPosition = currentNode.mapPosition;
-      }
       // Remove the node's cloud from the map
       currentNode.RevealNode();
    }

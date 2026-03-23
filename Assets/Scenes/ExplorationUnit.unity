@@ -30392,7 +30392,6 @@ MonoBehaviour:
   startingNode: {fileID: 11400000, guid: bef1dd1c5ff4f124cb5cc50c194e1379, type: 2}
   currentNode: {fileID: 0}
   winningPathIsLeft: 0
-  exploreShipIcon: {fileID: 0}
   decisionShipIcon: {fileID: 1650044165}
   shipManager: {fileID: 615129222}
   allNodesInGame:
@@ -30555,7 +30554,6 @@ MonoBehaviour:
   explorationLevelSprites: []
   explorationLevelText: {fileID: 0}
   isExploring: 0
-  tutorialFunction: 0
 --- !u!1 &618180082
 GameObject:
   m_ObjectHideFlags: 0
@@ -80197,13 +80195,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 2.7}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1277189126}
+  - {fileID: 1101263170}
   - {fileID: 1650044165}
   - {fileID: 29905376}
   - {fileID: 112570915}
+  - {fileID: 1277189126}
   - {fileID: 260319841}
   - {fileID: 1060571571}
-  - {fileID: 1101263170}
   - {fileID: 629741532}
   m_Father: {fileID: 615129219}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -85179,6 +85177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f1811928929e4e95bb852c98457db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  victoryButton: {fileID: 0}
   innovatePanel: {fileID: 661887545}
   infoPanel: {fileID: 415384726}
   pathButtons: {fileID: 699144576}
@@ -85186,6 +85185,7 @@ MonoBehaviour:
   commerceTab: {fileID: 791750101}
   productionTab: {fileID: 674965388}
   explorationTab: {fileID: 555424764}
+  victoryPanel: {fileID: 0}
   labTutorialFunction: 0
   victoryTutorialFunction: 0
 --- !u!1 &1860763345
