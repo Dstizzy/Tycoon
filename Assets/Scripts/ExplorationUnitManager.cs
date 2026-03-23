@@ -154,7 +154,16 @@ public class ExplorationUnitManager : MonoBehaviour
             explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
 
          if (shipManager.shipLevel == MAX_SHIP_LEVEL)
-            InventoryManager.Instance.ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+         {
+            if (InventoryManager.Instance.ExplorationUnitUpgradeIcon != null)
+            {
+               InventoryManager.Instance.ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+            }
+            else
+            {
+               Debug.LogWarning("ExplorationUnitUpgradeIcon is not assigned in the InventoryManager!");
+            }
+         }
 
          Debug.Log($"Exploration Unit upgraded to level {shipManager.shipLevel}!");
          if (TickerSystem.Instance != null)

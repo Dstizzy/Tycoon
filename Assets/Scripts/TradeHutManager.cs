@@ -49,7 +49,7 @@ public class TradeHutManager : MonoBehaviour
 
                rawOreExchange            = 0,
                mercenaryEngineerBuyCount = 0,
-       
+
                crudeToolFluctuation,
                harpoonFluctuation,
                divingBellFluctuation,
@@ -67,8 +67,8 @@ public class TradeHutManager : MonoBehaviour
                worldEvent;
 
    // Public variables
-   public int marketShiftMax = 0,
-              marketShiftMin = 0;
+   public float marketShiftMax = 1.2f,
+                marketShiftMin = 1.06f;
    public int shiftDirection { get; private set; } 
 
 
@@ -119,7 +119,6 @@ public class TradeHutManager : MonoBehaviour
    {
       SellItems = new();
       BuyItems  = new();
-      ticker    = TickerSystem.Instance;
 
       // Initialize lastResetTurn for every ItemType so lookups are safe
       foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
@@ -168,7 +167,8 @@ public class TradeHutManager : MonoBehaviour
 
    private void Start()
    {
-      inv = InventoryManager.Instance;
+      inv    = InventoryManager.Instance;
+      ticker = TickerSystem.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 3.0f, HARPOON_TAG);
@@ -645,7 +645,7 @@ public class TradeHutManager : MonoBehaviour
 
             // Adds new craftable items to the inventory/craft list (pressure valve, diving bell)
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -250);
+            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
 
             // Removes the tier 2 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).gameObject.SetActive(false);
@@ -665,6 +665,8 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Chain").gameObject.SetActive(false);
       
+            if(ticker == null)
+               Debug.LogError("Ticker is null");
             ticker.ShowTicker("Purchased Tier 2 Blueprint — Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
@@ -679,7 +681,7 @@ public class TradeHutManager : MonoBehaviour
 
             // Adds new craftable items (engine, precision lens) to inventory/craft list
             inv.CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-            inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -250);
+            inv.CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
 
             // Reveals the tier 3 items on the sell panel and enable its UI controls
             SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemButton").gameObject.SetActive(true);
@@ -705,7 +707,7 @@ public class TradeHutManager : MonoBehaviour
              inv.TryAddMercenaryEngineer(mercenaryEngineerBuyCount)) 
          {
             if(inv.InventoryItems?.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)) == null)
-               inv.CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -250);
+               inv.CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
             ForgeManager.Instance.hasMercenaryEngineer = inv.mercenaryEngineerCount > 0 ? true: false;
 
@@ -949,12 +951,12 @@ public class TradeHutManager : MonoBehaviour
        precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
        engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
    
-       crudeToolFluctuation     = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       harpoonFluctuation       = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       pressureValveFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       divingBellFluctuation    = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       precisionLensFluctuation = Rng.Next(marketShiftMin, marketShiftMax + 1);
-       engineFluctuation        = Rng.Next(marketShiftMin, marketShiftMax + 1);
+       crudeToolFluctuation     = GetItemSellValueFluctuation(BASE_CRUDE_TOOL_SELL_VALUE);
+       harpoonFluctuation       = GetItemSellValueFluctuation(BASE_HARPON_SELL_VALUE);
+       pressureValveFluctuation = GetItemSellValueFluctuation(BASE_PRESSURE_VALVE_SELL_VALUE);
+       divingBellFluctuation    = GetItemSellValueFluctuation(BASE_DIVING_BELL_SELL_VALUE);
+       precisionLensFluctuation = GetItemSellValueFluctuation(BASE_PRECISION_LENS_SELL_VALUE);
+       engineFluctuation        = GetItemSellValueFluctuation(BASE_ENGINE_VALUE);
    
        // 2. Update UI Previews based on these exact rolls
        UpdatePreviewUI(
@@ -993,6 +995,18 @@ public class TradeHutManager : MonoBehaviour
               MIN_ENGINE_VALUE, MAX_ENGINE_VALUE);
        }
    }
+
+   private int GetItemSellValueFluctuation(int itemBaseValue) 
+   {
+      int fluctuation = itemBaseValue;
+      float currentShift;
+
+      currentShift = (float)Rng.NextDouble() * (marketShiftMax - marketShiftMin) + marketShiftMin;
+
+      fluctuation = (int) Math.Abs(((float)fluctuation - ((float)itemBaseValue * currentShift)));
+
+      return fluctuation;
+   }
    
    // Helper method to keep your UI updates clean and perfectly matched to the math
    private void UpdatePreviewUI(
@@ -1013,7 +1027,6 @@ public class TradeHutManager : MonoBehaviour
        }
        else
        {
-         // Standard Fluctuation Preview
          if (worldEvent == (int) eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
          {
             if(shiftDirection <= 50)
@@ -1021,6 +1034,7 @@ public class TradeHutManager : MonoBehaviour
             else
               preview  = currentVal + baseValue;
          }
+         // Standard Fluctuation Previewx
          else
          { 
             if (chance <= 30) 
@@ -1336,8 +1350,8 @@ public class TradeHutManager : MonoBehaviour
       TradePanels.gameObject.SetActive(true);
       ShowSellPanel();
 
-      //if (MainUIManager.mainUI != null)
-      //   MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void ShowInfoPanel() 

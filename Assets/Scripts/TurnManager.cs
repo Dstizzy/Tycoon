@@ -46,7 +46,7 @@ public class TurnManager : MonoBehaviour
 
 
    // public propertries
-   public static TurnManager Instance { get; private set; } // Singleton instance
+   public static TurnManager Instance { get; set; } // Singleton instance
 
 
    // Events

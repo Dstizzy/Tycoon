@@ -56,7 +56,7 @@ public class LabManager : MonoBehaviour
 
 
    // Public variables                                                                          
-   public static int currentCommerceTier { get; private set; } = 0;
+   public static int  currentCommerceTier { get; set; } = 0;
    public static bool headUnlocked            = false;
    public static bool bodyUnlocked            = false;
    public static bool tailUnlocked            = false;
@@ -68,9 +68,7 @@ public class LabManager : MonoBehaviour
    ShipManager      shipManager;
    InventoryManager inv;
 
-   public static LabManager labManager { get; private set; }
-   public static LabManager Instance { get; private set; }
-
+   public static LabManager labManager { get; set; }
 
    // Check if all required game objects exist and are in there required states                 
    private void Awake()
@@ -278,13 +276,13 @@ public class LabManager : MonoBehaviour
                pearlCost     = T2_COMM_PEARL;
                itemCost      = T2_COMM_PRESSURE_VALVE;
                requiredItem  = "Pressure Valve";
-               useItemMethod = inv.TryUsePressureValve;
+               useItemMethod = ForgeManager.Instance.hasTier2Blueprint ? inv.TryUsePressureValve : null;
                break;
             case TIER_THREE:
                pearlCost     = T3_COMM_PEARL;
                itemCost      = T3_COMM_LENS;
                requiredItem  = "Precision Lens";
-               useItemMethod = inv.TryUsePrecisionLens;
+               useItemMethod = ForgeManager.Instance.hasTier3Blueprint ? inv.TryUsePrecisionLens : null;
                break;
          }
       }
@@ -379,8 +377,11 @@ public class LabManager : MonoBehaviour
       bool isSuccess = false;
       
       if(useItemMethod == null) 
+      {
          Debug.LogError("Use item methods was not found.");
-      else
+         ticker.ShowTicker($"{itemName}s have not been unlocked!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+
+      } else
       {
          // Link to inventory to spend the item
          if((inv.pearlCount >= pearlCost))
@@ -410,8 +411,6 @@ public class LabManager : MonoBehaviour
       if (tabType == commerceTab)
       {
          currentCommerceTier = TIER_ONE;
-         tradeHutManager.marketShiftMin = 1;
-         tradeHutManager.marketShiftMax = 2;
 
          foreach (Transform item in tradeHutManager.SellItems)
             item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
@@ -452,12 +451,7 @@ public class LabManager : MonoBehaviour
    {
       // Grant action to gameple 50 gold for 60% chance to get 250 back                       
       if (tabType == commerceTab)
-      {
-         TradeHutManager.Instance.marketShiftMin = 3;
-         TradeHutManager.Instance.marketShiftMax = 5;
-
          tradeHutManager.RecycleButton.gameObject.SetActive(true);
-      }
 
       // Unlock tier 2 item (reinforces component); forge now has 5% chance to produce a
       //    bonus item upon crafting a single item                                             
