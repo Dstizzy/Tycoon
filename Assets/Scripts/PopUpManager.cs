@@ -1,19 +1,12 @@
 
 using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-//using UnityEditor.Experimental.GraphView;
-=======
->>>>>>> 5c5812ddf0e89684d96e6ac2e5baf83a4f936589
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-<<<<<<< HEAD
-//using UnityEngine.WSA;
-=======
-
->>>>>>> 5c5812ddf0e89684d96e6ac2e5baf83a4f936589
 
 public class PopUpManager : MonoBehaviour
 {

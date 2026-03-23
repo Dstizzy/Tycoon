@@ -666,14 +666,12 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Chain").gameObject.SetActive(false);
-      
-<<<<<<< HEAD
-            ticker.ShowTicker("Purchased Tier 2 Blueprint EPressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
-=======
-            if(ticker == null)
+
+
+
+            if (ticker == null)
                Debug.LogError("Ticker is null");
             ticker.ShowTicker("Purchased Tier 2 Blueprint EPressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
->>>>>>> 5c5812ddf0e89684d96e6ac2e5baf83a4f936589
          }
 
          // Tier 3 Blueprint purchase flow
