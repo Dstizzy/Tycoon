@@ -98,8 +98,8 @@ public class MainUIManager : MonoBehaviour
       isVisible = !isVisible;
       DropdownButtons[0].gameObject.SetActive(isVisible);
       DropdownButtons[1].gameObject.SetActive(isVisible);
-      DropdownButtons[2].gameObject.SetActive(isVisible);
-      DropdownButtons[2].onClick.AddListener(() => ToggleTutorial());
+      //DropdownButtons[2].gameObject.SetActive(isVisible);
+      //DropdownButtons[2].onClick.AddListener(() => ToggleTutorial());
    }
 
    public void ToggleTutorial()
@@ -236,10 +236,13 @@ public class MainUIManager : MonoBehaviour
       victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
    }
 
-   public void GoBack()
+   public void GoToStartScreen()
    {
-      if (SceneHistory.Instance != null)
+      if (SceneHistory.Instance != null) 
+      {
+         GameManager.RestartGame();
          SceneHistory.Instance.LoadPreviousScene();
+      }
       else
          Debug.LogError("SceneHistory is missing from the scene!");
    }

@@ -41,7 +41,8 @@ public class LabManager : MonoBehaviour
    public const int LAB_TUTORIAL = 1;
    public const int VICTORY_TUTORIAL = 2;
 
-   /* Inspector Variables                                                                       */
+   // Inspector Variables
+   public Button victoryButton;
    [SerializeField] private Transform innovatePanel;
    [SerializeField] private Transform infoPanel;
 
@@ -50,11 +51,12 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject commerceTab;
    [SerializeField] private GameObject productionTab;
    [SerializeField] private GameObject explorationTab;
-                    private TickerSystem ticker;
+   [SerializeField] private GameObject victoryPanel;
+   private TickerSystem ticker;
 
 
    // Public variables                                                                          
-   public static int currentCommerceTier { get; private set; } = 0;
+   public static int  currentCommerceTier { get; set; } = 0;
    public static bool headUnlocked            = false;
    public static bool bodyUnlocked            = false;
    public static bool tailUnlocked            = false;
@@ -66,9 +68,7 @@ public class LabManager : MonoBehaviour
    ShipManager      shipManager;
    InventoryManager inv;
 
-   public static LabManager labManager { get; private set; }
-   public static LabManager Instance { get; private set; }
-
+   public static LabManager labManager { get; set; }
 
    // Check if all required game objects exist and are in there required states                 
    private void Awake()
@@ -82,6 +82,20 @@ public class LabManager : MonoBehaviour
          DontDestroyOnLoad(this.gameObject);
       }
 
+      victoryButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick();
+         ShowVictoryPanel();
+      });
+
+      if (victoryButton != null)
+      {
+         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
+         {
+            AudioManager.Instance.PlayClick();
+            victoryPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+         });
+      }
 
       if (TradeHutManager.Instance == null)
          Debug.LogError("Trade Hut instance is not initialized");
@@ -202,17 +216,10 @@ public class LabManager : MonoBehaviour
    {
       innovatePanel.gameObject.SetActive(true);
 
-      if (labTutorialFunction)
-      {
-         initialTab.transform.Find("LabTutorialText").gameObject.SetActive(true);
-         pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
-      }
-      else
-      {
-         pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
-         pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
-         pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
-      }
+      pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
+      pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(productionTab));
+      pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.AddListener(() => ShowPath(explorationTab));
+
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -223,16 +230,18 @@ public class LabManager : MonoBehaviour
    {
        initialTab.gameObject.SetActive(false);
        tab.gameObject.SetActive(true);
-   
-       // Get the buttons
-       Button backBtn = tab.transform.Find("backArrow").GetComponent<Button>();
-       Button t1Btn = tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>();
+
+      // Get the buttons
+      Button backBtn = tab.transform.Find("backArrow").GetComponent<Button>();
+      backBtn.onClick.RemoveAllListeners();
+      backBtn.onClick.AddListener(() => BackToInitialTab(tab));
+      Button t1Btn = tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>();
        Button t2Btn = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>();
        Button t3Btn = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>();
-   
-       // Clear and Re-assign
-       backBtn.onClick.RemoveAllListeners();
-       backBtn.onClick.AddListener(() => BackToInitialTab(tab));
+
+      // Clear and Re-assign
+       commerceTab.transform.Find("backArrow").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+       commerceTab.transform.Find("backArrow").gameObject.GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
    
        t1Btn.onClick.RemoveAllListeners();
        t1Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
@@ -335,8 +344,6 @@ public class LabManager : MonoBehaviour
             case TIER_ONE:
                ImplementTierOneInnovation(tab);
                UnlockNextNode(tab, 2);
-               tab.transform.Find("branch/firstConnector/unfilledConnector").gameObject.SetActive(false);
-               tab.transform.Find("branch/firstConnector/filledConnector").gameObject.SetActive(true);
                tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneUnfilled").gameObject.SetActive(false);
                tab.transform.Find("branch/tierNodeOneContainer/tierNodeOneFilled").gameObject.SetActive(true);
                tab.transform.Find("buttonContainer/tierOneButton").gameObject.SetActive(false);
@@ -346,8 +353,6 @@ public class LabManager : MonoBehaviour
             case TIER_TWO:
                ImplementTierTwoInnovation(tab);
                UnlockNextNode(tab, 3);
-               tab.transform.Find("branch/secondConnector/unfilledConnector").gameObject.SetActive(false);
-               tab.transform.Find("branch/secondConnector/filledConnector").gameObject.SetActive(true);
                tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoUnfilled").gameObject.SetActive(false);
                tab.transform.Find("branch/tierNodeTwoContainer/tierNodeTwoFilled").gameObject.SetActive(true);
                tab.transform.Find("buttonContainer/tierTwoButton").gameObject.SetActive(false);
@@ -356,8 +361,6 @@ public class LabManager : MonoBehaviour
                break;
             case TIER_THREE:
                ImplementTierThreeInnovation(tab);
-               tab.transform.Find("branch/thirdConnector/unfilledConnector").gameObject.SetActive(false);
-               tab.transform.Find("branch/thirdConnector/filledConnector").gameObject.SetActive(true);
                tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeUnfilled").gameObject.SetActive(false);
                tab.transform.Find("branch/tierNodeThreeContainer/TierNodeThreeFilled").gameObject.SetActive(true);
                tab.transform.Find("buttonContainer/tierThreeButton").gameObject.SetActive(false);
@@ -462,6 +465,7 @@ public class LabManager : MonoBehaviour
       }
       /* Unlocks chance to find crafts on explorations                                         */
       else if (tabType == explorationTab)
+
          if (shipManager != null)
             shipManager.UnlockTier2Choices();
          else
@@ -480,6 +484,12 @@ public class LabManager : MonoBehaviour
 
       if (tabType == commerceTab)
       {
+         initialTab.transform.Find("commerceLine").gameObject.SetActive(true);
+         HandleFlask();
+
+         tradeHutManager.marketShiftMin = 5;
+         tradeHutManager.marketShiftMax = 10;
+
          // Removes the negative world events
          tradeHutManager.isTier3BuffACtive = true;
 
@@ -492,6 +502,9 @@ public class LabManager : MonoBehaviour
       // Unlock tier 3 itme (Artifact); Crafting results in two items being made               
       else if (tabType == productionTab)
       {
+         initialTab.transform.Find("productionLine").gameObject.SetActive(true);
+         HandleFlask();
+
          Debug.Log("Unlock Faster Crafting and Tier 3 Blueprints");
          if (ForgeManager.Instance != null)
          {
@@ -501,6 +514,9 @@ public class LabManager : MonoBehaviour
       /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
       {
+         initialTab.transform.Find("explorationLine").gameObject.SetActive(true);
+         HandleFlask();
+
          if (shipManager != null)
             shipManager.ApplyLabRewardBonus();
       }
@@ -510,6 +526,31 @@ public class LabManager : MonoBehaviour
       }
    }
 
+
+   // Handles evolution of flask
+   public void HandleFlask()
+   {
+      if(initialTab.transform.Find("FlaskButton/Flask").gameObject.activeSelf)
+      {
+         initialTab.transform.Find("FlaskButton/Flask").gameObject.SetActive(false);
+         initialTab.transform.Find("FlaskButton/Flask1").gameObject.SetActive(true);
+         victoryButton = initialTab.transform.Find("FlaskButton/Flask1").gameObject.GetComponent<Button>();
+      }
+      else if(initialTab.transform.Find("FlaskButton/Flask1").gameObject.activeSelf)
+      {
+         initialTab.transform.Find("FlaskButton/Flask1").gameObject.SetActive(false);
+         initialTab.transform.Find("FlaskButton/Flask2").gameObject.SetActive(true);
+         victoryButton = initialTab.transform.Find("FlaskButton/Flask2").gameObject.GetComponent<Button>();
+      }
+      else if(initialTab.transform.Find("FlaskButton/Flask2").gameObject.activeSelf)
+      {
+         initialTab.transform.Find("FlaskButton/Flask2").gameObject.SetActive(false);
+         initialTab.transform.Find("FlaskButton/Flask3").gameObject.SetActive(true);
+         victoryButton = initialTab.transform.Find("FlaskButton/Flask3").gameObject.GetComponent<Button>();
+      }
+      else
+         Debug.Log("There is no flask");
+   }
    // Unlock the next tier node upon buying the previous tier node                             
    public void UnlockNextNode(GameObject tab, int tier)
    {
@@ -555,8 +596,8 @@ public class LabManager : MonoBehaviour
    // Return to the initial tab upon clicking the back arrow button                            
    private void BackToInitialTab(GameObject tab)
    {
-      tab.gameObject.SetActive(false);
-      initialTab.gameObject.SetActive(true);
+      tab.SetActive(false);
+      initialTab.SetActive(true);
    }
 
    // Open up the info panel                                                                   
@@ -577,11 +618,11 @@ public class LabManager : MonoBehaviour
       initialTab.gameObject.SetActive(true);
       innovatePanel.gameObject.SetActive(false);
 
-      if (labTutorialFunction)
+      /*if (labTutorialFunction)
       {
          commerceTab.transform.Find("LabTutorialText").gameObject.SetActive(false);
          labTutorialFunction = false;
-      }
+      }*/
 
       pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.RemoveAllListeners();
       pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.RemoveAllListeners();
@@ -599,5 +640,116 @@ public class LabManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
+   }
+
+   //Shows the victory panel and sets up the buttons for the submarine assembly
+   public void ShowVictoryPanel()
+   {
+      bool isHeadReady,
+           isBodyReady;
+
+      if (victoryPanel != null)
+      {
+         victoryPanel.SetActive(true);
+         PopUpManager.Instance.DisablePlayerInput();
+
+         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
+         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
+                                               && InventoryManager.Instance.pressureValveCount >= 5
+                                               && InventoryManager.Instance.precisionLensCount >= 5;
+
+         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
+         if (skeleton != null)
+         {
+            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
+            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
+            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
+         }
+
+         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
+         if (qestionMark != null)
+         {
+            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
+               qestionMark.gameObject.SetActive(false);
+            else
+               qestionMark.gameObject.SetActive(true);
+         }
+
+         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
+         {
+            ActivateFinalForm();
+         }
+      }
+   }
+
+   // Activates the head of the submarine
+   public void ActivateHead()
+   {
+      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
+      {
+         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
+      }
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
+      }
+      else
+      {
+         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(false);
+         else
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
+      }
+   }
+
+   // Activates the body of the submarine
+   public void ActivateBody()
+   {
+      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
+      {
+         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
+      }
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
+      }
+      else
+      {
+         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf)
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(false);
+         else
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(true);
+      }
+   }
+
+   // Activates the tail of the submarine
+   public void ActivateTail()
+   {
+      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
+      {
+         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
+      }
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
+      }
+      else
+      {
+         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(false);
+         else
+            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
+      }
+   }
+
+   // Activates the final form of the submarine when all parts are active
+   public void ActivateFinalForm()
+   {
+      victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
+      victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
+      victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
    }
 }
