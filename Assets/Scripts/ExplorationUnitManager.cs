@@ -42,7 +42,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
 
-   public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
+  // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
 
    public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
@@ -132,11 +132,11 @@ public class ExplorationUnitManager : MonoBehaviour
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
 
       }
-      if (tutorialFunction)
-      {
-         tutorialFunction = false;
-         HandleTutorial?.Invoke();
-      }
+//      if (tutorialFunction)
+ //     {
+ //        tutorialFunction = false;
+ //        HandleTutorial?.Invoke();
+ //     }
       CloseExplorationPanel();
    }
 
@@ -333,12 +333,12 @@ public class ExplorationUnitManager : MonoBehaviour
          }
          // Open the decision panel UI
          decisionPanel.gameObject.SetActive(true);
-         if(tutorialFunction)
-         {
-            decisionPanel.Find("Arrow").gameObject.SetActive(true);
-            decisionPanel.Find("Arrow2").gameObject.SetActive(true);
-            decisionPanel.Find("FirstText").gameObject.SetActive(true);
-         }
+       //  if(tutorialFunction)
+       //  {
+       //     decisionPanel.Find("Arrow").gameObject.SetActive(true);
+       //     decisionPanel.Find("Arrow2").gameObject.SetActive(true);
+        //    decisionPanel.Find("FirstText").gameObject.SetActive(true);
+       //  }
 
          SetupButtons(
                current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
@@ -626,10 +626,10 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       explorePanel.gameObject.SetActive(false);
 
-      if (tutorialFunction)
-      {
-         HandleTutorial?.Invoke();
-      }
+   //   if (tutorialFunction)
+   //   {
+    //     HandleTutorial?.Invoke();
+    //  }
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -662,7 +662,7 @@ public class ExplorationUnitManager : MonoBehaviour
       Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
 
-      if (tutorialFunction)
+   /*   if (tutorialFunction)
       {
          if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
          if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
@@ -671,7 +671,7 @@ public class ExplorationUnitManager : MonoBehaviour
          tutorialFunction = false;
          HandleTutorial?.Invoke();
       }
-   }
+ */  }
 
    private void UpdateExplorationSprites()
    {
