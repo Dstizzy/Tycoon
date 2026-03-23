@@ -94,12 +94,14 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               bool hasDivingBell = InventoryManager.Instance.divingBellCount == 0;
-               bool canExplore = !isExploring && hasDivingBell;
+               //        bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               bool canExplore = !isExploring; //&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
-                  if (!isExploring)
-                     exploreButton.onClick.AddListener(() => StartExploration());
+               {
+                  exploreButton.onClick.AddListener(() => StartExploration());
+                  Debug.Log("Exploration Start button clicked");
+               }
             }
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
             break;
@@ -126,6 +128,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // Starts exploration, gets the starting node, and queues the first move
    public void StartExploration()
    {
+      Debug.Log("Exploration started");
       isExploring = true;
       if (MapManager.Instance.startingNode != null)
       {
@@ -301,6 +304,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles map movements and spawning new events
    public void HandleNewTurn()
    {
+      Debug.Log("New turn detected in exploration");
       if (isExploring)
       {
          // Handle if user lost a turn
