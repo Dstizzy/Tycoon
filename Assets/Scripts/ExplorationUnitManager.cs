@@ -447,7 +447,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
 
-      if(tutorialFunction)
+  /*    if(tutorialFunction)
       {
          explorePanel.Find("Arrow").gameObject.SetActive(true);
          explorePanel.Find("FirstText").gameObject.SetActive(true);
@@ -457,7 +457,7 @@ public class ExplorationUnitManager : MonoBehaviour
          explorePanel.Find("Arrow").gameObject.SetActive(false);
          explorePanel.Find("FirstText").gameObject.SetActive(false);
       }
-   }
+ */  }
 
    //
    private void ShowInfoPanel()
