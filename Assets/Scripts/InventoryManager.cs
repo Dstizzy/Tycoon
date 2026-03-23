@@ -181,11 +181,11 @@ public class InventoryManager : MonoBehaviour
 
       pearlCount         = 5000;
       oreCount           = 5000;
-      crudeToolCount     = 1;
+      crudeToolCount     = 0;
       harpoonCount       = MIN_HARPOON_COUNT;
-      pressureValveCount = 2;
+      pressureValveCount = 0;
       divingBellCount    = MIN_DIVING_BELL_COUNT;
-      precisionLensCount = 2;
+      precisionLensCount = 0;
       engineCount        = MIN_ENGINE_COUNT;
    }
 
