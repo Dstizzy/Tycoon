@@ -100,7 +100,6 @@ public class MainUIManager : MonoBehaviour
       DropdownButtons[0].gameObject.SetActive(isVisible);
       DropdownButtons[1].gameObject.SetActive(isVisible);
       DropdownButtons[2].gameObject.SetActive(isVisible);
-      //DropdownButtons[2].onClick.AddListener(() => ToggleTutorial());
    }
 
    public void ToggleTutorial()
