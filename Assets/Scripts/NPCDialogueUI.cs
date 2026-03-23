@@ -3,460 +3,537 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-/// <summary>
-/// Handles the NPC dialogue UI with multi-line dialogue and expression changes.
-/// Can auto-generate UI if references are not assigned.
-/// </summary>
+// Builds and manages the NPC dialogue panel entirely at runtime.
+// Creates its own Screen-Space Overlay canvas (sorting order 999)
+// so the dialogue always appears on top of every other element.
+//
+// Flow:
+//   1. ShowDialogue() → displays opening lines one by one
+//   2. Player clicks "Next ▼" to advance; clicking while typing finishes the line instantly
+//   3. After all opening lines, choice buttons appear
+//   4. Player picks a choice → result lines play out
+//   5. "Close" button appears → closes the panel and re-enables input
+//
+// Lines marked with isAction = true are rendered in italics.
 public class NPCDialogueUI : MonoBehaviour
 {
-    #region Constants
-    private const float DEFAULT_TEXT_SPEED = 0.03f;
-    private const int MAX_CHOICE_BUTTONS = 5;
-    
-    // UI Layout Constants
-    private const float PANEL_WIDTH = 800f;
-    private const float PANEL_HEIGHT = 400f;
-    private const float PORTRAIT_SIZE = 150f;
-    private const float BUTTON_HEIGHT = 40f;
-    private const float PADDING = 20f;
-    #endregion
+    public static NPCDialogueUI Instance { get; private set; }
 
-    #region Inspector References
-    [Header("Panel")]
-    [SerializeField] private GameObject dialoguePanel;
+    // ── Layout constants ─────────────────────────────────────────────────
+    private const float DEFAULT_TEXT_SPEED  = 0.03f;
+    private const int   MAX_CHOICE_BUTTONS  = 5;
 
-    [Header("NPC Display")]
-    [SerializeField] private Image portraitImage;
-    [SerializeField] private TextMeshProUGUI npcNameText;
-    [SerializeField] private TextMeshProUGUI dialogueText;
+    private const float PANEL_WIDTH         = 1400f;
+    private const float PANEL_HEIGHT        = 700f;
+    private const float PORTRAIT_SIZE       = 350f;
+    private const float BUTTON_HEIGHT       = 90f;
+    private const float PADDING             = 40f;
 
-    [Header("Choice Buttons")]
-    [SerializeField] private Button[] choiceButtons = new Button[MAX_CHOICE_BUTTONS];
-    [SerializeField] private TextMeshProUGUI[] choiceTexts = new TextMeshProUGUI[MAX_CHOICE_BUTTONS];
+    private const float NAME_FONT_SIZE      = 56f;
+    private const float DIALOGUE_FONT_SIZE  = 42f;
+    private const float BUTTON_FONT_SIZE    = 38f;
+    private const float NAV_BUTTON_FONT_SIZE = 36f;
 
-    [Header("Navigation")]
-    [SerializeField] private Button nextButton;
-    [SerializeField] private Button closeButton;
-
+    // ── Inspector settings ───────────────────────────────────────────────
     [Header("Settings")]
     [SerializeField] private float textSpeed = DEFAULT_TEXT_SPEED;
-    [SerializeField] private bool useTypewriterEffect = true;
-    [SerializeField] private bool autoGenerateUI = true;
+    [SerializeField] private bool  useTypewriterEffect = true;
 
     [Header("UI Sprites (Optional)")]
     [SerializeField] private Sprite panelBackgroundSprite;
     [SerializeField] private Sprite buttonSprite;
     [SerializeField] private Sprite portraitFrameSprite;
-    #endregion
 
-    #region Private Variables
-    private NPCEncounterSystem.NPCProfile currentNPC;
-    private NPCEncounterSystem.EncounterScenario currentScenario;
-    private NPCEncounterSystem.DialogueLine[] currentDialogueLines;
-    private int currentLineIndex = 0;
-    private bool isTyping = false;
-    private bool hasInteracted = false;
+    // ── Runtime UI references (created in GenerateUI) ────────────────────
+    private GameObject       canvasObject;
+    private GameObject       dialoguePanel;
+    private Image            portraitImage;
+    private TextMeshProUGUI  npcNameText;
+    private TextMeshProUGUI  dialogueText;
+    private Button[]         choiceButtons;
+    private TextMeshProUGUI[] choiceTexts;
+    private Button           nextButton;
+    private Button           closeButton;
+    private MonoBehaviour    coroutineRunner; // Lives on the canvas so coroutines work even if this GO is inactive
+
+    // ── Dialogue state ───────────────────────────────────────────────────
+    private NPCEncounterSystem.NPCProfile         currentNPC;
+    private NPCEncounterSystem.EncounterScenario   currentScenario;
+    private NPCEncounterSystem.DialogueLine[]      currentDialogueLines;
+    private int      currentLineIndex = 0;
+    private bool     isTyping         = false;
+    private bool     hasInteracted    = false;
     private Coroutine typingCoroutine;
-    private Canvas parentCanvas;
-    #endregion
+    private bool     isUIGenerated    = false;
+    private bool     isDialogueActive = false;
 
-    #region Unity Lifecycle
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Unity lifecycle
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Enforces Singleton and keeps the object active
     private void Awake()
     {
-        // Find or create canvas
-        parentCanvas = GetComponentInParent<Canvas>();
-        if (parentCanvas == null)
+        if (Instance != null && Instance != this)
         {
-            parentCanvas = FindObjectOfType<Canvas>();
+            Destroy(gameObject);
+            return;
         }
-
-        // Auto-generate UI if not assigned
-        if (autoGenerateUI && dialoguePanel == null)
-        {
-            GenerateUI();
-        }
-
-        // Initial state
-        if (dialoguePanel != null)
-        {
-            dialoguePanel.SetActive(false);
-        }
-
-        // Setup button listeners
-        if (nextButton != null)
-            nextButton.onClick.AddListener(OnNextClicked);
-        
-        if (closeButton != null)
-            closeButton.onClick.AddListener(CloseDialogue);
+        Instance = this;
+        gameObject.SetActive(true);
     }
-    #endregion
 
-    #region UI Generation
-    /// <summary>
-    /// Generates the complete dialogue UI at runtime
-    /// </summary>
+    // Pre-builds the UI so it is ready when the first NPC is clicked
+    private void Start()
+    {
+        EnsureUIGenerated();
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  UI generation
+    //  Everything is created via code so no manual prefab setup is needed.
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Called once before the first dialogue. Does nothing if already built.
+    private void EnsureUIGenerated()
+    {
+        if (isUIGenerated) return;
+        GenerateUI();
+    }
+
+    // Builds the full dialogue panel inside a new overlay canvas
     private void GenerateUI()
     {
-        if (parentCanvas == null)
+        if (isUIGenerated) return;
+
+        // ── Canvas ────────────────────────────────────────────────────────
+        canvasObject = new GameObject("NPCDialogueCanvas");
+        DontDestroyOnLoad(canvasObject);
+
+        Canvas canvas = canvasObject.AddComponent<Canvas>();
+        canvas.renderMode  = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 999;
+
+        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode        = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.screenMatchMode     = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight  = 0.5f;
+
+        canvasObject.AddComponent<GraphicRaycaster>();
+        coroutineRunner = canvasObject.AddComponent<CoroutineRunner>();
+
+        // ── Main panel ────────────────────────────────────────────────────
+        dialoguePanel = CreatePanel("NPCDialoguePanel", canvasObject.transform);
+        RectTransform panelRect = dialoguePanel.GetComponent<RectTransform>();
+        panelRect.anchorMin        = new Vector2(0.5f, 0.5f);
+        panelRect.anchorMax        = new Vector2(0.5f, 0.5f);
+        panelRect.pivot            = new Vector2(0.5f, 0.5f);
+        panelRect.sizeDelta        = new Vector2(PANEL_WIDTH, PANEL_HEIGHT);
+        panelRect.anchoredPosition = Vector2.zero;
+        panelRect.localScale       = Vector3.one;
+
+        Image panelBg = dialoguePanel.GetComponent<Image>();
+        panelBg.color = new Color(0.08f, 0.12f, 0.18f, 0.98f);
+        if (panelBackgroundSprite != null) panelBg.sprite = panelBackgroundSprite;
+
+        Outline outline = dialoguePanel.AddComponent<Outline>();
+        outline.effectColor    = new Color(0.4f, 0.6f, 0.8f, 0.8f);
+        outline.effectDistance = new Vector2(2, 2);
+
+        // ── Portrait (left side) ──────────────────────────────────────────
+        GameObject portraitContainer = CreatePanel("PortraitContainer", dialoguePanel.transform);
+        RectTransform pcRect = portraitContainer.GetComponent<RectTransform>();
+        pcRect.anchorMin = new Vector2(0, 0);
+        pcRect.anchorMax = new Vector2(0, 1);
+        pcRect.pivot     = new Vector2(0, 0.5f);
+        pcRect.offsetMin = new Vector2(PADDING, PADDING);
+        pcRect.offsetMax = new Vector2(PORTRAIT_SIZE + PADDING, -PADDING);
+        pcRect.sizeDelta = new Vector2(PORTRAIT_SIZE + PADDING, 0);
+        portraitContainer.GetComponent<Image>().color = new Color(0.15f, 0.2f, 0.28f, 1f);
+
+        GameObject portraitObj = new GameObject("PortraitImage");
+        portraitObj.transform.SetParent(portraitContainer.transform, false);
+        portraitImage = portraitObj.AddComponent<Image>();
+        portraitImage.preserveAspect = true;
+        RectTransform prRect = portraitObj.GetComponent<RectTransform>();
+        prRect.anchorMin        = new Vector2(0.5f, 0.5f);
+        prRect.anchorMax        = new Vector2(0.5f, 0.5f);
+        prRect.pivot            = new Vector2(0.5f, 0.5f);
+        prRect.sizeDelta        = new Vector2(PORTRAIT_SIZE - 20, PORTRAIT_SIZE - 20);
+        prRect.anchoredPosition = Vector2.zero;
+        prRect.localScale       = Vector3.one;
+
+        // ── Dialogue area (right side) ────────────────────────────────────
+        GameObject dialogueContainer = CreatePanel("DialogueContainer", dialoguePanel.transform);
+        RectTransform dcRect = dialogueContainer.GetComponent<RectTransform>();
+        dcRect.anchorMin = Vector2.zero;
+        dcRect.anchorMax = Vector2.one;
+        dcRect.offsetMin = new Vector2(PORTRAIT_SIZE + PADDING * 2, PADDING);
+        dcRect.offsetMax = new Vector2(-PADDING, -PADDING);
+        dialogueContainer.GetComponent<Image>().color = new Color(0.12f, 0.16f, 0.22f, 0.9f);
+
+        // NPC name label
+        GameObject nameObj = new GameObject("NPCNameText");
+        nameObj.transform.SetParent(dialogueContainer.transform, false);
+        npcNameText           = nameObj.AddComponent<TextMeshProUGUI>();
+        npcNameText.fontSize  = NAME_FONT_SIZE;
+        npcNameText.fontStyle = FontStyles.Bold;
+        npcNameText.color     = new Color(0.95f, 0.85f, 0.5f, 1f);
+        npcNameText.alignment = TextAlignmentOptions.TopLeft;
+        RectTransform nmRect = nameObj.GetComponent<RectTransform>();
+        nmRect.anchorMin        = new Vector2(0, 1);
+        nmRect.anchorMax        = new Vector2(1, 1);
+        nmRect.pivot            = new Vector2(0, 1);
+        nmRect.sizeDelta        = new Vector2(-PADDING * 2, 70);
+        nmRect.anchoredPosition = new Vector2(PADDING, -PADDING);
+        nmRect.localScale       = Vector3.one;
+
+        // Dialogue text area
+        GameObject dlgObj = new GameObject("DialogueText");
+        dlgObj.transform.SetParent(dialogueContainer.transform, false);
+        dialogueText                   = dlgObj.AddComponent<TextMeshProUGUI>();
+        dialogueText.fontSize          = DIALOGUE_FONT_SIZE;
+        dialogueText.color             = new Color(0.9f, 0.9f, 0.9f, 1f);
+        dialogueText.alignment         = TextAlignmentOptions.TopLeft;
+        dialogueText.enableWordWrapping = true;
+        dialogueText.richText          = true;
+        RectTransform dlRect = dlgObj.GetComponent<RectTransform>();
+        dlRect.anchorMin  = new Vector2(0, 0.4f);
+        dlRect.anchorMax  = new Vector2(1, 1);
+        dlRect.offsetMin  = new Vector2(PADDING, 10);
+        dlRect.offsetMax  = new Vector2(-PADDING, -PADDING - 70 - 10);
+        dlRect.localScale = Vector3.one;
+
+        // ── Choice buttons ────────────────────────────────────────────────
+        GameObject choiceContainer = new GameObject("ChoiceContainer");
+        choiceContainer.transform.SetParent(dialogueContainer.transform, false);
+        RectTransform ccRect = choiceContainer.AddComponent<RectTransform>();
+        ccRect.anchorMin  = new Vector2(0, 0);
+        ccRect.anchorMax  = new Vector2(1, 0.4f);
+        ccRect.offsetMin  = new Vector2(PADDING, 10);
+        ccRect.offsetMax  = new Vector2(-PADDING - 210, -5);
+        ccRect.localScale = Vector3.one;
+
+        VerticalLayoutGroup vlg = choiceContainer.AddComponent<VerticalLayoutGroup>();
+        vlg.spacing                = 8;
+        vlg.childAlignment         = TextAnchor.UpperLeft;
+        vlg.childControlWidth      = true;
+        vlg.childControlHeight     = true;
+        vlg.childForceExpandWidth  = true;
+        vlg.childForceExpandHeight = false;
+        vlg.padding                = new RectOffset(0, 0, 5, 5);
+
+        choiceButtons = new Button[MAX_CHOICE_BUTTONS];
+        choiceTexts   = new TextMeshProUGUI[MAX_CHOICE_BUTTONS];
+        for (int i = 0; i < MAX_CHOICE_BUTTONS; i++)
         {
-            Debug.LogError("[NPCDialogueUI] No Canvas found. Cannot generate UI.");
+            GameObject btn = CreateChoiceButton($"ChoiceButton_{i}", choiceContainer.transform, "");
+            choiceButtons[i] = btn.GetComponent<Button>();
+            choiceTexts[i]   = btn.GetComponentInChildren<TextMeshProUGUI>();
+            btn.SetActive(false);
+        }
+
+        // ── Navigation buttons ────────────────────────────────────────────
+        GameObject nextObj = CreateNavButton("NextButton", dialogueContainer.transform, "Next ▼");
+        nextButton = nextObj.GetComponent<Button>();
+        nextButton.onClick.AddListener(OnNextClicked);
+        RectTransform nxRect = nextObj.GetComponent<RectTransform>();
+        nxRect.anchorMin        = new Vector2(1, 0);
+        nxRect.anchorMax        = new Vector2(1, 0);
+        nxRect.pivot            = new Vector2(1, 0);
+        nxRect.sizeDelta        = new Vector2(200, 80);
+        nxRect.anchoredPosition = new Vector2(-10, 10);
+        nextObj.SetActive(false);
+
+        GameObject closeObj = CreateNavButton("CloseButton", dialogueContainer.transform, "Close");
+        closeButton = closeObj.GetComponent<Button>();
+        closeButton.onClick.AddListener(CloseDialogue);
+        RectTransform clRect = closeObj.GetComponent<RectTransform>();
+        clRect.anchorMin        = new Vector2(1, 0);
+        clRect.anchorMax        = new Vector2(1, 0);
+        clRect.pivot            = new Vector2(1, 0);
+        clRect.sizeDelta        = new Vector2(200, 80);
+        clRect.anchoredPosition = new Vector2(-10, 10);
+        closeObj.SetActive(false);
+
+        dialoguePanel.SetActive(false);
+        isUIGenerated = true;
+        Debug.Log("[NPCDialogueUI] UI generated successfully!");
+    }
+
+    // ── Helper: creates a GameObject with RectTransform + Image ──────────
+    private GameObject CreatePanel(string name, Transform parent)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        go.AddComponent<RectTransform>().localScale = Vector3.one;
+        go.AddComponent<Image>();
+        return go;
+    }
+
+    // ── Helper: creates a choice button with left-aligned text ───────────
+    private GameObject CreateChoiceButton(string name, Transform parent, string text)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        go.AddComponent<RectTransform>().localScale = Vector3.one;
+
+        Image img = go.AddComponent<Image>();
+        img.color = new Color(0.2f, 0.3f, 0.4f, 0.95f);
+
+        Button btn = go.AddComponent<Button>();
+        ColorBlock cb = btn.colors;
+        cb.normalColor      = new Color(0.2f, 0.3f, 0.4f, 0.95f);
+        cb.highlightedColor = new Color(0.3f, 0.45f, 0.6f, 1f);
+        cb.pressedColor     = new Color(0.15f, 0.22f, 0.3f, 1f);
+        cb.selectedColor    = new Color(0.25f, 0.35f, 0.5f, 1f);
+        btn.colors = cb;
+
+        LayoutElement le = go.AddComponent<LayoutElement>();
+        le.minHeight       = BUTTON_HEIGHT;
+        le.preferredHeight = BUTTON_HEIGHT;
+
+        GameObject tObj = new GameObject("Text");
+        tObj.transform.SetParent(go.transform, false);
+        TextMeshProUGUI tmp = tObj.AddComponent<TextMeshProUGUI>();
+        tmp.text      = text;
+        tmp.fontSize  = BUTTON_FONT_SIZE;
+        tmp.color     = Color.white;
+        tmp.alignment = TextAlignmentOptions.Left;
+        RectTransform tRect = tObj.GetComponent<RectTransform>();
+        tRect.anchorMin  = Vector2.zero;
+        tRect.anchorMax  = Vector2.one;
+        tRect.offsetMin  = new Vector2(20, 8);
+        tRect.offsetMax  = new Vector2(-20, -8);
+        tRect.localScale = Vector3.one;
+
+        return go;
+    }
+
+    // ── Helper: creates a navigation button (Next / Close) ───────────────
+    private GameObject CreateNavButton(string name, Transform parent, string text)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        go.AddComponent<RectTransform>().localScale = Vector3.one;
+
+        Image img = go.AddComponent<Image>();
+        img.color = new Color(0.25f, 0.4f, 0.55f, 1f);
+
+        Button btn = go.AddComponent<Button>();
+        ColorBlock cb = btn.colors;
+        cb.normalColor      = new Color(0.25f, 0.4f, 0.55f, 1f);
+        cb.highlightedColor = new Color(0.35f, 0.55f, 0.7f, 1f);
+        cb.pressedColor     = new Color(0.18f, 0.3f, 0.42f, 1f);
+        cb.selectedColor    = new Color(0.28f, 0.45f, 0.6f, 1f);
+        btn.colors = cb;
+
+        GameObject tObj = new GameObject("Text");
+        tObj.transform.SetParent(go.transform, false);
+        TextMeshProUGUI tmp = tObj.AddComponent<TextMeshProUGUI>();
+        tmp.text      = text;
+        tmp.fontSize  = NAV_BUTTON_FONT_SIZE;
+        tmp.fontStyle = FontStyles.Bold;
+        tmp.color     = Color.white;
+        tmp.alignment = TextAlignmentOptions.Center;
+        RectTransform tRect = tObj.GetComponent<RectTransform>();
+        tRect.anchorMin  = Vector2.zero;
+        tRect.anchorMax  = Vector2.one;
+        tRect.offsetMin  = new Vector2(5, 2);
+        tRect.offsetMax  = new Vector2(-5, -2);
+        tRect.localScale = Vector3.one;
+
+        return go;
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Public API
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Opens the dialogue panel and begins playing the scenario's opening lines
+    public void ShowDialogue(
+        NPCEncounterSystem.NPCProfile npc,
+        NPCEncounterSystem.EncounterScenario scenario)
+    {
+        // Prevent re-entry if dialogue is already active
+        if (isDialogueActive) return;
+
+        EnsureUIGenerated();
+        if (!isUIGenerated || npc == null || scenario == null) return;
+        if (scenario.openingDialogues == null || scenario.openingDialogues.Length == 0) return;
+
+        currentNPC           = npc;
+        currentScenario      = scenario;
+        currentDialogueLines = scenario.openingDialogues;
+        currentLineIndex     = 0;
+        hasInteracted        = false;
+        isDialogueActive     = true;
+
+        npcNameText.text = npc.npcName ?? "Unknown";
+        HideAllButtons();
+        nextButton.gameObject.SetActive(true);
+        dialoguePanel.SetActive(true);
+
+        PopUpManager.Instance?.DisablePlayerInput();
+        DisplayCurrentLine();
+    }
+
+    // True while the dialogue panel is open
+    public bool IsDialogueActive() => isDialogueActive;
+
+    // Immediately closes the dialogue (used when the turn ends, etc.)
+    public void ForceClose()
+    {
+        if (isDialogueActive) CloseDialogue();
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Dialogue display
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Shows the current line (or ends the sequence if there are no more)
+    private void DisplayCurrentLine()
+    {
+        // Guard: no lines to display
+        if (currentDialogueLines == null || currentDialogueLines.Length == 0)
+        {
+            OnDialogueSequenceComplete();
             return;
         }
 
-        // === Main Dialogue Panel ===
-        dialoguePanel = CreatePanel("NPCDialoguePanel", parentCanvas.transform);
-        RectTransform panelRect = dialoguePanel.GetComponent<RectTransform>();
-        panelRect.anchorMin = new Vector2(0.5f, 0.5f);
-        panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRect.sizeDelta = new Vector2(PANEL_WIDTH, PANEL_HEIGHT);
-        panelRect.anchoredPosition = Vector2.zero;
-
-        // Panel background
-        Image panelBg = dialoguePanel.GetComponent<Image>();
-        panelBg.color = new Color(0.1f, 0.15f, 0.2f, 0.95f);
-        if (panelBackgroundSprite != null)
-            panelBg.sprite = panelBackgroundSprite;
-
-        // === Portrait Section (Left Side) ===
-        GameObject portraitContainer = CreatePanel("PortraitContainer", dialoguePanel.transform);
-        RectTransform portraitContainerRect = portraitContainer.GetComponent<RectTransform>();
-        portraitContainerRect.anchorMin = new Vector2(0, 0.5f);
-        portraitContainerRect.anchorMax = new Vector2(0, 0.5f);
-        portraitContainerRect.pivot = new Vector2(0, 0.5f);
-        portraitContainerRect.sizeDelta = new Vector2(PORTRAIT_SIZE + PADDING * 2, PORTRAIT_SIZE + PADDING * 2);
-        portraitContainerRect.anchoredPosition = new Vector2(PADDING, 0);
-
-        // Portrait frame background
-        Image portraitContainerBg = portraitContainer.GetComponent<Image>();
-        portraitContainerBg.color = new Color(0.2f, 0.25f, 0.3f, 1f);
-        if (portraitFrameSprite != null)
-            portraitContainerBg.sprite = portraitFrameSprite;
-
-        // Portrait image
-        GameObject portraitObj = new GameObject("PortraitImage");
-        portraitObj.transform.SetParent(portraitContainer.transform);
-        portraitImage = portraitObj.AddComponent<Image>();
-        portraitImage.color = Color.white;
-        RectTransform portraitRect = portraitObj.GetComponent<RectTransform>();
-        portraitRect.anchorMin = new Vector2(0.5f, 0.5f);
-        portraitRect.anchorMax = new Vector2(0.5f, 0.5f);
-        portraitRect.sizeDelta = new Vector2(PORTRAIT_SIZE, PORTRAIT_SIZE);
-        portraitRect.anchoredPosition = Vector2.zero;
-        portraitRect.localScale = Vector3.one;
-
-        // === Dialogue Section (Right Side) ===
-        GameObject dialogueContainer = CreatePanel("DialogueContainer", dialoguePanel.transform);
-        RectTransform dialogueContainerRect = dialogueContainer.GetComponent<RectTransform>();
-        dialogueContainerRect.anchorMin = new Vector2(0, 0);
-        dialogueContainerRect.anchorMax = new Vector2(1, 1);
-        dialogueContainerRect.offsetMin = new Vector2(PORTRAIT_SIZE + PADDING * 3, PADDING);
-        dialogueContainerRect.offsetMax = new Vector2(-PADDING, -PADDING);
-
-        Image dialogueContainerBg = dialogueContainer.GetComponent<Image>();
-        dialogueContainerBg.color = new Color(0.15f, 0.2f, 0.25f, 0.8f);
-
-        // NPC Name
-        GameObject nameObj = new GameObject("NPCNameText");
-        nameObj.transform.SetParent(dialogueContainer.transform);
-        npcNameText = nameObj.AddComponent<TextMeshProUGUI>();
-        npcNameText.text = "NPC Name";
-        npcNameText.fontSize = 24;
-        npcNameText.fontStyle = FontStyles.Bold;
-        npcNameText.color = new Color(0.9f, 0.8f, 0.5f, 1f);
-        npcNameText.alignment = TextAlignmentOptions.TopLeft;
-        RectTransform nameRect = nameObj.GetComponent<RectTransform>();
-        nameRect.anchorMin = new Vector2(0, 1);
-        nameRect.anchorMax = new Vector2(1, 1);
-        nameRect.pivot = new Vector2(0, 1);
-        nameRect.sizeDelta = new Vector2(0, 30);
-        nameRect.anchoredPosition = new Vector2(PADDING, -PADDING);
-        nameRect.localScale = Vector3.one;
-
-        // Dialogue Text
-        GameObject dialogueObj = new GameObject("DialogueText");
-        dialogueObj.transform.SetParent(dialogueContainer.transform);
-        dialogueText = dialogueObj.AddComponent<TextMeshProUGUI>();
-        dialogueText.text = "Dialogue text goes here...";
-        dialogueText.fontSize = 18;
-        dialogueText.color = Color.white;
-        dialogueText.alignment = TextAlignmentOptions.TopLeft;
-        dialogueText.enableWordWrapping = true;
-        RectTransform dialogueRect = dialogueObj.GetComponent<RectTransform>();
-        dialogueRect.anchorMin = new Vector2(0, 0.4f);
-        dialogueRect.anchorMax = new Vector2(1, 1);
-        dialogueRect.offsetMin = new Vector2(PADDING, 0);
-        dialogueRect.offsetMax = new Vector2(-PADDING, -50);
-        dialogueRect.localScale = Vector3.one;
-
-        // === Choice Buttons Container ===
-        GameObject choiceContainer = new GameObject("ChoiceContainer");
-        choiceContainer.transform.SetParent(dialogueContainer.transform);
-        RectTransform choiceContainerRect = choiceContainer.AddComponent<RectTransform>();
-        choiceContainerRect.anchorMin = new Vector2(0, 0);
-        choiceContainerRect.anchorMax = new Vector2(1, 0.4f);
-        choiceContainerRect.offsetMin = new Vector2(PADDING, PADDING);
-        choiceContainerRect.offsetMax = new Vector2(-PADDING, 0);
-        choiceContainerRect.localScale = Vector3.one;
-
-        VerticalLayoutGroup vlg = choiceContainer.AddComponent<VerticalLayoutGroup>();
-        vlg.spacing = 5;
-        vlg.childAlignment = TextAnchor.UpperCenter;
-        vlg.childControlWidth = true;
-        vlg.childControlHeight = true;
-        vlg.childForceExpandWidth = true;
-        vlg.childForceExpandHeight = false;
-
-        // Create choice buttons
-        choiceButtons = new Button[MAX_CHOICE_BUTTONS];
-        choiceTexts = new TextMeshProUGUI[MAX_CHOICE_BUTTONS];
-
-        for (int i = 0; i < MAX_CHOICE_BUTTONS; i++)
-        {
-            GameObject buttonObj = CreateButton($"ChoiceButton_{i}", choiceContainer.transform, $"Choice {i + 1}");
-            choiceButtons[i] = buttonObj.GetComponent<Button>();
-            choiceTexts[i] = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-            
-            LayoutElement le = buttonObj.AddComponent<LayoutElement>();
-            le.preferredHeight = BUTTON_HEIGHT;
-            le.flexibleWidth = 1;
-        }
-
-        // === Next Button ===
-        GameObject nextObj = CreateButton("NextButton", dialoguePanel.transform, "▼");
-        nextButton = nextObj.GetComponent<Button>();
-        RectTransform nextRect = nextObj.GetComponent<RectTransform>();
-        nextRect.anchorMin = new Vector2(1, 0);
-        nextRect.anchorMax = new Vector2(1, 0);
-        nextRect.pivot = new Vector2(1, 0);
-        nextRect.sizeDelta = new Vector2(60, 40);
-        nextRect.anchoredPosition = new Vector2(-PADDING, PADDING);
-
-        // === Close Button ===
-        GameObject closeObj = CreateButton("CloseButton", dialoguePanel.transform, "X");
-        closeButton = closeObj.GetComponent<Button>();
-        RectTransform closeRect = closeObj.GetComponent<RectTransform>();
-        closeRect.anchorMin = new Vector2(1, 1);
-        closeRect.anchorMax = new Vector2(1, 1);
-        closeRect.pivot = new Vector2(1, 1);
-        closeRect.sizeDelta = new Vector2(40, 40);
-        closeRect.anchoredPosition = new Vector2(-5, -5);
-
-        // Setup button listeners
-        nextButton.onClick.AddListener(OnNextClicked);
-        closeButton.onClick.AddListener(CloseDialogue);
-
-        Debug.Log("[NPCDialogueUI] UI generated successfully.");
-    }
-
-    /// <summary>
-    /// Creates a panel with Image component
-    /// </summary>
-    private GameObject CreatePanel(string name, Transform parent)
-    {
-        GameObject panel = new GameObject(name);
-        panel.transform.SetParent(parent);
-        panel.AddComponent<RectTransform>();
-        panel.AddComponent<Image>();
-        panel.transform.localScale = Vector3.one;
-        return panel;
-    }
-
-    /// <summary>
-    /// Creates a button with TextMeshProUGUI
-    /// </summary>
-    private GameObject CreateButton(string name, Transform parent, string text)
-    {
-        GameObject buttonObj = new GameObject(name);
-        buttonObj.transform.SetParent(parent);
-        
-        RectTransform rect = buttonObj.AddComponent<RectTransform>();
-        rect.localScale = Vector3.one;
-
-        Image buttonImage = buttonObj.AddComponent<Image>();
-        buttonImage.color = new Color(0.3f, 0.4f, 0.5f, 1f);
-        if (buttonSprite != null)
-            buttonImage.sprite = buttonSprite;
-
-        Button button = buttonObj.AddComponent<Button>();
-        ColorBlock colors = button.colors;
-        colors.normalColor = new Color(0.3f, 0.4f, 0.5f, 1f);
-        colors.highlightedColor = new Color(0.4f, 0.5f, 0.6f, 1f);
-        colors.pressedColor = new Color(0.2f, 0.3f, 0.4f, 1f);
-        button.colors = colors;
-
-        // Button text
-        GameObject textObj = new GameObject("Text");
-        textObj.transform.SetParent(buttonObj.transform);
-        TextMeshProUGUI tmpText = textObj.AddComponent<TextMeshProUGUI>();
-        tmpText.text = text;
-        tmpText.fontSize = 16;
-        tmpText.color = Color.white;
-        tmpText.alignment = TextAlignmentOptions.Center;
-
-        RectTransform textRect = textObj.GetComponent<RectTransform>();
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-        textRect.localScale = Vector3.one;
-
-        return buttonObj;
-    }
-    #endregion
-
-    #region Public Methods
-    /// <summary>
-    /// Shows the dialogue panel with opening lines
-    /// </summary>
-    public void ShowDialogue(
-        NPCEncounterSystem.NPCProfile npc, 
-        NPCEncounterSystem.EncounterScenario scenario)
-    {
-        currentNPC = npc;
-        currentScenario = scenario;
-        currentDialogueLines = scenario.openingDialogues;
-        currentLineIndex = 0;
-        hasInteracted = false;
-
-        // Setup UI
-        npcNameText.text = npc.npcName;
-        HideChoiceButtons();
-        
-        if (closeButton != null)
-            closeButton.gameObject.SetActive(false);
-        
-        if (nextButton != null)
-            nextButton.gameObject.SetActive(true);
-
-        dialoguePanel.SetActive(true);
-        PopUpManager.Instance?.DisablePlayerInput();
-
-        // Start first line
-        DisplayCurrentLine();
-    }
-    #endregion
-
-    #region Dialogue Display
-    /// <summary>
-    /// Displays the current dialogue line with expression
-    /// </summary>
-    private void DisplayCurrentLine()
-    {
-        if (currentDialogueLines == null || currentLineIndex >= currentDialogueLines.Length)
+        // Guard: past the end of the array
+        if (currentLineIndex >= currentDialogueLines.Length)
         {
             OnDialogueSequenceComplete();
             return;
         }
 
         var line = currentDialogueLines[currentLineIndex];
-        
-        // Update portrait expression
+
+        // Skip null lines with a safety limit to prevent infinite recursion
+        if (line == null)
+        {
+            currentLineIndex++;
+            // Safety: if we've skipped past the end, stop
+            if (currentLineIndex >= currentDialogueLines.Length)
+            {
+                OnDialogueSequenceComplete();
+                return;
+            }
+            DisplayCurrentLine();
+            return;
+        }
+
         UpdatePortrait(line.expression);
 
-        // Display text
-        if (useTypewriterEffect)
+        string text = line.text ?? "";
+
+        if (useTypewriterEffect && coroutineRunner != null)
         {
-            if (typingCoroutine != null)
-                StopCoroutine(typingCoroutine);
-            typingCoroutine = StartCoroutine(TypeText(line.text));
+            if (typingCoroutine != null) coroutineRunner.StopCoroutine(typingCoroutine);
+            typingCoroutine = coroutineRunner.StartCoroutine(TypeText(text, line.isAction));
         }
         else
         {
-            dialogueText.text = line.text;
+            dialogueText.text = line.isAction ? $"<i>{text}</i>" : text;
         }
     }
 
-    /// <summary>
-    /// Updates the portrait image based on expression
-    /// </summary>
+    // Swaps the portrait sprite to match the current expression
     private void UpdatePortrait(NPCEncounterSystem.ExpressionType expression)
     {
-        if (currentNPC == null || NPCEncounterSystem.Instance == null) return;
+        if (currentNPC == null || NPCEncounterSystem.Instance == null || portraitImage == null) return;
 
-        Sprite portrait = NPCEncounterSystem.Instance.GetPortraitForExpression(currentNPC, expression);
-        if (portrait != null)
-            portraitImage.sprite = portrait;
+        Sprite sprite = NPCEncounterSystem.Instance.GetPortraitForExpression(currentNPC, expression);
+        if (sprite != null) { portraitImage.sprite = sprite; portraitImage.color = Color.white; }
+        else                { portraitImage.sprite = null;   portraitImage.color = new Color(0.4f, 0.4f, 0.5f, 1f); }
     }
 
-    /// <summary>
-    /// Typewriter effect coroutine
-    /// </summary>
-    private IEnumerator TypeText(string text)
+    // Typewriter effect. Action lines are wrapped in <i> tags for italics.
+    private IEnumerator TypeText(string text, bool isAction = false)
     {
         isTyping = true;
         dialogueText.text = "";
 
-        foreach (char c in text)
+        if (isAction)
         {
-            dialogueText.text += c;
-            yield return new WaitForSeconds(textSpeed);
+            for (int i = 0; i < text.Length; i++)
+            {
+                dialogueText.text = $"<i>{text.Substring(0, i + 1)}</i>";
+                yield return new WaitForSeconds(textSpeed);
+            }
+        }
+        else
+        {
+            foreach (char c in text)
+            {
+                dialogueText.text += c;
+                yield return new WaitForSeconds(textSpeed);
+            }
         }
 
         isTyping = false;
     }
 
-    /// <summary>
-    /// Called when user clicks next/screen
-    /// </summary>
+    // "Next" button handler. If typing is in progress, completes the line instantly.
     private void OnNextClicked()
     {
-        // If still typing, complete immediately
         if (isTyping)
         {
-            if (typingCoroutine != null)
-                StopCoroutine(typingCoroutine);
-            
+            if (typingCoroutine != null && coroutineRunner != null)
+                coroutineRunner.StopCoroutine(typingCoroutine);
             isTyping = false;
-            
+
             if (currentDialogueLines != null && currentLineIndex < currentDialogueLines.Length)
-                dialogueText.text = currentDialogueLines[currentLineIndex].text;
-            
+            {
+                var line = currentDialogueLines[currentLineIndex];
+                string t = line?.text ?? "";
+                dialogueText.text = (line != null && line.isAction) ? $"<i>{t}</i>" : t;
+            }
             return;
         }
 
-        // Move to next line
         currentLineIndex++;
         DisplayCurrentLine();
     }
 
-    /// <summary>
-    /// Called when all opening lines are complete
-    /// </summary>
+    // Called when the last line of a sequence has been displayed
     private void OnDialogueSequenceComplete()
     {
-        if (nextButton != null)
-            nextButton.gameObject.SetActive(false);
+        nextButton.gameObject.SetActive(false);
 
-        // If this was result dialogue, show close button
         if (hasInteracted)
-        {
-            if (closeButton != null)
-                closeButton.gameObject.SetActive(true);
-        }
+            closeButton.gameObject.SetActive(true);   // Result done → let player close
         else
-        {
-            // Show choice buttons
-            ShowChoiceButtons();
-        }
+            ShowChoiceButtons();                       // Opening done → show choices
     }
-    #endregion
 
-    #region Choice Handling
-    /// <summary>
-    /// Shows the choice buttons for player selection
-    /// </summary>
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Choice handling
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Activates the choice buttons that match the current scenario
     private void ShowChoiceButtons()
     {
-        if (currentScenario == null) return;
+        if (currentScenario?.choices == null || currentScenario.choices.Length == 0)
+        { ShowCloseButtonAsFallback(); return; }
 
         var choices = currentScenario.choices;
-
         for (int i = 0; i < choiceButtons.Length; i++)
         {
-            if (i < choices.Length)
+            if (choiceButtons[i] == null) continue;
+
+            if (i < choices.Length && choices[i] != null)
             {
                 choiceButtons[i].gameObject.SetActive(true);
-                choiceTexts[i].text = choices[i].choiceText;
+                if (choiceTexts[i] != null)
+                    choiceTexts[i].text = choices[i].choiceText ?? $"Choice {i + 1}";
 
                 int index = i;
                 choiceButtons[i].onClick.RemoveAllListeners();
@@ -467,91 +544,124 @@ public class NPCDialogueUI : MonoBehaviour
                 choiceButtons[i].gameObject.SetActive(false);
             }
         }
+
+        closeButton.gameObject.SetActive(true); // Allow closing without choosing
     }
 
-    /// <summary>
-    /// Hides all choice buttons
-    /// </summary>
-    private void HideChoiceButtons()
+    // Hides every interactive button
+    private void HideAllButtons()
     {
-        if (choiceButtons == null) return;
-        
-        foreach (var btn in choiceButtons)
-        {
-            if (btn != null)
-                btn.gameObject.SetActive(false);
-        }
+        if (choiceButtons != null)
+            foreach (var b in choiceButtons) if (b != null) b.gameObject.SetActive(false);
+        if (nextButton  != null) nextButton.gameObject.SetActive(false);
+        if (closeButton != null) closeButton.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Handles player's choice selection
-    /// </summary>
-    private void OnChoiceSelected(int choiceIndex)
+    // Fallback: if there are no valid choices, just show the close button
+    private void ShowCloseButtonAsFallback()
     {
-        if (hasInteracted) return;
-        hasInteracted = true;
-
-        HideChoiceButtons();
-
-        // Process choice and get result
-        var outcome = NPCEncounterSystem.Instance.ProcessChoice(choiceIndex);
-
-        if (outcome != null && outcome.resultDialogues != null && outcome.resultDialogues.Length > 0)
-        {
-            // Setup result dialogue sequence
-            currentDialogueLines = outcome.resultDialogues;
-            currentLineIndex = 0;
-
-            if (nextButton != null)
-                nextButton.gameObject.SetActive(true);
-
-            // Display first result line
-            DisplayCurrentLine();
-
-            // Append reward info to last line
-            StartCoroutine(AppendRewardInfo(outcome));
-        }
-        else
-        {
-            // No result dialogue, just close
-            if (closeButton != null)
-                closeButton.gameObject.SetActive(true);
-        }
+        if (choiceButtons != null)
+            foreach (var b in choiceButtons) if (b != null) b.gameObject.SetActive(false);
+        if (closeButton != null) closeButton.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Appends reward/penalty info after result dialogue
-    /// </summary>
-    private IEnumerator AppendRewardInfo(NPCEncounterSystem.EncounterOutcome outcome)
+   // Processes the selected choice, then plays the result dialogue
+   private void OnChoiceSelected(int choiceIndex)
+   {
+      if (hasInteracted) return;
+
+      if (NPCEncounterSystem.Instance == null) { ShowCloseButtonAsFallback(); return; }
+
+      var outcome = NPCEncounterSystem.Instance.ProcessChoice(choiceIndex);
+
+      // null means payment failed — re-show choices so the player can pick again
+      if (outcome == null)
+      {
+         Debug.Log("[NPCDialogueUI] Choice failed (insufficient resources). Re-showing choices.");
+         return;
+      }
+
+      // Lock in the interaction so player can't pick again
+      hasInteracted = true;
+      HideAllButtons();
+
+      if (outcome.resultDialogues != null && outcome.resultDialogues.Length > 0)
+      {
+         currentDialogueLines = outcome.resultDialogues;
+         currentLineIndex = 0;
+         nextButton.gameObject.SetActive(true);
+         DisplayCurrentLine();
+         if (coroutineRunner != null)
+            coroutineRunner.StartCoroutine(AppendRewardInfo(outcome));
+      }
+      else
+      {
+         closeButton.gameObject.SetActive(true);
+      }
+   }
+
+   // Waits until the last result line finishes, then applies the reward
+   // and shows a colored summary line (+50 Pearl / -30 Pearl).
+   private IEnumerator AppendRewardInfo(NPCEncounterSystem.EncounterOutcome outcome)
+   {
+      if (outcome == null) yield break;
+
+      // Wait until we reach the last dialogue line
+      while (currentDialogueLines != null && currentLineIndex < currentDialogueLines.Length - 1)
+         yield return null;
+
+      // Wait for typing to finish
+      while (isTyping)
+         yield return null;
+
+      // Small pause for dramatic effect
+      yield return new WaitForSeconds(0.5f);
+
+      // ── Apply the reward/penalty NOW ─────────────────────────────────
+      NPCEncounterSystem.Instance?.ApplyOutcomeReward(outcome);
+
+      // ── Show result text ─────────────────────────────────────────────
+      if (outcome.pearlChange != 0 && dialogueText != null)
+      {
+         string hex = outcome.pearlChange > 0 ? "#00FF00" : "#FF6666";
+         string sign = outcome.pearlChange > 0 ? "+" : "";
+         string label = outcome.pearlChange > 0 ? "Gained" : "Lost";
+         int display = Mathf.Abs(outcome.pearlChange);
+         dialogueText.text += $"\n\n<color={hex}><b>{label} {display} Pearl ({sign}{outcome.pearlChange})</b></color>";
+      }
+   }
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Close / cleanup
+   // ─────────────────────────────────────────────────────────────────────
+
+   // Resets all state and hides the panel
+   private void CloseDialogue()
     {
-        // Wait until dialogue is complete
-        while (currentLineIndex < currentDialogueLines.Length - 1 || isTyping)
-            yield return null;
+        if (typingCoroutine != null && coroutineRunner != null)
+        { coroutineRunner.StopCoroutine(typingCoroutine); typingCoroutine = null; }
 
-        // Wait a moment then append reward text
-        yield return new WaitForSeconds(0.3f);
+        isTyping         = false;
+        isDialogueActive = false;
+        hasInteracted    = false;
+        currentNPC       = null;
+        currentScenario  = null;
+        currentDialogueLines = null;
+        currentLineIndex = 0;
 
-        if (outcome.pearlChange != 0)
-        {
-            string color = outcome.isPositive ? "#00FF00" : "#FF0000";
-            string sign = outcome.pearlChange > 0 ? "+" : "";
-            dialogueText.text += $"\n\n<color={color}>{sign}{outcome.pearlChange} Pearl</color>";
-        }
-    }
-    #endregion
+        if (dialoguePanel != null) dialoguePanel.SetActive(false);
 
-    #region Close Dialogue
-    /// <summary>
-    /// Closes the dialogue panel
-    /// </summary>
-    private void CloseDialogue()
-    {
-        if (typingCoroutine != null)
-            StopCoroutine(typingCoroutine);
-
-        dialoguePanel.SetActive(false);
         NPCEncounterSystem.Instance?.OnDialogueEnded();
         PopUpManager.Instance?.EnablePlayerInput();
     }
-    #endregion
+
+    // Destroys the canvas we created when this component is destroyed
+    private void OnDestroy()
+    {
+        if (canvasObject != null) Destroy(canvasObject);
+    }
 }
+
+// Empty MonoBehaviour attached to the generated canvas so we can
+// run coroutines on an object that is always active.
+public class CoroutineRunner : MonoBehaviour { }

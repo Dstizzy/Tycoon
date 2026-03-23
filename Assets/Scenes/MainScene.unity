@@ -19222,6 +19222,115 @@ MonoBehaviour:
   itemName: {fileID: 0}
   itemValue: {fileID: 0}
   itemIcon: {fileID: 0}
+--- !u!1 &545745864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 545745866}
+  - component: {fileID: 545745865}
+  m_Layer: 0
+  m_Name: NPCEncounterSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &545745865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545745864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e39ba6824df89f4ebdeabe2ab4e0a03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::NPCEncounterSystem
+  npcProfiles:
+  - npcName: Turtle
+    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
+    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
+    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
+    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
+    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
+    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
+    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    personality: 1
+  - npcName: Dolphin
+    mapSprite: {fileID: -6651275923687695697, guid: e13769cbe0598444cb52549c756c22c5, type: 3}
+    portraitNeutral: {fileID: -8962057739743450010, guid: 5cfa55d5c1b1468478177df45032254c, type: 3}
+    portraitHappy: {fileID: -1966799400110674875, guid: a679d4171bf4b394c907a6f22f484ab9, type: 3}
+    portraitAngry: {fileID: -3996898983372105312, guid: c45ae7e276d4c364ca81aa95bec7c16b, type: 3}
+    portraitSurprised: {fileID: 3554086128769248648, guid: c44bc8294f6b45143b1f5cb7223123f7, type: 3}
+    portraitThinking: {fileID: 4603623452549890782, guid: 6329bd8048b64124e80835c568fcae89, type: 3}
+    portraitSpecial: {fileID: -7289468891832992917, guid: a5227920052eb134cbbdd8265ea002cb, type: 3}
+    personality: 5
+  - npcName: Hermit Crab
+    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
+    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
+    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
+    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
+    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
+    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
+    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    personality: 0
+  - npcName: Octopus
+    mapSprite: {fileID: 8284476028815981848, guid: 97c4c6a2d5ecece469f0cfbb6c4c8e4a, type: 3}
+    portraitNeutral: {fileID: -6778682614318153468, guid: b1f2fb52e10813a4cb4a77b496e832eb, type: 3}
+    portraitHappy: {fileID: 9136027461913705462, guid: 591cd97483a475a489c8956a7d869141, type: 3}
+    portraitAngry: {fileID: 4308433388405510153, guid: 037681df3eeafd64fb8c14ee55c9ae1c, type: 3}
+    portraitSurprised: {fileID: 444657969407381499, guid: e1cd5e9e0a0e53545b8168c8e02bf4a3, type: 3}
+    portraitThinking: {fileID: 2017867309405498147, guid: 59fdbbae25ccca144a9d36755a63e563, type: 3}
+    portraitSpecial: {fileID: -4645333102645837292, guid: 5f64780594a3c6346a8b9fb732383814, type: 3}
+    personality: 4
+  - npcName: Seahorse
+    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
+    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
+    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
+    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
+    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
+    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
+    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    personality: 3
+  - npcName: Jellyfish
+    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
+    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
+    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
+    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
+    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
+    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
+    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    personality: 2
+  buildingLocations:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  npcPrefab: {fileID: 0}
+  spawnOffset: {x: -2, y: -1, z: 0}
+  spawnChancePerTurn: 100
+  dialogueUI: {fileID: 0}
+--- !u!4 &545745866
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545745864}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 357, y: 204.25, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &546365679
 GameObject:
   m_ObjectHideFlags: 0
@@ -88243,3 +88352,4 @@ SceneRoots:
   - {fileID: 778966727}
   - {fileID: 738562235}
   - {fileID: 565412331}
+  - {fileID: 545745866}

@@ -1,200 +1,232 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Roguelike-style NPC encounter system without LLM.
-/// Uses weighted random outcomes for unpredictable rewards/penalties.
-/// </summary>
+// Manages the roguelike-style NPC encounter system.
+// Each turn, a random NPC may appear near a building on the map.
+// Players click the NPC to trigger a multi-line dialogue with branching choices,
+// each leading to weighted random outcomes that reward or penalize pearls/ore.
+// All dialogue and logic is hardcoded (no LLM required).
 public class NPCEncounterSystem : MonoBehaviour
 {
-   public static NPCEncounterSystem Instance { get; private set; }
+    public static NPCEncounterSystem Instance { get; private set; }
 
-   #region Constants - Reward/Penalty Values
-   private const int SMALL_PEARL_REWARD = 20;
-   private const int MEDIUM_PEARL_REWARD = 50;
-   private const int LARGE_PEARL_REWARD = 100;
-   private const int HUGE_PEARL_REWARD = 150;
+    // Reward/Penalty constants                                                                     
+    private const int SMALL_PEARL_REWARD   = 20;
+    private const int MEDIUM_PEARL_REWARD  = 50;
+    private const int LARGE_PEARL_REWARD   = 100;
+    private const int HUGE_PEARL_REWARD    = 150;
 
-   private const int SMALL_PEARL_COST = 10;
-   private const int MEDIUM_PEARL_COST = 30;
-   private const int LARGE_PEARL_COST = 50;
-   private const int HUGE_PEARL_COST = 100;
+    private const int SMALL_PEARL_COST     = 10;
+    private const int MEDIUM_PEARL_COST    = 30;
+    private const int LARGE_PEARL_COST     = 50;
+    private const int HUGE_PEARL_COST      = 100;
 
-   private const int SMALL_PEARL_PENALTY = 20;
-   private const int MEDIUM_PEARL_PENALTY = 50;
-   private const int LARGE_PEARL_PENALTY = 80;
+    private const int SMALL_PEARL_PENALTY  = 20;
+    private const int MEDIUM_PEARL_PENALTY = 50;
+    private const int LARGE_PEARL_PENALTY  = 80;
 
-   private const int SMALL_ORE_COST = 15;
-   private const int MEDIUM_ORE_COST = 30;
-   private const int LARGE_ORE_COST = 50;
+    private const int SMALL_ORE_COST       = 15;
+    private const int MEDIUM_ORE_COST      = 30;
+    private const int LARGE_ORE_COST       = 50;
 
-   private const int TINY_BONUS = 5;
-   private const int SMALL_BONUS = 10;
+    private const int TINY_BONUS           = 5;
+    private const int SMALL_BONUS          = 10;
 
-   private const int HIGH_SUCCESS_WEIGHT = 70;
-   private const int MEDIUM_SUCCESS_WEIGHT = 50;
-   private const int LOW_SUCCESS_WEIGHT = 35;
-   private const int GUARANTEED_WEIGHT = 100;
+    // Outcome weight constants (higher = more likely)                                              
+    private const int HIGH_SUCCESS_WEIGHT   = 70;
+    private const int MEDIUM_SUCCESS_WEIGHT = 50;
+    private const int LOW_SUCCESS_WEIGHT    = 35;
+    private const int GUARANTEED_WEIGHT     = 100;
 
-   private const int DEFAULT_SPAWN_CHANCE = 25;
-   #endregion
+    // Spawn settings                                                                               
+    private const int DEFAULT_SPAWN_CHANCE  = 25;
 
-   #region NPC Data Definitions
-   [System.Serializable]
-   public class NPCProfile
-   {
-      public string npcName;
-      public Sprite mapSprite;
-      public Sprite portraitNeutral;
-      public Sprite portraitHappy;
-      public Sprite portraitAngry;
-      public Sprite portraitSurprised;
-      public Sprite portraitThinking;
-      public Sprite portraitSpecial;    // Unique expression per character
-      public NPCPersonality personality;
-   }
 
-   public enum NPCPersonality
-   {
-      HermitCrab,  // TradeHut - Pearl-adorned money lover
-      Turtle,      // Lab - Flask-throwing mad scientist
-      Jellyfish,   // Refinery - Bioluminescent when happy
-      Seahorse,    // Exploration - Shadowed serious face
-      Octopus,     // Forge - Self-absorbed expression
-      Dolphin      // Manager - Bleached exhaustion
-   }
+    // ─────────────────────────────────────────────────────────────────────
+    //  Data classes
+    // ─────────────────────────────────────────────────────────────────────
 
-   public enum ExpressionType
-   {
-      Neutral,
-      Happy,
-      Angry,
-      Surprised,
-      Thinking,
-      Special      // Unique per character
-   }
+    // Holds all sprite and personality info for a single NPC
+    [System.Serializable]
+    public class NPCProfile
+    {
+        public string npcName;
+        public Sprite mapSprite;          // Shown on the world map when the NPC spawns
+        public Sprite portraitNeutral;    // Default portrait
+        public Sprite portraitHappy;
+        public Sprite portraitAngry;
+        public Sprite portraitSurprised;
+        public Sprite portraitThinking;
+        public Sprite portraitSpecial;    // Unique expression per character (see enum below)
+        public NPCPersonality personality;
+    }
 
-   [System.Serializable]
-   public class DialogueLine
-   {
-      public string text;
-      public ExpressionType expression;
+    // Each NPC is tied to a building and has a unique special portrait:
+    //   HermitCrab  → TradeHut
+    //   Turtle      → Lab
+    //   Jellyfish   → Refinery
+    //   Seahorse    → Exploration
+    //   Octopus     → Forge
+    //   Dolphin     → (Manager)
+    public enum NPCPersonality
+    {
+        HermitCrab,
+        Turtle,
+        Jellyfish,
+        Seahorse,
+        Octopus,
+        Dolphin
+    }
 
-      public DialogueLine(string text, ExpressionType expression = ExpressionType.Neutral)
-      {
-         this.text = text;
-         this.expression = expression;
-      }
-   }
+    // Portrait expression types. "Special" maps to portraitSpecial per character.
+    public enum ExpressionType
+    {
+        Neutral,
+        Happy,
+        Angry,
+        Surprised,
+        Thinking,
+        Special
+    }
 
-   [System.Serializable]
-   public class EncounterOutcome
-   {
-      public DialogueLine[] resultDialogues;
-      public int pearlChange;
-      public int oreCost;
-      public bool isPositive;
+    // A single line of dialogue with an associated portrait expression.
+    // If isAction is true the UI renders the line in italics (stage direction).
+    [System.Serializable]
+    public class DialogueLine
+    {
+        public string text;
+        public ExpressionType expression;
+        public bool isAction;
 
-      // =====================================================================
-      // [ADDED] Default constructor for object initializer syntax
-      // =====================================================================
-      public EncounterOutcome()
-      {
-      }
-      // =====================================================================
-      // [END ADDED]
-      // =====================================================================
+        public DialogueLine(string text, ExpressionType expression = ExpressionType.Neutral, bool isAction = false)
+        {
+            this.text = text;
+            this.expression = expression;
+            this.isAction = isAction;
+        }
+    }
 
-      // Convenience constructor for single-line outcomes
-      public EncounterOutcome(string singleLine, ExpressionType expr, int pearl, bool positive)
-      {
-         resultDialogues = new DialogueLine[] { new DialogueLine(singleLine, expr) };
-         pearlChange = pearl;
-         isPositive = positive;
-      }
-   }
+    // The result the player receives after choosing an option.
+    // pearlChange: positive = gain, negative = loss
+    // oreCost:     ore spent (always >= 0)
+    [System.Serializable]
+    public class EncounterOutcome
+    {
+        public DialogueLine[] resultDialogues;
+        public int pearlChange;
+        public int oreCost;
+        public bool isPositive;
 
-   [System.Serializable]
-   public class EncounterScenario
-   {
-      public DialogueLine[] openingDialogues;
-      public Choice[] choices;
-   }
+        public EncounterOutcome() { }
 
-   [System.Serializable]
-   public class Choice
-   {
-      public string choiceText;
-      public EncounterOutcome[] outcomes;
-      public int[] outcomeWeights;
-      public int oreCost;
-      public int pearlCost;
-   }
-   #endregion
+        // Convenience constructor for single-line error/fallback outcomes
+        public EncounterOutcome(string singleLine, ExpressionType expr, int pearl, bool positive)
+        {
+            resultDialogues = new DialogueLine[] { new DialogueLine(singleLine, expr) };
+            pearlChange = pearl;
+            isPositive = positive;
+        }
+    }
 
-   #region Inspector Settings
-   [Header("NPC Profiles (6 Characters)")]
-   [SerializeField] private NPCProfile[] npcProfiles = new NPCProfile[6];
+    // A complete encounter: opening dialogue lines followed by player choices
+    [System.Serializable]
+    public class EncounterScenario
+    {
+        public DialogueLine[] openingDialogues;
+        public Choice[] choices;
+    }
 
-   [Header("Spawn Settings")]
-   [SerializeField] private Transform[] buildingLocations;
-   [SerializeField] private GameObject npcPrefab;
-   [SerializeField] private Vector3 spawnOffset = new Vector3(2f, 1f, 0f);
-   [SerializeField, Range(0, 100)] private int spawnChancePerTurn = DEFAULT_SPAWN_CHANCE;
+    // A single selectable option. outcomeWeights controls the probability
+    // distribution across the possible outcomes.
+    [System.Serializable]
+    public class Choice
+    {
+        public string choiceText;
+        public EncounterOutcome[] outcomes;
+        public int[] outcomeWeights;
+        public int oreCost;
+        public int pearlCost;
+    }
 
-   [Header("UI References")]
-   [SerializeField] private NPCDialogueUI dialogueUI;
-   #endregion
 
-   #region Runtime Variables
-   private GameObject currentNPCObject;
-   private NPCProfile currentNPC;
-   private EncounterScenario currentScenario;
-   private bool hasActiveNPC = false;
+    // ─────────────────────────────────────────────────────────────────────
+    //  Inspector fields
+    // ─────────────────────────────────────────────────────────────────────
 
-   private Dictionary<NPCPersonality, EncounterScenario[]> scenarioDatabase;
-   #endregion
+    [Header("NPC Profiles (6 Characters)")]
+    [SerializeField] private NPCProfile[] npcProfiles = new NPCProfile[6];
 
-   #region Unity Lifecycle
-   private void Awake()
-   {
-      if (Instance != null && Instance != this)
-      {
-         Destroy(gameObject);
-         return;
-      }
-      Instance = this;
+    [Header("Spawn Settings")]
+    [SerializeField] private Transform[] buildingLocations;   // 5 building transforms
+    [SerializeField] private GameObject npcPrefab;            // Prefab with SpriteRenderer + Collider2D
+    [SerializeField] private Vector3 spawnOffset = new Vector3(2f, 1f, 0f);
+    [SerializeField, Range(0, 100)] private int spawnChancePerTurn = DEFAULT_SPAWN_CHANCE;
 
-      InitializeScenarioDatabase();
-   }
+    [Header("UI References")]
+    [SerializeField] private NPCDialogueUI dialogueUI;
 
-   private void Start()
-   {
-      TurnManager.OnTurnEnded += OnTurnEnded;
-   }
 
-   private void OnDestroy()
-   {
-      TurnManager.OnTurnEnded -= OnTurnEnded;
-   }
-   #endregion
+    // ─────────────────────────────────────────────────────────────────────
+    //  Runtime state
+    // ─────────────────────────────────────────────────────────────────────
 
-   #region Scenario Database Initialization
-   private void InitializeScenarioDatabase()
-   {
-      scenarioDatabase = new Dictionary<NPCPersonality, EncounterScenario[]>
-      {
-         // ==================== HERMIT CRAB - TradeHut ====================
-         // Special Expression: Pearl-adorned money-obsessed face
-         [NPCPersonality.HermitCrab] = new EncounterScenario[]
-          {
-                // Scenario 1: Investment Opportunity
+    private GameObject currentNPCObject;
+    private NPCProfile currentNPC;
+    private EncounterScenario currentScenario;
+    private bool hasActiveNPC = false;
+
+    // Maps each personality to its pool of encounter scenarios
+    private Dictionary<NPCPersonality, EncounterScenario[]> scenarioDatabase;
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Unity lifecycle
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Enforces the Singleton pattern and builds the scenario database
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        InitializeScenarioDatabase();
+    }
+
+    // Subscribes to the turn-end event so NPCs can spawn each turn
+    private void Start()
+    {
+        TurnManager.OnTurnEnded += OnTurnEnded;
+    }
+
+    private void OnDestroy()
+    {
+        TurnManager.OnTurnEnded -= OnTurnEnded;
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Scenario database
+    //  Each NPC personality has 3 scenarios with 2-3 choices each.
+    //  isAction = true lines are rendered in italics by the UI.
+    // ─────────────────────────────────────────────────────────────────────
+
+    private void InitializeScenarioDatabase()
+    {
+        scenarioDatabase = new Dictionary<NPCPersonality, EncounterScenario[]>
+        {
+            // ── HERMIT CRAB ─ TradeHut ──
+            [NPCPersonality.HermitCrab] = new EncounterScenario[]
+            {
+                // Scenario 1 — Investment opportunity
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
                         new DialogueLine("Ah, a visitor.", ExpressionType.Neutral),
-                        new DialogueLine("Monocle adjusted. Pearls gleaming.", ExpressionType.Thinking),
+                        new DialogueLine("Monocle adjusted. Pearls gleaming.", ExpressionType.Thinking, isAction: true),
                         new DialogueLine("You carry yourself well. A person of taste, I presume?", ExpressionType.Neutral),
                         new DialogueLine("I have a rather... lucrative proposition for you.", ExpressionType.Happy),
                         new DialogueLine("Care to invest in a gentleman's venture?", ExpressionType.Special)
@@ -212,7 +244,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Splendid decision, old chap!", ExpressionType.Happy),
-                                        new DialogueLine("Pearls counted with visible satisfaction.", ExpressionType.Special),
+                                        new DialogueLine("Pearls counted with visible satisfaction.", ExpressionType.Special, isAction: true),
                                         new DialogueLine("The returns have exceeded expectations.", ExpressionType.Neutral),
                                         new DialogueLine("Here is your share. Well earned, I must say.", ExpressionType.Happy)
                                     },
@@ -224,7 +256,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Hmm...", ExpressionType.Thinking),
-                                        new DialogueLine("Eye contact avoided.", ExpressionType.Neutral),
+                                        new DialogueLine("Eye contact avoided.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("I regret to inform you... the market was not kind.", ExpressionType.Angry),
                                         new DialogueLine("My sincerest apologies. These things happen.", ExpressionType.Neutral)
                                     },
@@ -265,7 +297,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("Oh ho!", ExpressionType.Surprised),
                                         new DialogueLine("A bold move! I admire your courage!", ExpressionType.Happy),
-                                        new DialogueLine("Shell stroked thoughtfully. Eyes gleaming with greed.", ExpressionType.Special),
+                                        new DialogueLine("Shell stroked thoughtfully. Eyes gleaming with greed.", ExpressionType.Special, isAction: true),
                                         new DialogueLine("Fortune favors the bold indeed!", ExpressionType.Happy),
                                         new DialogueLine("Your substantial returns, good sir.", ExpressionType.Neutral)
                                     },
@@ -277,7 +309,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("...", ExpressionType.Neutral),
-                                        new DialogueLine("Gaze fixed firmly on the floor.", ExpressionType.Thinking),
+                                        new DialogueLine("Gaze fixed firmly on the floor.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("This is... most unfortunate.", ExpressionType.Angry),
                                         new DialogueLine("A miscalculation on my part. Terribly sorry.", ExpressionType.Neutral)
                                     },
@@ -290,35 +322,36 @@ public class NPCEncounterSystem : MonoBehaviour
                     }
                 },
 
-                // Scenario 2: Ore Trading
+                // Scenario 2 — Ore appraisal
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
-                        new DialogueLine("Pocket watch examined.", ExpressionType.Neutral),
+                        new DialogueLine("Pocket watch examined.", ExpressionType.Neutral, isAction: true),
                         new DialogueLine("Ah, perfect timing.", ExpressionType.Happy),
-                        new DialogueLine("I've recently acquired some rather fine ore.", ExpressionType.Neutral),
-                        new DialogueLine("Premium quality. Only the best for my collection.", ExpressionType.Thinking),
-                        new DialogueLine("Interested in a trade, perhaps?", ExpressionType.Special)
+                        new DialogueLine("I've been looking for quality ore specimens.", ExpressionType.Neutral),
+                        new DialogueLine("Premium pieces fetch a handsome price in my circles.", ExpressionType.Thinking),
+                        new DialogueLine("Happen to have any for sale?", ExpressionType.Special)
                     },
                     choices = new Choice[]
                     {
                         new Choice
                         {
-                            choiceText = $"Buy ore ({MEDIUM_PEARL_COST} Pearls)",
-                            pearlCost = MEDIUM_PEARL_COST,
+                            choiceText = $"Sell ore ({MEDIUM_ORE_COST} Ore)",
+                            oreCost = MEDIUM_ORE_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Excellent taste!", ExpressionType.Happy),
-                                        new DialogueLine("Ore wrapped with meticulous care.", ExpressionType.Neutral),
-                                        new DialogueLine("This piece brings good fortune, they say.", ExpressionType.Thinking),
-                                        new DialogueLine("A pleasure doing business with you.", ExpressionType.Happy)
+                                        new DialogueLine("Excellent specimen!", ExpressionType.Happy),
+                                        new DialogueLine("Ore examined through monocle with delight.", ExpressionType.Special, isAction: true),
+                                        new DialogueLine("This is worth far more than you know.", ExpressionType.Thinking),
+                                        new DialogueLine("Here. A generous payment, as promised.", ExpressionType.Happy)
                                     },
-                                    pearlChange = -MEDIUM_PEARL_COST,
+                                    pearlChange = LARGE_PEARL_REWARD,
+                                    oreCost = MEDIUM_ORE_COST,
                                     isPositive = true
                                 },
                                 new EncounterOutcome
@@ -326,11 +359,12 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Wait...", ExpressionType.Surprised),
-                                        new DialogueLine("Ore inspected closely. Color draining from face.", ExpressionType.Thinking),
-                                        new DialogueLine("Good heavens! This appears to be counterfeit!", ExpressionType.Angry),
-                                        new DialogueLine("My deepest apologies. Full refund, of course.", ExpressionType.Neutral)
+                                        new DialogueLine("Ore inspected closely. Color draining from face.", ExpressionType.Thinking, isAction: true),
+                                        new DialogueLine("Good heavens! This grade is rather... common.", ExpressionType.Angry),
+                                        new DialogueLine("I can only offer a modest sum. My apologies.", ExpressionType.Neutral)
                                     },
-                                    pearlChange = 0,
+                                    pearlChange = SMALL_PEARL_REWARD,
+                                    oreCost = MEDIUM_ORE_COST,
                                     isPositive = false
                                 }
                             },
@@ -338,7 +372,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         },
                         new Choice
                         {
-                            choiceText = "Negotiate the price",
+                            choiceText = "Negotiate the price first",
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
@@ -347,7 +381,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("Ho ho! A negotiator!", ExpressionType.Surprised),
                                         new DialogueLine("I respect a sharp business mind.", ExpressionType.Thinking),
-                                        new DialogueLine("Very well. A special price for you.", ExpressionType.Happy)
+                                        new DialogueLine("Very well. A token of good faith.", ExpressionType.Happy)
                                     },
                                     pearlChange = SMALL_PEARL_REWARD,
                                     isPositive = true
@@ -356,7 +390,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Eyebrow raised.", ExpressionType.Neutral),
+                                        new DialogueLine("Eyebrow raised.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("A gentleman does not haggle excessively.", ExpressionType.Thinking),
                                         new DialogueLine("I'm afraid we cannot reach an agreement.", ExpressionType.Angry)
                                     },
@@ -388,16 +422,16 @@ public class NPCEncounterSystem : MonoBehaviour
                     }
                 },
 
-                // Scenario 3: Gentleman's Wager
+                // Scenario 3 — Gentleman's wager
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
-                        new DialogueLine("A soft chuckle.", ExpressionType.Happy),
+                        new DialogueLine("A soft chuckle.", ExpressionType.Happy, isAction: true),
                         new DialogueLine("You know, I find myself in excellent spirits today.", ExpressionType.Neutral),
                         new DialogueLine("Care for a gentleman's wager?", ExpressionType.Thinking),
                         new DialogueLine("A simple coin toss. Nothing crude, I assure you.", ExpressionType.Neutral),
-                        new DialogueLine("Pearls practically dancing on the shell.", ExpressionType.Special)
+                        new DialogueLine("Pearls practically dancing on the shell.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
@@ -411,7 +445,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Coin flipped with practiced elegance.", ExpressionType.Neutral),
+                                        new DialogueLine("Coin flipped with practiced elegance.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("...", ExpressionType.Thinking),
                                         new DialogueLine("Heads! Fortune smiles upon you!", ExpressionType.Happy),
                                         new DialogueLine("A worthy opponent. Here are your winnings.", ExpressionType.Neutral)
@@ -423,7 +457,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Coin flipped with practiced elegance.", ExpressionType.Neutral),
+                                        new DialogueLine("Coin flipped with practiced elegance.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("...", ExpressionType.Thinking),
                                         new DialogueLine("Tails, I'm afraid.", ExpressionType.Neutral),
                                         new DialogueLine("Better luck next time, old sport.", ExpressionType.Happy)
@@ -444,7 +478,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Coin flipped with a flourish.", ExpressionType.Neutral),
+                                        new DialogueLine("Coin flipped with a flourish.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("And the result is...", ExpressionType.Thinking),
                                         new DialogueLine("Tails! Magnificent intuition!", ExpressionType.Surprised),
                                         new DialogueLine("Your winnings, as promised.", ExpressionType.Happy)
@@ -456,7 +490,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Coin flipped with a flourish.", ExpressionType.Neutral),
+                                        new DialogueLine("Coin flipped with a flourish.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("And the result is...", ExpressionType.Thinking),
                                         new DialogueLine("Heads. Not your day, it seems.", ExpressionType.Neutral),
                                         new DialogueLine("Perhaps fortune will favor you next time.", ExpressionType.Thinking)
@@ -478,7 +512,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("Ah, a cautious soul.", ExpressionType.Neutral),
                                         new DialogueLine("Wisdom is its own reward.", ExpressionType.Thinking),
-                                        new DialogueLine("Hat tipped graciously.", ExpressionType.Happy),
+                                        new DialogueLine("Hat tipped graciously.", ExpressionType.Happy, isAction: true),
                                         new DialogueLine("I admire your restraint.", ExpressionType.Neutral)
                                     },
                                     pearlChange = TINY_BONUS,
@@ -489,18 +523,18 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 }
-          },
+            },
 
-         // ==================== TURTLE - Lab ====================
-         // Special Expression: Flask-throwing maniacal laughter
-         [NPCPersonality.Turtle] = new EncounterScenario[]
-          {
+            // ── TURTLE ─ Lab  ──────────
+            [NPCPersonality.Turtle] = new EncounterScenario[]
+            {
+                // Scenario 1 — Dangerous experiment
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
                         new DialogueLine("Ooh! Perfect timing!", ExpressionType.Surprised),
-                        new DialogueLine("Beakers crashing to the floor.", ExpressionType.Surprised),
+                        new DialogueLine("Beakers crashing to the floor.", ExpressionType.Surprised, isAction: true),
                         new DialogueLine("Wanna help with this experiment?", ExpressionType.Happy),
                         new DialogueLine("It's probably... maybe... not dangerous!", ExpressionType.Special)
                     },
@@ -516,7 +550,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Here we go!", ExpressionType.Happy),
-                                        new DialogueLine("Chemicals mixed with reckless abandon.", ExpressionType.Thinking),
+                                        new DialogueLine("Chemicals mixed with reckless abandon.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("WOOHOO! Success!", ExpressionType.Special),
                                         new DialogueLine("Here's your share!", ExpressionType.Happy)
                                     },
@@ -528,7 +562,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Here we go!", ExpressionType.Happy),
-                                        new DialogueLine("Chemicals mixed with reckless abandon.", ExpressionType.Thinking),
+                                        new DialogueLine("Chemicals mixed with reckless abandon.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("BOOM!", ExpressionType.Surprised),
                                         new DialogueLine("...You okay? Hehe, miscalculated!", ExpressionType.Special)
                                     },
@@ -579,6 +613,8 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 },
+
+                // Scenario 2 — Mystery invention
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
@@ -587,36 +623,38 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("Check this out!", ExpressionType.Surprised),
                         new DialogueLine("My invention!", ExpressionType.Happy),
                         new DialogueLine("I don't know what it does either!", ExpressionType.Special),
-                        new DialogueLine("Wanna buy it?", ExpressionType.Happy)
+                        new DialogueLine("Trade me some ore for it?", ExpressionType.Happy)
                     },
                     choices = new Choice[]
                     {
                         new Choice
                         {
-                            choiceText = $"Buy it ({SMALL_PEARL_COST} Pearls)",
-                            pearlCost = SMALL_PEARL_COST,
+                            choiceText = $"Trade ({SMALL_ORE_COST} Ore)",
+                            oreCost = SMALL_ORE_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Button pressed.", ExpressionType.Thinking),
+                                        new DialogueLine("Button pressed.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("Oh! It works!", ExpressionType.Surprised),
-                                        new DialogueLine("It was an ore detector!", ExpressionType.Happy)
+                                        new DialogueLine("It was a pearl refiner!", ExpressionType.Happy)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD,
+                                    oreCost = SMALL_ORE_COST,
                                     isPositive = true
                                 },
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Button pressed.", ExpressionType.Thinking),
+                                        new DialogueLine("Button pressed.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("...Huh? Smoke?", ExpressionType.Surprised),
                                         new DialogueLine("RUN!", ExpressionType.Special)
                                     },
-                                    pearlChange = -SMALL_PEARL_COST,
+                                    pearlChange = 0,
+                                    oreCost = SMALL_ORE_COST,
                                     isPositive = false
                                 }
                             },
@@ -624,7 +662,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         },
                         new Choice
                         {
-                            choiceText = "Don't buy",
+                            choiceText = "Don't trade",
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
@@ -650,7 +688,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Good idea!", ExpressionType.Happy),
-                                        new DialogueLine("Button pressed.", ExpressionType.Thinking),
+                                        new DialogueLine("Button pressed.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("BOOM!", ExpressionType.Surprised),
                                         new DialogueLine("...Ow.", ExpressionType.Neutral),
                                         new DialogueLine("But this is great data! Thanks!", ExpressionType.Special)
@@ -663,65 +701,100 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 },
+
+                // Scenario 3 — Explosive bet
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
-                        new DialogueLine("Oh!", ExpressionType.Surprised),
-                        new DialogueLine("I needed ore samples!", ExpressionType.Happy),
-                        new DialogueLine("Can you spare some?", ExpressionType.Neutral)
+                        new DialogueLine("Ooh! I just thought of something!", ExpressionType.Surprised),
+                        new DialogueLine("Eyes sparkling with manic energy.", ExpressionType.Special, isAction: true),
+                        new DialogueLine("Wanna bet on my next experiment?!", ExpressionType.Happy),
+                        new DialogueLine("Will it explode? Won't it?!", ExpressionType.Special),
+                        new DialogueLine("Either way it'll be FUN!", ExpressionType.Happy)
                     },
                     choices = new Choice[]
                     {
                         new Choice
                         {
-                            choiceText = $"Give ore ({MEDIUM_ORE_COST} Ore)",
-                            oreCost = MEDIUM_ORE_COST,
+                            choiceText = $"Bet: It explodes ({MEDIUM_PEARL_COST} Pearls)",
+                            pearlCost = MEDIUM_PEARL_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Thanks!", ExpressionType.Happy),
-                                        new DialogueLine("Here, take this!", ExpressionType.Happy),
-                                        new DialogueLine("Don't know what it is...", ExpressionType.Thinking),
-                                        new DialogueLine("But it looks expensive!", ExpressionType.Special)
+                                        new DialogueLine("Chemicals mixed haphazardly.", ExpressionType.Thinking, isAction: true),
+                                        new DialogueLine("3... 2... 1...", ExpressionType.Neutral),
+                                        new DialogueLine("KABOOM!", ExpressionType.Surprised),
+                                        new DialogueLine("Haha! You were right! Here ya go!", ExpressionType.Special)
                                     },
-                                    pearlChange = LARGE_PEARL_REWARD,
-                                    oreCost = MEDIUM_ORE_COST,
+                                    pearlChange = MEDIUM_PEARL_REWARD + SMALL_PEARL_REWARD,
                                     isPositive = true
                                 },
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Thanks!", ExpressionType.Happy),
-                                        new DialogueLine("Uhh...", ExpressionType.Thinking),
-                                        new DialogueLine("Nothing to give back.", ExpressionType.Neutral),
-                                        new DialogueLine("Next time for sure!", ExpressionType.Happy)
+                                        new DialogueLine("Chemicals mixed haphazardly.", ExpressionType.Thinking, isAction: true),
+                                        new DialogueLine("3... 2... 1...", ExpressionType.Neutral),
+                                        new DialogueLine("...Nothing.", ExpressionType.Neutral),
+                                        new DialogueLine("Aww! It didn't blow up! Your loss~", ExpressionType.Happy)
                                     },
-                                    pearlChange = SMALL_BONUS,
-                                    oreCost = MEDIUM_ORE_COST,
+                                    pearlChange = -MEDIUM_PEARL_COST,
                                     isPositive = false
                                 }
                             },
-                            outcomeWeights = new int[] { 60, 40 }
+                            outcomeWeights = new int[] { 55, 45 }
                         },
                         new Choice
                         {
-                            choiceText = "Refuse",
+                            choiceText = $"Bet: It doesn't ({MEDIUM_PEARL_COST} Pearls)",
+                            pearlCost = MEDIUM_PEARL_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Aww~", ExpressionType.Neutral),
-                                        new DialogueLine("Stingy!", ExpressionType.Angry),
-                                        new DialogueLine("Just kidding!", ExpressionType.Happy)
+                                        new DialogueLine("Beaker shaken violently.", ExpressionType.Thinking, isAction: true),
+                                        new DialogueLine("3... 2... 1...", ExpressionType.Neutral),
+                                        new DialogueLine("...Huh. Stable!", ExpressionType.Surprised),
+                                        new DialogueLine("No way! You win! Take it!", ExpressionType.Happy)
                                     },
-                                    pearlChange = 0,
+                                    pearlChange = MEDIUM_PEARL_REWARD + SMALL_PEARL_REWARD,
+                                    isPositive = true
+                                },
+                                new EncounterOutcome
+                                {
+                                    resultDialogues = new DialogueLine[]
+                                    {
+                                        new DialogueLine("Beaker shaken violently.", ExpressionType.Thinking, isAction: true),
+                                        new DialogueLine("3... 2... 1...", ExpressionType.Neutral),
+                                        new DialogueLine("BOOM! Hahaha!", ExpressionType.Special),
+                                        new DialogueLine("It exploded! I win~!", ExpressionType.Happy)
+                                    },
+                                    pearlChange = -MEDIUM_PEARL_COST,
+                                    isPositive = false
+                                }
+                            },
+                            outcomeWeights = new int[] { 45, 55 }
+                        },
+                        new Choice
+                        {
+                            choiceText = "Too scary, no thanks",
+                            outcomes = new EncounterOutcome[]
+                            {
+                                new EncounterOutcome
+                                {
+                                    resultDialogues = new DialogueLine[]
+                                    {
+                                        new DialogueLine("Boo! Chicken!", ExpressionType.Angry),
+                                        new DialogueLine("...Just kidding~", ExpressionType.Happy),
+                                        new DialogueLine("Here, a consolation snack!", ExpressionType.Happy)
+                                    },
+                                    pearlChange = TINY_BONUS,
                                     isPositive = true
                                 }
                             },
@@ -729,12 +802,11 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 }
-          },
+            },
 
-         // ==================== JELLYFISH - Refinery ====================
-         // Special Expression: Bioluminescent glow (happy/excited)
-         [NPCPersonality.Jellyfish] = new EncounterScenario[]
-          {
+            // ── JELLYFISH ─ Refinery ──────────
+            [NPCPersonality.Jellyfish] = new EncounterScenario[]
+            {
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
@@ -742,7 +814,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("...", ExpressionType.Neutral),
                         new DialogueLine("...Shiny...", ExpressionType.Thinking),
                         new DialogueLine("...Pretty thing...", ExpressionType.Happy),
-                        new DialogueLine("A faint glow begins.", ExpressionType.Special)
+                        new DialogueLine("A faint glow begins.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
@@ -757,7 +829,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("...This...", ExpressionType.Neutral),
                                         new DialogueLine("...For you...", ExpressionType.Happy),
-                                        new DialogueLine("Glowing brightly now.", ExpressionType.Special)
+                                        new DialogueLine("Glowing brightly now.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD,
                                     isPositive = true
@@ -768,7 +840,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("...Huh...?", ExpressionType.Surprised),
                                         new DialogueLine("...Where did it go...", ExpressionType.Thinking),
-                                        new DialogueLine("The glow fades.", ExpressionType.Neutral)
+                                        new DialogueLine("The glow fades.", ExpressionType.Neutral, isAction: true)
                                     },
                                     pearlChange = 0,
                                     isPositive = false
@@ -788,7 +860,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                         new DialogueLine("...Together...", ExpressionType.Happy),
                                         new DialogueLine("...", ExpressionType.Thinking),
                                         new DialogueLine("...Found it...", ExpressionType.Surprised),
-                                        new DialogueLine("Entire body illuminated with joy.", ExpressionType.Special)
+                                        new DialogueLine("Entire body illuminated with joy.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD + SMALL_BONUS,
                                     isPositive = true
@@ -837,7 +909,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("...Thank you...", ExpressionType.Happy),
-                                        new DialogueLine("Slow, methodical mining.", ExpressionType.Neutral),
+                                        new DialogueLine("Slow, methodical mining.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("...This is... yours...", ExpressionType.Special)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD + SMALL_PEARL_REWARD,
@@ -856,7 +928,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("...Me too...", ExpressionType.Neutral),
-                                        new DialogueLine("Drifting away slowly.", ExpressionType.Neutral)
+                                        new DialogueLine("Drifting away slowly.", ExpressionType.Neutral, isAction: true)
                                     },
                                     pearlChange = 0,
                                     isPositive = true
@@ -872,7 +944,7 @@ public class NPCEncounterSystem : MonoBehaviour
                     {
                         new DialogueLine("...This ore...", ExpressionType.Thinking),
                         new DialogueLine("...So shiny...", ExpressionType.Happy),
-                        new DialogueLine("Pulsing with soft light.", ExpressionType.Special)
+                        new DialogueLine("Pulsing with soft light.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
@@ -888,7 +960,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("...Good...", ExpressionType.Happy),
                                         new DialogueLine("...Sparkle sparkle...", ExpressionType.Happy),
-                                        new DialogueLine("Blindingly bright with happiness.", ExpressionType.Special)
+                                        new DialogueLine("Blindingly bright with happiness.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD,
                                     oreCost = SMALL_ORE_COST,
@@ -935,19 +1007,19 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 }
-          },
+            },
 
-         // ==================== SEAHORSE - Exploration ====================
-         // Special Expression: Deep shadow across face, intensely serious/bitter
-         [NPCPersonality.Seahorse] = new EncounterScenario[]
-          {
+            // ── SEAHORSE ─ Exploration ───────────────
+            [NPCPersonality.Seahorse] = new EncounterScenario[]
+            {
+                // Scenario 1 — Mysterious newcomer
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
                         new DialogueLine("Hmph.", ExpressionType.Neutral),
                         new DialogueLine("Found a new route.", ExpressionType.Thinking),
-                        new DialogueLine("Eyes hidden in shadow.", ExpressionType.Special),
+                        new DialogueLine("Eyes hidden in shadow.", ExpressionType.Special, isAction: true),
                         new DialogueLine("Coming with me?", ExpressionType.Neutral)
                     },
                     choices = new Choice[]
@@ -962,7 +1034,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Good.", ExpressionType.Neutral),
-                                        new DialogueLine("Leading the way confidently.", ExpressionType.Neutral),
+                                        new DialogueLine("Leading the way confidently.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("Here. Your share.", ExpressionType.Neutral),
                                         new DialogueLine("You have an eye.", ExpressionType.Happy)
                                     },
@@ -974,9 +1046,9 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("This way.", ExpressionType.Neutral),
-                                        new DialogueLine("Map studied intently.", ExpressionType.Thinking),
+                                        new DialogueLine("Map studied intently.", ExpressionType.Thinking, isAction: true),
                                         new DialogueLine("...Wait.", ExpressionType.Surprised),
-                                        new DialogueLine("Map was upside down.", ExpressionType.Special),
+                                        new DialogueLine("Map was upside down.", ExpressionType.Special, isAction: true),
                                         new DialogueLine("Hmm.", ExpressionType.Thinking)
                                     },
                                     pearlChange = SMALL_BONUS,
@@ -1016,7 +1088,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                         new DialogueLine("Hmm...", ExpressionType.Thinking),
                                         new DialogueLine("So it's this way...", ExpressionType.Neutral),
                                         new DialogueLine("No, that way...", ExpressionType.Thinking),
-                                        new DialogueLine("Shadow deepens.", ExpressionType.Special)
+                                        new DialogueLine("Shadow deepens.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = 0,
                                     isPositive = true
@@ -1026,21 +1098,24 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 },
+
+                // Scenario 2 — Treasure map
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
-                        new DialogueLine("Paper held up.", ExpressionType.Neutral),
+                        new DialogueLine("Paper held up.", ExpressionType.Neutral, isAction: true),
                         new DialogueLine("Treasure map.", ExpressionType.Neutral),
                         new DialogueLine("Genuine.", ExpressionType.Thinking),
-                        new DialogueLine("Dramatic pause. Face half in shadow.", ExpressionType.Special)
+                        new DialogueLine("Dramatic pause. Face half in shadow.", ExpressionType.Special, isAction: true),
+                        new DialogueLine("Need ore for supplies.", ExpressionType.Neutral)
                     },
                     choices = new Choice[]
                     {
                         new Choice
                         {
-                            choiceText = $"Buy it ({MEDIUM_PEARL_COST} Pearls)",
-                            pearlCost = MEDIUM_PEARL_COST,
+                            choiceText = $"Fund the expedition ({MEDIUM_ORE_COST} Ore)",
+                            oreCost = MEDIUM_ORE_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
@@ -1048,24 +1123,26 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Wise.", ExpressionType.Neutral),
-                                        new DialogueLine("Map handed over.", ExpressionType.Neutral),
+                                        new DialogueLine("Map studied. Expedition launched.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("...Wait.", ExpressionType.Surprised),
-                                        new DialogueLine("It was upside down.", ExpressionType.Thinking),
-                                        new DialogueLine("Close enough.", ExpressionType.Neutral)
+                                        new DialogueLine("Map was upside down. But we found treasure anyway.", ExpressionType.Thinking),
+                                        new DialogueLine("Your share.", ExpressionType.Neutral)
                                     },
                                     pearlChange = LARGE_PEARL_REWARD,
+                                    oreCost = MEDIUM_ORE_COST,
                                     isPositive = true
                                 },
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Map handed over.", ExpressionType.Neutral),
+                                        new DialogueLine("Map studied. Expedition launched.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("...", ExpressionType.Thinking),
-                                        new DialogueLine("This is my shopping list.", ExpressionType.Special),
-                                        new DialogueLine("Sorry. Refund.", ExpressionType.Neutral)
+                                        new DialogueLine("This is my shopping list.", ExpressionType.Special, isAction: true),
+                                        new DialogueLine("Sorry. Small consolation.", ExpressionType.Neutral)
                                     },
-                                    pearlChange = 0,
+                                    pearlChange = SMALL_BONUS,
+                                    oreCost = MEDIUM_ORE_COST,
                                     isPositive = false
                                 }
                             },
@@ -1073,7 +1150,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         },
                         new Choice
                         {
-                            choiceText = "Don't buy",
+                            choiceText = "Don't fund",
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
@@ -1082,7 +1159,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("Fine.", ExpressionType.Neutral),
                                         new DialogueLine("Opportunity knocks once.", ExpressionType.Thinking),
-                                        new DialogueLine("...Actually, I'll sell it again later.", ExpressionType.Neutral)
+                                        new DialogueLine("...Actually, I'll ask someone else.", ExpressionType.Neutral)
                                     },
                                     pearlChange = 0,
                                     isPositive = true
@@ -1092,47 +1169,48 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 },
+
+                // Scenario 3 — Silent auction
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
-                        new DialogueLine("Recruiting.", ExpressionType.Neutral),
-                        new DialogueLine("Expedition members.", ExpressionType.Thinking),
-                        new DialogueLine("Intense stare from the shadows.", ExpressionType.Special),
-                        new DialogueLine("You look capable.", ExpressionType.Neutral)
+                        new DialogueLine("Mysterious pouch placed on the table.", ExpressionType.Neutral, isAction: true),
+                        new DialogueLine("Auction.", ExpressionType.Neutral),
+                        new DialogueLine("Blind bid.", ExpressionType.Thinking),
+                        new DialogueLine("Could be treasure. Could be trash.", ExpressionType.Neutral),
+                        new DialogueLine("Shadow deepens across face.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
                         new Choice
                         {
-                            choiceText = $"Join (Invest {MEDIUM_ORE_COST} Ore)",
-                            oreCost = MEDIUM_ORE_COST,
+                            choiceText = $"High bid ({MEDIUM_PEARL_COST} Pearls)",
+                            pearlCost = MEDIUM_PEARL_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Good.", ExpressionType.Neutral),
-                                        new DialogueLine("Leading the expedition.", ExpressionType.Neutral),
-                                        new DialogueLine("Great success.", ExpressionType.Happy),
-                                        new DialogueLine("Your dividend.", ExpressionType.Neutral)
+                                        new DialogueLine("Pouch opened.", ExpressionType.Neutral, isAction: true),
+                                        new DialogueLine("...", ExpressionType.Thinking),
+                                        new DialogueLine("Rare pearls.", ExpressionType.Surprised),
+                                        new DialogueLine("Good eye.", ExpressionType.Neutral)
                                     },
-                                    pearlChange = LARGE_PEARL_REWARD,
-                                    oreCost = MEDIUM_ORE_COST,
+                                    pearlChange = MEDIUM_PEARL_REWARD + SMALL_PEARL_REWARD,
                                     isPositive = true
                                 },
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Leading the expedition.", ExpressionType.Neutral),
+                                        new DialogueLine("Pouch opened.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("...", ExpressionType.Thinking),
-                                        new DialogueLine("We got lost.", ExpressionType.Surprised),
-                                        new DialogueLine("The bitter taste of failure.", ExpressionType.Special)
+                                        new DialogueLine("Pebbles.", ExpressionType.Neutral),
+                                        new DialogueLine("A resigned shrug.", ExpressionType.Special, isAction: true)
                                     },
-                                    pearlChange = SMALL_BONUS,
-                                    oreCost = MEDIUM_ORE_COST,
+                                    pearlChange = -MEDIUM_PEARL_COST,
                                     isPositive = false
                                 }
                             },
@@ -1140,15 +1218,47 @@ public class NPCEncounterSystem : MonoBehaviour
                         },
                         new Choice
                         {
-                            choiceText = "Decline",
+                            choiceText = $"Low bid ({SMALL_PEARL_COST} Pearls)",
+                            pearlCost = SMALL_PEARL_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Shame.", ExpressionType.Neutral),
-                                        new DialogueLine("Next time.", ExpressionType.Neutral)
+                                        new DialogueLine("Pouch opened.", ExpressionType.Neutral, isAction: true),
+                                        new DialogueLine("Small find. But decent.", ExpressionType.Thinking),
+                                        new DialogueLine("Here.", ExpressionType.Neutral)
+                                    },
+                                    pearlChange = SMALL_PEARL_REWARD + SMALL_BONUS,
+                                    isPositive = true
+                                },
+                                new EncounterOutcome
+                                {
+                                    resultDialogues = new DialogueLine[]
+                                    {
+                                        new DialogueLine("Pouch opened.", ExpressionType.Neutral, isAction: true),
+                                        new DialogueLine("Empty.", ExpressionType.Neutral),
+                                        new DialogueLine("That's the risk.", ExpressionType.Thinking)
+                                    },
+                                    pearlChange = -SMALL_PEARL_COST,
+                                    isPositive = false
+                                }
+                            },
+                            outcomeWeights = new int[] { 60, 40 }
+                        },
+                        new Choice
+                        {
+                            choiceText = "Walk away",
+                            outcomes = new EncounterOutcome[]
+                            {
+                                new EncounterOutcome
+                                {
+                                    resultDialogues = new DialogueLine[]
+                                    {
+                                        new DialogueLine("Smart.", ExpressionType.Neutral),
+                                        new DialogueLine("Or maybe not.", ExpressionType.Thinking),
+                                        new DialogueLine("You'll never know.", ExpressionType.Neutral)
                                     },
                                     pearlChange = 0,
                                     isPositive = true
@@ -1158,12 +1268,11 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 }
-          },
+            },
 
-         // ==================== OCTOPUS - Forge ====================
-         // Special Expression: Self-absorbed, narcissistic pride
-         [NPCPersonality.Octopus] = new EncounterScenario[]
-          {
+            // ── OCTOPUS ─ Forge ───────────────────
+            [NPCPersonality.Octopus] = new EncounterScenario[]
+            {
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
@@ -1171,7 +1280,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("Oh!", ExpressionType.Surprised),
                         new DialogueLine("Perfect timing!", ExpressionType.Happy),
                         new DialogueLine("New crafting method!", ExpressionType.Happy),
-                        new DialogueLine("All eight arms posed dramatically.", ExpressionType.Special)
+                        new DialogueLine("All eight arms posed dramatically.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
@@ -1185,9 +1294,9 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Here we go!", ExpressionType.Happy),
-                                        new DialogueLine("All eight arms working in perfect harmony.", ExpressionType.Neutral),
+                                        new DialogueLine("All eight arms working in perfect harmony.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("Perfect!", ExpressionType.Happy),
-                                        new DialogueLine("Admiring own handiwork.", ExpressionType.Special),
+                                        new DialogueLine("Admiring own handiwork.", ExpressionType.Special, isAction: true),
                                         new DialogueLine("Take the prototype!", ExpressionType.Neutral)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD + SMALL_PEARL_REWARD,
@@ -1198,7 +1307,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Here we go!", ExpressionType.Happy),
-                                        new DialogueLine("All eight arms working furiously.", ExpressionType.Neutral),
+                                        new DialogueLine("All eight arms working furiously.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("Hmm...", ExpressionType.Thinking),
                                         new DialogueLine("Failed.", ExpressionType.Neutral),
                                         new DialogueLine("But found improvements!", ExpressionType.Happy)
@@ -1238,7 +1347,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("Check out this tool!", ExpressionType.Surprised),
                         new DialogueLine("Made with all 8 arms!", ExpressionType.Happy),
                         new DialogueLine("Simultaneously!", ExpressionType.Happy),
-                        new DialogueLine("Basking in self-satisfaction.", ExpressionType.Special)
+                        new DialogueLine("Basking in self-satisfaction.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
@@ -1336,7 +1445,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("Thanks!", ExpressionType.Happy),
                                         new DialogueLine("Take this!", ExpressionType.Happy),
-                                        new DialogueLine("Another masterpiece.", ExpressionType.Special)
+                                        new DialogueLine("Another masterpiece.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = LARGE_PEARL_REWARD,
                                     oreCost = MEDIUM_ORE_COST,
@@ -1384,38 +1493,41 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 }
-          },
+            },
 
-         // ==================== DOLPHIN - Manager ====================
-         // Special Expression: Bleached, hollow-eyed exhaustion
-         [NPCPersonality.Dolphin] = new EncounterScenario[]
-          {
+            // ── 돌고래
+            // InitializeScenarioDatabase() 내 Dolphin의 첫 번째 시나리오를 아래로 교체
+
+            [NPCPersonality.Dolphin] = new EncounterScenario[]
+            {
+                // Scenario 1 — Break time
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
                     {
                         new DialogueLine("Oh, hello!", ExpressionType.Happy),
                         new DialogueLine("Just taking a break...", ExpressionType.Neutral),
-                        new DialogueLine("Thousand-yard stare.", ExpressionType.Special),
+                        new DialogueLine("Thousand-yard stare.", ExpressionType.Special, isAction: true),
                         new DialogueLine("So much work...", ExpressionType.Thinking)
                     },
                     choices = new Choice[]
                     {
                         new Choice
                         {
-                            choiceText = $"Treat to coffee ({SMALL_PEARL_COST} Pearls)",
-                            pearlCost = SMALL_PEARL_COST,
+                            choiceText = $"Treat to coffee ({SMALL_ORE_COST} Ore)",
+                            oreCost = SMALL_ORE_COST,
                             outcomes = new EncounterOutcome[]
                             {
                                 new EncounterOutcome
                                 {
                                     resultDialogues = new DialogueLine[]
                                     {
-                                        new DialogueLine("Thank you!", ExpressionType.Surprised),
+                                        new DialogueLine("You brought ore for the vending machine?!", ExpressionType.Surprised),
                                         new DialogueLine("Feeling energized!", ExpressionType.Happy),
                                         new DialogueLine("Here, from my emergency fund...", ExpressionType.Happy)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD,
+                                    oreCost = SMALL_ORE_COST,
                                     isPositive = true
                                 }
                             },
@@ -1431,7 +1543,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Thank you...", ExpressionType.Happy),
-                                        new DialogueLine("Tears welling up.", ExpressionType.Surprised),
+                                        new DialogueLine("Tears welling up.", ExpressionType.Surprised, isAction: true),
                                         new DialogueLine("It's been so long...", ExpressionType.Happy),
                                         new DialogueLine("Since anyone said that...", ExpressionType.Happy)
                                     },
@@ -1453,7 +1565,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                         new DialogueLine("Oh, yes!", ExpressionType.Neutral),
                                         new DialogueLine("Everyone's busy!", ExpressionType.Neutral),
                                         new DialogueLine("Back to work...", ExpressionType.Thinking),
-                                        new DialogueLine("Soul leaving body.", ExpressionType.Special)
+                                        new DialogueLine("Soul leaving body.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = 0,
                                     isPositive = true
@@ -1463,6 +1575,8 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 },
+
+                // Scenario 2 — Document help
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
@@ -1470,7 +1584,7 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("Um...", ExpressionType.Neutral),
                         new DialogueLine("Could you help...", ExpressionType.Thinking),
                         new DialogueLine("With some documents?", ExpressionType.Neutral),
-                        new DialogueLine("The light fading from those eyes.", ExpressionType.Special)
+                        new DialogueLine("The light fading from those eyes.", ExpressionType.Special, isAction: true)
                     },
                     choices = new Choice[]
                     {
@@ -1484,7 +1598,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     resultDialogues = new DialogueLine[]
                                     {
                                         new DialogueLine("Thank you!", ExpressionType.Happy),
-                                        new DialogueLine("Papers organized with renewed vigor.", ExpressionType.Neutral),
+                                        new DialogueLine("Papers organized with renewed vigor.", ExpressionType.Neutral, isAction: true),
                                         new DialogueLine("Processing as expenses!", ExpressionType.Happy)
                                     },
                                     pearlChange = MEDIUM_PEARL_REWARD + SMALL_BONUS,
@@ -1524,7 +1638,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                         new DialogueLine("Oh...", ExpressionType.Neutral),
                                         new DialogueLine("Yes...", ExpressionType.Thinking),
                                         new DialogueLine("Understandable...", ExpressionType.Neutral),
-                                        new DialogueLine("Color draining from face.", ExpressionType.Special)
+                                        new DialogueLine("Color draining from face.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = 0,
                                     isPositive = true
@@ -1534,6 +1648,8 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 },
+
+                // Scenario 3 — Leftover snacks
                 new EncounterScenario
                 {
                     openingDialogues = new DialogueLine[]
@@ -1574,7 +1690,7 @@ public class NPCEncounterSystem : MonoBehaviour
                                     {
                                         new DialogueLine("Oh, okay!", ExpressionType.Neutral),
                                         new DialogueLine("Eating alone then...", ExpressionType.Thinking),
-                                        new DialogueLine("Hollow smile.", ExpressionType.Special)
+                                        new DialogueLine("Hollow smile.", ExpressionType.Special, isAction: true)
                                     },
                                     pearlChange = TINY_BONUS,
                                     isPositive = true
@@ -1604,129 +1720,197 @@ public class NPCEncounterSystem : MonoBehaviour
                         }
                     }
                 }
-          }
-      };
-   }
-   #endregion
+            }
+        };
+    }
 
-   #region NPC Spawn/Despawn
-   private void OnTurnEnded()
-   {
-      if (hasActiveNPC)
-         DespawnNPC();
 
-      if (Random.Range(0, 100) < spawnChancePerTurn)
-         SpawnRandomNPC();
-   }
+    // ─────────────────────────────────────────────────────────────────────
+    //  NPC spawn / despawn
+    // ─────────────────────────────────────────────────────────────────────
 
-   private void SpawnRandomNPC()
-   {
-      if (buildingLocations == null || buildingLocations.Length == 0) return;
-      if (npcProfiles == null || npcProfiles.Length == 0) return;
+    // Called every turn end. Removes the old NPC and may spawn a new one.
+    private void OnTurnEnded()
+    {
+        // Close any open dialogue first
+        if (NPCDialogueUI.Instance != null && NPCDialogueUI.Instance.IsDialogueActive())
+            NPCDialogueUI.Instance.ForceClose();
 
-      int buildingIndex = Random.Range(0, buildingLocations.Length);
-      int npcIndex = Random.Range(0, npcProfiles.Length);
+        if (hasActiveNPC)
+            DespawnNPC();
 
-      currentNPC = npcProfiles[npcIndex];
+        if (Random.Range(0, 100) < spawnChancePerTurn)
+            SpawnRandomNPC();
+    }
 
-      if (scenarioDatabase.TryGetValue(currentNPC.personality, out var scenarios))
-         currentScenario = scenarios[Random.Range(0, scenarios.Length)];
+    // Picks a random NPC + scenario and places the NPC near a random building
+    private void SpawnRandomNPC()
+    {
+        if (buildingLocations == null || buildingLocations.Length == 0) return;
+        if (npcProfiles == null || npcProfiles.Length == 0) return;
 
-      Vector3 spawnPos = buildingLocations[buildingIndex].position + spawnOffset;
-      currentNPCObject = Instantiate(npcPrefab, spawnPos, Quaternion.identity);
+        int buildingIndex = Random.Range(0, buildingLocations.Length);
+        int npcIndex = Random.Range(0, npcProfiles.Length);
 
-      var sr = currentNPCObject.GetComponent<SpriteRenderer>();
-      if (sr != null && currentNPC.mapSprite != null)
-         sr.sprite = currentNPC.mapSprite;
+        currentNPC = npcProfiles[npcIndex];
 
-      var collider = currentNPCObject.GetComponent<Collider2D>();
-      if (collider == null)
-         currentNPCObject.AddComponent<BoxCollider2D>();
+        if (scenarioDatabase.TryGetValue(currentNPC.personality, out var scenarios))
+            currentScenario = scenarios[Random.Range(0, scenarios.Length)];
 
-      var clickHandler = currentNPCObject.AddComponent<NPCClickHandler>();
-      clickHandler.Initialize(this);
+        Vector3 spawnPos = buildingLocations[buildingIndex].position + spawnOffset;
+        currentNPCObject = Instantiate(npcPrefab, spawnPos, Quaternion.identity);
 
-      hasActiveNPC = true;
-      Debug.Log($"[NPC] {currentNPC.npcName} has appeared!");
-   }
+        // Apply map sprite
+        var sr = currentNPCObject.GetComponent<SpriteRenderer>();
+        if (sr != null && currentNPC.mapSprite != null)
+            sr.sprite = currentNPC.mapSprite;
 
-   private void DespawnNPC()
-   {
-      if (currentNPCObject != null)
-         Destroy(currentNPCObject);
+        // Scale up so the NPC is easily visible on the map
+        currentNPCObject.transform.localScale = new Vector3(4.5f, 4.5f, 1f);
 
-      currentNPCObject = null;
-      currentNPC = null;
-      currentScenario = null;
-      hasActiveNPC = false;
-   }
-   #endregion
+        // Ensure there is a collider for click detection
+        if (currentNPCObject.GetComponent<Collider2D>() == null)
+        {
+            BoxCollider2D box = currentNPCObject.AddComponent<BoxCollider2D>();
+            box.size = new Vector2(1f, 1f);
+        }
 
-   #region Interaction Processing
-   public void OnNPCClicked()
-   {
-      if (!hasActiveNPC || currentNPC == null || currentScenario == null) return;
+        var clickHandler = currentNPCObject.AddComponent<NPCClickHandler>();
+        clickHandler.Initialize(this);
 
-      if (dialogueUI != null)
-         dialogueUI.ShowDialogue(currentNPC, currentScenario);
-   }
+        hasActiveNPC = true;
+        Debug.Log($"[NPC] {currentNPC.npcName} has appeared!");
+    }
 
+    // Destroys the currently active NPC and clears references
+    private void DespawnNPC()
+    {
+        if (currentNPCObject != null)
+            Destroy(currentNPCObject);
+
+        currentNPCObject = null;
+        currentNPC = null;
+        currentScenario = null;
+        hasActiveNPC = false;
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Interaction processing
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Opens the dialogue UI when the player clicks an NPC on the map
+    public void OnNPCClicked()
+    {
+        if (!hasActiveNPC || currentNPC == null || currentScenario == null) return;
+
+        // Prevent opening dialogue if one is already active
+        if (NPCDialogueUI.Instance != null && NPCDialogueUI.Instance.IsDialogueActive()) return;
+
+        if (dialogueUI != null)
+            dialogueUI.ShowDialogue(currentNPC, currentScenario);
+    }
+
+   // Resolves the player's choice: checks costs, picks a weighted random
+   // outcome, deducts ENTRY costs (pearlCost/oreCost on the Choice), and
+   // returns the outcome. The outcome's pearlChange is NOT applied here —
+   // it is applied later by the UI when the result text is displayed.
    public EncounterOutcome ProcessChoice(int choiceIndex)
    {
       if (currentScenario == null || choiceIndex >= currentScenario.choices.Length)
          return null;
 
       Choice selectedChoice = currentScenario.choices[choiceIndex];
-
       var inv = InventoryManager.Instance;
+
+      // ── Cost check (before anything is deducted) ─────────────────────
       if (inv != null)
       {
          if (selectedChoice.pearlCost > 0 && inv.pearlCount < selectedChoice.pearlCost)
          {
-            return new EncounterOutcome("You don't have enough pearls...", ExpressionType.Neutral, 0, false);
+            return new EncounterOutcome
+            {
+               resultDialogues = new DialogueLine[]
+                {
+                        new DialogueLine("You don't have enough pearls...", ExpressionType.Neutral)
+                },
+               pearlChange = 0,
+               isPositive = false
+            };
          }
 
          if (selectedChoice.oreCost > 0 && inv.oreCount < selectedChoice.oreCost)
          {
-            return new EncounterOutcome("You don't have enough ore...", ExpressionType.Neutral, 0, false);
+            return new EncounterOutcome
+            {
+               resultDialogues = new DialogueLine[]
+                {
+                        new DialogueLine("You don't have enough ore...", ExpressionType.Neutral)
+                },
+               pearlChange = 0,
+               isPositive = false
+            };
          }
       }
 
+      // ── Deduct entry costs (the bet / trade cost on the Choice) ──────
+      if (inv != null)
+      {
+         if (selectedChoice.pearlCost > 0)
+         {
+            bool spent = inv.TrySpendPearl(selectedChoice.pearlCost);
+            if (!spent) return null;
+         }
+
+         if (selectedChoice.oreCost > 0)
+         {
+            bool spent = inv.TrySpendOre(selectedChoice.oreCost);
+            if (!spent)
+            {
+               if (selectedChoice.pearlCost > 0)
+                  inv.TryAddPearl(selectedChoice.pearlCost);
+               return null;
+            }
+         }
+      }
+
+      // ── Roll a weighted random outcome ───────────────────────────────
       EncounterOutcome result = GetWeightedRandomOutcome(
           selectedChoice.outcomes,
           selectedChoice.outcomeWeights
       );
 
-      if (selectedChoice.pearlCost > 0)
-         inv?.TrySpendPearl(selectedChoice.pearlCost);
-      if (selectedChoice.oreCost > 0)
-         inv?.TrySpendOre(selectedChoice.oreCost);
+      // NOTE: result.pearlChange is NOT applied here.
+      // The UI calls ApplyOutcomeReward() when the result text finishes.
 
-      ApplyOutcome(result);
+      Debug.Log($"[NPC] Choice {choiceIndex}: Spent {selectedChoice.pearlCost}P {selectedChoice.oreCost}O → Pending {result.pearlChange:+#;-#;0}P");
 
       return result;
    }
 
+   // Selects one outcome from the array using the corresponding weights
    private EncounterOutcome GetWeightedRandomOutcome(EncounterOutcome[] outcomes, int[] weights)
-   {
-      int totalWeight = 0;
-      foreach (int w in weights)
-         totalWeight += w;
+    {
+        int totalWeight = 0;
+        foreach (int w in weights)
+            totalWeight += w;
 
-      int roll = Random.Range(0, totalWeight);
-      int cumulative = 0;
+        int roll = Random.Range(0, totalWeight);
+        int cumulative = 0;
 
-      for (int i = 0; i < outcomes.Length; i++)
-      {
-         cumulative += weights[i];
-         if (roll < cumulative)
-            return outcomes[i];
-      }
+        for (int i = 0; i < outcomes.Length; i++)
+        {
+            cumulative += weights[i];
+            if (roll < cumulative)
+                return outcomes[i];
+        }
 
-      return outcomes[outcomes.Length - 1];
-   }
+        return outcomes[outcomes.Length - 1];
+    }
 
-   private void ApplyOutcome(EncounterOutcome outcome)
+   // Called by the dialogue UI AFTER the result text has been displayed.
+   // Applies the pearl reward or penalty from the outcome.
+   public void ApplyOutcomeReward(EncounterOutcome outcome)
    {
       if (outcome == null) return;
 
@@ -1734,56 +1918,68 @@ public class NPCEncounterSystem : MonoBehaviour
       if (inv == null) return;
 
       if (outcome.pearlChange > 0)
-         inv.TryAddPearl(outcome.pearlChange);
-      else if (outcome.pearlChange < 0)
-         inv.TrySpendPearl(-outcome.pearlChange);
-
-      Debug.Log($"[NPC] Result: Pearl {outcome.pearlChange:+#;-#;0}");
-   }
-
-   public void OnDialogueEnded()
-   {
-      DespawnNPC();
-   }
-
-   /// <summary>
-   /// Gets the appropriate portrait sprite for the given expression
-   /// </summary>
-   public Sprite GetPortraitForExpression(NPCProfile npc, ExpressionType expression)
-   {
-      return expression switch
       {
-         ExpressionType.Happy => npc.portraitHappy ?? npc.portraitNeutral,
-         ExpressionType.Angry => npc.portraitAngry ?? npc.portraitNeutral,
-         ExpressionType.Surprised => npc.portraitSurprised ?? npc.portraitNeutral,
-         ExpressionType.Thinking => npc.portraitThinking ?? npc.portraitNeutral,
-         ExpressionType.Special => npc.portraitSpecial ?? npc.portraitNeutral,
-         _ => npc.portraitNeutral
-      };
+         bool success = inv.TryAddPearl(outcome.pearlChange);
+         if (success)
+            Debug.Log($"[NPC] Gained {outcome.pearlChange} pearls.");
+         else
+            Debug.LogWarning($"[NPC] Could not add {outcome.pearlChange} pearls (at max?).");
+      }
+      else if (outcome.pearlChange < 0)
+      {
+         int amount = -outcome.pearlChange;
+         bool success = inv.TrySpendPearl(amount);
+         if (success)
+            Debug.Log($"[NPC] Lost {amount} pearls.");
+         else
+            Debug.LogWarning($"[NPC] Could not spend {amount} pearls (insufficient?).");
+      }
    }
-   #endregion
 
-   #region Public Getters
-   public NPCProfile GetCurrentNPC() => currentNPC;
-   public EncounterScenario GetCurrentScenario() => currentScenario;
-   public bool HasActiveNPC() => hasActiveNPC;
-   #endregion
+   // Called by the dialogue UI when the conversation ends
+   public void OnDialogueEnded()
+    {
+        DespawnNPC();
+    }
+
+    // Returns the correct portrait sprite for a given expression type.
+    // Falls back to portraitNeutral if the specific sprite is not assigned.
+    public Sprite GetPortraitForExpression(NPCProfile npc, ExpressionType expression)
+    {
+        return expression switch
+        {
+            ExpressionType.Happy     => npc.portraitHappy     ?? npc.portraitNeutral,
+            ExpressionType.Angry     => npc.portraitAngry     ?? npc.portraitNeutral,
+            ExpressionType.Surprised => npc.portraitSurprised ?? npc.portraitNeutral,
+            ExpressionType.Thinking  => npc.portraitThinking  ?? npc.portraitNeutral,
+            ExpressionType.Special   => npc.portraitSpecial   ?? npc.portraitNeutral,
+            _                        => npc.portraitNeutral
+        };
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  Public getters
+    // ─────────────────────────────────────────────────────────────────────
+
+    public NPCProfile GetCurrentNPC()                  => currentNPC;
+    public EncounterScenario GetCurrentScenario()      => currentScenario;
+    public bool HasActiveNPC()                         => hasActiveNPC;
 }
 
-/// <summary>
-/// Handles NPC click detection
-/// </summary>
+
+// Attached at runtime to the NPC prefab instance to detect mouse clicks
 public class NPCClickHandler : MonoBehaviour
 {
-   private NPCEncounterSystem system;
+    private NPCEncounterSystem system;
 
-   public void Initialize(NPCEncounterSystem encounterSystem)
-   {
-      system = encounterSystem;
-   }
+    public void Initialize(NPCEncounterSystem encounterSystem)
+    {
+        system = encounterSystem;
+    }
 
-   private void OnMouseDown()
-   {
-      system?.OnNPCClicked();
-   }
+    private void OnMouseDown()
+    {
+        system?.OnNPCClicked();
+    }
 }
