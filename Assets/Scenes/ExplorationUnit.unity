@@ -21697,7 +21697,7 @@ MonoBehaviour:
   - {fileID: 294294460293442742, guid: 7c753d9829e80f34381359cfd5b823b6, type: 3}
   cam: {fileID: 247554928}
   tradeHutManager: {fileID: 1586603218}
-  explorationUnitManager: {fileID: 0}
+  explorationUnitManager: {fileID: 615129224}
   oreRefineryManager: {fileID: 413385706}
   forgeManager: {fileID: 199535991}
   labManager: {fileID: 1859839825}
