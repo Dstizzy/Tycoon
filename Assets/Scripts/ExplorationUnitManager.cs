@@ -45,8 +45,6 @@ public class ExplorationUnitManager : MonoBehaviour
 
   // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
-
-   public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
    public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
