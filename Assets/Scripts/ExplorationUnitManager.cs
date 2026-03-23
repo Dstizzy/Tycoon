@@ -121,12 +121,12 @@ public class ExplorationUnitManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
-            if (yesButton != null)
+            //Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
+            /*if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
-            }
+            }*/
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
          default:
@@ -488,7 +488,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       upgradePanel.gameObject.SetActive(true);
 
-      int upgradeCost = GetUpgradeCost();
+      /*int upgradeCost = GetUpgradeCost();
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
       TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
       Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
@@ -523,7 +523,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
 
       if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);*/
    }
 
    // Shows the event results panel with the all results from an event
