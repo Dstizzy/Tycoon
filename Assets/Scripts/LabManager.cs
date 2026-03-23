@@ -54,7 +54,7 @@ public class LabManager : MonoBehaviour
 
 
    // Public variables                                                                          
-   public static int currentCommerceTier { get; private set; } = 0;
+   public static int  currentCommerceTier { get; set; } = 0;
    public static bool headUnlocked            = false;
    public static bool bodyUnlocked            = false;
    public static bool tailUnlocked            = false;
@@ -66,9 +66,7 @@ public class LabManager : MonoBehaviour
    ShipManager      shipManager;
    InventoryManager inv;
 
-   public static LabManager labManager { get; private set; }
-   public static LabManager Instance { get; private set; }
-
+   public static LabManager labManager { get; set; }
 
    // Check if all required game objects exist and are in there required states                 
    private void Awake()
