@@ -35,12 +35,12 @@ public class ExplorationUnitManager : MonoBehaviour
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
-   const int UPGRADE_PEARLS = 100;
    const int LEVEL2_PEARL_COST = 200;
    const int LEVEL3_PEARL_COST = 500;
    const int MAX_SHIP_LEVEL = 3;
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
+   private int lastProcessedTurn = 0;
 
   // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
@@ -66,6 +66,17 @@ public class ExplorationUnitManager : MonoBehaviour
       if (explorationLevelText != null && shipManager != null)
       {
          explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+      }
+   }
+
+   void Update()
+   {
+      if (isExploring && TurnManager.Instance.currentTurn > lastProcessedTurn)
+      {
+         // A new turn has started, but we wait until the UI is clear
+        
+            lastProcessedTurn = TurnManager.Instance.currentTurn;
+            HandleNewTurn();
       }
    }
 
