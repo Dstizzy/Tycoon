@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cbb5b6a396612e84cbf3022509aafb14
+guid: 37c64fb498fea3746be36e07e4494de3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4984900705883724973
-    second: ExploreVessel_0
+      213: -959688341120678846
+    second: ExploreShip 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ExploreVessel_0
+      name: ExploreShip 1_0
       rect:
         serializedVersion: 2
-        x: 495
-        y: 563
-        width: 1567
-        height: 1177
+        x: 124
+        y: 139
+        width: 379
+        height: 282
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dac1bc6e7cced2540800000000000000
-      internalID: 4984900705883724973
+      spriteID: 2440b64d9808ea2f0800000000000000
+      internalID: -959688341120678846
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ExploreVessel_0: 4984900705883724973
+      ExploreShip 1_0: -959688341120678846
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
