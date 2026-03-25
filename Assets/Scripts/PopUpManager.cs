@@ -1,8 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -85,6 +83,12 @@ public class PopUpManager : MonoBehaviour
 
       /* 3. Determine the object hit this frame, or null if nothing was hit                                                                           */
       Transform currentHoverObject = hit.collider ? hit.collider.transform : null;
+
+      if (currentHoverObject != null && currentHoverObject.CompareTag("ForgeSmoke"))
+      {
+         ClosePopUps();
+         return;
+      }
 
       /* =========================================================
        * 4. CORE HOVER LOGIC: Manage Pop-up State
