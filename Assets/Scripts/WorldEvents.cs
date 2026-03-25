@@ -13,10 +13,13 @@ public class WorldEvents {
    public enum WorldEventTypes {
       CrudeToolEvent,
       HarpoonEvent,
+      IndustrialGoldRushEvent,
       PressureValveEvent,
       DivingBellEvent,
+      DeepSeaWarEvent,
       PrecisionLensEvent,
       ClockworkEngineEvent,
+      ScavengersHolidayEvent,
    }
 
    public static string GetCrudeToolTickerMessage(int shiftDriection) 
@@ -209,5 +212,87 @@ public class WorldEvents {
       }
 
       return tickerMessage;
+   }
+
+   public static string GetDeepSeaWarTickerMessage()
+   {
+      string tickerMessage = "";
+
+      switch (TurnManager.Instance.eventCountdown)
+      {
+         case TURN_3:
+             tickerMessage = "Tensions rising among the deep-sea factions. Whispers of a coming conflict.";
+            break;
+         case TURN_4:
+             tickerMessage = "Military vessels are mobilizing. The noise is drawing unwanted attention from the deep.";
+            break;
+         case TURN_5:
+            tickerMessage = "WAR EVENT: The Deep-Sea War begins! Harpoons jump 3x, Kraken Heat +5/turn!";
+            break;
+         default:
+            Debug.LogError("Unknown turn number");
+            break;
+      }
+
+      return tickerMessage;
+   }
+
+   public static string GetScavengersHolidayTickerMessage()
+   {
+      string tickerMessage = "";
+
+      switch (TurnManager.Instance.eventCountdown)
+      {
+         case TURN_3:
+            tickerMessage = "Currents are shifting favorably. Navigation routes are clearing up.";
+            break;
+         case TURN_4:
+            tickerMessage = "A massive seasonal calm settles over the ocean. Explorers prepare for a frenzy.";
+            break;
+         case TURN_5:
+            tickerMessage = "HOLIDAY EVENT: Scavenger's Holiday! Exploration costs 0 fuel, all prices drop 25%!";
+            break;
+         default:
+            Debug.LogError("Unknown turn number");
+            break;
+      }
+
+      return tickerMessage;
+   }
+
+   public static string GetIndustrialGoldRushTickerMessage()
+   {
+      string tickerMessage = "";
+
+      switch (TurnManager.Instance.eventCountdown)
+      {
+         case TURN_3:
+               tickerMessage = "Factories report a critical shortage of basic components.";
+            break;
+         case TURN_4:
+               tickerMessage = "Production lines are desperate! Foremen are authorizing premium payouts for basic gear.";
+            break;
+         case TURN_5:
+               tickerMessage = "GOLD RUSH EVENT: Industrial panic! Tier 1 items now sell for Tier 2 prices!";
+            break;
+         default:
+            Debug.LogError("Unknown turn number");
+            break;
+      }
+
+      return tickerMessage;
+   }
+
+   public void WorldEventSideEffect(WorldEventTypes worldEvent) 
+   {
+      switch (worldEvent) 
+      {
+         case WorldEventTypes.IndustrialGoldRushEvent: 
+            break;
+         case WorldEventTypes.DeepSeaWarEvent:
+            break;
+         case WorldEventTypes.ScavengersHolidayEvent: 
+            break;
+      }
    }
 }
