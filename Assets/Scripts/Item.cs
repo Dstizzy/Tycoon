@@ -502,6 +502,18 @@ public class Item {
       tier3BluePrintPrice    -= (int)(tier3BluePrintPrice * percent);
       mercenaryEngineerPrice -= (int)(mercenaryEngineerPrice * percent);
    }
+   public static void ApplyPriceDropToSellItems() 
+   {
+      float dropPercentage = 0.25f;
+
+      // Calculate 25% of the current value and pass it into your safe decrease methods
+      TryDecreaseCrudeToolSellValue((int)(crudeToolSellValue * dropPercentage));
+      TryDecreaseHarpoonSellValue((int)(harpoonSellValue * dropPercentage));
+      TryDecreasePressureValveValue((int)(pressureValveSellValue * dropPercentage));
+      TryDecreaseDivingBellValue((int)(divingBellSellValue * dropPercentage));
+      TryDecreasePrecisionLensValue((int)(precisionLensSellValue * dropPercentage));
+      TryDecreaseEnginesSellValue((int)(engineSellValue * dropPercentage));
+   }
 
    // Resets all static prices and events back to default for a new game
    public static void ResetPrices() 

@@ -283,15 +283,15 @@ public class WorldEvents {
       return tickerMessage;
    }
 
-   public void WorldEventSideEffect(WorldEventTypes worldEvent) 
+   public static void WorldEventSideEffect(WorldEventTypes worldEvent) 
    {
       switch (worldEvent) 
       {
-         case WorldEventTypes.IndustrialGoldRushEvent: 
+         case WorldEventTypes.ScavengersHolidayEvent:
+            Item.ApplyPriceDropToSellItems();
             break;
          case WorldEventTypes.DeepSeaWarEvent:
-            break;
-         case WorldEventTypes.ScavengersHolidayEvent: 
+            TurnManager.Instance.HandleHeat();
             break;
       }
    }
