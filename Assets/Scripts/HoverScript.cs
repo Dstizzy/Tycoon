@@ -31,19 +31,23 @@ public class HoverScript : MonoBehaviour {
         playerActions = new PlayerActions();
     }
 
-    private void OnEnable() 
-    {
-        // Subscribe here to ensure callbacks only run while the object is active
-        playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.Hover.performed += Hover;
-    }
+   private void OnEnable()
+   {
+      if (playerActions == null)
+         return;
+      // Subscribe here to ensure callbacks only run while the object is active
+      playerActions.PlayerInput.Enable();
+      playerActions.PlayerInput.Hover.performed += Hover;
+   }
 
-    private void OnDisable() 
-    {
-        // CRITICAL: Unsubscribe to prevent "MissingReferenceException" after scene load
-        playerActions.PlayerInput.Hover.performed -= Hover;
-        playerActions.PlayerInput.Disable();
-    }
+   private void OnDisable() 
+   {
+      if (playerActions == null)
+         return;
+      // CRITICAL: Unsubscribe to prevent "MissingReferenceException" after scene load
+      playerActions.PlayerInput.Hover.performed -= Hover;
+      playerActions.PlayerInput.Disable();
+   }
 
     private void HideAllLevels(Transform canvas) {
        if (canvas == null) 
@@ -70,42 +74,41 @@ public class HoverScript : MonoBehaviour {
            targetLevel.gameObject.SetActive(true);
     }
 
-    public void Hover(InputAction.CallbackContext context) 
-    {
-        // 1. Safety check: Ensure the camera reference is valid for the current scene
-        if (mainCam == null) 
-           mainCam = Camera.main;
-        if (mainCam == null) 
-           return;
+   public void Hover(InputAction.CallbackContext context)
+   {
+      // 1. Safety check: Ensure the camera reference is valid for the current scene
+      if (mainCam == null)
+         mainCam = Camera.main;
+      if (mainCam == null)
+         return;
 
-        Vector2 mouseScreenPos = context.ReadValue<Vector2>();
-        Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
+      Vector2 mouseScreenPos = context.ReadValue<Vector2>();
+      Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
       raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero, Mathf.Infinity, Physics2D.AllLayers);
       currentHoverObject = raycastHit2D.collider ? raycastHit2D.collider.transform : null;
 
-        // Case A: Moved OFF object
-        if (prevHoverObject != null && prevHoverObject != currentHoverObject) 
-        {
-            SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
-            if (prevRenderer != null) 
+      // Case A: Moved OFF object
+      if (prevHoverObject != null && prevHoverObject != currentHoverObject)
+      {
+         SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
+         if (prevRenderer != null)
+         {
+            switch (prevHoverObject.tag)
             {
-                switch (prevHoverObject.tag) 
-                {
-                   case "Forge": 
-                      HideAllLevels(ForgeCanvas); 
-                      break;
-                   case "Ore Refinery": 
-                      HideAllLevels(OreRefineryCanvas); 
-                      break;
-                   case "Exploration Unit": 
-                      HideAllLevels(ExplorationUnitCanvas); 
-                      break;
-                }
-                prevRenderer.color = Color.white;
+               case "Forge":
+                  HideAllLevels(ForgeCanvas);
+                  break;
+               case "Ore Refinery":
+                  HideAllLevels(OreRefineryCanvas);
+                  break;
+               case "Exploration Unit":
+                  HideAllLevels(ExplorationUnitCanvas);
+                  break;
             }
-        }
-
+            prevRenderer.color = Color.white;
+         }
+      }
       // Case B: Moved ONTO new object
       if (currentHoverObject != null && currentHoverObject != prevHoverObject)
       {
@@ -113,38 +116,40 @@ public class HoverScript : MonoBehaviour {
          if (currentRenderer != null && currentHoverObject.tag != "IdleIndicator")
          {
             // Only turn it red if it's a building, not the indicator
-            currentRenderer.color = Color.red;
+            currentRenderer.color = Color.whiteSmoke;
          }
 
-         switch (currentHoverObject.tag) 
+         switch (currentHoverObject.tag)
          {
-            case "Forge": 
-               SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel); 
+            case "Forge":
+               SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel);
                break;
-            case "Ore Refinery": 
-               SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel); 
+            case "Ore Refinery":
+               SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel);
                break;
-            case "Exploration Unit": 
-               if (shipManager != null) 
-                     SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel); 
+            case "Exploration Unit":
+               if (shipManager != null)
+                  SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel);
                break;
             case "IdleIndicator":
                if (TickerSystem.Instance != null)
                   TickerSystem.Instance.ShowTicker("Take a break: No item is currently being crafted!", Color.white, TickerSystem.MessageTypes.ResultMessage);
                break;
+
+
          }
-            
+         prevHoverObject = currentHoverObject;
       }
-      prevHoverObject = currentHoverObject;
    }
+      public void DisableHover()
+      {
+         if (playerActions != null)
+            playerActions.PlayerInput.Disable();
+      }
 
-   public void DisbaleHover() 
-   {
-      playerActions.PlayerInput.Disable();
+      public void EnableHover()
+      {
+         if (playerActions != null)
+            playerActions.PlayerInput.Enable();
+      }
    }
-
-   public void EnableHover() 
-   {
-      playerActions.PlayerInput.Enable();
-   }
-}

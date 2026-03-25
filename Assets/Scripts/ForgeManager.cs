@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
 
@@ -84,8 +85,6 @@ public class ForgeManager : MonoBehaviour
 
    [Header("Crafting Progress")]
    [SerializeField] private ParticleSystem forgeSmoke;
-   [SerializeField] private GameObject progressButton;
-   [SerializeField] private TextMeshProUGUI detailedItemText;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -93,6 +92,7 @@ public class ForgeManager : MonoBehaviour
    private Toggle currentOverclockToggle;
    private Image craftSlot1;
    private Image craftSlot2;
+   private Image craftSlot3;
    private GameObject craftButtonObject;
 
 
@@ -207,9 +207,11 @@ public class ForgeManager : MonoBehaviour
       // FIND IMAGES
       Transform img1 = FindChildByName(windowTransform, "ItemImage1");
       Transform img2 = FindChildByName(windowTransform, "ItemImage2");
+      Transform img3 = FindChildByName(windowTransform, "ItemImage3");
 
       if (img1 != null) craftSlot1 = img1.GetComponent<Image>();
       if (img2 != null) craftSlot2 = img2.GetComponent<Image>();
+      if (img3 != null) craftSlot3 = img3.GetComponent<Image>();
 
       //FIND BUTTONS
       Transform craftBtn = FindChildByName(windowTransform, "CraftButton");
@@ -239,7 +241,7 @@ public class ForgeManager : MonoBehaviour
    public void OnCraftItemSelected(int tier, Item.ItemType itemType)
    {
       // 1. Determine Capacity based on Level
-      int maxStagingSlots = (forgeLevel >= 2) ? 2 : 1;
+      int maxStagingSlots = forgeLevel;
 
       // 2. Logic: If list is full, clear it and start new. Otherwise, add to it.
       if (stagingItems.Count >= maxStagingSlots)
@@ -309,6 +311,18 @@ public class ForgeManager : MonoBehaviour
             });
          }
          else if (btn.name == "ExitButton")
+         {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+               CloseAllTierPanels();
+               if (currentCraftWindow != null)
+                  Destroy(currentCraftWindow.gameObject);
+
+               CloseForgePanel(CRAFT_BUTTON);
+            });
+         }
+         else if (btn.name == "BackButton")
          {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() =>
@@ -476,10 +490,39 @@ public class ForgeManager : MonoBehaviour
 
       btn.interactable = isUnlocked;
 
-
       if (overlay != null)
       {
          overlay.gameObject.SetActive(!isUnlocked);
+      }
+
+      EventTrigger trigger = btnTransform.GetComponent<EventTrigger>();
+      if (trigger == null) trigger = btnTransform.gameObject.AddComponent<EventTrigger>();
+
+      trigger.triggers.Clear();
+
+      if (!isUnlocked)
+      {
+         string blueprintName = "";
+         if (requiredLevel == 2)
+         {
+            blueprintName = "Industrial Blueprint"; 
+         }
+         else if (requiredLevel == 3)
+         {
+            blueprintName = "Clockwork Blueprint"; 
+         }
+
+         EventTrigger.Entry enterEntry = new EventTrigger.Entry();
+         enterEntry.eventID = EventTriggerType.PointerEnter;
+         enterEntry.callback.AddListener((data) =>
+         {
+            if (ticker != null)
+            {
+               ticker.ShowTicker($"Needs to be unlocked by {blueprintName} in tradehut.", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
+            }
+         });
+
+         trigger.triggers.Add(enterEntry);
       }
 
       btn.onClick.RemoveAllListeners();
@@ -487,7 +530,6 @@ public class ForgeManager : MonoBehaviour
       {
          btn.onClick.AddListener(() => OpenTierPanel(requiredLevel));
       }
-
    }
 
    private void ShowInfoPanel()
@@ -519,7 +561,7 @@ public class ForgeManager : MonoBehaviour
       else if (forgeLevel == 2)
       {
          upgradeCost = 700;
-         upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
+         upgradeExplanation = "Bonus: Unlocks a 3rd simultaneous crafting slot!";
       }
 
       if (forgeLevel < ENDING_LEVEL)
@@ -658,10 +700,10 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 2. Level 3 Bonus: Reduce turn cost by 1
-      if (forgeLevel >= 3)
-      {
-         turns -= 1;
-      }
+      //if (forgeLevel >= 3)
+      //{
+         //turns -= 1;
+     // }
 
       // 3. Allow minimum 1 turn
       if (turns < 1)
@@ -675,11 +717,12 @@ public class ForgeManager : MonoBehaviour
       hasCraftedThisTurn = false;
       int jobCount;
 
-      int maxParallelSlots = (forgeLevel >= 2) ? 2 : 1;
+      int maxParallelSlots = forgeLevel;
+
+      List<string> finishedItems = new List<string>();
 
       for (jobCount = activeJobs.Count - 1; jobCount >= 0; jobCount--)
       {
-
          if (jobCount < maxParallelSlots)
          {
             CraftingJob job = activeJobs[jobCount];
@@ -689,16 +732,23 @@ public class ForgeManager : MonoBehaviour
             {
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
-               ticker.ShowTicker($"Crafting Complete: {job.itemName}", Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
 
-               if (ticker != null)
-               {
-                  ticker.ShowTicker($"Finish crafting {job.itemName} x {job.amount}", Color.green, TickerSystem.MessageTypes.ResultMessage);
-               }
+               finishedItems.Add($"{job.amount}x {job.itemName}");
             }
          }
       }
+
+      if (finishedItems.Count > 0)
+      {
+         string finalMessage = "Crafting Complete: " + string.Join(", ", finishedItems);
+
+         if (ticker != null)
+         {
+            ticker.ShowTicker(finalMessage, Color.green, TickerSystem.MessageTypes.ResultMessage);
+         }
+      }
+
       UpdateProgressVisuals();
    }
 
@@ -774,6 +824,20 @@ public class ForgeManager : MonoBehaviour
          else
          {
             craftSlot2.gameObject.SetActive(false);
+         }
+      }
+
+      // SLOT 3: Shows the third item
+      if (craftSlot3 != null)
+      {
+         if (forgeLevel >= 3 && stagingItems.Count > 2)
+         {
+            craftSlot3.gameObject.SetActive(true);
+            craftSlot3.sprite = Item.GetItemSprite(stagingItems[2]);
+         }
+         else
+         {
+            craftSlot3.gameObject.SetActive(false);
          }
       }
    }
@@ -948,19 +1012,6 @@ public class ForgeManager : MonoBehaviour
             forgeSmoke.Stop();
          }
       }
-   }
-   public void UpdateQueueUI()
-   {
-      if (detailedItemText == null) return;
-
-      string listContent = "<b>Current Forge Queue:</b>\n";
-
-      foreach (var job in activeJobs)
-      {
-         listContent += $"\n<sprite name=\"{job.itemType}\"> {job.amount}x {job.itemName} ({job.turnsRemaining}T left)";
-      }
-
-      detailedItemText.text = listContent;
    }
 
    public void ShowQueueInTicker()
