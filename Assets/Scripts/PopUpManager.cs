@@ -1,12 +1,10 @@
-using Codice.Client.BaseCommands.WkStatus.Printers;
+
 using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.WSA;
 
 public class PopUpManager : MonoBehaviour
 {
@@ -74,7 +72,10 @@ public class PopUpManager : MonoBehaviour
       EventSystem.current.RaycastAll(eventData, raycastResults);
 
       /* If the list is not empty, a UI element was hit. Ignore hover logic.                                                                          */
-      if (raycastResults.Count > 0) return;
+      if (raycastResults.Count > 0)
+      {
+         return;
+      }
 
       Vector2 mouseScreenPos = eventData.position;
 
@@ -85,6 +86,12 @@ public class PopUpManager : MonoBehaviour
 
       /* 3. Determine the object hit this frame, or null if nothing was hit                                                                           */
       Transform currentHoverObject = hit.collider ? hit.collider.transform : null;
+
+      if (currentHoverObject != null && currentHoverObject.CompareTag("ForgeSmoke"))
+      {
+         ClosePopUps(); 
+         return;
+      }
 
       /* =========================================================
        * 4. CORE HOVER LOGIC: Manage Pop-up State

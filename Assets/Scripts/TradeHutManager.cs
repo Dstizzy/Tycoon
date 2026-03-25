@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -666,7 +665,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Chain").gameObject.SetActive(false);
       
-            ticker.ShowTicker("Purchased Tier 2 Blueprint — Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 2 Blueprint ï¿½ Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Tier 3 Blueprint purchase flow
@@ -697,7 +696,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Chain").gameObject.SetActive(false);
            
-            ticker.ShowTicker("Purchased Tier 3 Blueprint — Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 3 Blueprint ï¿½ Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Mercenary Engineer purchase flow
@@ -791,7 +790,7 @@ public class TradeHutManager : MonoBehaviour
          else
          {
             if (owned > 0)
-               ticker.ShowTicker($"Cannot select that many — you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Cannot select that many ï¿½ you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
 
@@ -805,7 +804,7 @@ public class TradeHutManager : MonoBehaviour
          else 
          {
             if (owned > 0)
-               ticker.ShowTicker($"Nothing selected to remove — you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Nothing selected to remove ï¿½ you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
 

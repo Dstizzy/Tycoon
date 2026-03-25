@@ -29,6 +29,7 @@ TagManager:
   - Industrial Blueprint
   - Clockwork Blueprint
   - Insurance Policy
+  - ForgeSmoke
   layers:
   - Default
   - TransparentFX

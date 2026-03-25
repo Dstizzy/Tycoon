@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StartScene.unity
     guid: 8ca9410f5c473474d897bdc6144801f9
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainScene.unity
     guid: 5242bd563cbe67a459c28f0080418e4a
+  - enabled: 1
+    path: Assets/Scenes/IntegrateForge.unity
+    guid: c9db4200023684ed5aaffb915aa11cf2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

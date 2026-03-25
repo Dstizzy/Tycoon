@@ -853,7 +853,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -875,11 +881,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: b593f7d2-69fb-4e9b-b163-25fd0006e774
+  cloudProjectId: de41b439-5968-4278-84a4-2d27c3569dc8
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Tycoon 2025-09-22_16-11-30
-  organizationId: dcrav212
+  projectName: Tycoon
+  organizationId: kuroiilz11
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
