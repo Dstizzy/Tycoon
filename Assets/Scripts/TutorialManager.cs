@@ -14,7 +14,7 @@ public class TutorialManager : MonoBehaviour
    [SerializeField] private GameObject   turnButton;        // Reference to the button that must be clicked to proceed
 
 
-   public int  tutorialIndex   = 4;           // To track the current tutorial section
+   public int  tutorialIndex   = 0;           // To track the current tutorial section
    private static int  sectionIndex    = 0;           // To track the current section within a tutorial
    public         bool requiredButtonClicked = true;  // Flag to check if the required button has been clicked
    public         bool oreRefineryUpgrade    = false; // Flag to check if the ore refinery upgrade has been completed
@@ -303,7 +303,6 @@ public class TutorialManager : MonoBehaviour
       if(myPart.transform.Find("Turn") != null)
       {
          turnButton.GetComponent<Button>().onClick.AddListener(HandleTurn);
-         
       }
       if(myPart.transform.Find("ForgeExample") != null)
       {
@@ -329,7 +328,9 @@ public class TutorialManager : MonoBehaviour
 
    public void HandleTurn()
    {
+      Debug.Log("hello");
       requiredButtonClicked = true;
+      currentActivePart = null;
       turnButton.GetComponent<Button>().onClick.RemoveListener(HandleTurn);
       GoThroughSection(tutorialSections[tutorialIndex], sectionIndex++);
    }

@@ -513,6 +513,7 @@ public class TradeHutManager : MonoBehaviour
       string successMessage = "",
              itemTag        = currentSellItem ? currentSellItem.tag : string.Empty;
 
+      Debug.Log("Harpoon sell count " + harpoonSellCount.ToString());
       switch (itemTag) 
       {
          // Tier 1 items
@@ -586,11 +587,12 @@ public class TradeHutManager : MonoBehaviour
       }
       
       // Recieves pearls and show success ticker only if something sold
-      if (totalSellValue > 0) 
+      if (totalSellValue > 0)
       {
          inv.TryAddPearl(totalSellValue);
          ticker.ShowTicker(successMessage, Color.green, MessageTypes.ResultMessage);
-      } else 
+      } 
+      else 
       {
          // Check if the user actually tried to sell something but failed 
          // or not selecting anything at all.
@@ -664,10 +666,12 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Pearl_Icon").gameObject.SetActive(true);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("Chain").gameObject.SetActive(false);
-      
-            if(ticker == null)
+
+
+
+            if (ticker == null)
                Debug.LogError("Ticker is null");
-            ticker.ShowTicker("Purchased Tier 2 Blueprint ó Pressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 2 Blueprint ÅEPressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Tier 3 Blueprint purchase flow
@@ -698,7 +702,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Chain").gameObject.SetActive(false);
            
-            ticker.ShowTicker("Purchased Tier 3 Blueprint ó Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 3 Blueprint ÅEEngine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Mercenary Engineer purchase flow
@@ -742,7 +746,7 @@ public class TradeHutManager : MonoBehaviour
       if(tutorialFunctionOne)
       {
          SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
-         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
+         SellPanel.Find("TutorialPart5").gameObject.SetActive(true);
       }
    }
 
@@ -792,11 +796,9 @@ public class TradeHutManager : MonoBehaviour
          else
          {
             if (owned > 0)
-               ticker.ShowTicker($"Cannot select that many ó you only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Cannot select that many ÅEyou only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
-
-            return;
          }
       } 
       else 
@@ -806,15 +808,13 @@ public class TradeHutManager : MonoBehaviour
          else 
          {
             if (owned > 0)
-               ticker.ShowTicker($"Nothing selected to remove ó you own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Nothing selected to remove ÅEyou own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
-
-            return;
          }
       }
 
-      switch (tag)
+      switch (item.tag)
       {
          case CRUDE_TOOL_TAG:
            crudeToolSellCount = current; 
@@ -834,6 +834,9 @@ public class TradeHutManager : MonoBehaviour
          case ENGINE_TAG: 
            engineSellCount = current; 
            break;
+         default:
+            Debug.LogError("Unkown item: " + item.tag);
+            break;
       }
        
       item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + current.ToString();

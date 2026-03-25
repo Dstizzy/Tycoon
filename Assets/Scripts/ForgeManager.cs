@@ -513,7 +513,7 @@ public class ForgeManager : MonoBehaviour
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 700;
+         upgradeCost = 500;
          upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
       }
 

@@ -45,8 +45,6 @@ public class ExplorationUnitManager : MonoBehaviour
 
   // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
-
-   public static event Action HandleTutorial; // Tutorial event to trigger tutorial pop-up when starting first exploration
    public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
    {
@@ -104,8 +102,8 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               //      bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-               bool canExplore = !isExploring; // && hasDivingBell;
+  //             bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               bool canExplore = !isExploring; //&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
                {
@@ -121,12 +119,12 @@ public class ExplorationUnitManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
-            if (yesButton != null)
+            //Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
+            /*if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
-            }
+            }*/
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
          default:
@@ -488,7 +486,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       upgradePanel.gameObject.SetActive(true);
 
-      int upgradeCost = GetUpgradeCost();
+      /*int upgradeCost = GetUpgradeCost();
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
       TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
       Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
@@ -523,7 +521,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
 
       if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);*/
    }
 
    // Shows the event results panel with the all results from an event

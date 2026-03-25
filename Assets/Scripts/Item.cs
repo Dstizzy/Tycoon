@@ -17,8 +17,8 @@ public class Item {
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int insurancePolicyPrice   { get; set; } = 100;
-   private static int tier2BluePrintPrice    { get; set; } = 500;
-   private static int tier3BluePrintPrice    { get; set; } = 2000;
+   private static int tier2BluePrintPrice    { get; set; } = 300;
+   private static int tier3BluePrintPrice    { get; set; } = 500;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
