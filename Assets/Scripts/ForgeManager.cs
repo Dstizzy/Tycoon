@@ -79,8 +79,13 @@ public class ForgeManager : MonoBehaviour
    [SerializeField] private GameObject craftIdleIndicator;
 
    [Header("Forge Visuals")]
-   [SerializeField] private SpriteRenderer buildingSpriteRenderer; 
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
    [SerializeField] private List<Sprite> forgeLevelSprites;
+
+   [Header("Crafting Progress")]
+   [SerializeField] private ParticleSystem forgeSmoke;
+   [SerializeField] private GameObject progressButton;
+   [SerializeField] private TextMeshProUGUI detailedItemText;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -92,11 +97,11 @@ public class ForgeManager : MonoBehaviour
 
 
    public static event Action HandleTutorial;
-   public static ForgeManager Instance { get; set; }
+   public static ForgeManager Instance { get; private set; }
 
-   public static int  forgeLevel         = STARTING_LEVEL;
-   public  bool       tutorialFunction   = false; // Checks if the forge function has been explained in the tutorial
-   private bool       hasCraftedThisTurn = false;
+   public static int forgeLevel = STARTING_LEVEL;
+   public bool tutorialFunction = false; // Checks if the forge function has been explained in the tutorial
+   private bool hasCraftedThisTurn = false;
 
    // Subscribe to the tutorial event when enabled to trigger the tutorial state change when the player reaches the forge tutorial step
    public void OnEnable()
@@ -127,7 +132,7 @@ public class ForgeManager : MonoBehaviour
       if (TurnManager.Instance != null)
          TurnManager.OnTurnEnded += ProcessCraftingQueue;
 
-      UpdateIdleIndicator();
+      UpdateProgressVisuals();
    }
 
    private void OnDestroy()
@@ -243,7 +248,7 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 3. Add the item
-      if(tutorialFunction && itemType == Item.ItemType.CrudeTool)
+      if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
          craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
          craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
@@ -363,7 +368,7 @@ public class ForgeManager : MonoBehaviour
             UpdateForgeSprites();
          }
 
-         if(forgeLevel == ENDING_LEVEL)
+         if (forgeLevel == ENDING_LEVEL)
             InventoryManager.Instance.ForgeUpgradeIcon.gameObject.SetActive(false);
 
          forgeLevelText.text = "Level " + forgeLevel.ToString();
@@ -421,7 +426,7 @@ public class ForgeManager : MonoBehaviour
    private void ShowCraftPanel()
    {
       craftPanel.gameObject.SetActive(true);
-      if(tutorialFunction)
+      if (tutorialFunction)
          craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
@@ -513,7 +518,7 @@ public class ForgeManager : MonoBehaviour
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 500;
+         upgradeCost = 700;
          upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
       }
 
@@ -596,7 +601,7 @@ public class ForgeManager : MonoBehaviour
       {
          case TIER_1:
             tier1Panel.SetActive(true);
-            if(tutorialFunction)
+            if (tutorialFunction)
             {
                craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
                craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
@@ -684,7 +689,7 @@ public class ForgeManager : MonoBehaviour
             {
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
-               ticker.ShowTicker($"Crafting Complete: {job.itemName}",Color.green, TickerSystem.MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Crafting Complete: {job.itemName}", Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
 
                if (ticker != null)
@@ -694,7 +699,7 @@ public class ForgeManager : MonoBehaviour
             }
          }
       }
-      UpdateIdleIndicator();
+      UpdateProgressVisuals();
    }
 
    private void DeliverItem(CraftingJob job)
@@ -840,7 +845,7 @@ public class ForgeManager : MonoBehaviour
 
          if (currentOverclockToggle != null) currentOverclockToggle.isOn = false;
 
-         UpdateIdleIndicator();
+         UpdateProgressVisuals();
 
          CloseAllTierPanels();
          if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
@@ -851,7 +856,7 @@ public class ForgeManager : MonoBehaviour
          Debug.Log("Not enough ore for all items!");
          ticker.ShowTicker("Not enough ore to craft!", Color.red, TickerSystem.MessageTypes.ResultMessage);
       }
-      if(tutorialFunction)
+      if (tutorialFunction)
       {
          craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
          CloseCraftPanel();
@@ -923,11 +928,54 @@ public class ForgeManager : MonoBehaviour
 
       return;
    }
-   public void UpdateIdleIndicator()
+   public void UpdateProgressVisuals()
    {
+      bool isWorking = activeJobs.Count > 0;
+
       if (craftIdleIndicator != null)
+         craftIdleIndicator.SetActive(!isWorking);
+
+      if (forgeSmoke != null)
       {
-         craftIdleIndicator.SetActive(activeJobs.Count == 0);
+         forgeSmoke.gameObject.SetActive(isWorking);
+
+         if (isWorking)
+         {
+            if (!forgeSmoke.isPlaying) forgeSmoke.Play();
+         }
+         else
+         {
+            forgeSmoke.Stop();
+         }
       }
+   }
+   public void UpdateQueueUI()
+   {
+      if (detailedItemText == null) return;
+
+      string listContent = "<b>Current Forge Queue:</b>\n";
+
+      foreach (var job in activeJobs)
+      {
+         listContent += $"\n<sprite name=\"{job.itemType}\"> {job.amount}x {job.itemName} ({job.turnsRemaining}T left)";
+      }
+
+      detailedItemText.text = listContent;
+   }
+
+   public void ShowQueueInTicker()
+   {
+      if (activeJobs.Count == 0 || ticker == null) return;
+
+      string message = "CRAFTING: ";
+      List<string> jobDetails = new List<string>();
+
+      foreach (var job in activeJobs)
+      {
+         jobDetails.Add($"{job.amount}x {job.itemName} ({job.turnsRemaining}Turn left)");
+      }
+
+      message += string.Join(" | ", jobDetails);
+      ticker.ShowTicker(message, Color.cyan, TickerSystem.MessageTypes.ResultMessage);
    }
 }
