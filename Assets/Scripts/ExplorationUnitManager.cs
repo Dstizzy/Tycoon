@@ -22,7 +22,6 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI decisionResults; // Describes an event choice's results
    [SerializeField] private TextMeshProUGUI shipInventory; // Lists the ship's current inventory
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
- //  [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
 
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer buildingSpriteRenderer;
@@ -41,9 +40,6 @@ public class ExplorationUnitManager : MonoBehaviour
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
    private int lastProcessedTurn = 0;
-   private bool skipFirstTurn = false;
-
-  // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
 
    public static ExplorationUnitManager Instance {get; private set; }
    private void Awake()
@@ -136,20 +132,15 @@ public class ExplorationUnitManager : MonoBehaviour
    // Starts exploration, gets the starting node, and queues the first move
    public void StartExploration()
    {
-      Debug.Log("Exploration started");
       isExploring = true;
       lastProcessedTurn = TurnManager.Instance.currentTurn;
-      skipFirstTurn = true;
       if (MapManager.Instance.startingNode != null)
       {
+         MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
          nextTurnDestination = MapManager.Instance.startingNode.nextNode;
       }
-//      if (tutorialFunction)
- //     {
- //        tutorialFunction = false;
- //        HandleTutorial?.Invoke();
- //     }
       CloseExplorationPanel();
+      HandleNewTurn();
    }
 
    //
