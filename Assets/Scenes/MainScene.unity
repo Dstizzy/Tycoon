@@ -5763,7 +5763,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &124112553
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5773,7 +5773,7 @@ RectTransform:
   m_GameObject: {fileID: 124112552}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 9.5596}
-  m_LocalScale: {x: 0.7953101, y: 0.8907473, z: 0.7953101}
+  m_LocalScale: {x: 0.30311653, y: 0.33949053, z: 0.30311653}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1629814577}
@@ -31599,13 +31599,13 @@ MonoBehaviour:
     portraitSpecial: {fileID: -7289468891832992917, guid: a5227920052eb134cbbdd8265ea002cb, type: 3}
     personality: 5
   - npcName: Hermit Crab
-    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
-    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
-    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
-    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
-    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
-    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
-    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    mapSprite: {fileID: -1837977739437569628, guid: 6ab65e4dc7955e04192b8d6e3ca15075, type: 3}
+    portraitNeutral: {fileID: 6868515254476828458, guid: 01eab021c2eba974699de2b2612872fb, type: 3}
+    portraitHappy: {fileID: 4307551667246177738, guid: 3fab7503f1e4eec4db1566ac1df883df, type: 3}
+    portraitAngry: {fileID: 581346602764443532, guid: ae0dc063147154942a25989981df286f, type: 3}
+    portraitSurprised: {fileID: -132406523243160308, guid: 8fc92421efdd1ee4b9287f01b07524dd, type: 3}
+    portraitThinking: {fileID: 8925186792330620185, guid: bb93fd9038f5eea4aa8484940d01835d, type: 3}
+    portraitSpecial: {fileID: 4462517661071776530, guid: 20cc83d83faa0894292e9a5a573b0a01, type: 3}
     personality: 0
   - npcName: Octopus
     mapSprite: {fileID: 8284476028815981848, guid: 97c4c6a2d5ecece469f0cfbb6c4c8e4a, type: 3}
@@ -31617,22 +31617,22 @@ MonoBehaviour:
     portraitSpecial: {fileID: -4645333102645837292, guid: 5f64780594a3c6346a8b9fb732383814, type: 3}
     personality: 4
   - npcName: Seahorse
-    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
-    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
-    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
-    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
-    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
-    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
-    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    mapSprite: {fileID: -911679278628731330, guid: 8d9f61f3bf2f4054da7468cdc7f844c1, type: 3}
+    portraitNeutral: {fileID: 3703413424670628121, guid: 0ac6f544c00757248a3084991928ca9c, type: 3}
+    portraitHappy: {fileID: 2708647107661023640, guid: 8f8d99ee206cd064fa9807f3116dab13, type: 3}
+    portraitAngry: {fileID: -8843604250914128595, guid: c49367b345a37cb4d949d34c25e5ba62, type: 3}
+    portraitSurprised: {fileID: -3945982410792875162, guid: fe72a0e2c5f49e44bb071fa1b2c9485b, type: 3}
+    portraitThinking: {fileID: -4150031568274993782, guid: 52237059030f0ca49a6ffbb58a78331a, type: 3}
+    portraitSpecial: {fileID: 8065383599630413124, guid: f06d62734bcf57443bb93401aa42b131, type: 3}
     personality: 3
   - npcName: Jellyfish
-    mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
-    portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
-    portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
-    portraitAngry: {fileID: 3502172693689027049, guid: 642fdd057450dd54788a4ec760b749d9, type: 3}
-    portraitSurprised: {fileID: -6634138148254557957, guid: 899074c962998ec44bc0bfc72e4a9b1d, type: 3}
-    portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
-    portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
+    mapSprite: {fileID: 7094631866586404236, guid: bff0ddc7b52a53e449dff9fafc60079c, type: 3}
+    portraitNeutral: {fileID: 5850989717090400245, guid: dd61552aa6c4f8145a3cdcd0b6888b88, type: 3}
+    portraitHappy: {fileID: 7334374430161226435, guid: 7cbb84558f84e0e44ae4cab867c17ea5, type: 3}
+    portraitAngry: {fileID: -4199388557554999301, guid: c12eb2e81af099d4b9546ecb7ce628e9, type: 3}
+    portraitSurprised: {fileID: -7353570163689176702, guid: 62929346979e4de4b9a9d512741af013, type: 3}
+    portraitThinking: {fileID: -332263783728153665, guid: f4917b391a3c95f48af8278a3fa043a9, type: 3}
+    portraitSpecial: {fileID: -219728191619449050, guid: 6b18888ad0227df459a7fd40e6225bbe, type: 3}
     personality: 2
   buildingLocations:
   - {fileID: 112571072}
@@ -55331,7 +55331,7 @@ RectTransform:
   m_GameObject: {fileID: 1178633854}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.22015992, y: 0.22015992, z: 0.22015992}
+  m_LocalScale: {x: 0.188054, y: 0.188054, z: 0.188054}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1229296623}
@@ -55350,7 +55350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -42, y: -380}
+  m_AnchoredPosition: {x: -31, y: -327}
   m_SizeDelta: {x: 878.2872, y: 510.4403}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1178633856
