@@ -86,6 +86,21 @@ public class ForgeManager : MonoBehaviour
    [Header("Crafting Progress")]
    [SerializeField] private ParticleSystem forgeSmoke;
 
+   [Header("Tier 1 Backgrounds")]
+   [SerializeField] private GameObject t1_bg_lvl1;
+   [SerializeField] private GameObject t1_bg_lvl2;
+   [SerializeField] private GameObject t1_bg_lvl3;
+
+   [Header("Tier 2 Backgrounds")]
+   [SerializeField] private GameObject t2_bg_lvl1;
+   [SerializeField] private GameObject t2_bg_lvl2;
+   [SerializeField] private GameObject t2_bg_lvl3;
+
+   [Header("Tier 3 Backgrounds")]
+   [SerializeField] private GameObject t3_bg_lvl1;
+   [SerializeField] private GameObject t3_bg_lvl2;
+   [SerializeField] private GameObject t3_bg_lvl3;
+
    /* Private state variables */
    private Transform currentCraftWindow;
    private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
@@ -188,6 +203,7 @@ public class ForgeManager : MonoBehaviour
       }
 
       UpdateForgeSprites();
+      UpdateSlotBackgrounds();
    }
 
    private void CreateCraftWindow(Transform container)
@@ -380,6 +396,7 @@ public class ForgeManager : MonoBehaviour
          {
             forgeLevel += 1;
             UpdateForgeSprites();
+            UpdateSlotBackgrounds();
          }
 
          if (forgeLevel == ENDING_LEVEL)
@@ -635,14 +652,16 @@ public class ForgeManager : MonoBehaviour
    {
       CloseAllTierPanels();
 
-      /* Destroy any opened craft windows from other tiers*/
       if (currentCraftWindow != null)
          Destroy(currentCraftWindow.gameObject);
+
+      Transform targetContainer = null;
 
       switch (tier)
       {
          case TIER_1:
             tier1Panel.SetActive(true);
+            targetContainer = tier1Container; 
             if (tutorialFunction)
             {
                craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
@@ -652,11 +671,18 @@ public class ForgeManager : MonoBehaviour
 
          case TIER_2:
             tier2Panel.SetActive(true);
+            targetContainer = tier2Container; 
             break;
 
          case TIER_3:
             tier3Panel.SetActive(true);
+            targetContainer = tier3Container; 
             break;
+      }
+
+      if (stagingItems.Count > 0 && targetContainer != null)
+      {
+         CreateCraftWindow(targetContainer);
       }
    }
 
@@ -1028,5 +1054,39 @@ public class ForgeManager : MonoBehaviour
 
       message += string.Join(" | ", jobDetails);
       ticker.ShowTicker(message, Color.cyan, TickerSystem.MessageTypes.ResultMessage);
+   }
+
+   private void UpdateSlotBackgrounds()
+   {
+      if (t1_bg_lvl1) t1_bg_lvl1.SetActive(false);
+      if (t1_bg_lvl2) t1_bg_lvl2.SetActive(false);
+      if (t1_bg_lvl3) t1_bg_lvl3.SetActive(false);
+
+      if (t2_bg_lvl1) t2_bg_lvl1.SetActive(false);
+      if (t2_bg_lvl2) t2_bg_lvl2.SetActive(false);
+      if (t2_bg_lvl3) t2_bg_lvl3.SetActive(false);
+
+      if (t3_bg_lvl1) t3_bg_lvl1.SetActive(false);
+      if (t3_bg_lvl2) t3_bg_lvl2.SetActive(false);
+      if (t3_bg_lvl3) t3_bg_lvl3.SetActive(false);
+
+      if (forgeLevel == 1)
+      {
+         if (t1_bg_lvl1) t1_bg_lvl1.SetActive(true);
+         if (t2_bg_lvl1) t2_bg_lvl1.SetActive(true);
+         if (t3_bg_lvl1) t3_bg_lvl1.SetActive(true);
+      }
+      else if (forgeLevel == 2)
+      {
+         if (t1_bg_lvl2) t1_bg_lvl2.SetActive(true);
+         if (t2_bg_lvl2) t2_bg_lvl2.SetActive(true);
+         if (t3_bg_lvl2) t3_bg_lvl2.SetActive(true);
+      }
+      else if (forgeLevel >= 3)
+      {
+         if (t1_bg_lvl3) t1_bg_lvl3.SetActive(true);
+         if (t2_bg_lvl3) t2_bg_lvl3.SetActive(true);
+         if (t3_bg_lvl3) t3_bg_lvl3.SetActive(true);
+      }
    }
 }
