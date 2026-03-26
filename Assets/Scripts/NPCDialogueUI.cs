@@ -100,7 +100,7 @@ public class NPCDialogueUI : MonoBehaviour
     private void EnsureUIGenerated()
     {
         if (isUIGenerated) return;
-        GenerateUI();
+        GenerateUI(); 
     }
 
     // Builds the full dialogue panel inside a new overlay canvas
