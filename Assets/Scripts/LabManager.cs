@@ -42,6 +42,7 @@ public class LabManager : MonoBehaviour
    public const int VICTORY_TUTORIAL = 2;
 
    // Inspector Variables
+   public PanelManager panelManager;
    public Button victoryButton;
    [SerializeField] private Transform innovatePanel;
    [SerializeField] private Transform infoPanel;
@@ -214,6 +215,7 @@ public class LabManager : MonoBehaviour
    // Open up the research panel and assign the buttons in the initial panel                    
    private void ShowInnovatePanel()
    {
+      panelManager.OpenPanel(innovatePanel.gameObject);
       innovatePanel.gameObject.SetActive(true);
 
       pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
@@ -627,7 +629,7 @@ public class LabManager : MonoBehaviour
       productionTab.gameObject.SetActive(false);
       explorationTab.gameObject.SetActive(false);
       initialTab.gameObject.SetActive(true);
-      innovatePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(innovatePanel.gameObject);
 
       /*if (labTutorialFunction)
       {

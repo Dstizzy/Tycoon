@@ -15,6 +15,7 @@ public class PopUpManager : MonoBehaviour
    [SerializeField] private OreRefinery_Manager oreRefineryManager;
    [SerializeField] private ForgeManager forgeManager;
    [SerializeField] private LabManager labManager;
+   [SerializeField] private CursorManager cursorManager;
 
    private Transform prevHoverObject;
    private Transform currentHoverObject;
@@ -23,7 +24,7 @@ public class PopUpManager : MonoBehaviour
    private PlayerActions playerActions;
    private List<RaycastResult> raycastResults = new List<RaycastResult>();
    public static Transform buildingTransform;
-   public static bool IsBuildingBlocked = false;
+   public static bool IsOreRefineryBlocked = false;
 
    public static event Action<string> OnHoverTagChanged;
 
@@ -99,12 +100,14 @@ public class PopUpManager : MonoBehaviour
       {
          // The mouse is leaving an object. Close the pop-up related to the object we just left.
          ClosePopUps();
-         if (prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked)
-            //  OreRefinery_Manager.Instance.DeactivateJamButton();
-            if (prevHoverObject.tag == "Ore Refinery" && OreRefinery_Manager.Instance.IsBlocked && TurnManager.manualResetOption)
+         if (prevHoverObject.tag == "Ore Refinery" && IsOreRefineryBlocked)
+         {
+            OreRefinery_Manager.Instance.DeactivateJamButton();
+            if (prevHoverObject.tag == "Ore Refinery" && IsOreRefineryBlocked && OreRefinery_Manager.Instance.manualResetOption)
             {
-               // OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+               OreRefinery_Manager.Instance.DeactivateManualResetCounter();
             }
+         }
          buildingTransform = null; // Clear the reference to the old building
       }
 
@@ -116,15 +119,15 @@ public class PopUpManager : MonoBehaviour
          buildingTransform = currentHoverObject;
          OnHoverTagChanged?.Invoke(currentHoverObject.tag);
 
-         if (OreRefinery_Manager.Instance.IsBlocked && currentHoverObject.tag == "Ore Refinery")
+         if (IsOreRefineryBlocked && currentHoverObject.tag == "Ore Refinery")
          {
-            if (TurnManager.manualResetOption)
+            if (OreRefinery_Manager.Instance.manualResetOption)
             {
-               //OreRefinery_Manager.Instance.ActivateManualResetCounter();
+               OreRefinery_Manager.Instance.ActivateManualResetCounter();
             }
             else
             {
-               //OreRefinery_Manager.Instance.ActivateJamButton();
+               OreRefinery_Manager.Instance.ActivateJamButton();
             }
          }
          else
