@@ -56,6 +56,18 @@ public class TutorialManager : MonoBehaviour
    // Start is called before the first frame update
    private void Start()
    {
+      // =====================================================================
+      // [ADDED] Disable legacy tutorial by default
+      // =====================================================================
+      if (TutorialFlowSettings.UseLegacyTutorial == false)
+      {
+         gameObject.SetActive(false);
+         return;
+      }
+      // =====================================================================
+      // [END ADDED]
+      // =====================================================================
+
       sectionIndex = 1;
       tutorialSections[tutorialIndex].SetActive(true);
       GoThroughSection(tutorialSections[tutorialIndex], sectionIndex);
