@@ -15,7 +15,7 @@ MonoBehaviour:
   nodeName: 
   mapPosition: {x: -160, y: 5}
   isExplored: 1
-  nodeDepth: 0
+  nodeDepth: 1
   type: 0
   navigationStory: 
   choiceAText: 

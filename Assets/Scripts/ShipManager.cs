@@ -21,6 +21,8 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI decisionHealthText; // Text showing current health on decision panel
    [SerializeField] private TextMeshProUGUI inventoryFuelText; // Text showing current fuel on explore panel
    [SerializeField] private TextMeshProUGUI inventoryHealthText; // Text showing current health on explore panel
+   [SerializeField] private TextMeshProUGUI exploreFuelText;
+   [SerializeField] private TextMeshProUGUI exploreHealthText; 
 
    [Header("Ship Level Settings")]
    public int shipLevel { get; private set; } = 1; // Current level of the ship
@@ -85,6 +87,7 @@ public class ShipManager : MonoBehaviour
       UpdateStatsToLevel();
       currentHealth = maxHealth;
       currentFuel = maxFuel;
+
    }
 
    private void Start()
@@ -147,6 +150,10 @@ public class ShipManager : MonoBehaviour
    // Update the ship's fuel and health in the decision and explore panels
    private void UpdateShipUI()
    {
+      if (exploreHealthText != null)
+         exploreHealthText.text = $"{currentHealth}/{maxHealth}";
+      if (exploreFuelText != null)
+         exploreFuelText.text = $"{currentFuel}/{maxFuel}";
       if (decisionFuelText != null)
          decisionFuelText.text = $"{currentFuel}/{maxFuel}";
       if (decisionHealthText != null)
