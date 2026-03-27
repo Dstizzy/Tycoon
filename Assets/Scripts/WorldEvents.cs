@@ -288,7 +288,6 @@ public class WorldEvents {
       switch (worldEvent) 
       {
          case WorldEventTypes.ScavengersHolidayEvent:
-            Item.ApplyPriceDropToSellItems();
             break;
          case WorldEventTypes.DeepSeaWarEvent:
             TurnManager.Instance.HandleHeat();

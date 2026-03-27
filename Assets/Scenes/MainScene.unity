@@ -5772,8 +5772,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124112552}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 9.5596}
-  m_LocalScale: {x: 0.30311653, y: 0.33949053, z: 0.30311653}
+  m_LocalPosition: {x: 0, y: 0, z: 10.997}
+  m_LocalScale: {x: 0.59889764, y: 0.6707654, z: 0.59889764}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1629814577}
@@ -5786,7 +5786,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -19, y: -30}
+  m_AnchoredPosition: {x: -20, y: -17}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &127747942
@@ -55331,7 +55331,7 @@ RectTransform:
   m_GameObject: {fileID: 1178633854}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.188054, y: 0.188054, z: 0.188054}
+  m_LocalScale: {x: 0.20857252, y: 0.20857252, z: 0.20857252}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1229296623}
@@ -55350,7 +55350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -31, y: -327}
+  m_AnchoredPosition: {x: -36.607, y: -352.54}
   m_SizeDelta: {x: 878.2872, y: 510.4403}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1178633856
@@ -73738,9 +73738,16 @@ MonoBehaviour:
   - {fileID: 3887344174053154279, guid: 10b3f455b96bf46cabc92efae7dd30ea, type: 3}
   - {fileID: 7478325844829965894, guid: 6cd075e154e5845308a08dbd7269833f, type: 3}
   - {fileID: 2861465360449321257, guid: a87bedcaa66ed492e9411cf8c3f6ffa9, type: 3}
-  forgeSmoke: {fileID: 200420937}
-  progressButton: {fileID: 0}
-  detailedItemText: {fileID: 0}
+  forgeSmoke: {fileID: 0}
+  t1_bg_lvl1: {fileID: 0}
+  t1_bg_lvl2: {fileID: 0}
+  t1_bg_lvl3: {fileID: 0}
+  t2_bg_lvl1: {fileID: 0}
+  t2_bg_lvl2: {fileID: 0}
+  t2_bg_lvl3: {fileID: 0}
+  t3_bg_lvl1: {fileID: 0}
+  t3_bg_lvl2: {fileID: 0}
+  t3_bg_lvl3: {fileID: 0}
   tutorialFunction: 0
 --- !u!1 &1659827708
 GameObject:
@@ -89235,6 +89242,7 @@ MonoBehaviour:
   OreRefineryCanvas: {fileID: 1710951130}
   ExplorationUnitCanvas: {fileID: 1137639510}
   shipManager: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &1899911773
 Transform:
   m_ObjectHideFlags: 0
