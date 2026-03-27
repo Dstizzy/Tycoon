@@ -30,9 +30,9 @@ public class Item {
    public const int BASE_ENGINE_VALUE              = 900;
 
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 90;
+   public const int MAX_CRUDE_TOOL_VALUE           = 180;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 180;
+   public const int MAX_HARPOON_VALUE              = 250;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
    public const int MAX_PRESSURE_VALVE_VALUE       = 540;
    public const int MIN_DIVING_BELL_VALUE          = 0;
@@ -424,7 +424,7 @@ public class Item {
       return;
    }
 
-   public static void TryDecreaseEnginesSellValue(int amount) 
+   public static void TryDecreaseEngineSellValue(int amount) 
    {
       // 1. Check if the value is already at the MIN_VALUE
       if (engineSellValue <= MIN_ENGINE_VALUE) 
@@ -512,7 +512,7 @@ public class Item {
       TryDecreasePressureValveValue((int)(pressureValveSellValue * dropPercentage));
       TryDecreaseDivingBellValue((int)(divingBellSellValue * dropPercentage));
       TryDecreasePrecisionLensValue((int)(precisionLensSellValue * dropPercentage));
-      TryDecreaseEnginesSellValue((int)(engineSellValue * dropPercentage));
+      TryDecreaseEngineSellValue((int)(engineSellValue * dropPercentage));
    }
 
    // Resets all static prices and events back to default for a new game
