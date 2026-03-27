@@ -93,7 +93,7 @@ public class LabManager : MonoBehaviour
          victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
          {
             AudioManager.Instance.PlayClick();
-            victoryPanel.SetActive(false);
+            panelManager.ClosePanel(victoryPanel.gameObject);
             PopUpManager.Instance.EnablePlayerInput();
          });
       }
@@ -616,7 +616,7 @@ public class LabManager : MonoBehaviour
    // Open up the info panel                                                                   
    private void ShowInfoPanel()
    {
-      infoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -649,7 +649,7 @@ public class LabManager : MonoBehaviour
    // Close the info panel                                                                     
    private void CloseInfoPanel()
    {
-      infoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -663,7 +663,7 @@ public class LabManager : MonoBehaviour
 
       if (victoryPanel != null)
       {
-         victoryPanel.SetActive(true);
+         panelManager.OpenPanel(victoryPanel.gameObject);
          PopUpManager.Instance.DisablePlayerInput();
 
          isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;

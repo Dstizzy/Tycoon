@@ -18,6 +18,7 @@ public class OreRefinery_Manager : MonoBehaviour
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL   = 3;
 
+   public PanelManager panelManager;
    [SerializeField] private Transform infoPanel;
    [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;

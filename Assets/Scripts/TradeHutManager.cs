@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +23,10 @@ public class TradeHutManager : MonoBehaviour
    [SerializeField] private Transform InfoPanel;                   
                     public  Transform BuyPanel;       
                     public  Transform RecycleButton;
+   [SerializeField] private RectTransform flipTarget;
+   [SerializeField] private RectTransform buyContainer;
+
+   public PanelManager panelManager;
    public List<Transform> SellItems { get; private set; }
    public List<Transform> BuyItems  { get; private set; }
 
@@ -109,11 +115,29 @@ public class TradeHutManager : MonoBehaviour
    public bool tutorialFunctionTwo = false;
    public bool isInsurancePolicyActive = false;
 
+   [Header("Submerge Settings")]
+   public float submergeSpeed = 0.5f;
+   public float sunkenScale = 0.6f; // How small it gets as it "sinks"
+
+   private bool isSelling;
+   private Coroutine transitionCoroutine;
+
    private InventoryManager inv;
 
    public static event Action HandleTutorial;
 
    public static TradeHutManager Instance;
+
+
+   /*public void ShowBuyTab()
+   {
+      if (isSelling) StartTransition(false);
+   }
+
+   public void ShowSellTab()
+   {
+      if (!isSelling) StartTransition(true);
+   }*/
 
    private void Awake() 
    {
@@ -1350,7 +1374,7 @@ public class TradeHutManager : MonoBehaviour
 
    private void ShowTradePanel() 
    {
-      TradePanels.gameObject.SetActive(true);
+      panelManager.OpenPanel(TradePanels.gameObject);
       ShowSellPanel();
 
       if (MainUIManager.mainUI != null)
@@ -1359,7 +1383,7 @@ public class TradeHutManager : MonoBehaviour
 
    private void ShowInfoPanel() 
    {
-      InfoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(InfoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -1367,27 +1391,27 @@ public class TradeHutManager : MonoBehaviour
 
    public void ShowSellPanel() 
    {
-      if (BuyPanel.gameObject.activeSelf) 
+      if(BuyPanel.gameObject.activeSelf)
       {
-         if (BuyWindow.gameObject.activeSelf)
-            CloseBuyWindow();
-
-         CloseBuyPanel();
+         BuyPanel.gameObject.SetActive(false);
       }
+      else
+         SellPanel.gameObject.SetActive(true);
 
-         /*if(tutorialFunctionTwo)
-         {
-            SellPanel.Find("Arrow").gameObject.SetActive(false);
-            SellPanel.Find("Arrow2").gameObject.SetActive(false);
-            SellPanel.Find("FirstText").gameObject.SetActive(false);
-            SellPanel.Find("SecondText").gameObject.SetActive(false);
-            SellPanel.Find("Arrow3").gameObject.SetActive(true);
-            SellPanel.Find("ThirdText").gameObject.SetActive(true);
-            SellPanel.Find("FourthText").gameObject.SetActive(true);
-         }*/
 
-         // Destroy the instantiated buy item/window instance if it exists
-         if (currentBuyItem != null) 
+      /*if(tutorialFunctionTwo)
+      {
+         SellPanel.Find("Arrow").gameObject.SetActive(false);
+         SellPanel.Find("Arrow2").gameObject.SetActive(false);
+         SellPanel.Find("FirstText").gameObject.SetActive(false);
+         SellPanel.Find("SecondText").gameObject.SetActive(false);
+         SellPanel.Find("Arrow3").gameObject.SetActive(true);
+         SellPanel.Find("ThirdText").gameObject.SetActive(true);
+         SellPanel.Find("FourthText").gameObject.SetActive(true);
+      }*/
+
+      // Destroy the instantiated buy item/window instance if it exists
+      if (currentBuyItem != null) 
       {
          Destroy(currentBuyItem.gameObject);
          currentBuyItem = null;
@@ -1408,15 +1432,13 @@ public class TradeHutManager : MonoBehaviour
 
    public void ShowBuyPanel() 
    {
-      if (SellPanel.gameObject.activeSelf) 
+      if(SellPanel.gameObject.activeSelf)
       {
-         if (SellWindow.gameObject.activeSelf)
-            CloseSellWindow();
-
-         CloseSellPanel();
+         SellPanel.gameObject.SetActive(false);  
+         BuyPanel.gameObject.SetActive(true);
       }
 
-      if(tutorialFunctionOne)
+      if (tutorialFunctionOne)
       {
          SellPanel.Find("TutorialPart1").gameObject.SetActive(false);
          BuyPanel.Find("TutorialPart2").gameObject.SetActive(true);
@@ -1428,7 +1450,7 @@ public class TradeHutManager : MonoBehaviour
          Destroy(currentSellItem.gameObject);
          currentSellItem = null;
       }
-      BuyPanel.gameObject.SetActive(true);
+      //BuyPanel.gameObject.SetActive(true);
    }
 
    public void ShowBuyWindow() 
@@ -1489,7 +1511,7 @@ public class TradeHutManager : MonoBehaviour
       if (BuyWindow.gameObject.activeSelf)
          CloseBuyWindow();
 
-      TradePanels.gameObject.SetActive(false);
+      panelManager.ClosePanel(TradePanels.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -1497,7 +1519,7 @@ public class TradeHutManager : MonoBehaviour
 
    private void CloseInfoPanel()
    {
-      InfoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(InfoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -1532,4 +1554,5 @@ public class TradeHutManager : MonoBehaviour
    //   }
    //   MysteryBoxPanel.gameObject.SetActive(false);
    //}
+
 }

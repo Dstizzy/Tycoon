@@ -47,6 +47,7 @@ public class ForgeManager : MonoBehaviour
 
 
    /* Inspector Variables */
+   public PanelManager panelManager;
    [Header("Main Panels")]
    [SerializeField] private Transform craftPanel;
    [SerializeField] private Transform infoPanel;

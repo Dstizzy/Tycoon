@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
+   public PanelManager panelManager;
    [SerializeField] private EventDatabase eventDatabase;       // Holds all random events that can occur on nodes
    [SerializeField] private EventUIController eventController; // Manages UI of current event
    [SerializeField] private ShipManager shipManager;           // Handles ship's health, fuel, and inventory
