@@ -8,12 +8,19 @@ using static TradeHutManager;
 public class Item {
 
    /* Public static properties                                          */
-   private static int crudeToolSellValue     { get; set; } = BASE_CRUDE_TOOL_SELL_VALUE;
-   private static int harpoonSellValue       { get; set; } = BASE_HARPON_SELL_VALUE;
-   private static int pressureValveSellValue { get; set; } = BASE_PRESSURE_VALVE_SELL_VALUE;
-   private static int divingBellSellValue    { get; set; } = BASE_DIVING_BELL_SELL_VALUE;
-   private static int precisionLensSellValue { get; set; } = BASE_PRECISION_LENS_SELL_VALUE;
-   private static int engineSellValue        { get; set; } = BASE_ENGINE_VALUE;
+   public static int base_crude_tool_value = 30;
+   public static int base_harpoon_value = 60;
+   public static int base_pressure_valve_value = 180;
+   public static int base_diving_bell_value = 250;
+   public static int base_precision_lens_value = 600;
+   public static int base_engine_value = 900;
+
+   private static int crudeToolSellValue     { get; set; } = base_crude_tool_value;
+   private static int harpoonSellValue       { get; set; } = base_harpoon_value;
+   private static int pressureValveSellValue { get; set; } = base_pressure_valve_value;
+   private static int divingBellSellValue    { get; set; } = base_diving_bell_value;
+   private static int precisionLensSellValue { get; set; } = base_precision_lens_value;
+   private static int engineSellValue        { get; set; } = base_engine_value;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int insurancePolicyPrice   { get; set; } = 100;
@@ -22,17 +29,10 @@ public class Item {
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
-   public const int BASE_CRUDE_TOOL_SELL_VALUE     = 30;
-   public const int BASE_HARPON_SELL_VALUE         = 60;
-   public const int BASE_PRESSURE_VALVE_SELL_VALUE = 180;
-   public const int BASE_DIVING_BELL_SELL_VALUE    = 250;
-   public const int BASE_PRECISION_LENS_SELL_VALUE = 600;
-   public const int BASE_ENGINE_VALUE              = 900;
-
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 90;
+   public const int MAX_CRUDE_TOOL_VALUE           = 180;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 180;
+   public const int MAX_HARPOON_VALUE              = 250;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
    public const int MAX_PRESSURE_VALVE_VALUE       = 540;
    public const int MIN_DIVING_BELL_VALUE          = 0;
@@ -424,7 +424,7 @@ public class Item {
       return;
    }
 
-   public static void TryDecreaseEnginesSellValue(int amount) 
+   public static void TryDecreaseEngineSellValue(int amount) 
    {
       // 1. Check if the value is already at the MIN_VALUE
       if (engineSellValue <= MIN_ENGINE_VALUE) 
@@ -497,22 +497,31 @@ public class Item {
 
    public static void ApplyDiscountToBuyItems(float percent) 
    {
-      //rawOrePrice          -= (int)(rawOrePrice * percent);
       tier2BluePrintPrice    -= (int)(tier2BluePrintPrice * percent);
       tier3BluePrintPrice    -= (int)(tier3BluePrintPrice * percent);
       mercenaryEngineerPrice -= (int)(mercenaryEngineerPrice * percent);
+   }
+
+   public static void AdjustSellItemsBaseValue(float percent) 
+   {
+      base_crude_tool_value     += (int) (base_crude_tool_value * percent);
+      base_harpoon_value        += (int) (base_harpoon_value * percent);
+      base_pressure_valve_value += (int) (base_pressure_valve_value * percent);
+      base_diving_bell_value    += (int) (base_diving_bell_value * percent);
+      base_precision_lens_value += (int) (base_precision_lens_value * percent);
+      base_engine_value         += (int) (base_engine_value * percent);
    }
 
    // Resets all static prices and events back to default for a new game
    public static void ResetPrices() 
    {
       // Reset Sell Values
-      crudeToolSellValue     = BASE_CRUDE_TOOL_SELL_VALUE;
-      harpoonSellValue       = BASE_HARPON_SELL_VALUE;
-      pressureValveSellValue = BASE_PRESSURE_VALVE_SELL_VALUE;
-      divingBellSellValue    = BASE_DIVING_BELL_SELL_VALUE;
-      precisionLensSellValue = BASE_PRECISION_LENS_SELL_VALUE;
-      engineSellValue        = BASE_ENGINE_VALUE;
+      crudeToolSellValue     = base_crude_tool_value;
+      harpoonSellValue       = base_harpoon_value;
+      pressureValveSellValue = base_pressure_valve_value;
+      divingBellSellValue    = base_diving_bell_value;
+      precisionLensSellValue = base_precision_lens_value;
+      engineSellValue        = base_engine_value;
 
       // Reset Buy Prices (hardcoded defaults from your initializers)
       rawOrePrice            = 1;

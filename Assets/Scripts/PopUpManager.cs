@@ -246,7 +246,7 @@ public class PopUpManager : MonoBehaviour
    {
       IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
       playerActions.PlayerInput.Disable();
-      HoverScript.Instance.DisbaleHover();
+      HoverScript.Instance.DisableHover();
    }
    public void EnablePlayerInput()
    {
