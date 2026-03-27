@@ -179,8 +179,8 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = MIN_PEARL_COUNT;
-      oreCount           = MIN_ORE_COUNT;
+      pearlCount = 50000;//MIN_PEARL_COUNT;
+      oreCount = 50000; //MIN_ORE_COUNT;
       crudeToolCount     = MIN_CRUDE_TOOL_COUNT;
       harpoonCount       = MIN_HARPOON_COUNT;
       pressureValveCount = MIN_PRESSURE_VALVE_COUNT;

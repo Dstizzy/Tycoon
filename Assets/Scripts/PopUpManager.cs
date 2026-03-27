@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -111,6 +111,13 @@ public class PopUpManager : MonoBehaviour
       /* Case B: Mouse moved ONTO a new object (a building)                                                                                           */
       if (currentHoverObject != null && currentHoverObject != prevHoverObject)
       {
+         // Skip NPC objects — they use their own click handler
+         if (currentHoverObject.GetComponent<NPCClickHandler>() != null)
+         {
+            prevHoverObject = currentHoverObject;
+            return;
+         }
+
          // The mouse is entering a new object. Open the pop-up for the new object.
          // We don't need to call ClosePopUps() here because it was handled in Case A.
          buildingTransform = currentHoverObject;
@@ -235,7 +242,7 @@ public class PopUpManager : MonoBehaviour
    {
       IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
       playerActions.PlayerInput.Disable();
-      HoverScript.Instance.DisbaleHover();
+      HoverScript.Instance.DisableHover();
    }
    public void EnablePlayerInput()
    {
