@@ -966,8 +966,15 @@ MonoBehaviour:
   - {fileID: 7478325844829965894, guid: 6cd075e154e5845308a08dbd7269833f, type: 3}
   - {fileID: 2861465360449321257, guid: a87bedcaa66ed492e9411cf8c3f6ffa9, type: 3}
   forgeSmoke: {fileID: 1563136213}
-  progressButton: {fileID: 0}
-  detailedItemText: {fileID: 0}
+  t1_bg_lvl1: {fileID: 673632542}
+  t1_bg_lvl2: {fileID: 359667531}
+  t1_bg_lvl3: {fileID: 1658860535}
+  t2_bg_lvl1: {fileID: 2112002470}
+  t2_bg_lvl2: {fileID: 1242842955}
+  t2_bg_lvl3: {fileID: 504230534}
+  t3_bg_lvl1: {fileID: 62068640}
+  t3_bg_lvl2: {fileID: 288677561}
+  t3_bg_lvl3: {fileID: 1179796471}
   tutorialFunction: 0
 --- !u!1 &14947691
 GameObject:

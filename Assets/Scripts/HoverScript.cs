@@ -1,150 +1,164 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class HoverScript : MonoBehaviour {
-    public Camera mainCam;
-    RaycastHit2D raycastHit2D;
+public class HoverScript : MonoBehaviour
+{
+   public Camera mainCam;
+   RaycastHit2D raycastHit2D;
 
-    [SerializeField] private Transform ForgeCanvas;
-    [SerializeField] private Transform OreRefineryCanvas;
-    [SerializeField] private Transform ExplorationUnitCanvas;
-    [SerializeField] private ShipManager shipManager;
-    
-    private Transform prevHoverObject;
-    private Transform currentHoverObject;
-    private PlayerActions playerActions;
+   [Header("Building Canvases")]
+   [SerializeField] private Transform ForgeCanvas;
+   [SerializeField] private Transform OreRefineryCanvas;
+   [SerializeField] private Transform ExplorationUnitCanvas;
+   [SerializeField] private ShipManager shipManager;
 
-    public static HoverScript Instance { get; private set; }
+   [Header("Hover Visuals")]
+   [SerializeField] private Material outlineMaterial;
+   private Material defaultMaterial;
 
-    private void Awake() {
-        if (Instance != null && Instance != this) 
-        {
-            Destroy(gameObject);
-            return; // Exit to prevent duplicate initialization
-        }
-        Instance = this;
+   private Transform prevHoverObject;
+   private Transform currentHoverObject;
+   private PlayerActions playerActions;
 
-        HideAllLevels(ForgeCanvas);
-        HideAllLevels(OreRefineryCanvas);
-        HideAllLevels(ExplorationUnitCanvas);
+   public static HoverScript Instance { get; private set; }
 
-        playerActions = new PlayerActions();
-    }
+   private void Awake()
+   {
+      if (Instance != null && Instance != this)
+      {
+         Destroy(gameObject);
+         return;
+      }
+      Instance = this;
 
-    private void OnEnable() 
-    {
-        // Subscribe here to ensure callbacks only run while the object is active
-        playerActions.PlayerInput.Enable();
-        playerActions.PlayerInput.Hover.performed += Hover;
-    }
+      HideAllLevels(ForgeCanvas);
+      HideAllLevels(OreRefineryCanvas);
+      HideAllLevels(ExplorationUnitCanvas);
 
-    private void OnDisable() 
-    {
-        // CRITICAL: Unsubscribe to prevent "MissingReferenceException" after scene load
-        playerActions.PlayerInput.Hover.performed -= Hover;
-        playerActions.PlayerInput.Disable();
-    }
+      playerActions = new PlayerActions();
+   }
 
-    private void HideAllLevels(Transform canvas) {
-       if (canvas == null) 
-          return;
-        
-       for (int oreLevel = 1; oreLevel <= 4; oreLevel++) 
-       {
-          Transform level = canvas.Find("LVL" + oreLevel);
-          if (level != null) 
-             level.gameObject.SetActive(false);
-       }
-    }
+   private void OnEnable()
+   {
+      if (playerActions != null)
+         playerActions.PlayerInput.Enable();
+   }
 
-    private void SetLevelPanel(Transform canvas, int level) 
-    {
-        if (canvas == null) 
-            return;
+   private void OnDisable()
+   {
+      if (playerActions != null)
+         playerActions.PlayerInput.Disable();
+   }
 
-        HideAllLevels(canvas);
-      
-        Transform targetLevel = canvas.Find("LVL" + level);
-        
-        if(targetLevel != null) 
-           targetLevel.gameObject.SetActive(true);
-    }
+   private void Update()
+   {
+      HandleHoverSensitivity();
+   }
 
-    public void Hover(InputAction.CallbackContext context) 
-    {
-        // 1. Safety check: Ensure the camera reference is valid for the current scene
-        if (mainCam == null) 
-           mainCam = Camera.main;
-        if (mainCam == null) 
-           return;
+   private void HandleHoverSensitivity()
+   {
+      // 1. Camera Safety Check
+      if (mainCam == null) mainCam = Camera.main;
+      if (mainCam == null) return;
 
-        Vector2 mouseScreenPos = context.ReadValue<Vector2>();
-        Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
+      // 2. Get mouse position directly from Input System
+      Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
+      Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
+      // 3. Raycast to find buildings
       raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero, Mathf.Infinity, Physics2D.AllLayers);
       currentHoverObject = raycastHit2D.collider ? raycastHit2D.collider.transform : null;
 
-        // Case A: Moved OFF object
-        if (prevHoverObject != null && prevHoverObject != currentHoverObject) 
-        {
-            SpriteRenderer prevRenderer = prevHoverObject.GetComponentInChildren<SpriteRenderer>();
-            if (prevRenderer != null) 
-            {
-                switch (prevHoverObject.tag) 
-                {
-                   case "Forge": 
-                      HideAllLevels(ForgeCanvas); 
-                      break;
-                   case "Ore Refinery": 
-                      HideAllLevels(OreRefineryCanvas); 
-                      break;
-                   case "Exploration Unit": 
-                      HideAllLevels(ExplorationUnitCanvas); 
-                      break;
-                }
-                prevRenderer.color = Color.white;
-            }
-        }
-
-      // Case B: Moved ONTO new object
-      if (currentHoverObject != null && currentHoverObject != prevHoverObject)
+      // 4. Logic: If the object under the mouse changed...
+      if (currentHoverObject != prevHoverObject)
       {
-         SpriteRenderer currentRenderer = currentHoverObject.GetComponentInChildren<SpriteRenderer>();
-         if (currentRenderer != null && currentHoverObject.tag != "IdleIndicator")
+         // RESET the old object
+         if (prevHoverObject != null)
          {
-            // Only turn it red if it's a building, not the indicator
-            currentRenderer.color = Color.red;
+            ResetVisuals(prevHoverObject);
          }
 
-         switch (currentHoverObject.tag) 
+         // APPLY to the new object
+         if (currentHoverObject != null)
          {
-            case "Forge": 
-               SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel); 
-               break;
-            case "Ore Refinery": 
-               SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel); 
-               break;
-            case "Exploration Unit": 
-               if (shipManager != null) 
-                     SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel); 
-               break;
-            case "IdleIndicator":
-               if (TickerSystem.Instance != null)
-                  TickerSystem.Instance.ShowTicker("Take a break: No item is currently being crafted!", Color.white, TickerSystem.MessageTypes.ResultMessage);
-               break;
+            ApplyVisuals(currentHoverObject);
          }
-            
+
+         prevHoverObject = currentHoverObject;
       }
-      prevHoverObject = currentHoverObject;
    }
 
-   public void DisbaleHover() 
+   private void ApplyVisuals(Transform obj)
    {
-      playerActions.PlayerInput.Disable();
+      SpriteRenderer renderer = obj.GetComponentInChildren<SpriteRenderer>();
+
+      if (renderer != null && obj.tag != "IdleIndicator")
+      {
+         // Store original material so we can revert later
+         defaultMaterial = renderer.material;
+
+         // Swap to outline
+         if (outlineMaterial != null)
+            renderer.material = outlineMaterial;
+      }
+
+      // Trigger the Level Panels (LVL 1, LVL 2 etc)
+      switch (obj.tag)
+      {
+         case "Forge":
+            SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel);
+            break;
+         case "Ore Refinery":
+            SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel);
+            break;
+         case "Exploration Unit":
+            if (shipManager != null)
+               SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel);
+            break;
+         case "IdleIndicator":
+            if (TickerSystem.Instance != null)
+               TickerSystem.Instance.ShowTicker("Take a break: No item is currently being crafted!", Color.white, TickerSystem.MessageTypes.ResultMessage);
+            break;
+      }
    }
 
-   public void EnableHover() 
+   private void ResetVisuals(Transform obj)
    {
-      playerActions.PlayerInput.Enable();
+      SpriteRenderer renderer = obj.GetComponentInChildren<SpriteRenderer>();
+      if (renderer != null)
+      {
+         // Put the original material back
+         if (defaultMaterial != null)
+            renderer.material = defaultMaterial;
+
+         // Hide the UI panels
+         switch (obj.tag)
+         {
+            case "Forge": HideAllLevels(ForgeCanvas); break;
+            case "Ore Refinery": HideAllLevels(OreRefineryCanvas); break;
+            case "Exploration Unit": HideAllLevels(ExplorationUnitCanvas); break;
+         }
+      }
    }
+
+   private void HideAllLevels(Transform canvas)
+   {
+      if (canvas == null) return;
+      for (int i = 1; i <= 4; i++)
+      {
+         Transform level = canvas.Find("LVL" + i);
+         if (level != null) level.gameObject.SetActive(false);
+      }
+   }
+
+   private void SetLevelPanel(Transform canvas, int level)
+   {
+      if (canvas == null) return;
+      HideAllLevels(canvas);
+      Transform targetLevel = canvas.Find("LVL" + level);
+      if (targetLevel != null) targetLevel.gameObject.SetActive(true);
+   }
+
+   public void DisableHover() { if (playerActions != null) playerActions.PlayerInput.Disable(); }
+   public void EnableHover() { if (playerActions != null) playerActions.PlayerInput.Enable(); }
 }
