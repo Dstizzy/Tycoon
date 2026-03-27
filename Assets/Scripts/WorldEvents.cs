@@ -288,8 +288,10 @@ public class WorldEvents {
       switch (worldEvent) 
       {
          case WorldEventTypes.ScavengersHolidayEvent:
+
             break;
          case WorldEventTypes.DeepSeaWarEvent:
+            TurnManager.Instance.HandleHeat();
             TurnManager.Instance.HandleHeat();
             break;
       }
