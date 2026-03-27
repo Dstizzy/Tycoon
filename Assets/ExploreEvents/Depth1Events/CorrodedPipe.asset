@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: A corroded pipe is leaking infront of you!
   choiceA:
-    buttonText: Weld ore over the leak (-20 ore)
-    goldChange: 0
+    buttonText: Weld ore over leak (-20 ore)
+    resultText: The leak has been successfully sealed
+    pearlChange: 0
     oreChange: -20
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Speed through (-15 health)
-    goldChange: 0
+    buttonText: Push through
+    resultText: Your hull has taken corrosive damage from the leak
+    pearlChange: 0
     oreChange: 0
     healthChange: -15
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

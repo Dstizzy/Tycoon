@@ -15,9 +15,9 @@ MonoBehaviour:
   description: You've come across a travelling merchant.
   choiceA:
     buttonText: Purchase a craft for 5 ore
+    resultText: 'Your trade was processed:'
     pearlChange: 0
     oreChange: -5
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -33,9 +33,9 @@ MonoBehaviour:
     healthDamage: 0
   choiceB:
     buttonText: Make no trades.
+    resultText: 
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

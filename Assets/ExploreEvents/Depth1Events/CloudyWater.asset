@@ -15,37 +15,37 @@ MonoBehaviour:
   description: The sea floor ahead has been disturbed, and the path is cloudy, limiting
     visibility
   choiceA:
-    buttonText: Push ahead, risking a collision
+    buttonText: Push ahead
+    resultText: Your ship has made a collision!
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
     healthDamage: -10
   choiceB:
-    buttonText: Wait for cloud to clear (-1 turn)
+    buttonText: Wait 1 turn to clear
+    resultText: 
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 1
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

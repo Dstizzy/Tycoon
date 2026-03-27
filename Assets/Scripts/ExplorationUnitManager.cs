@@ -293,7 +293,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       // If anything changed, shows the results of the decision
       if (results.HasChanges())
-         ShowResultsPanel(results, currentNode);
+         ShowResultsPanel(results, currentNode, choice.resultText);
       // Otherwise, move on to the next turn
       else
       {
@@ -504,11 +504,11 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    // Shows the event results panel with the all results from an event
-   private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode)
+   private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode, string resultMessage)
    {
       decisionResultsPanel.gameObject.SetActive(true);
       SetDecisionInteractable(false);
-      string resultsText = "";
+      string resultsText = $"{resultMessage}\n\n";
 
       // Checks to see if event resulted in any ship or inventory changes, and show changes on panel
       if (results.pearlChanged != 0)

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 03addacf2a8453141ae174b60682cfb5
+guid: 700d8867489aa954080ee6876fa170bf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8052671176451021646
-    second: ExploreReturnButton_0
+      213: -4077220311365520275
+    second: ExploreDecisionButton2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ExploreReturnButton_0
+      name: ExploreDecisionButton2_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 64
-        width: 560
-        height: 289
+        x: 1
+        y: 0
+        width: 558
+        height: 442
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 131, y: 108, z: 123, w: 110}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2b42c9ada3a2f3090800000000000000
-      internalID: -8052671176451021646
+      spriteID: d64fc069abdca67c0800000000000000
+      internalID: -4077220311365520275
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 024a3fa99439e6a4fb0a4b0fc40c1d0d
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ExploreReturnButton_0: -8052671176451021646
+      ExploreDecisionButton2_0: -4077220311365520275
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

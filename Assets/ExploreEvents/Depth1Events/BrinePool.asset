@@ -12,40 +12,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: BrinePool
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your ship passed through an undetected acidic brine pool and slightly
-    corroded the hull
+  description: Your ship just entered an undetected brine pool!
   choiceA:
-    buttonText: -5 health
+    buttonText: Keep going
+    resultText: The pool slightly corroded your ship's hull
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: -5
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
     buttonText: 
+    resultText: 
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

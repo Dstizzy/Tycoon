@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: Your vessel has gotten tangled up in some sea weed.
   choiceA:
-    buttonText: Wait one turn for crew to cut the vessel loose
-    goldChange: 0
+    buttonText: Wait to get loose
+    resultText: 
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 1
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Use fuel to burn the sea weed (-1 fuel)
-    goldChange: 0
+    buttonText: Burn with fuel
+    resultText: You have lost some fuel, but are now free.
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: -1
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

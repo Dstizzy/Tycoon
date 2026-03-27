@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: There is a rip current along your path
   choiceA:
-    buttonText: Ride the current to the next node without losing fuel
+    buttonText: Ride current to save fuel
+    resultText: Riding the current to next node has saved you some fuel.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 1
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Stay out of it, collect potential rewards caught in it
+    buttonText: Stay out and collect loot
+    resultText: 'You have retrieved loot that was caught in the current:'
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 10
     minOre: 5
     maxOre: 10
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
