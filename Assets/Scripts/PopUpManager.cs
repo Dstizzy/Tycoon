@@ -1,11 +1,10 @@
-
+﻿
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
 
 public class PopUpManager : MonoBehaviour
 {
@@ -85,6 +84,12 @@ public class PopUpManager : MonoBehaviour
       /* 3. Determine the object hit this frame, or null if nothing was hit                                                                           */
       Transform currentHoverObject = hit.collider ? hit.collider.transform : null;
 
+      if (currentHoverObject != null && currentHoverObject.CompareTag("ForgeSmoke"))
+      {
+         ClosePopUps();
+         return;
+      }
+
       /* =========================================================
        * 4. CORE HOVER LOGIC: Manage Pop-up State
        * =========================================================*/
@@ -106,6 +111,13 @@ public class PopUpManager : MonoBehaviour
       /* Case B: Mouse moved ONTO a new object (a building)                                                                                           */
       if (currentHoverObject != null && currentHoverObject != prevHoverObject)
       {
+         // Skip NPC objects — they use their own click handler
+         if (currentHoverObject.GetComponent<NPCClickHandler>() != null)
+         {
+            prevHoverObject = currentHoverObject;
+            return;
+         }
+
          // The mouse is entering a new object. Open the pop-up for the new object.
          // We don't need to call ClosePopUps() here because it was handled in Case A.
          buildingTransform = currentHoverObject;
@@ -230,7 +242,7 @@ public class PopUpManager : MonoBehaviour
    {
       IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
       playerActions.PlayerInput.Disable();
-      HoverScript.Instance.DisbaleHover();
+      HoverScript.Instance.DisableHover();
    }
    public void EnablePlayerInput()
    {

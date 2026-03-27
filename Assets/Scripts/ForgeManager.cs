@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
 
@@ -79,8 +80,26 @@ public class ForgeManager : MonoBehaviour
    [SerializeField] private GameObject craftIdleIndicator;
 
    [Header("Forge Visuals")]
-   [SerializeField] private SpriteRenderer buildingSpriteRenderer; 
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
    [SerializeField] private List<Sprite> forgeLevelSprites;
+
+   [Header("Crafting Progress")]
+   [SerializeField] private ParticleSystem forgeSmoke;
+
+   [Header("Tier 1 Backgrounds")]
+   [SerializeField] private GameObject t1_bg_lvl1;
+   [SerializeField] private GameObject t1_bg_lvl2;
+   [SerializeField] private GameObject t1_bg_lvl3;
+
+   [Header("Tier 2 Backgrounds")]
+   [SerializeField] private GameObject t2_bg_lvl1;
+   [SerializeField] private GameObject t2_bg_lvl2;
+   [SerializeField] private GameObject t2_bg_lvl3;
+
+   [Header("Tier 3 Backgrounds")]
+   [SerializeField] private GameObject t3_bg_lvl1;
+   [SerializeField] private GameObject t3_bg_lvl2;
+   [SerializeField] private GameObject t3_bg_lvl3;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -88,15 +107,16 @@ public class ForgeManager : MonoBehaviour
    private Toggle currentOverclockToggle;
    private Image craftSlot1;
    private Image craftSlot2;
+   private Image craftSlot3;
    private GameObject craftButtonObject;
 
 
    public static event Action HandleTutorial;
-   public static ForgeManager Instance { get; set; }
+   public static ForgeManager Instance { get; private set; }
 
-   public static int  forgeLevel         = STARTING_LEVEL;
-   public  bool       tutorialFunction   = false; // Checks if the forge function has been explained in the tutorial
-   private bool       hasCraftedThisTurn = false;
+   public static int forgeLevel = STARTING_LEVEL;
+   public bool tutorialFunction = false; // Checks if the forge function has been explained in the tutorial
+   private bool hasCraftedThisTurn = false;
 
    // Subscribe to the tutorial event when enabled to trigger the tutorial state change when the player reaches the forge tutorial step
    public void OnEnable()
@@ -127,7 +147,7 @@ public class ForgeManager : MonoBehaviour
       if (TurnManager.Instance != null)
          TurnManager.OnTurnEnded += ProcessCraftingQueue;
 
-      UpdateIdleIndicator();
+      UpdateProgressVisuals();
    }
 
    private void OnDestroy()
@@ -183,6 +203,7 @@ public class ForgeManager : MonoBehaviour
       }
 
       UpdateForgeSprites();
+      UpdateSlotBackgrounds();
    }
 
    private void CreateCraftWindow(Transform container)
@@ -202,9 +223,11 @@ public class ForgeManager : MonoBehaviour
       // FIND IMAGES
       Transform img1 = FindChildByName(windowTransform, "ItemImage1");
       Transform img2 = FindChildByName(windowTransform, "ItemImage2");
+      Transform img3 = FindChildByName(windowTransform, "ItemImage3");
 
       if (img1 != null) craftSlot1 = img1.GetComponent<Image>();
       if (img2 != null) craftSlot2 = img2.GetComponent<Image>();
+      if (img3 != null) craftSlot3 = img3.GetComponent<Image>();
 
       //FIND BUTTONS
       Transform craftBtn = FindChildByName(windowTransform, "CraftButton");
@@ -234,7 +257,7 @@ public class ForgeManager : MonoBehaviour
    public void OnCraftItemSelected(int tier, Item.ItemType itemType)
    {
       // 1. Determine Capacity based on Level
-      int maxStagingSlots = (forgeLevel >= 2) ? 2 : 1;
+      int maxStagingSlots = forgeLevel;
 
       // 2. Logic: If list is full, clear it and start new. Otherwise, add to it.
       if (stagingItems.Count >= maxStagingSlots)
@@ -243,7 +266,7 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 3. Add the item
-      if(tutorialFunction && itemType == Item.ItemType.CrudeTool)
+      if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
          craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
          craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
@@ -309,6 +332,18 @@ public class ForgeManager : MonoBehaviour
             btn.onClick.AddListener(() =>
             {
                CloseAllTierPanels();
+               if (currentCraftWindow != null)
+                  Destroy(currentCraftWindow.gameObject);
+
+               CloseForgePanel(CRAFT_BUTTON);
+            });
+         }
+         else if (btn.name == "BackButton")
+         {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+               CloseAllTierPanels();
                if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
             });
          }
@@ -361,9 +396,10 @@ public class ForgeManager : MonoBehaviour
          {
             forgeLevel += 1;
             UpdateForgeSprites();
+            UpdateSlotBackgrounds();
          }
 
-         if(forgeLevel == ENDING_LEVEL)
+         if (forgeLevel == ENDING_LEVEL)
             InventoryManager.Instance.ForgeUpgradeIcon.gameObject.SetActive(false);
 
          forgeLevelText.text = "Level " + forgeLevel.ToString();
@@ -421,7 +457,7 @@ public class ForgeManager : MonoBehaviour
    private void ShowCraftPanel()
    {
       craftPanel.gameObject.SetActive(true);
-      if(tutorialFunction)
+      if (tutorialFunction)
          craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
@@ -471,10 +507,39 @@ public class ForgeManager : MonoBehaviour
 
       btn.interactable = isUnlocked;
 
-
       if (overlay != null)
       {
          overlay.gameObject.SetActive(!isUnlocked);
+      }
+
+      EventTrigger trigger = btnTransform.GetComponent<EventTrigger>();
+      if (trigger == null) trigger = btnTransform.gameObject.AddComponent<EventTrigger>();
+
+      trigger.triggers.Clear();
+
+      if (!isUnlocked)
+      {
+         string blueprintName = "";
+         if (requiredLevel == 2)
+         {
+            blueprintName = "Industrial Blueprint"; 
+         }
+         else if (requiredLevel == 3)
+         {
+            blueprintName = "Clockwork Blueprint"; 
+         }
+
+         EventTrigger.Entry enterEntry = new EventTrigger.Entry();
+         enterEntry.eventID = EventTriggerType.PointerEnter;
+         enterEntry.callback.AddListener((data) =>
+         {
+            if (ticker != null)
+            {
+               ticker.ShowTicker($"Needs to be unlocked by {blueprintName} in tradehut.", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
+            }
+         });
+
+         trigger.triggers.Add(enterEntry);
       }
 
       btn.onClick.RemoveAllListeners();
@@ -482,7 +547,6 @@ public class ForgeManager : MonoBehaviour
       {
          btn.onClick.AddListener(() => OpenTierPanel(requiredLevel));
       }
-
    }
 
    private void ShowInfoPanel()
@@ -513,8 +577,8 @@ public class ForgeManager : MonoBehaviour
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 500;
-         upgradeExplanation = "Bonus: Reduces all crafting times by 1 turn!";
+         upgradeCost = 700;
+         upgradeExplanation = "Bonus: Unlocks a 3rd simultaneous crafting slot!";
       }
 
       if (forgeLevel < ENDING_LEVEL)
@@ -588,15 +652,17 @@ public class ForgeManager : MonoBehaviour
    {
       CloseAllTierPanels();
 
-      /* Destroy any opened craft windows from other tiers*/
       if (currentCraftWindow != null)
          Destroy(currentCraftWindow.gameObject);
+
+      Transform targetContainer = null;
 
       switch (tier)
       {
          case TIER_1:
             tier1Panel.SetActive(true);
-            if(tutorialFunction)
+            targetContainer = tier1Container; 
+            if (tutorialFunction)
             {
                craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
                craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
@@ -605,11 +671,18 @@ public class ForgeManager : MonoBehaviour
 
          case TIER_2:
             tier2Panel.SetActive(true);
+            targetContainer = tier2Container; 
             break;
 
          case TIER_3:
             tier3Panel.SetActive(true);
+            targetContainer = tier3Container; 
             break;
+      }
+
+      if (stagingItems.Count > 0 && targetContainer != null)
+      {
+         CreateCraftWindow(targetContainer);
       }
    }
 
@@ -653,10 +726,10 @@ public class ForgeManager : MonoBehaviour
       }
 
       // 2. Level 3 Bonus: Reduce turn cost by 1
-      if (forgeLevel >= 3)
-      {
-         turns -= 1;
-      }
+      //if (forgeLevel >= 3)
+      //{
+         //turns -= 1;
+     // }
 
       // 3. Allow minimum 1 turn
       if (turns < 1)
@@ -670,11 +743,12 @@ public class ForgeManager : MonoBehaviour
       hasCraftedThisTurn = false;
       int jobCount;
 
-      int maxParallelSlots = (forgeLevel >= 2) ? 2 : 1;
+      int maxParallelSlots = forgeLevel;
+
+      List<string> finishedItems = new List<string>();
 
       for (jobCount = activeJobs.Count - 1; jobCount >= 0; jobCount--)
       {
-
          if (jobCount < maxParallelSlots)
          {
             CraftingJob job = activeJobs[jobCount];
@@ -684,17 +758,24 @@ public class ForgeManager : MonoBehaviour
             {
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
-               ticker.ShowTicker($"Crafting Complete: {job.itemName}",Color.green, TickerSystem.MessageTypes.ResultMessage);
                Debug.Log($"Crafting Complete: {job.itemName}");
 
-               if (ticker != null)
-               {
-                  ticker.ShowTicker($"Finish crafting {job.itemName} x {job.amount}", Color.green, TickerSystem.MessageTypes.ResultMessage);
-               }
+               finishedItems.Add($"{job.amount}x {job.itemName}");
             }
          }
       }
-      UpdateIdleIndicator();
+
+      if (finishedItems.Count > 0)
+      {
+         string finalMessage = "Crafting Complete: " + string.Join(", ", finishedItems);
+
+         if (ticker != null)
+         {
+            ticker.ShowTicker(finalMessage, Color.green, TickerSystem.MessageTypes.ResultMessage);
+         }
+      }
+
+      UpdateProgressVisuals();
    }
 
    private void DeliverItem(CraftingJob job)
@@ -771,6 +852,20 @@ public class ForgeManager : MonoBehaviour
             craftSlot2.gameObject.SetActive(false);
          }
       }
+
+      // SLOT 3: Shows the third item
+      if (craftSlot3 != null)
+      {
+         if (forgeLevel >= 3 && stagingItems.Count > 2)
+         {
+            craftSlot3.gameObject.SetActive(true);
+            craftSlot3.sprite = Item.GetItemSprite(stagingItems[2]);
+         }
+         else
+         {
+            craftSlot3.gameObject.SetActive(false);
+         }
+      }
    }
 
    public void CraftStagedItems()
@@ -840,7 +935,7 @@ public class ForgeManager : MonoBehaviour
 
          if (currentOverclockToggle != null) currentOverclockToggle.isOn = false;
 
-         UpdateIdleIndicator();
+         UpdateProgressVisuals();
 
          CloseAllTierPanels();
          if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
@@ -851,7 +946,7 @@ public class ForgeManager : MonoBehaviour
          Debug.Log("Not enough ore for all items!");
          ticker.ShowTicker("Not enough ore to craft!", Color.red, TickerSystem.MessageTypes.ResultMessage);
       }
-      if(tutorialFunction)
+      if (tutorialFunction)
       {
          craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
          CloseCraftPanel();
@@ -923,11 +1018,75 @@ public class ForgeManager : MonoBehaviour
 
       return;
    }
-   public void UpdateIdleIndicator()
+   public void UpdateProgressVisuals()
    {
+      bool isWorking = activeJobs.Count > 0;
+
       if (craftIdleIndicator != null)
+         craftIdleIndicator.SetActive(!isWorking);
+
+      if (forgeSmoke != null)
       {
-         craftIdleIndicator.SetActive(activeJobs.Count == 0);
+         forgeSmoke.gameObject.SetActive(isWorking);
+
+         if (isWorking)
+         {
+            if (!forgeSmoke.isPlaying) forgeSmoke.Play();
+         }
+         else
+         {
+            forgeSmoke.Stop();
+         }
+      }
+   }
+
+   public void ShowQueueInTicker()
+   {
+      if (activeJobs.Count == 0 || ticker == null) return;
+
+      string message = "CRAFTING: ";
+      List<string> jobDetails = new List<string>();
+
+      foreach (var job in activeJobs)
+      {
+         jobDetails.Add($"{job.amount}x {job.itemName} ({job.turnsRemaining}Turn left)");
+      }
+
+      message += string.Join(" | ", jobDetails);
+      ticker.ShowTicker(message, Color.cyan, TickerSystem.MessageTypes.ResultMessage);
+   }
+
+   private void UpdateSlotBackgrounds()
+   {
+      if (t1_bg_lvl1) t1_bg_lvl1.SetActive(false);
+      if (t1_bg_lvl2) t1_bg_lvl2.SetActive(false);
+      if (t1_bg_lvl3) t1_bg_lvl3.SetActive(false);
+
+      if (t2_bg_lvl1) t2_bg_lvl1.SetActive(false);
+      if (t2_bg_lvl2) t2_bg_lvl2.SetActive(false);
+      if (t2_bg_lvl3) t2_bg_lvl3.SetActive(false);
+
+      if (t3_bg_lvl1) t3_bg_lvl1.SetActive(false);
+      if (t3_bg_lvl2) t3_bg_lvl2.SetActive(false);
+      if (t3_bg_lvl3) t3_bg_lvl3.SetActive(false);
+
+      if (forgeLevel == 1)
+      {
+         if (t1_bg_lvl1) t1_bg_lvl1.SetActive(true);
+         if (t2_bg_lvl1) t2_bg_lvl1.SetActive(true);
+         if (t3_bg_lvl1) t3_bg_lvl1.SetActive(true);
+      }
+      else if (forgeLevel == 2)
+      {
+         if (t1_bg_lvl2) t1_bg_lvl2.SetActive(true);
+         if (t2_bg_lvl2) t2_bg_lvl2.SetActive(true);
+         if (t3_bg_lvl2) t3_bg_lvl2.SetActive(true);
+      }
+      else if (forgeLevel >= 3)
+      {
+         if (t1_bg_lvl3) t1_bg_lvl3.SetActive(true);
+         if (t2_bg_lvl3) t2_bg_lvl3.SetActive(true);
+         if (t3_bg_lvl3) t3_bg_lvl3.SetActive(true);
       }
    }
 }

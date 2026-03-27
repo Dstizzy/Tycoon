@@ -101,7 +101,7 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
-         HandleJamming();
+         //HandleJamming();
          HandleEnemy();
 
          // Handle world event reset
@@ -168,7 +168,7 @@ public class TurnManager : MonoBehaviour
          randomNumber = random.Next(1, 100);
          if (randomNumber < OreRefinery_Manager.Instance.jammingChance)
          {
-            JamRefinery();
+            //JamRefinery();
          }
       }
       else

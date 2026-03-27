@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
       // scene can safely take over the 'Instance' variable.
       // =========================================================
       TradeHutManager.Instance           = null;
-      ForgeManager.Instance              = null;
+      //ForgeManager.Instance              = null;
       TurnManager.Instance               = null;
       LabManager.labManager              = null;
    }
