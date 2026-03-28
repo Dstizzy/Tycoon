@@ -11,7 +11,7 @@ public class TickerSystem : MonoBehaviour {
    [SerializeField] private TextMeshProUGUI resultMessageText;
 
    [Header("Settings")]
-   [SerializeField] private float timeVisible  = 10.0f;
+   [SerializeField] private float timeVisible  = 20.0f;
    [SerializeField] private float fadeDuration = .5f; // Used for both Fade In and Fade Out
 
    private Coroutine activeRoutine;

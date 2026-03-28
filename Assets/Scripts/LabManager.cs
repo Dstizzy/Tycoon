@@ -488,11 +488,6 @@ public class LabManager : MonoBehaviour
    // Permanently increase the sell value of all items by 20%, remove negative world events from the trade hut, and unlock tier 3 innovation
    public void ImplementTierThreeInnovation(GameObject tabType)
    {
-      int crudeToolSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.CrudeTool) * 1.2f) - GetItemValue(ItemType.CrudeTool),
-          harpoonSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.Harpoon) * 1.2f) - GetItemValue(ItemType.Harpoon),
-          pressureValveSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.PressureValve) * 1.2f) - GetItemValue(ItemType.PressureValve),
-          engineSellValueIncrease = Mathf.CeilToInt(GetItemValue(ItemType.Engine) * 1.2f) - GetItemValue(ItemType.Engine);
-
       if (tabType == commerceTab)
       {
          initialTab.transform.Find("commerceLine").gameObject.SetActive(true);
@@ -502,10 +497,7 @@ public class LabManager : MonoBehaviour
          tradeHutManager.isTier3BuffACtive = true;
 
          // Raises sell items base price by 1.2 
-         TryIncreaseCrudeToolSellValue(crudeToolSellValueIncrease);
-         TryIncreaseHarpoonSellValue(harpoonSellValueIncrease);
-         TryIncreasePressureValveValue(pressureValveSellValueIncrease);
-         TryIncreaseEngineSellValue(engineSellValueIncrease);
+         AdjustSellItemsBaseValue(1.2f);
 
          ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
