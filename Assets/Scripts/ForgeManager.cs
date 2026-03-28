@@ -426,7 +426,7 @@ public class ForgeManager : MonoBehaviour
 
    private void ShowCraftPanel()
    {
-      craftPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(craftPanel.gameObject);
       if (tutorialFunction)
          craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
@@ -493,7 +493,7 @@ public class ForgeManager : MonoBehaviour
 
    private void ShowInfoPanel()
    {
-      infoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -504,7 +504,7 @@ public class ForgeManager : MonoBehaviour
       int upgradeCost = 0;
       string upgradeExplanation = "";
 
-      upgradePanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(upgradePanel.gameObject);
 
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
       Transform explanationTransform = upgradePanel.Find("ExplanationText");
@@ -554,7 +554,7 @@ public class ForgeManager : MonoBehaviour
    }
    private void CloseCraftPanel()
    {
-      craftPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(craftPanel.gameObject);
       if (errorPanel != null) errorPanel.SetActive(false);
 
       if (activeQueuePanel != null)
@@ -570,14 +570,14 @@ public class ForgeManager : MonoBehaviour
    }
    private void CloseInfoPanel()
    {
-      infoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(upgradePanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);

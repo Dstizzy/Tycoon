@@ -132,14 +132,14 @@ public class OreRefinery_Manager : MonoBehaviour
    //}
    private void ShowInfoPanel()
    {
-      infoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
    private void ShowUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(upgradePanel.gameObject);
 
       if(tutorialUpgrade)
          upgradePanel.Find("Arrow").gameObject.SetActive(true);
@@ -203,14 +203,14 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void CloseInfoPanel()
    {
-      infoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(upgradePanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);

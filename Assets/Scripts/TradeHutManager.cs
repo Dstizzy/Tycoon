@@ -40,6 +40,9 @@ public class TradeHutManager : MonoBehaviour
    // Keeps track of the last item that had a world event
    private readonly Dictionary<ItemType, bool> lastResetTurn = new Dictionary<ItemType, bool>();
 
+   private Vector3 TradePanelScale;
+   private Vector3 InfoPanelScale;
+
    // Transforms
    private Transform currentBuyItem,    
                      currentSellItem,
@@ -119,9 +122,6 @@ public class TradeHutManager : MonoBehaviour
    public float submergeSpeed = 0.5f;
    public float sunkenScale = 0.6f; // How small it gets as it "sinks"
 
-   private bool isSelling;
-   private Coroutine transitionCoroutine;
-
    private InventoryManager inv;
 
    public static event Action HandleTutorial;
@@ -143,6 +143,9 @@ public class TradeHutManager : MonoBehaviour
    {
       SellItems = new();
       BuyItems  = new();
+
+      TradePanelScale = TradePanels.transform.localScale;
+      InfoPanelScale = InfoPanel.transform.localScale;
 
       // Initialize lastResetTurn for every ItemType so lookups are safe
       foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
@@ -187,14 +190,24 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Buy Window is not assigned in the Inspector!");
       else
          BuyWindow.gameObject.SetActive(false);
+
    }
 
    private void Start()
    {
-      inv    = InventoryManager.Instance;
+      // Ensure we have the reference
+      if (panelManager == null) panelManager = FindFirstObjectByType<PanelManager>();
+
+      inv = InventoryManager.Instance;
       ticker = TickerSystem.Instance;
 
-      CreateSellItem(GetItemSprite(ItemType.CrudeTool),GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
+      // Reset scales to 1 manually to prevent the "Zero Scale" recording bug
+      TradePanels.localScale = Vector3.one;
+      TradePanels.gameObject.SetActive(false);
+      inv = InventoryManager.Instance;
+      ticker = TickerSystem.Instance;
+
+      CreateSellItem(GetItemSprite(ItemType.CrudeTool), GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 3.0f, HARPOON_TAG);
       CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 0.0f, PRESSURE_VALVE_TAG, -75);
       CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 3.0f, DIVING_BELL_TAG, -75);
@@ -1374,7 +1387,14 @@ public class TradeHutManager : MonoBehaviour
 
    private void ShowTradePanel() 
    {
+      TradePanels.transform.localScale = TradePanelScale;
+      Debug.Log(TradePanels.transform.localScale);
       panelManager.OpenPanel(TradePanels.gameObject);
+
+      // Ensure Sell tab is visible, Buy is not
+      SellPanel.gameObject.SetActive(true);
+      BuyPanel.gameObject.SetActive(false);
+
       ShowSellPanel();
 
       if (MainUIManager.mainUI != null)
@@ -1383,6 +1403,7 @@ public class TradeHutManager : MonoBehaviour
 
    private void ShowInfoPanel() 
    {
+      InfoPanel.transform.localScale = InfoPanelScale;
       panelManager.OpenPanel(InfoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)

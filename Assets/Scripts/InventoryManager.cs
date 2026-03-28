@@ -1212,7 +1212,7 @@ public class InventoryManager : MonoBehaviour
 
    public void ShowInventoryPanel()
    {
-      InventoryPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(InventoryPanel.gameObject);
       ResourcePanel.gameObject.SetActive(true);
       if (tutorialFunction)
       {
@@ -1246,7 +1246,7 @@ public class InventoryManager : MonoBehaviour
       // Added for camera fix
       PopUpManager.Instance.EnablePlayerInput();
 
-      InventoryPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(InventoryPanel.gameObject);
 
       if (currentCraft != null)
       {

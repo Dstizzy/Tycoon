@@ -2122,7 +2122,7 @@ MonoBehaviour:
   ForgeUpgradeIcon: {fileID: 1599086524}
   OreRefineryUpgradeIcon: {fileID: 1092217677}
   ExplorationUnitUpgradeIcon: {fileID: 134733947}
-  panelManager: {fileID: 0}
+  panelManager: {fileID: 1280027620}
   tutorialFunction: 0
 --- !u!4 &62901706
 Transform:
@@ -22828,7 +22828,6 @@ GameObject:
   - component: {fileID: 418103316}
   - component: {fileID: 418103318}
   - component: {fileID: 418103317}
-  - component: {fileID: 418103319}
   m_Layer: 5
   m_Name: BuyPanel
   m_TagString: Untagged
@@ -22897,18 +22896,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 418103315}
   m_CullTransparentMesh: 1
---- !u!225 &418103319
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 418103315}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &418982052
 GameObject:
   m_ObjectHideFlags: 0
@@ -65516,7 +65503,6 @@ GameObject:
   - component: {fileID: 1314277761}
   - component: {fileID: 1314277763}
   - component: {fileID: 1314277762}
-  - component: {fileID: 1314277764}
   m_Layer: 5
   m_Name: SellPanel
   m_TagString: Untagged
@@ -65588,18 +65574,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314277760}
   m_CullTransparentMesh: 1
---- !u!225 &1314277764
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1314277760}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &1322317070
 GameObject:
   m_ObjectHideFlags: 0
