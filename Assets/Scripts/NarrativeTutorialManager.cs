@@ -2,36 +2,35 @@
 using System.Collections;
 using UnityEngine;
 
-// Controls the new narrative tutorial flow.
-// Each step can:
-// - show dialogue
-// - move the tutorial panel to a preset layout
-// - highlight one or more targets
-// - optionally reward the player
+// Controls the simplified narrative tutorial flow.
+// This tutorial does not rely on building interaction while it is running.
+// It only shows dialogue and optional highlight targets, then returns control to gameplay.
 public class NarrativeTutorialManager : MonoBehaviour
 {
-   public enum TutorialAdvanceMode
-   {
-      NextOnly,
-      WaitForHoverTag
-   }
-
    [System.Serializable]
    public class TutorialStep
    {
       public NPCEncounterSystem.NPCPersonality speaker;
       [TextArea] public string note;
-      public NarrativeOverlayUI.DialogueLayoutMode layoutMode = NarrativeOverlayUI.DialogueLayoutMode.Center;
+      public NarrativeOverlayUI.DialogueLayoutMode layoutMode = NarrativeOverlayUI.DialogueLayoutMode.StoryBottom;
       public NPCEncounterSystem.DialogueLine[] lines;
       public HighlightTarget[] highlightTargets;
-      public TutorialAdvanceMode advanceMode = TutorialAdvanceMode.NextOnly;
-      public string requiredHoverTag;
+      public UIHighlightTarget[] uiHighlightTargets;
       public int pearlRewardOnComplete;
    }
 
    [SerializeField] private TutorialStep[] tutorialSteps;
 
    private bool isTutorialRunning;
+
+   private void Awake()
+   {
+      if (tutorialSteps == null || tutorialSteps.Length == 0)
+      {
+         Debug.LogWarning("[NarrativeTutorialManager] tutorialSteps is empty. Creating default steps.");
+         CreateSimplifiedTutorialSteps();
+      }
+   }
 
    public void BeginTutorial(Action onTutorialFinished)
    {
@@ -69,6 +68,7 @@ public class NarrativeTutorialManager : MonoBehaviour
             speakerProfile = NPCEncounterSystem.Instance.GetProfileByPersonality(currentStep.speaker);
 
          ShowHighlights(currentStep.highlightTargets);
+         ShowUIHighlights(currentStep.uiHighlightTargets);
 
          bool dialogueFinished = false;
 
@@ -82,30 +82,11 @@ public class NarrativeTutorialManager : MonoBehaviour
 
          yield return new WaitUntil(() => dialogueFinished);
 
-         if (currentStep.advanceMode == TutorialAdvanceMode.WaitForHoverTag &&
-             string.IsNullOrEmpty(currentStep.requiredHoverTag) == false)
-         {
-            bool hoverSatisfied = false;
-
-            void HandleHover(string currentTag)
-            {
-               if (currentTag == currentStep.requiredHoverTag)
-                  hoverSatisfied = true;
-            }
-
-            PopUpManager.OnHoverTagChanged += HandleHover;
-            NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
-
-            yield return new WaitUntil(() => hoverSatisfied);
-
-            PopUpManager.OnHoverTagChanged -= HandleHover;
-            NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
-         }
-
          if (currentStep.pearlRewardOnComplete > 0 && InventoryManager.Instance != null)
             InventoryManager.Instance.TryAddPearl(currentStep.pearlRewardOnComplete);
 
          HideHighlights(currentStep.highlightTargets);
+         HideUIHighlights(currentStep.uiHighlightTargets);
       }
 
       isTutorialRunning = false;
@@ -154,7 +135,7 @@ public class NarrativeTutorialManager : MonoBehaviour
 
          CreateStep(
             "Inventory",
-            NarrativeOverlayUI.DialogueLayoutMode.Right,
+            NarrativeOverlayUI.DialogueLayoutMode.Top,
             new NPCEncounterSystem.DialogueLine[]
             {
                new NPCEncounterSystem.DialogueLine("First, your bag.", NPCEncounterSystem.ExpressionType.Neutral),
@@ -164,7 +145,7 @@ public class NarrativeTutorialManager : MonoBehaviour
 
          CreateStep(
             "Resources",
-            NarrativeOverlayUI.DialogueLayoutMode.Right,
+            NarrativeOverlayUI.DialogueLayoutMode.Top,
             new NPCEncounterSystem.DialogueLine[]
             {
                new NPCEncounterSystem.DialogueLine("Up there, you can read your current resources.", NPCEncounterSystem.ExpressionType.Neutral),
@@ -194,7 +175,7 @@ public class NarrativeTutorialManager : MonoBehaviour
 
          CreateStep(
             "Next Day Button",
-            NarrativeOverlayUI.DialogueLayoutMode.Left,
+            NarrativeOverlayUI.DialogueLayoutMode.Top,
             new NPCEncounterSystem.DialogueLine[]
             {
                new NPCEncounterSystem.DialogueLine("And that button sends you into the next day.", NPCEncounterSystem.ExpressionType.Neutral),
@@ -238,19 +219,31 @@ public class NarrativeTutorialManager : MonoBehaviour
          note = note,
          layoutMode = layoutMode,
          lines = lines,
-         advanceMode = TutorialAdvanceMode.NextOnly,
-         requiredHoverTag = string.Empty,
          highlightTargets = Array.Empty<HighlightTarget>(),
+         uiHighlightTargets = Array.Empty<UIHighlightTarget>(),
          pearlRewardOnComplete = pearlRewardOnComplete
       };
    }
 
-   private void Awake()
+   private void ShowUIHighlights(UIHighlightTarget[] uiHighlightTargets)
    {
-      if (tutorialSteps == null || tutorialSteps.Length == 0)
+      if (uiHighlightTargets == null) return;
+
+      foreach (UIHighlightTarget currentTarget in uiHighlightTargets)
       {
-         Debug.LogWarning("[NarrativeTutorialManager] tutorialSteps is empty. Creating default steps.");
-         CreateSimplifiedTutorialSteps();
+         if (currentTarget != null)
+            currentTarget.ShowHighlight();
+      }
+   }
+
+   private void HideUIHighlights(UIHighlightTarget[] uiHighlightTargets)
+   {
+      if (uiHighlightTargets == null) return;
+
+      foreach (UIHighlightTarget currentTarget in uiHighlightTargets)
+      {
+         if (currentTarget != null)
+            currentTarget.HideHighlight();
       }
    }
 }

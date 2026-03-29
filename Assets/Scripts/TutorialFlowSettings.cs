@@ -17,4 +17,7 @@ public static class TutorialFlowSettings
 
    // Keep the legacy tutorial script in the project, but disable it by default
    public static bool UseLegacyTutorial => false;
+
+   // True while the new narrative tutorial is actively running
+   public static bool IsNarrativeTutorialRunning { get; set; }
 }

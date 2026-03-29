@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class HoverScript : MonoBehaviour
 {
    public Camera mainCam;
-   RaycastHit2D raycastHit2D;
+   private RaycastHit2D raycastHit2D;
 
    [Header("Building Canvases")]
    [SerializeField] private Transform ForgeCanvas;
@@ -14,11 +15,13 @@ public class HoverScript : MonoBehaviour
 
    [Header("Hover Visuals")]
    [SerializeField] private Material outlineMaterial;
-   private Material defaultMaterial;
+
+   private readonly Dictionary<SpriteRenderer, Material> originalMaterials = new Dictionary<SpriteRenderer, Material>();
+   private readonly Dictionary<SpriteRenderer, Material> outlineInstances = new Dictionary<SpriteRenderer, Material>();
 
    private Transform prevHoverObject;
    private Transform currentHoverObject;
-   private PlayerActions playerActions;
+   private bool isHoverEnabled = true;
 
    public static HoverScript Instance { get; private set; }
 
@@ -29,92 +32,114 @@ public class HoverScript : MonoBehaviour
          Destroy(gameObject);
          return;
       }
+
       Instance = this;
 
       HideAllLevels(ForgeCanvas);
       HideAllLevels(OreRefineryCanvas);
       HideAllLevels(ExplorationUnitCanvas);
-
-      playerActions = new PlayerActions();
-   }
-
-   private void OnEnable()
-   {
-      if (playerActions != null)
-         playerActions.PlayerInput.Enable();
-   }
-
-   private void OnDisable()
-   {
-      if (playerActions != null)
-         playerActions.PlayerInput.Disable();
    }
 
    private void Update()
    {
+      if (isHoverEnabled == false)
+         return;
+
       HandleHoverSensitivity();
    }
 
    private void HandleHoverSensitivity()
    {
-      // 1. Camera Safety Check
-      if (mainCam == null) mainCam = Camera.main;
-      if (mainCam == null) return;
+      if (mainCam == null)
+         mainCam = Camera.main;
 
-      // 2. Get mouse position directly from Input System
+      if (mainCam == null)
+         return;
+
       Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
       Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
-      // 3. Raycast to find buildings
       raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero, Mathf.Infinity, Physics2D.AllLayers);
-      currentHoverObject = raycastHit2D.collider ? raycastHit2D.collider.transform : null;
+      currentHoverObject = NormalizeHoverTarget(raycastHit2D.collider ? raycastHit2D.collider.transform : null);
 
-      // 4. Logic: If the object under the mouse changed...
       if (currentHoverObject != prevHoverObject)
       {
-         // RESET the old object
          if (prevHoverObject != null)
-         {
             ResetVisuals(prevHoverObject);
-         }
 
-         // APPLY to the new object
          if (currentHoverObject != null)
-         {
             ApplyVisuals(currentHoverObject);
-         }
 
          prevHoverObject = currentHoverObject;
       }
    }
 
-   private void ApplyVisuals(Transform obj)
+   private Transform NormalizeHoverTarget(Transform rawTarget)
    {
-      SpriteRenderer renderer = obj.GetComponentInChildren<SpriteRenderer>();
+      if (rawTarget == null)
+         return null;
 
-      if (renderer != null && obj.tag != "IdleIndicator")
+      HighlightTarget highlightTarget = rawTarget.GetComponentInParent<HighlightTarget>();
+      if (highlightTarget != null)
+         return highlightTarget.transform;
+
+      return rawTarget;
+   }
+
+   private HighlightTarget ResolveHighlightTarget(Transform obj)
+   {
+      if (obj == null)
+         return null;
+
+      HighlightTarget target = obj.GetComponent<HighlightTarget>();
+      if (target != null)
+         return target;
+
+      return obj.GetComponentInParent<HighlightTarget>();
+   }
+
+   private SpriteRenderer ResolveOutlineRenderer(Transform obj)
+   {
+      if (obj == null)
+         return null;
+
+      HighlightTarget highlightTarget = ResolveHighlightTarget(obj);
+      if (highlightTarget != null)
       {
-         // Store original material so we can revert later
-         defaultMaterial = renderer.material;
-
-         // Swap to outline
-         if (outlineMaterial != null)
-            renderer.material = outlineMaterial;
+         SpriteRenderer highlightRenderer = highlightTarget.GetOutlineRenderer();
+         if (highlightRenderer != null)
+            return highlightRenderer;
       }
 
-      // Trigger the Level Panels (LVL 1, LVL 2 etc)
+      SpriteRenderer selfRenderer = obj.GetComponent<SpriteRenderer>();
+      if (selfRenderer != null)
+         return selfRenderer;
+
+      return obj.GetComponentInChildren<SpriteRenderer>();
+   }
+
+   private void ApplyVisuals(Transform obj)
+   {
+      SpriteRenderer renderer = ResolveOutlineRenderer(obj);
+
+      if (renderer != null && obj.tag != "IdleIndicator")
+         ApplyOutlineMaterial(renderer);
+
       switch (obj.tag)
       {
          case "Forge":
             SetLevelPanel(ForgeCanvas, ForgeManager.forgeLevel);
             break;
+
          case "Ore Refinery":
             SetLevelPanel(OreRefineryCanvas, OreRefinery_Manager.Instance.oreLevel);
             break;
+
          case "Exploration Unit":
             if (shipManager != null)
                SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel);
             break;
+
          case "IdleIndicator":
             if (TickerSystem.Instance != null)
                TickerSystem.Instance.ShowTicker("Take a break: No item is currently being crafted!", Color.white, TickerSystem.MessageTypes.ResultMessage);
@@ -124,41 +149,149 @@ public class HoverScript : MonoBehaviour
 
    private void ResetVisuals(Transform obj)
    {
-      SpriteRenderer renderer = obj.GetComponentInChildren<SpriteRenderer>();
-      if (renderer != null)
-      {
-         // Put the original material back
-         if (defaultMaterial != null)
-            renderer.material = defaultMaterial;
+      SpriteRenderer renderer = ResolveOutlineRenderer(obj);
+      HighlightTarget highlightTarget = ResolveHighlightTarget(obj);
 
-         // Hide the UI panels
-         switch (obj.tag)
-         {
-            case "Forge": HideAllLevels(ForgeCanvas); break;
-            case "Ore Refinery": HideAllLevels(OreRefineryCanvas); break;
-            case "Exploration Unit": HideAllLevels(ExplorationUnitCanvas); break;
-         }
+      bool keepTutorialOutline = highlightTarget != null && highlightTarget.IsForcedHighlightActive;
+
+      if (renderer != null && keepTutorialOutline == false)
+         RestoreOriginalMaterial(renderer);
+
+      switch (obj.tag)
+      {
+         case "Forge":
+            HideAllLevels(ForgeCanvas);
+            break;
+
+         case "Ore Refinery":
+            HideAllLevels(OreRefineryCanvas);
+            break;
+
+         case "Exploration Unit":
+            HideAllLevels(ExplorationUnitCanvas);
+            break;
       }
+   }
+
+   private void ApplyOutlineMaterial(SpriteRenderer renderer)
+   {
+      if (renderer == null || outlineMaterial == null)
+         return;
+
+      if (originalMaterials.ContainsKey(renderer) == false)
+         originalMaterials.Add(renderer, renderer.sharedMaterial);
+
+      if (outlineInstances.TryGetValue(renderer, out Material outlineInstance) == false || outlineInstance == null)
+      {
+         outlineInstance = new Material(outlineMaterial);
+         outlineInstances[renderer] = outlineInstance;
+      }
+
+      if (renderer.sprite != null && outlineInstance.HasProperty("_MainTex"))
+         outlineInstance.SetTexture("_MainTex", renderer.sprite.texture);
+
+      renderer.material = outlineInstance;
+   }
+
+   private void RestoreOriginalMaterial(SpriteRenderer renderer)
+   {
+      if (renderer == null)
+         return;
+
+      if (originalMaterials.TryGetValue(renderer, out Material originalMaterial))
+      {
+         renderer.sharedMaterial = originalMaterial;
+         originalMaterials.Remove(renderer);
+      }
+
+      if (outlineInstances.TryGetValue(renderer, out Material outlineInstance))
+      {
+         if (outlineInstance != null)
+            Destroy(outlineInstance);
+
+         outlineInstances.Remove(renderer);
+      }
+   }
+
+   public void ApplyTutorialOutline(HighlightTarget target)
+   {
+      if (target == null)
+         return;
+
+      SpriteRenderer renderer = target.GetOutlineRenderer();
+      ApplyOutlineMaterial(renderer);
+   }
+
+   public void RemoveTutorialOutline(HighlightTarget target)
+   {
+      if (target == null)
+         return;
+
+      SpriteRenderer targetRenderer = target.GetOutlineRenderer();
+      if (targetRenderer == null)
+         return;
+
+      SpriteRenderer currentHoverRenderer = ResolveOutlineRenderer(currentHoverObject);
+
+      if (currentHoverRenderer == targetRenderer)
+      {
+         ApplyOutlineMaterial(targetRenderer);
+         return;
+      }
+
+      RestoreOriginalMaterial(targetRenderer);
    }
 
    private void HideAllLevels(Transform canvas)
    {
-      if (canvas == null) return;
-      for (int i = 1; i <= 4; i++)
+      if (canvas == null)
+         return;
+
+      for (int index = 1; index <= 4; index++)
       {
-         Transform level = canvas.Find("LVL" + i);
-         if (level != null) level.gameObject.SetActive(false);
+         Transform level = canvas.Find("LVL" + index);
+         if (level != null)
+            level.gameObject.SetActive(false);
       }
    }
 
    private void SetLevelPanel(Transform canvas, int level)
    {
-      if (canvas == null) return;
+      if (canvas == null)
+         return;
+
       HideAllLevels(canvas);
+
       Transform targetLevel = canvas.Find("LVL" + level);
-      if (targetLevel != null) targetLevel.gameObject.SetActive(true);
+      if (targetLevel != null)
+         targetLevel.gameObject.SetActive(true);
    }
 
-   public void DisableHover() { if (playerActions != null) playerActions.PlayerInput.Disable(); }
-   public void EnableHover() { if (playerActions != null) playerActions.PlayerInput.Enable(); }
+   public void DisableHover()
+   {
+      isHoverEnabled = false;
+
+      if (prevHoverObject != null)
+         ResetVisuals(prevHoverObject);
+
+      prevHoverObject = null;
+      currentHoverObject = null;
+   }
+
+   public void EnableHover()
+   {
+      isHoverEnabled = true;
+   }
+
+   private void OnDestroy()
+   {
+      foreach (KeyValuePair<SpriteRenderer, Material> currentPair in outlineInstances)
+      {
+         if (currentPair.Value != null)
+            Destroy(currentPair.Value);
+      }
+
+      outlineInstances.Clear();
+      originalMaterials.Clear();
+   }
 }

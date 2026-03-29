@@ -16,13 +16,16 @@ public class NarrativeOverlayUI : MonoBehaviour
    public enum DialogueLayoutMode
    {
       StoryBottom,
-      Center,
-      Top,
-      Left,
-      Right
+      Top
    }
 
    public static NarrativeOverlayUI Instance { get; private set; }
+
+   [SerializeField] private float textSpeed = 0.02f;
+
+   private Coroutine typingCoroutine;
+   private bool isTyping;
+   private string currentFormattedLine = string.Empty;
 
    private const float PANEL_WIDTH = 1200f;
    private const float PANEL_HEIGHT = 360f;
@@ -182,7 +185,7 @@ public class NarrativeOverlayUI : MonoBehaviour
       dialogueText.enableWordWrapping = true;
       dialogueText.richText = true;
 
-      nextButton = CreateButton("NextButton", dialoguePanel.transform, "Next Å•", out TextMeshProUGUI _);
+      nextButton = CreateButton("NextButton", dialoguePanel.transform, "Next Å®", out TextMeshProUGUI _);
       RectTransform nextRect = nextButton.GetComponent<RectTransform>();
       nextRect.anchorMin = new Vector2(1f, 0f);
       nextRect.anchorMax = new Vector2(1f, 0f);
@@ -383,6 +386,33 @@ public class NarrativeOverlayUI : MonoBehaviour
       onComplete?.Invoke();
    }
 
+   private IEnumerator TypeLine(string rawText, bool isAction)
+   {
+      isTyping = true;
+      dialogueText.text = string.Empty;
+
+      if (isAction)
+      {
+         for (int index = 0; index < rawText.Length; index++)
+         {
+            dialogueText.text = $"<i>{rawText.Substring(0, index + 1)}</i>";
+            yield return new WaitForSeconds(textSpeed);
+         }
+      }
+      else
+      {
+         for (int index = 0; index < rawText.Length; index++)
+         {
+            dialogueText.text = rawText.Substring(0, index + 1);
+            yield return new WaitForSeconds(textSpeed);
+         }
+      }
+
+      dialogueText.text = currentFormattedLine;
+      isTyping = false;
+      typingCoroutine = null;
+   }
+
    public void PlaySequence(
       NPCEncounterSystem.NPCProfile profile,
       NPCEncounterSystem.DialogueLine[] dialogueLines,
@@ -429,6 +459,19 @@ public class NarrativeOverlayUI : MonoBehaviour
       if (!isSequencePlaying)
          return;
 
+      if (isTyping)
+      {
+         if (typingCoroutine != null)
+         {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+         }
+
+         isTyping = false;
+         dialogueText.text = currentFormattedLine;
+         return;
+      }
+
       currentLineIndex++;
 
       if (currentLines == null || currentLineIndex >= currentLines.Length)
@@ -463,14 +506,25 @@ public class NarrativeOverlayUI : MonoBehaviour
          nameText.text = currentProfile.npcName;
       }
 
-      if (currentLine.isAction)
-         dialogueText.text = $"<i>{currentLine.text}</i>";
-      else
-         dialogueText.text = currentLine.text;
+      currentFormattedLine = currentLine.isAction
+      ? $"<i>{currentLine.text}</i>"
+      : currentLine.text;
+
+      if (typingCoroutine != null)
+         StopCoroutine(typingCoroutine);
+
+      typingCoroutine = StartCoroutine(TypeLine(currentLine.text ?? string.Empty, currentLine.isAction));
    }
 
    private void CompleteCurrentSequence()
    {
+      if (typingCoroutine != null)
+      {
+         StopCoroutine(typingCoroutine);
+         typingCoroutine = null;
+      }
+
+      isTyping = false;
       isSequencePlaying = false;
       dialoguePanel.SetActive(false);
 
@@ -483,28 +537,10 @@ public class NarrativeOverlayUI : MonoBehaviour
    {
       RectTransform panelRect = dialoguePanel.GetComponent<RectTransform>();
 
-      // Reset defaults
-      panelRect.anchorMin = new Vector2(0.5f, 0.5f);
-      panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-      panelRect.pivot = new Vector2(0.5f, 0.5f);
       panelRect.sizeDelta = new Vector2(PANEL_WIDTH, PANEL_HEIGHT);
 
       switch (layoutMode)
       {
-         case DialogueLayoutMode.StoryBottom:
-            panelRect.anchorMin = new Vector2(0.5f, 0f);
-            panelRect.anchorMax = new Vector2(0.5f, 0f);
-            panelRect.pivot = new Vector2(0.5f, 0f);
-            panelRect.anchoredPosition = new Vector2(0f, 48f);
-            break;
-
-         case DialogueLayoutMode.Center:
-            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
-            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-            panelRect.pivot = new Vector2(0.5f, 0.5f);
-            panelRect.anchoredPosition = Vector2.zero;
-            break;
-
          case DialogueLayoutMode.Top:
             panelRect.anchorMin = new Vector2(0.5f, 1f);
             panelRect.anchorMax = new Vector2(0.5f, 1f);
@@ -512,18 +548,12 @@ public class NarrativeOverlayUI : MonoBehaviour
             panelRect.anchoredPosition = new Vector2(0f, -48f);
             break;
 
-         case DialogueLayoutMode.Left:
-            panelRect.anchorMin = new Vector2(0f, 0.5f);
-            panelRect.anchorMax = new Vector2(0f, 0.5f);
-            panelRect.pivot = new Vector2(0f, 0.5f);
-            panelRect.anchoredPosition = new Vector2(48f, 0f);
-            break;
-
-         case DialogueLayoutMode.Right:
-            panelRect.anchorMin = new Vector2(1f, 0.5f);
-            panelRect.anchorMax = new Vector2(1f, 0.5f);
-            panelRect.pivot = new Vector2(1f, 0.5f);
-            panelRect.anchoredPosition = new Vector2(-48f, 0f);
+         case DialogueLayoutMode.StoryBottom:
+         default:
+            panelRect.anchorMin = new Vector2(0.5f, 0f);
+            panelRect.anchorMax = new Vector2(0.5f, 0f);
+            panelRect.pivot = new Vector2(0.5f, 0f);
+            panelRect.anchoredPosition = new Vector2(0f, 48f);
             break;
       }
    }
