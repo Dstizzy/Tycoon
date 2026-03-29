@@ -462,7 +462,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 1653745978}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &41602820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -983,16 +984,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeHutManager
   TradePanels: {fileID: 1478875919}
-  BuyPanel: {fileID: 846499056}
   BuyWindow: {fileID: 940053917}
   SellPanel: {fileID: 623012195}
   SellWindow: {fileID: 1367051086}
   InfoPanel: {fileID: 901397457}
-  UpgradePanel: {fileID: 2097274522}
-  MysteryBoxPanel: {fileID: 1738722715}
-  tradeHutLevelText: {fileID: 1759314905}
+  BuyPanel: {fileID: 846499056}
+  RecycleButton: {fileID: 0}
+  flipTarget: {fileID: 0}
+  buyContainer: {fileID: 0}
+  panelManager: {fileID: 0}
+  currrentNewsTickerMessage: 
   marketShiftMax: 2
   marketShiftMin: 1
+  isTier3BuffACtive: 0
+  tutorialFunctionOne: 0
+  tutorialFunctionTwo: 0
+  isInsurancePolicyActive: 0
+  submergeSpeed: 0.5
+  sunkenScale: 0.6
 --- !u!222 &67075559
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1250,7 +1259,7 @@ SpriteRenderer:
   m_Size: {x: 2.64, y: 2.78}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &77350779
@@ -1940,7 +1949,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 785958704}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &111763330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3571,6 +3581,7 @@ MonoBehaviour:
   minSize: 3
   maxSize: 25
   panVerticalTightness: 0.98
+  panHorizontalTightness: 0.98
 --- !u!114 &226861716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3587,6 +3598,7 @@ MonoBehaviour:
   targetTag: 
   targetPanScript: {fileID: 0}
   margin: 2
+  centerCameraOnStart: 1
 --- !u!114 &226861717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4974,6 +4986,7 @@ MonoBehaviour:
   industrialBluePrint: {fileID: -1646138214832153251, guid: 3068f515cedeb5f4fb8a38459fbc6113, type: 3}
   clockworkBlueprint: {fileID: 7444199029921566949, guid: ab626fe708164d349b14a9bd1b6f57ae, type: 3}
   merceneryEngineer: {fileID: 0}
+  insurancePolicy: {fileID: 0}
 --- !u!1 &286492848
 GameObject:
   m_ObjectHideFlags: 0
@@ -5103,7 +5116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 759662021}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &296763825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9404,7 +9418,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 2113484702}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &523398026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10171,10 +10186,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b9308f1d5d11e48b57caf5bdd23734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  panelManager: {fileID: 0}
   infoPanel: {fileID: 1559795439}
   upgradePanel: {fileID: 1567339714}
+  buildingCanvas: {fileID: 0}
+  jamPanel: {fileID: 0}
   oreRefineryLevelText: {fileID: 1775042509}
+  buildingSpriteRenderer: {fileID: 0}
+  oreLevelSprites: []
+  level2PearlCost: 100
+  level2OreCost: 50
+  level3PearlCost: 100
+  level3OreCost: 50
   oreLevel: 1
+  jammingChance: 0
+  IsBlocked: 0
+  tutorialUpgrade: 0
+  manualResetOption: 0
 --- !u!224 &560464080
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17300,7 +17328,7 @@ SpriteRenderer:
   m_Size: {x: 2.64, y: 2.78}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &917433086
@@ -19257,8 +19285,11 @@ MonoBehaviour:
   - {fileID: 1052731409}
   - {fileID: 719175917}
   InventoryButton: {fileID: 950946925}
+  NextButton: {fileID: 0}
   pearCountText: {fileID: 712578464}
   oreCountText: {fileID: 1594990368}
+  erroPanel: {fileID: 0}
+  tutorial: {fileID: 0}
 --- !u!95 &990961081
 Animator:
   serializedVersion: 7
@@ -21092,7 +21123,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 1388782885}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &1088259485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22097,6 +22129,7 @@ MonoBehaviour:
   oreRefineryManager: {fileID: 560464079}
   forgeManager: {fileID: 1768382276}
   labManager: {fileID: 2142088454}
+  cursorManager: {fileID: 0}
 --- !u!4 &1124539478
 Transform:
   m_ObjectHideFlags: 0
@@ -23701,6 +23734,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hover
   mainCam: {fileID: 226861714}
+  ForgeCanvas: {fileID: 0}
+  OreRefineryCanvas: {fileID: 0}
+  ExplorationUnitCanvas: {fileID: 0}
+  shipManager: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &1190853440
 Transform:
   m_ObjectHideFlags: 0
@@ -24716,7 +24754,7 @@ SpriteRenderer:
   m_Size: {x: 2.64, y: 2.78}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1254146393
@@ -24947,6 +24985,11 @@ MonoBehaviour:
   ResourceWindow: {fileID: 299706790}
   CraftsPanel: {fileID: 1924378616}
   CraftWindow: {fileID: 1227543062}
+  ForgeUpgradeIcon: {fileID: 0}
+  OreRefineryUpgradeIcon: {fileID: 0}
+  ExplorationUnitUpgradeIcon: {fileID: 0}
+  panelManager: {fileID: 0}
+  tutorialFunction: 0
 --- !u!4 &1264449671
 Transform:
   m_ObjectHideFlags: 0
@@ -26542,12 +26585,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccbabee0dc87d348aa98bb7d43b8980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
-  tradeHutManager: {fileID: 0}
+  oreManager: {fileID: 0}
+  cameraShake: {fileID: 0}
+  uiFlash: {fileID: 0}
+  uiFade: {fileID: 0}
+  newsTicker: {fileID: 0}
   currentTurn: 1
   maxTurns: 50
   turnText: {fileID: 2046484174}
   eventCountdown: 1
   endTurnButton: {fileID: 2032197777}
+  progressBar: {fileID: 1172193936}
+  enemyPanel: {fileID: 0}
+  heatProgressBar: {fileID: 0}
 --- !u!224 &1318345256
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29645,7 +29695,7 @@ SpriteRenderer:
   m_Size: {x: 3.61, y: 4.27}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1503812357
@@ -32385,20 +32435,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  explorationUnitLevelText: {fileID: 1793107966}
+  panelManager: {fileID: 0}
+  eventDatabase: {fileID: 0}
+  eventController: {fileID: 0}
+  shipManager: {fileID: 0}
   explorePanel: {fileID: 1622377353}
-  infoPanel: {fileID: 80179161}
   upgradePanel: {fileID: 1565444844}
-  levelOneTab: {fileID: 503016417}
-  levelTwoTab: {fileID: 1503812357}
-  levelThreeTab: {fileID: 328450444}
-  levelOneBoat: {fileID: 0}
-  levelTwoBoat: {fileID: 0}
-  levelThreeBoat: {fileID: 0}
-  possibleRewards: []
-  rewardsPanel: {fileID: 1757797331}
-  rewardsContainer: {fileID: 1515999351}
-  rewardEntry: {fileID: 6802433317973521069, guid: e4428a40e8843ad45911227f786de83e, type: 3}
+  infoPanel: {fileID: 80179161}
+  decisionPanel: {fileID: 0}
+  decisionResultsPanel: {fileID: 0}
+  newDepthPanel: {fileID: 0}
+  inventoryPanel: {fileID: 0}
+  decisionResults: {fileID: 0}
+  shipInventory: {fileID: 0}
+  depthWarningText: {fileID: 0}
+  buildingSpriteRenderer: {fileID: 0}
+  explorationLevelSprites: []
+  explorationLevelText: {fileID: 0}
   isExploring: 0
 --- !u!224 &1592424279
 RectTransform:
@@ -34441,7 +34494,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 833083669}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &1684682013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36661,6 +36715,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea54b18dfe33cf44f9aaee7b0325d1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  isOverclockUnlocked: 0
+  isLabTier3Unlocked: 0
+  hasTier3Blueprint: 0
+  hasTier2Blueprint: 0
+  hasMercenaryEngineer: 0
+  isMercenaryEngineerActive: 0
+  panelManager: {fileID: 0}
   craftPanel: {fileID: 1582292920}
   infoPanel: {fileID: 527174155}
   upgradePanel: {fileID: 1061148528}
@@ -36672,6 +36733,25 @@ MonoBehaviour:
   tier3Container: {fileID: 0}
   craftWindowTemplate: {fileID: 0}
   forgeLevelText: {fileID: 411612127}
+  levelCanvas: {fileID: 0}
+  activeJobs: []
+  errorPanel: {fileID: 0}
+  activeQueuePanel: {fileID: 0}
+  queueText: {fileID: 0}
+  craftIdleIndicator: {fileID: 0}
+  buildingSpriteRenderer: {fileID: 0}
+  forgeLevelSprites: []
+  forgeSmoke: {fileID: 0}
+  t1_bg_lvl1: {fileID: 0}
+  t1_bg_lvl2: {fileID: 0}
+  t1_bg_lvl3: {fileID: 0}
+  t2_bg_lvl1: {fileID: 0}
+  t2_bg_lvl2: {fileID: 0}
+  t2_bg_lvl3: {fileID: 0}
+  t3_bg_lvl1: {fileID: 0}
+  t3_bg_lvl2: {fileID: 0}
+  t3_bg_lvl3: {fileID: 0}
+  tutorialFunction: 0
 --- !u!1 &1769050625
 GameObject:
   m_ObjectHideFlags: 0
@@ -38618,7 +38698,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 443724271}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &1859740592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40380,7 +40461,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 1440801919}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &1929837990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45311,7 +45393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b669488318415ad459428be41d05f259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
-  tierInfoPopUp: {fileID: 286492848}
+  InfoPopUp: {fileID: 0}
+  uiFade: {fileID: 0}
 --- !u!114 &2106474410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45597,6 +45680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f1811928929e4e95bb852c98457db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  panelManager: {fileID: 0}
+  victoryButton: {fileID: 0}
   innovatePanel: {fileID: 918033040}
   infoPanel: {fileID: 200663067}
   pathButtons: {fileID: 1289567645}
@@ -45604,6 +45689,9 @@ MonoBehaviour:
   commerceTab: {fileID: 1923134444}
   productionTab: {fileID: 1377767360}
   explorationTab: {fileID: 1369889530}
+  victoryPanel: {fileID: 0}
+  labTutorialFunction: 0
+  victoryTutorialFunction: 0
 --- !u!1 &2142751106
 GameObject:
   m_ObjectHideFlags: 0
