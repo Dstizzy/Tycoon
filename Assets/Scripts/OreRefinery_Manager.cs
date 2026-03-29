@@ -18,6 +18,7 @@ public class OreRefinery_Manager : MonoBehaviour
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL   = 3;
 
+   public PanelManager panelManager;
    [SerializeField] private Transform infoPanel;
    [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;
@@ -36,10 +37,11 @@ public class OreRefinery_Manager : MonoBehaviour
 
    TickerSystem ticker;
 
-   public int  oreLevel        = STARTING_LEVEL;
-   public int  jammingChance   = 0;
-   public bool IsBlocked       = false;
-   public bool tutorialUpgrade = false;
+   public int  oreLevel          = STARTING_LEVEL;
+   public int  jammingChance     = 0;
+   public bool IsBlocked         = false;
+   public bool tutorialUpgrade   = false;
+   public bool manualResetOption = false;
 
    public int CurrentOreProduction { get; private set; }
    public int NextUpgradeCostInPearls { get; private set; }
@@ -130,14 +132,14 @@ public class OreRefinery_Manager : MonoBehaviour
    //}
    private void ShowInfoPanel()
    {
-      infoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
    private void ShowUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(upgradePanel.gameObject);
 
       if(tutorialUpgrade)
          upgradePanel.Find("Arrow").gameObject.SetActive(true);
@@ -201,14 +203,14 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void CloseInfoPanel()
    {
-      infoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
    private void CloseUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(upgradePanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -261,6 +263,7 @@ public class OreRefinery_Manager : MonoBehaviour
       Button exitBtn = jamPanel.transform.Find("ExitButton").GetComponent<Button>();
       Button unjamBtn = jamPanel.transform.Find("PayButtons/UnjamButton").GetComponent<Button>();
       Button payItBtn = jamPanel.transform.Find("PayButtons/PayItButton").GetComponent<Button>();
+      Button waitBtn  = jamPanel.transform.Find("PayButtons/WaitButton").GetComponent<Button>();
 
       // Clear and Re-assign Exit Button
       exitBtn.onClick.RemoveAllListeners();
@@ -273,6 +276,9 @@ public class OreRefinery_Manager : MonoBehaviour
       // Clear and Re-assign Pay Button
       payItBtn.onClick.RemoveAllListeners();
       payItBtn.onClick.AddListener(() => PayForUnjamming(2));
+
+      waitBtn.onClick.RemoveAllListeners();
+      waitBtn.onClick.AddListener(() => PayForUnjamming(3));
 
       PopUpManager.Instance.DisablePlayerInput();
    }
@@ -295,9 +301,9 @@ public class OreRefinery_Manager : MonoBehaviour
             Debug.Log("Not enough Patch Kits to unjam the Ore Refinery.");
          }
       }
-      else
+      else if (paymentType == 2) 
       {
-         if (InventoryManager.Instance.TrySpendPearl(100))
+         if (InventoryManager.Instance.TrySpendPearl(30))
          {
             IsBlocked = false;
             buildingCanvas.transform.Find("JammedSymbol").gameObject.SetActive(false);
@@ -310,6 +316,12 @@ public class OreRefinery_Manager : MonoBehaviour
          {
             Debug.Log("Not enough Pearls to unjam the Ore Refinery.");
          }
+      }
+      else
+      {
+         manualResetOption = true;
+         CloseJamPanel();
+         ticker.ShowTicker("Manual Counter started", Color.green, MessageTypes.ResultMessage);
       }
    }
 
@@ -328,14 +340,6 @@ public class OreRefinery_Manager : MonoBehaviour
    private void ProduceOres()
    {
       int roll = UnityEngine.Random.Range(0, 100);
-
-      /*if (roll < jammingChance)
-      {
-         Debug.Log($"<color=red>Refinery Jammed! (Rolled {roll} vs Chance {jammingChance})</color>");
-         IsBlocked = true;
-         //ActivateJamButton();
-         //ActivateJamSymbol();
-      }*/
 
       InventoryManager.Instance.TryAddOre(CurrentOreProduction);
    }

@@ -1,7 +1,5 @@
 ﻿using System;
-
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,21 +9,26 @@ public class TurnManager : MonoBehaviour
 {
 
    // Constants
-   const int MANUALRESETWAIT = 3;
+   const int MANUALRESETWAIT = 2;
    const int STARTINGTURN = 1;
    const int ENDINGTURN = 80;
 
 
    // Variables
    public static System.Random random = new System.Random(); // Random number generator
-   public static int randomNumber;                     // Random number for various calculations
-   public static int jamTurnCounter;                   // Counter for turns during a jam
-   public static bool manualResetOption = false;    // Flag for manual reset option
-   public static int heatLevel;                        // Current heat level
-   public static int enemyAttackPercentage = 0;        // Percentage chance of enemy attack each turn
-   public static bool userDefends;                      // Flag indicating if the user defends against enemy attacks 
+   public static int randomNumber;                           // Random number for various calculations
+   public static int jamTurnCounter;                         // Counter for turns during a jam
+   public static bool manualResetOption = false;             // Flag for manual reset option
+   public static int heatLevel;                              // Current heat level
+   public static int enemyAttackPercentage = 0;              // Percentage chance of enemy attack each turn
+   public static bool userDefends;                           // Flag indicating if the user defends against enemy attacks 
    private TradeHutManager tradeHutManager;                  // Trade hut manager instance 
-   public TickerSystem newsTicker;                       // The wolrd event news ticker panel
+   [SerializeField] private OreRefinery_Manager oreManager;  // Ore refinery manager instance
+   [SerializeField] private CameraShake cameraShake;         // Camera shake script
+   [SerializeField] private UIFlash uiFlash;                 // Red flash script
+   [SerializeField] private UIFade uiFade;                   // Panel fade script
+   public TickerSystem newsTicker;                           // The wolrd event news ticker panel
+   public static int jammingChance = 5;                      // Chance of ore refinery jamming
 
 
    // Public Unity fields
@@ -40,9 +43,8 @@ public class TurnManager : MonoBehaviour
    private bool _isGameActive = true;           // Tracks if the game is currently in progress.
 
    [Header("Enemy Settings")]
-   [SerializeField] private GameObject optionalEnemyPanel; // The enemy panel UI element.
-   [SerializeField] private GameObject forcedEnemyPanel;   // The forced enemy panel UI element.
-   [SerializeField] private GameObject heatProgressBar;    // The heat level progress bar UI element.
+   [SerializeField] private GameObject enemyPanel;      // The enemy panel UI element.
+   [SerializeField] private GameObject heatProgressBar; // The heat level progress bar UI element.
 
 
    // public propertries
@@ -71,6 +73,7 @@ public class TurnManager : MonoBehaviour
 
       if (newsTicker == null)
          Debug.Log("Ticker is not assigned in the Inspector");
+
    }
 
    // Initializes the UI elements with the starting values when the game begins.                  
@@ -92,7 +95,7 @@ public class TurnManager : MonoBehaviour
       currentTurn++;
       eventCountdown++;
 
-      // Check if the game should end                 */
+      // Check if the game should end                 
       if (currentTurn > maxTurns)
       {
          EndGame();
@@ -101,7 +104,7 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
-         //HandleJamming();
+         HandleJamming();
          HandleEnemy();
 
          // Handle world event reset
@@ -163,47 +166,46 @@ public class TurnManager : MonoBehaviour
    // Handles the jamming logic for the Ore Refinery at the start of each turn
    public void HandleJamming()
    {
-      if (OreRefinery_Manager.Instance.IsBlocked == false)
+      if (oreManager.IsBlocked == false)
       {
-         randomNumber = random.Next(1, 100);
-         if (randomNumber < OreRefinery_Manager.Instance.jammingChance)
+         randomNumber = UnityEngine.Random.Range(1, 100);
+         Debug.Log($"{randomNumber} < {jammingChance}");
+         if (randomNumber < jammingChance)
          {
-            //JamRefinery();
+            Debug.Log("Jamming refinery");
+            JamRefinery();
          }
       }
       else
       {
-         if (manualResetOption == true)
+         if (oreManager.manualResetOption == true)
          {
-            if (jamTurnCounter > 0)
+            if (jamTurnCounter > 1)
                jamTurnCounter--;
             else
             {
-               OreRefinery_Manager.Instance.IsBlocked = false;
-               OreRefinery_Manager.Instance.DeactivateJamSymbol();
-               manualResetOption = false;
+               oreManager.IsBlocked = false;
+               PopUpManager.IsOreRefineryBlocked = false;
+               oreManager.DeactivateJamSymbol();
+               oreManager.manualResetOption = false;
             }
          }
       }
    }
 
-   // Allows the player to manually reset the jammed Ore Refinery
-   public void ManualResetUnjam()
-   {
-      manualResetOption = true;
-   }
-
    // Jams the Ore Refinery and sets the jam turn counter
    public void JamRefinery()
    {
-      OreRefinery_Manager.Instance.IsBlocked = true;
-      OreRefinery_Manager.Instance.ActivateJamSymbol();
+      oreManager.IsBlocked = true;
+      PopUpManager.IsOreRefineryBlocked = true;
+      oreManager.ActivateJamSymbol();
       jamTurnCounter = MANUALRESETWAIT;
    }
 
    // Handles enemy attack logic based on the current heat level
    public void HandleEnemy()
    {
+      GameObject decisionEnemyPanel;
 
       HandleHeat();
       HandleProgressBar();
@@ -224,17 +226,22 @@ public class TurnManager : MonoBehaviour
          enemyAttackPercentage = 70;
       }
 
-
       randomNumber = random.Next(1, 100);
       if (randomNumber < enemyAttackPercentage)
       {
          PopUpManager.Instance.DisablePlayerInput();
 
+         StartCoroutine(cameraShake.Shake(0.5f, 0.2f));
+
+         uiFade.Appear(1.0f);
+         enemyPanel.SetActive(true);
+
          if (InventoryManager.Instance.harpoonCount > 0)
          {
-            optionalEnemyPanel.SetActive(true);
+            decisionEnemyPanel = enemyPanel.transform.Find("OptionalEnemyPanel").gameObject;
+            decisionEnemyPanel.SetActive(true);
 
-            Button yesBtn = optionalEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>();
+            Button yesBtn = decisionEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>();
             yesBtn.onClick.RemoveAllListeners();
             yesBtn.onClick.AddListener(() =>
             {
@@ -243,31 +250,38 @@ public class TurnManager : MonoBehaviour
                heatLevel = 0;
                DeactivateHeatNodes();
 
-               optionalEnemyPanel.SetActive(false);
+               decisionEnemyPanel.SetActive(false);
+               enemyPanel.SetActive(false);
                PopUpManager.Instance.EnablePlayerInput();
             });
 
-            Button noBtn = optionalEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>();
+            Button noBtn = decisionEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>();
             noBtn.onClick.RemoveAllListeners();
             noBtn.onClick.AddListener(() =>
             {
-               ApplyKrakenPenalty();
-               optionalEnemyPanel.SetActive(false);
+               decisionEnemyPanel.SetActive(false);
+               enemyPanel.SetActive(false);
                PopUpManager.Instance.EnablePlayerInput();
+               ApplyKrakenPenalty();
             });
          }
          else
          {
-            forcedEnemyPanel.SetActive(true);
-            Button forcedBtn = forcedEnemyPanel.transform.Find("Button").GetComponent<Button>();
+            decisionEnemyPanel = enemyPanel.transform.Find("ForcedEnemyPanel").gameObject;
+            decisionEnemyPanel.SetActive(true);
+            Button forcedBtn = decisionEnemyPanel.transform.Find("Button").GetComponent<Button>();
             forcedBtn.onClick.RemoveAllListeners();
             forcedBtn.onClick.AddListener(() =>
             {
-               ApplyKrakenPenalty();
-               forcedEnemyPanel.SetActive(false);
+               decisionEnemyPanel.SetActive(false);
+               enemyPanel.SetActive(false);
                PopUpManager.Instance.EnablePlayerInput();
+               ApplyKrakenPenalty();
             });
          }
+         StartCoroutine(cameraShake.Shake(0.5f, 0.2f));
+
+         StartCoroutine(uiFlash.FlashRed(0.4f, 0.4f));
       }
    }
 
@@ -275,7 +289,6 @@ public class TurnManager : MonoBehaviour
    {
       InventoryManager.Instance.TrySpendOre((int)(InventoryManager.Instance.oreCount / 2));
       InventoryManager.Instance.TrySpendPearl((int)(InventoryManager.Instance.pearlCount / 4));
-      //JamRefinery();
       heatLevel = 10;
       DeactivateHeatNodes();
       heatProgressBar.transform.Find("Node1").gameObject.SetActive(true);
@@ -285,7 +298,7 @@ public class TurnManager : MonoBehaviour
    public void HandleHeat()
    {
       heatLevel += 5;
-      if (OreRefinery_Manager.Instance.IsBlocked || manualResetOption)
+      if (oreManager.IsBlocked || manualResetOption)
          heatLevel += 10;
 
       // Active Forge +2 per forge

@@ -42,6 +42,7 @@ public class LabManager : MonoBehaviour
    public const int VICTORY_TUTORIAL = 2;
 
    // Inspector Variables
+   public PanelManager panelManager;
    public Button victoryButton;
    [SerializeField] private Transform innovatePanel;
    [SerializeField] private Transform infoPanel;
@@ -92,7 +93,7 @@ public class LabManager : MonoBehaviour
          victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
          {
             AudioManager.Instance.PlayClick();
-            victoryPanel.SetActive(false);
+            panelManager.ClosePanel(victoryPanel.gameObject);
             PopUpManager.Instance.EnablePlayerInput();
          });
       }
@@ -214,6 +215,7 @@ public class LabManager : MonoBehaviour
    // Open up the research panel and assign the buttons in the initial panel                    
    private void ShowInnovatePanel()
    {
+      panelManager.OpenPanel(innovatePanel.gameObject);
       innovatePanel.gameObject.SetActive(true);
 
       pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.AddListener(() => ShowPath(commerceTab));
@@ -606,7 +608,7 @@ public class LabManager : MonoBehaviour
    // Open up the info panel                                                                   
    private void ShowInfoPanel()
    {
-      infoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -619,7 +621,7 @@ public class LabManager : MonoBehaviour
       productionTab.gameObject.SetActive(false);
       explorationTab.gameObject.SetActive(false);
       initialTab.gameObject.SetActive(true);
-      innovatePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(innovatePanel.gameObject);
 
       /*if (labTutorialFunction)
       {
@@ -639,7 +641,7 @@ public class LabManager : MonoBehaviour
    // Close the info panel                                                                     
    private void CloseInfoPanel()
    {
-      infoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -653,7 +655,7 @@ public class LabManager : MonoBehaviour
 
       if (victoryPanel != null)
       {
-         victoryPanel.SetActive(true);
+         panelManager.OpenPanel(victoryPanel.gameObject);
          PopUpManager.Instance.DisablePlayerInput();
 
          isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
