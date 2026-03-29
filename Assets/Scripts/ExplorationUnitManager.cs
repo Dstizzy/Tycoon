@@ -352,7 +352,11 @@ public class ExplorationUnitManager : MonoBehaviour
       // Set up inventory button on decisionPanel
       Button inventoryButton = decisionPanel.Find("CargoTab").GetComponent<Button>();
       inventoryButton.onClick.RemoveAllListeners();
-      inventoryButton.onClick.AddListener(() => ShowInventoryPanel());
+      inventoryButton.onClick.AddListener(() =>
+      {
+         ShowInventoryPanel();
+         CloseDecisionPanel();
+      });
 
       // Set up return ship button on decisionPanel
       Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
@@ -577,6 +581,7 @@ public class ExplorationUnitManager : MonoBehaviour
       closeInventoryPanel.onClick.AddListener(() =>
       {
          inventoryPanel.gameObject.SetActive(false);
+         decisionPanel.gameObject.SetActive(true);
          SetDecisionInteractable(true);
       });
 
