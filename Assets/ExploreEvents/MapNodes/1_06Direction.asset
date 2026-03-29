@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81287b6efe0e224f8b87368858d2135, type: 3}
+  m_Name: 1_06Direction
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  nodeName: 1_06
+  mapPosition: {x: -33, y: 37}
+  isExplored: 0
+  nodeDepth: 1
+  type: 1
+  navigationStory: You have come to a large crack in the ocean floor.
+  choiceAText: Follow the left path
+  pathA: {fileID: 11400000, guid: 4f37228f27857d142aae3d27a42c70de, type: 2}
+  choiceBText: Follow the right path
+  pathB: {fileID: 11400000, guid: 9cb875b5bf03d594d85ae693f10059fe, type: 2}
+  choiceCText: 
+  pathC: {fileID: 0}
+  nextNode: {fileID: 0}
+  isFinalNode: 0
+  isLeftPath: 0

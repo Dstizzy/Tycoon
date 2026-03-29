@@ -16,6 +16,8 @@ public class ItemSprites : MonoBehaviour {
     public Sprite rareOre;
     public Sprite industrialBluePrint;
     public Sprite clockworkBlueprint;
+    public Sprite merceneryEngineer;
+    public Sprite insurancePolicy;
 
     private void Awake() {
         if (itemSprites != null && itemSprites != this) {
@@ -25,8 +27,10 @@ public class ItemSprites : MonoBehaviour {
         }
     }
 
-    public Sprite GetSprite(ItemType itemType) {
-        switch (itemType) {
+    public Sprite GetSprite(ItemType itemType) 
+    {
+        switch (itemType) 
+         {
             case ItemType.CrudeTool:
                return crudeTool;
             case ItemType.Harpoon:
@@ -39,15 +43,19 @@ public class ItemSprites : MonoBehaviour {
                return divingBells;
             case ItemType.Engine:
                return engine;
-            case ItemType.RareOre:
+            case ItemType.RawOreChunk:
                return rareOre;
             case ItemType.PrecisionLens:
                return precisionLens;
-            case ItemType.IndustrialBluePrint:
+            case ItemType.IndustrialBlueprint:
                return industrialBluePrint;
             case ItemType.ClockworkBlueprint:
                return clockworkBlueprint;
-         default:
+            case ItemType.MercenaryEngineer:
+               return merceneryEngineer;
+            case ItemType.InsurancePolicy:
+               return insurancePolicy;
+            default:
                Debug.LogError("ItemSprites: GetSprite received unknown ItemType: " + itemType);
                return null;
         }

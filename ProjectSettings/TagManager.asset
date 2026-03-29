@@ -20,9 +20,15 @@ TagManager:
   - Engine
   - Harpoon
   - Pressure Valve
-  - Rare Ore
-  - Industrial Blue Print
-  - Clockwork Blue Print
+  - Patch Kit
+  - Diving Bell
+  - Precision Lens
+  - Mercenary Engineer
+  - Raw Ore Chunk
+  - IdleIndicator
+  - Industrial Blueprint
+  - Clockwork Blueprint
+  - Insurance Policy
   layers:
   - Default
   - TransparentFX

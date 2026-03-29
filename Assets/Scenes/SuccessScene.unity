@@ -4973,6 +4973,7 @@ MonoBehaviour:
   rareOre: {fileID: 2391746665116380106, guid: f363c704e4fb0d64a9d6f5d50866e1c1, type: 3}
   industrialBluePrint: {fileID: -1646138214832153251, guid: 3068f515cedeb5f4fb8a38459fbc6113, type: 3}
   clockworkBlueprint: {fileID: 7444199029921566949, guid: ab626fe708164d349b14a9bd1b6f57ae, type: 3}
+  merceneryEngineer: {fileID: 0}
 --- !u!1 &286492848
 GameObject:
   m_ObjectHideFlags: 0
@@ -26542,9 +26543,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccbabee0dc87d348aa98bb7d43b8980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
+  tradeHutManager: {fileID: 0}
   currentTurn: 1
   maxTurns: 50
   turnText: {fileID: 2046484174}
+  eventCountdown: 1
   endTurnButton: {fileID: 2032197777}
   progressBar: {fileID: 1172193936}
 --- !u!224 &1318345256
@@ -31746,24 +31749,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9661e446df2e94908bcdb2d2748cc5e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CraftingController
-  craftTool1Button: {fileID: 645529479}
-  craftTool2Button: {fileID: 500093020}
-  craftTool3Button: {fileID: 943425962}
-  crudeConfirmation: {fileID: 1061148525}
-  refinedConfirmation: {fileID: 486133730}
-  artifactConfirmation: {fileID: 1199810889}
-  craftPanel: {fileID: 1582292916}
-  tool1OreCost: 15
-  tool2OreCost: 25
-  tool3OreCost: 50
-  refinedUnlockCost: 100
-  artifactUnlockCost: 200
-  refinedLockOverlay: {fileID: 514056873}
-  artifactLockOverlay: {fileID: 1110213210}
-  refinedUnlockPanel: {fileID: 1826634412}
-  artifactUnlockPanel: {fileID: 1130545096}
-  refinedUnlockMessage: {fileID: 0}
-  artifactUnlockMessage: {fileID: 0}
 --- !u!114 &1582292918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36681,6 +36666,13 @@ MonoBehaviour:
   craftPanel: {fileID: 1582292920}
   infoPanel: {fileID: 527174155}
   upgradePanel: {fileID: 1061148528}
+  tier1Panel: {fileID: 0}
+  tier2Panel: {fileID: 0}
+  tier3Panel: {fileID: 0}
+  tier1Container: {fileID: 0}
+  tier2Container: {fileID: 0}
+  tier3Container: {fileID: 0}
+  craftWindowTemplate: {fileID: 0}
   forgeLevelText: {fileID: 411612127}
 --- !u!1 &1769050625
 GameObject:
@@ -45614,7 +45606,6 @@ MonoBehaviour:
   commerceTab: {fileID: 1923134444}
   productionTab: {fileID: 1377767360}
   explorationTab: {fileID: 1369889530}
-  craftingController: {fileID: 0}
 --- !u!1 &2142751106
 GameObject:
   m_ObjectHideFlags: 0

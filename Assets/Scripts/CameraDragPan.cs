@@ -39,15 +39,55 @@ public class CameraDragPan : MonoBehaviour
    [Range(0.9f, 1.0f)]
    public float panVerticalTightness = 0.98f;
 
+   // [ADDED] Allow clamping in the horizontal direction as well
+   [Header("Horizontal Tightness")]
+   [Tooltip("Clamp slightly below half the horizontal length to prevent left and right margins (0.95–0.99 recommended)")]
+   [Range(0.9f, 1.0f)]
+   public float panHorizontalTightness = 0.98f;
+   // [END ADDED]
+
+
    private Camera cam;
    private Vector3 lastMouseScreen;
    private bool dragging = false;
+
+   // [ADDED] Initialization flag
+   //private bool isInitialized = false;
+   // [END ADDED]
+
 
    void Awake()
    {
       cam = GetComponent<Camera>();
       if (!cam.orthographic) cam.orthographic = true;
    }
+
+   // =====================================================================
+   // [ADDED] Called after CameraAutoBounds sets the bounds to center the camera
+   // =====================================================================
+   /// <summary>
+   /// Moves the camera to the center of the map after the bounds have been set
+   /// </summary>
+   public void CenterCamera()
+   {
+      if (cam == null) cam = GetComponent<Camera>();
+
+      // Calculate map center
+      float centerX = (minWorld.x + maxWorld.x) / 2f;
+      float centerY = (minWorld.y + maxWorld.y) / 2f;
+
+      Vector3 newPos = new Vector3(centerX, centerY, transform.position.z);
+      transform.position = newPos;
+
+      // Clamp to bounds
+      ClampToBounds();
+
+      //isInitialized = true;
+      Debug.Log($"[CameraDragPan] Camera centered → Position: {transform.position}");
+   }
+   // =====================================================================
+   // [END ADDED]
+   // =====================================================================
 
    void Update()
    {
@@ -178,7 +218,16 @@ public class CameraDragPan : MonoBehaviour
          float mapW = maxWorld.x - minWorld.x;
          float mapH = maxWorld.y - minWorld.y;
 
-         float maxSizeX = Mathf.Max(0.001f, (mapW - 2f * panInnerMargin) / (2f * cam.aspect));
+         // =====================================================================
+         // [MODIFIED] Apply panHorizontalTightness to horizontal as well
+         // =====================================================================
+         // [Original code]
+         // float maxSizeX = Mathf.Max(0.001f, (mapW - 2f * panInnerMargin) / (2f * cam.aspect));
+         // [Modified code]
+         float maxSizeX = Mathf.Max(0.001f, (mapW - 2f * panInnerMargin) / (2f * cam.aspect * panHorizontalTightness));
+         // =====================================================================
+         // [END MODIFIED]
+         // =====================================================================
          float maxSizeY = Mathf.Max(0.001f, (mapH - 2f * panInnerMargin) / (2f * panVerticalTightness));
 
          newSize = Mathf.Min(wanted, maxSizeX, maxSizeY);
@@ -208,7 +257,16 @@ public class CameraDragPan : MonoBehaviour
    void GetPanBounds(out float minX, out float maxX, out float minY, out float maxY)
    {
       float halfH = cam.orthographicSize * panVerticalTightness; // Tighten the vertical scale
-      float halfW = (cam.orthographicSize) * cam.aspect;         // Maintain the horizontal scale
+      // =====================================================================
+      // [MODIFIED] Apply panHorizontalTightness to horizontal as well
+      // =====================================================================
+      // [Original code]
+      // float halfW = (cam.orthographicSize) * cam.aspect;         // Maintain the horizontal scale
+      // [Modified code]
+      float halfW = cam.orthographicSize * cam.aspect * panHorizontalTightness;
+      // =====================================================================
+      // [END MODIFIED]
+      // =====================================================================
 
       minX = minWorld.x + halfW + panInnerMargin;
       maxX = maxWorld.x - halfW - panInnerMargin;
@@ -219,7 +277,16 @@ public class CameraDragPan : MonoBehaviour
    void GetPanBoundsForSize(float size, out float minX, out float maxX, out float minY, out float maxY)
    {
       float halfH = size * panVerticalTightness; // Tighten the vertical scale
-      float halfW = size * cam.aspect;           // Maintain the horizontal scale
+      // =====================================================================
+      // [MODIFIED] Apply panHorizontalTightness to horizontal as well
+      // =====================================================================
+      // [Original code]
+      // float halfW = size * cam.aspect;           // Maintain the horizontal scale
+      // [Modified code]
+      float halfW = size * cam.aspect * panHorizontalTightness;
+      // =====================================================================
+      // [END MODIFIED]
+      // =====================================================================
 
       minX = minWorld.x + halfW + panInnerMargin;
       maxX = maxWorld.x - halfW - panInnerMargin;

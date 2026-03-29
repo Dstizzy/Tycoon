@@ -1,77 +1,165 @@
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class MainUIManager : MonoBehaviour
 {
-    public Button MainMenuButton;
-    public Button[] DropdownButtons;
-    public Button InventoryButton;
-    public Button nextTurnButton;
-    //public GameObject progressBar;
 
-    [SerializeField] private TextMeshProUGUI pearCountText;
-    [SerializeField] private TextMeshProUGUI oreCountText;
+   // Buttons on the main UI
+   public Button MainMenuButton;
+   public Button[] DropdownButtons;
+   public Button InventoryButton;
+   public Button NextButton;
 
-    private bool isVisible = false;
+   // UI elements on main UI
+   [SerializeField] private TextMeshProUGUI pearCountText;
+   [SerializeField] private TextMeshProUGUI oreCountText;
+   [SerializeField] private Transform erroPanel;
+   [SerializeField] private GameObject tutorial;
 
-    private void Awake()
-    {
+   // State variable to track dropdown visibility
+   private bool isVisible = false;
+   private int displayedPearlCount = 0;
+   private int displayedOreCount = 0;
 
-        if (InventoryManager.Instance == null)
-        {
-            // This is primarily for safety, though the script execution order should help.
-            // You might need to check your Unity Project Settings -> Script Execution Order 
-            // to ensure InventoryManager runs before MainUIManager.
-            Debug.LogError("InventoryManager instance is not yet available in MainUIManager Awake. Delaying subscriptions.");
-            // If it's not ready, we cannot subscribe yet and must defer to Start().
-            return;
-        }
+   public static MainUIManager mainUI;
 
-        // Initially hide dropdown buttons
-        foreach (Button btn in DropdownButtons)
-        {
-            btn.gameObject.SetActive(false);
-        }
-        // Add listener to main menu button
-        MainMenuButton.onClick.AddListener(ToggleMenu);
-        InventoryButton.onClick.AddListener(() =>
-        {
-            InventoryManager.Instance.ShowInventoryPanel();
-        });
-        nextTurnButton.onClick.AddListener(InitiateNextTurn);
+   // Singleton instance
+   private void Awake()
+   {
+      if (mainUI != null && mainUI != this)
+         Destroy(this.gameObject);
+      else
+      {
+         mainUI = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
 
-        ChangePearlCountText(InventoryManager.Instance.pearlCount);
-        ChangeOreCountText(InventoryManager.Instance.oreCount);
-        InventoryManager.Instance.OnOreCountChanged += ChangeOreCountText;
-        InventoryManager.Instance.OnPearlCountChanged += ChangePearlCountText;
-    }
-    public void ToggleMenu()
-    {
-        isVisible = !isVisible;
-        DropdownButtons[0].gameObject.SetActive(isVisible);
-        DropdownButtons[1].gameObject.SetActive(isVisible);
-    }
+      if (InventoryManager.Instance == null)
+      {
+         // This is primarily for safety, though the script execution order should help.
+         // You might need to check your Unity Project Settings -> Script Execution Order 
+         // to ensure InventoryManager runs before MainUIManager.
+         Debug.LogError("InventoryManager instance is not yet available in MainUIManager Awake. Delaying subscriptions.");
+         // If it's not ready, we cannot subscribe yet and must defer to Start().
+         return;
+      }
 
-    public void ChangePearlCountText(int newPearlCount)
-    {
-        if (pearCountText != null)
-            pearCountText.text = newPearlCount.ToString();
-    }
+      // Initially hide dropdown buttons
+      foreach (Button btn in DropdownButtons)
+      {
+         btn.gameObject.SetActive(false);
+      }
+      // Add listener to main menu button
+      MainMenuButton.onClick.AddListener(() => {
+         AudioManager.Instance.PlayClick(); 
+         ToggleMenu();
+      });
+      InventoryButton.onClick.AddListener(() => {
+         //AudioManager.Instance.PlayClick(); 
+         InventoryManager.Instance.ShowInventoryPanel();
+      });
 
-    public void ChangeOreCountText(int newOreCount)
-    {
-        if (oreCountText != null)
-            oreCountText.text = newOreCount.ToString();
-    }
+      if (NextButton != null)
+      {
+         NextButton.onClick.AddListener(() =>
+         {
+            if (AudioManager.Instance != null)
+               AudioManager.Instance.PlayClick();
+         });
+      }
 
-    public void InitiateNextTurn()
-    {
-        //progressBar.SetActive(true);
-        //progressBar.GetComponent<Animator>().SetTrigger("StartLoading");
-        //progressBar.SetActive(false);
+      ChangePearlCountText(InventoryManager.Instance.pearlCount);
+      ChangeOreCountText(InventoryManager.Instance.oreCount);
+      InventoryManager.Instance.OnOreCountChanged += ChangeOreCountText;
+      InventoryManager.Instance.OnPearlCountChanged += ChangePearlCountText;
+   }
 
-    }
+   // Method to toggle the visibility of the dropdown buttons
+   public void ToggleMenu()
+   {
+      isVisible = !isVisible;
+      DropdownButtons[0].gameObject.SetActive(isVisible);
+      DropdownButtons[1].gameObject.SetActive(isVisible);
+      DropdownButtons[2].gameObject.SetActive(isVisible);
+   }
+
+   public void ToggleTutorial()
+   {
+      if(tutorial.gameObject.activeSelf)
+         tutorial.gameObject.SetActive(false);
+      else 
+         tutorial.gameObject.SetActive(true);
+      //ChangeTutorial?.Invoke();
+   }
+
+   // Changes the Pearl count text on the main UI
+   public void ChangePearlCountText(int newPearlCount)
+   {
+      if (pearCountText != null)
+      {
+         StartCoroutine(AnimateTopBarCounter(pearCountText, displayedPearlCount, newPearlCount, 0.5f, true));
+      }
+   }
+
+   // Changes the Ore count text on the main UI
+   public void ChangeOreCountText(int newOreCount)
+   {
+      if (oreCountText != null)
+      {
+         StartCoroutine(AnimateTopBarCounter(oreCountText, displayedOreCount, newOreCount, 0.5f, false));
+      }
+   }
+
+   public void GoToStartScreen()
+   {
+      if (SceneHistory.Instance != null) 
+      {
+         GameManager.RestartGame();
+         SceneHistory.Instance.LoadPreviousScene();
+      }
+      else
+         Debug.LogError("SceneHistory is missing from the scene!");
+   }
+
+   public void SetMainButtonsInteractable(bool interactable)
+   {
+      if (MainMenuButton != null)
+         MainMenuButton.interactable = interactable;
+      if (InventoryButton != null)
+         InventoryButton.interactable = interactable;
+      //if (victoryButton != null)
+         //victoryButton.interactable = interactable;
+      if (NextButton != null)
+         NextButton.interactable = interactable;
+      if (DropdownButtons != null)
+         foreach (var btn in DropdownButtons)
+            if (btn != null)
+               btn.interactable = interactable;
+   }
+
+   private System.Collections.IEnumerator AnimateTopBarCounter(TextMeshProUGUI textElement, int startValue, int endValue, float duration, bool isPearl)
+   {
+      float elapsedTime = 0f;
+
+      while (elapsedTime < duration)
+      {
+         elapsedTime += Time.deltaTime;
+         float currentValue = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+
+         if (textElement != null)
+            textElement.text = Mathf.RoundToInt(currentValue).ToString();
+
+         yield return null;
+      }
+
+      if (textElement != null)
+         textElement.text = endValue.ToString();
+
+      // Update our tracker variables
+      if (isPearl) displayedPearlCount = endValue;
+      else displayedOreCount = endValue;
+   }
 }
