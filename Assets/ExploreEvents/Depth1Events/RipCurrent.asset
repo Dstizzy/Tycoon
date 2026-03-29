@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: There is a rip current along your path
   choiceA:
-    buttonText: Ride current to save fuel
+    buttonText: Ride it to save fuel
     resultText: Riding the current to next node has saved you some fuel.
     pearlChange: 0
     oreChange: 0

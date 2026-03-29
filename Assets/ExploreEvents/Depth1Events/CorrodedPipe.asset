@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: A corroded pipe is leaking infront of you!
   choiceA:
-    buttonText: Weld ore over leak (-20 ore)
+    buttonText: Weld ore on leak (-20 ore)
     resultText: The leak has been successfully sealed
     pearlChange: 0
     oreChange: -20

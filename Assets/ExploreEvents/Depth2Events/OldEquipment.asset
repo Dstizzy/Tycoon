@@ -15,37 +15,37 @@ MonoBehaviour:
   description: Heavy equiment from an old mining crew has been abandoned, but it's
     far too large to fit into your vessel in one piece.
   choiceA:
-    buttonText: Strip a few parts as you pass by
+    buttonText: Strip parts
+    resultText: You have stripped a few small parts in passing.
     pearlChange: 0
-    oreChange: 10
-    crystalChange: 0
+    oreChange: 15
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Spend extra turn breaking down equipment
+    buttonText: Wait 1 turn, take all
+    resultText: Spending the extra time has rewarded in extra ore
     pearlChange: 0
-    oreChange: 50
-    crystalChange: 0
+    oreChange: 65
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 1
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

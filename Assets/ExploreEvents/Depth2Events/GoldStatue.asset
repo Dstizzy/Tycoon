@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: There is a huge statue on the sea floor below
   choiceA:
-    buttonText: Scape out a few pieces
-    pearlChange: 10
+    buttonText: Scrape off a little
+    resultText: You have gained a quick reward for your labor.
+    pearlChange: 15
     oreChange: 0
     healthChange: 0
     fuelChange: 0
@@ -31,11 +32,13 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Take the statue with you, but lose fuel from the added weight
-    pearlChange: 20
+    buttonText: Take statue, lose fuel
+    resultText: The entire statue adds valuable cargo, but also adds weight and costs
+      you fuel.
+    pearlChange: 25
     oreChange: 75
     healthChange: 0
-    fuelChange: -4
+    fuelChange: -2
     waitTurn: 0
     loseOre: 0
     minPearl: 0

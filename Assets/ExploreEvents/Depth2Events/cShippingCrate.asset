@@ -15,28 +15,28 @@ MonoBehaviour:
   description: You spot a half-buried shipping crate wedged deep inside a narrow
     thermal vent. It is way too tight for your submarine to maneuver into.
   choiceA:
-    buttonText: Search for materials that have been dropped outside the thermal vent.
+    buttonText: Search outside vent
+    resultText: You have retrieved these rewards from outside the vent
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
+    maxPearl: 15
     minOre: 0
-    maxOre: 10
+    maxOre: 15
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Send your dive crew in to open the crate.
+    buttonText: Get the crate
+    resultText: Your dive team has come back with the crate.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

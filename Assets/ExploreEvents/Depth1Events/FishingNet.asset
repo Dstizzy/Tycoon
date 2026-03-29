@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: Your ship has gotten caught in a large fishing net.
   choiceA:
-    buttonText: Wait one turn to get free
+    buttonText: Wait 1 turn to get free
     resultText: 
     pearlChange: 0
     oreChange: 0

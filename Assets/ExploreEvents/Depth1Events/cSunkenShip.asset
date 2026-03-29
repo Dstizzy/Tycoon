@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: You have come across a sunken ship.
   choiceA:
-    buttonText: Strip the deck of ore
+    buttonText: Strip deck of ore
     resultText: You have gained ore from the deck
     pearlChange: 0
     oreChange: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Search  captain's quarters
+    buttonText: Search captain's quarters
     resultText: Your dive team has come back with valuable rewards!
     pearlChange: 0
     oreChange: 0

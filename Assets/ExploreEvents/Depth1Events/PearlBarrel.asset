@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: You have come across an unmarked floating barrel.
   choiceA:
-    buttonText: Open barrel
+    buttonText: Open
     resultText: 'Barrel contains loot:'
     pearlChange: 15
     oreChange: 0

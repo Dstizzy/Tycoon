@@ -33,7 +33,7 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Dock ship and search
+    buttonText: Dock and search
     resultText: Your search crew has returned with a valuable reward.
     pearlChange: 0
     oreChange: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   description: A large treasure chest is visible, but it's far below your vessel's
     max depth
   choiceA:
-    buttonText: Decend to retrieve it
+    buttonText: Decend to retrieve
     resultText: You've gone too deep and taken hull damage, but you retrieved the
       chest
     pearlChange: 0
@@ -34,7 +34,7 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Ignore it
+    buttonText: Ignore
     resultText: 
     pearlChange: 0
     oreChange: 0

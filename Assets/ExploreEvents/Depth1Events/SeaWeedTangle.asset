@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: Your vessel has gotten tangled up in some sea weed.
   choiceA:
-    buttonText: Wait to get loose
+    buttonText: Wait 1 turn to get loose
     resultText: 
     pearlChange: 0
     oreChange: 0

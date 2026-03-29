@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: You've come across a travelling merchant.
   choiceA:
-    buttonText: Purchase a craft for 5 ore
+    buttonText: Purchase craft (5 ore)
     resultText: 'Your trade was processed:'
     pearlChange: 0
     oreChange: -5

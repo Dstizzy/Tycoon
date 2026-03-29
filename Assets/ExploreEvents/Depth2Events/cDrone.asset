@@ -15,10 +15,10 @@ MonoBehaviour:
   description: A lost scavenger drone with loot is trapped under a rock inside a
     cave
   choiceA:
-    buttonText: Smash the drone to collect the parts
-    pearlChange: 5
-    oreChange: 10
-    crystalChange: 0
+    buttonText: Smash drone
+    resultText: You have destroyed the drone and gained some scraps
+    pearlChange: 20
+    oreChange: 25
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -33,10 +33,10 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Send your crew out to safely retrieve it's loot
+    buttonText: Retrieve its cargo
+    resultText: The drone was carring this in its cargo!
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
