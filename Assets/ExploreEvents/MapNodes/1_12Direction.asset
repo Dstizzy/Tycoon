@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: 1_12Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_12
-  mapPosition: {x: -10, y: 6}
+  mapPosition: {x: -36, y: 55}
   isExplored: 0
   nodeDepth: 1
   type: 1
   navigationStory: Your ship has come to ruins of an old trade outpost.
-  choiceAText: Follow the left route
+  choiceAText: Left route
   pathA: {fileID: 11400000, guid: f8d3d0d048036df489d639c148990c7f, type: 2}
-  choiceBText: Go straight
+  choiceBText: Straight
   pathB: {fileID: 11400000, guid: ad51abe62ad00d843bf2fed0ea986eca, type: 2}
-  choiceCText: Follow the right route
+  choiceCText: Right route
   pathC: {fileID: 11400000, guid: 97f0846d4986a0f41886b7a68d4582b8, type: 2}
   nextNode: {fileID: 0}
   isFinalNode: 0

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7b3333acaeefe3f448bd9c13e21eabee
+guid: f47909b6b2e10814382d9a47d5e6842a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1206311547339544400
-    second: ExploreShipInventory_0
+      213: 7245650859755617738
+    second: ExploreButton 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ExploreShipInventory_0
+      name: ExploreButton 1_0
       rect:
         serializedVersion: 2
-        x: 313
-        y: 14
-        width: 2067
-        height: 1341
+        x: 36
+        y: 12
+        width: 627
+        height: 330
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 05710a306fdadb010800000000000000
-      internalID: 1206311547339544400
+      spriteID: acdbc3e5119bd8460800000000000000
+      internalID: 7245650859755617738
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ExploreShipInventory_0: 1206311547339544400
+      ExploreButton 1_0: 7245650859755617738
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

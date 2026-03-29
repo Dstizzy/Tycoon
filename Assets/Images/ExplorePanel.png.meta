@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7297291596df07d42965d353d3bce3fe
+guid: e00a97e607c3dfa49b632f45ed261db7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 482691271236115247
-    second: ExploreDecisionPanel1_0
+      213: -3273892616005068719
+    second: ExplorePanel_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ExploreDecisionPanel1_0
+      name: ExplorePanel_0
       rect:
         serializedVersion: 2
-        x: 311
-        y: 16
-        width: 2068
-        height: 1338
+        x: 346
+        y: 0
+        width: 2149
+        height: 1500
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f2bd53e572dd2b600800000000000000
-      internalID: 482691271236115247
+      spriteID: 1585e36f20cc092d0800000000000000
+      internalID: -3273892616005068719
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ExploreDecisionPanel1_0: 482691271236115247
+      ExplorePanel_0: -3273892616005068719
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
