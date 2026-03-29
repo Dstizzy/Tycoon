@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
+   public PanelManager panelManager;
    [SerializeField] private EventDatabase eventDatabase;       // Holds all random events that can occur on nodes
    [SerializeField] private EventUIController eventController; // Manages UI of current event
    [SerializeField] private ShipManager shipManager;           // Handles ship's health, fuel, and inventory
@@ -449,7 +450,7 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void ShowExplorationPanel()
    {
-      explorePanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(explorePanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -458,7 +459,7 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void ShowInfoPanel()
    {
-      infoPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
@@ -467,7 +468,7 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void ShowUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(upgradePanel.gameObject);
 
       int upgradeCost = GetUpgradeCost();
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
@@ -621,7 +622,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the exploration panel
    private void CloseExplorationPanel()
    {
-      explorePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(explorePanel.gameObject);
 
       //   if (tutorialFunction)
       //   {
@@ -636,7 +637,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the info panel
    private void CloseInfoPanel()
    {
-      infoPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(infoPanel.gameObject);
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -646,7 +647,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the upgrade panel
    private void CloseUpgradePanel()
    {
-      upgradePanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(upgradePanel.gameObject);
       PopUpManager.Instance.EnablePlayerInput();
 
       if (MainUIManager.mainUI != null)

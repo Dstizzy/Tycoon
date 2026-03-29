@@ -15,38 +15,7 @@ using static TickerSystem;
 
 public class InventoryManager : MonoBehaviour
 {
-   /* Holds a reference to the singleton instance of this class. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
-   public static InventoryManager Instance { get; private set; }
-
-   private TickerSystem ticker;
-
-   /* Inspector variables for UI elements. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½              */
-   [SerializeField]
-   private Transform InventoryPanel,
-                                      ResourcePanel,
-                                      ResourceWindow,
-                                      CraftsPanel,
-                                      CraftWindow;
-
-   public Image ForgeUpgradeIcon,
-                 OreRefineryUpgradeIcon,
-                 ExplorationUnitUpgradeIcon;
-
-   private TextMeshProUGUI PearlCountText,
-                           CrystalCountText,
-                           OreCountText,
-                           CrudeToolCountText,
-                           HarpoonCountText,
-                           PatchKitCountText,
-                           PressureValveCountText,
-                           DivingBellCountText,
-                           EngineCountText,
-                           PrecisionLensCountText,
-                           RaWOreChunkCountText,
-                           MercenaryEngineerCountText;
-
-
-   /* Constants                                                                     */
+   // Constants
    public const int MIN_PEARL_COUNT = 0,
                     MIN_CRYSTAL_COUNT = 0,
                     MIN_ORE_COUNT = 0,
@@ -101,6 +70,36 @@ public class InventoryManager : MonoBehaviour
                        PRECISION_LENS_TAG = "Precision Lens",
                        RAW_ORE_CHUNK_TAG = "Raw Ore Chunk",
                        MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
+   // Holds a reference to the singleton instance of this class.
+   public static InventoryManager Instance { get; private set; }
+
+   private TickerSystem ticker;
+
+   // Inspector variables for UI elements.
+   [SerializeField]
+   private Transform InventoryPanel,
+                                      ResourcePanel,
+                                      ResourceWindow,
+                                      CraftsPanel,
+                                      CraftWindow;
+
+   public Image ForgeUpgradeIcon,
+                 OreRefineryUpgradeIcon,
+                 ExplorationUnitUpgradeIcon;
+
+   private TextMeshProUGUI PearlCountText,
+                           CrystalCountText,
+                           OreCountText,
+                           CrudeToolCountText,
+                           HarpoonCountText,
+                           PatchKitCountText,
+                           PressureValveCountText,
+                           DivingBellCountText,
+                           EngineCountText,
+                           PrecisionLensCountText,
+                           RaWOreChunkCountText,
+                           MercenaryEngineerCountText;
+   public PanelManager     panelManager;
 
 
    /* Public properties                               ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½  */
@@ -1213,7 +1212,7 @@ public class InventoryManager : MonoBehaviour
 
    public void ShowInventoryPanel()
    {
-      InventoryPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(InventoryPanel.gameObject);
       ResourcePanel.gameObject.SetActive(true);
       if (tutorialFunction)
       {
@@ -1247,7 +1246,7 @@ public class InventoryManager : MonoBehaviour
       // Added for camera fix
       PopUpManager.Instance.EnablePlayerInput();
 
-      InventoryPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(InventoryPanel.gameObject);
 
       if (currentCraft != null)
       {
