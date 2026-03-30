@@ -236,6 +236,8 @@ public class ExplorationUnitManager : MonoBehaviour
       Debug.Log("Sets up buttons");
       Transform container = decisionPanel.Find("ButtonContainer");
 
+      ExploreEvents currentEvent = eventController.currentEvent;
+
       // Sets up choice 1 (always exists)
       Button button1 = container.Find("Choice1").GetComponent<Button>();
       if (button1 != null)
@@ -243,9 +245,11 @@ public class ExplorationUnitManager : MonoBehaviour
          Debug.Log("Choice1");
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
-         button1.interactable = interactableA;
          button1.onClick.RemoveAllListeners();
-         if (actionA != null)
+
+         bool isLockedA = currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
+         button1.interactable = interactableA && !isLockedA;
+         if (button1.interactable && actionA != null)
             button1.onClick.AddListener(actionA);
       }
       // Sets up choice 2 if there is text for it
@@ -256,9 +260,12 @@ public class ExplorationUnitManager : MonoBehaviour
          {
             button2.gameObject.SetActive(true);
             button2.GetComponentInChildren<TextMeshProUGUI>().text = textB;
-            button2.interactable = interactableB;
             button2.onClick.RemoveAllListeners();
-            if (actionB != null)
+
+            bool isLockedB = currentEvent != null && currentEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked;
+            button2.interactable = interactableB && !isLockedB;
+
+            if (button2.interactable && actionB != null)
                button2.onClick.AddListener(actionB);
          }
          else
@@ -624,11 +631,6 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       panelManager.ClosePanel(explorePanel.gameObject);
 
-      //   if (tutorialFunction)
-      //   {
-      //     HandleTutorial?.Invoke();
-      //  }
-
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
       PopUpManager.Instance.EnablePlayerInput();
@@ -659,17 +661,6 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
-
-      /*   if (tutorialFunction)
-         {
-            if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
-            if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
-            if (decisionPanel.Find("FirstText")) decisionPanel.Find("FirstText").gameObject.SetActive(false);
-
-            tutorialFunction = false;
-            HandleTutorial?.Invoke();
-         }
-    */
    }
 
    private void UpdateExplorationSprites()
