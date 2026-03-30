@@ -240,7 +240,7 @@ public class ExplorationUnitManager : MonoBehaviour
          if (hover != null) hover.isTierLocked = false;
       }
 
-         ExploreEvents currentEvent = eventController.currentEvent;
+      ExploreEvents currentEvent = eventController.currentEvent;
 
       // Sets up choice 1 (always exists)
       Button button1 = container.Find("Choice1").GetComponent<Button>();
