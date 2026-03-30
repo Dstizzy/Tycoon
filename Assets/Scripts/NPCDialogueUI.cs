@@ -237,7 +237,7 @@ public class NPCDialogueUI : MonoBehaviour
         }
 
         // ── Navigation buttons ────────────────────────────────────────────
-        GameObject nextObj = CreateNavButton("NextButton", dialogueContainer.transform, "Next ▼");
+        GameObject nextObj = CreateNavButton("NextButton", dialogueContainer.transform, "Next >");
         nextButton = nextObj.GetComponent<Button>();
         nextButton.onClick.AddListener(OnNextClicked);
         RectTransform nxRect = nextObj.GetComponent<RectTransform>();
