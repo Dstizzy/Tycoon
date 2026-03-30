@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +43,7 @@ public class TurnManager : MonoBehaviour
    [Header("UI/Game Status")]
    public Button endTurnButton;                   // The button to disable when the game ends.
    private bool _isGameActive = true;           // Tracks if the game is currently in progress.
+   [SerializeField] private GameObject progressBar;     // Turn changing progress bar UI element.
 
    [Header("Enemy Settings")]
    [SerializeField] private GameObject enemyPanel;      // The enemy panel UI element.
@@ -82,10 +85,11 @@ public class TurnManager : MonoBehaviour
       tradeHutManager = TradeHutManager.Instance;
       UpdateTurnUI();
       tradeHutManager.WorldEventChance();
+      progressBar.GetComponent<Animator>().SetTrigger("StartProgressBar");
    }
 
    // Advances the game to the next turn and updates the UI,
-   public void EndTurn()
+   public async void EndTurn()
    {
       Debug.Log("### TurnManager Start() ###");
 
@@ -103,6 +107,9 @@ public class TurnManager : MonoBehaviour
       }
       else
       {
+         progressBar.SetActive(true);
+         await Task.Delay(1000);
+         progressBar.SetActive(false);
          UpdateTurnUI();
          HandleJamming();
          HandleEnemy();
