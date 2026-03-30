@@ -233,24 +233,29 @@ public class ExplorationUnitManager : MonoBehaviour
                              string textB, UnityAction actionB, bool interactableB,
                              string textC, UnityAction actionC, bool interactableC)
    {
-      Debug.Log("Sets up buttons");
       Transform container = decisionPanel.Find("ButtonContainer");
+      foreach (Transform child in container)
+      {
+         NodeHover hover = child.GetComponent<NodeHover>();
+         if (hover != null) hover.isTierLocked = false;
+      }
 
-      ExploreEvents currentEvent = eventController.currentEvent;
+         ExploreEvents currentEvent = eventController.currentEvent;
 
       // Sets up choice 1 (always exists)
       Button button1 = container.Find("Choice1").GetComponent<Button>();
       if (button1 != null)
       {
-         Debug.Log("Choice1");
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
          button1.onClick.RemoveAllListeners();
+         if (actionA != null) button1.onClick.AddListener(actionA);
 
          bool isLockedA = currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
+
+         NodeHover hover1 = button1.GetComponent<NodeHover>();
+         if (hover1 != null) hover1.isTierLocked = isLockedA;
          button1.interactable = interactableA && !isLockedA;
-         if (button1.interactable && actionA != null)
-            button1.onClick.AddListener(actionA);
       }
       // Sets up choice 2 if there is text for it
       Button button2 = container.Find("Choice2").GetComponent<Button>();
@@ -261,12 +266,12 @@ public class ExplorationUnitManager : MonoBehaviour
             button2.gameObject.SetActive(true);
             button2.GetComponentInChildren<TextMeshProUGUI>().text = textB;
             button2.onClick.RemoveAllListeners();
+            if (actionB != null) button2.onClick.AddListener(actionB);
 
             bool isLockedB = currentEvent != null && currentEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked;
+            NodeHover hover2 = button2.GetComponent<NodeHover>();
+            if (hover2 != null) hover2.isTierLocked = isLockedB;
             button2.interactable = interactableB && !isLockedB;
-
-            if (button2.interactable && actionB != null)
-               button2.onClick.AddListener(actionB);
          }
          else
             button2.gameObject.SetActive(false);

@@ -12,6 +12,7 @@ public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
    [SerializeField] private UIFade uiFade;
 
    public bool alwaysShow = true;
+   public bool isTierLocked = false;
 
    private Button associatedButton;
 
@@ -35,11 +36,13 @@ public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
    // Sets the info panel active upon hovering over this object                                 
    private void OnPointerEnter(PointerEventData EventData)
    {
-      bool shouldShow = true;
+      bool shouldShow = false;
 
-      if (!alwaysShow && associatedButton != null)
-         if (associatedButton.interactable)
-            shouldShow = false;
+      if (alwaysShow)
+         shouldShow = true;
+      else if (associatedButton != null && !associatedButton.interactable)
+         if(isTierLocked)
+            shouldShow = true;
 
       //yield return new WaitForSeconds(.3f);
       if (shouldShow)
