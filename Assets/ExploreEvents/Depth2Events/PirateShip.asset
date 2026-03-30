@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: A pirate ship is ahead!
   choiceA:
-    buttonText: Speed past the ship (-1 fuel)
+    buttonText: Move quicker (-1 fuel)
+    resultText: You made it through safely, but the increased pace burned extra fuel.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: -1
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Fight the pirates!
+    buttonText: Fight for loot
+    resultText: Fighting the pirates caused some damage, but you came out with loot.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: -25
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 20
-    maxPearl: 45
+    maxPearl: 55
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

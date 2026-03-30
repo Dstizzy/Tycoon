@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::ExploreEvents
   description: An old ghost vessel has drifted into your path out of nowhere.
   choiceA:
-    buttonText: Swerve in a last-minute attempt to avoid too much contact.
+    buttonText: Swerve to avoid
+    resultText: You've avoided a full collision, but your hull scraped the side of
+      the vessel
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: -15
     fuelChange: 0
     waitTurn: 0
@@ -32,10 +33,10 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Dock your sub to it and board in search of valuables
+    buttonText: Dock and search
+    resultText: Your search crew has returned with a valuable reward.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

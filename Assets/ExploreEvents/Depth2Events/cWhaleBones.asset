@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::ExploreEvents
   description: The corpse of a huge sea creature is laying on the sea floor.
   choiceA:
-    buttonText: Harvest some of the organic material and convert it to fuel
+    buttonText: Harvest materials
+    resultText: You have harvested some of the organic materials and converted it
+      to fuel.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 1
     waitTurn: 0
@@ -32,10 +33,11 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Send your dive crew inside to look for valuables
+    buttonText: Search inside
+    resultText: Your dive team has returned and found something valuable inside the
+      creature!
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

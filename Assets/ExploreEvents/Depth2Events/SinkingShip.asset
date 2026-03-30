@@ -15,37 +15,37 @@ MonoBehaviour:
   description: You've discovered a ship that is quickly sinking. You have time for
     one action.
   choiceA:
-    buttonText: Siphen the remaining fuel.
-    goldChange: 0
+    buttonText: Siphen fuel
+    resultText: You have gained some fuel
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 1
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Salvage their cargo
-    goldChange: 0
+    buttonText: Salvage cargo
+    resultText: You've successfully taken some of the cargo.
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 5
-    maxGold: 20
-    minOre: 0
-    maxOre: 0
+    loseOre: 0
+    minPearl: 25
+    maxPearl: 40
+    minOre: 25
+    maxOre: 50
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

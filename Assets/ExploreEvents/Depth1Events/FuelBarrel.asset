@@ -15,36 +15,36 @@ MonoBehaviour:
   description: You have come across an unmarked floating barrel.
   choiceA:
     buttonText: Open Barrel
-    goldChange: 0
+    resultText: 'Barrel contains rewards:'
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 1
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
     buttonText: 
-    goldChange: 0
+    resultText: 
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

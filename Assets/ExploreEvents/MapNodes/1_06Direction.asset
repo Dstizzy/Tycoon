@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: 1_06Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_06
-  mapPosition: {x: -33, y: 37}
+  mapPosition: {x: -63, y: 90}
   isExplored: 0
   nodeDepth: 1
   type: 1
-  navigationStory: You have come to a large crack in the ocean floor.
-  choiceAText: Follow the left path
+  navigationStory: You have come to a fork in the pathway
+  choiceAText: Go left
   pathA: {fileID: 11400000, guid: 4f37228f27857d142aae3d27a42c70de, type: 2}
-  choiceBText: Follow the right path
+  choiceBText: Go right
   pathB: {fileID: 11400000, guid: 9cb875b5bf03d594d85ae693f10059fe, type: 2}
   choiceCText: 
   pathC: {fileID: 0}

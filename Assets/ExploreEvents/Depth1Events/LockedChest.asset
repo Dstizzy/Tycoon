@@ -15,36 +15,36 @@ MonoBehaviour:
   description: You have come across a locked chest on the ocean floor.
   choiceA:
     buttonText: Pick the lock
+    resultText: The lock caused a trap to fire, but loot has been retrieved.
     pearlChange: 10
     oreChange: 0
-    crystalChange: 0
     healthChange: -5
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
     buttonText: Smash the chest
+    resultText: The loot scatters, but some has been retrieved.
     pearlChange: 5
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

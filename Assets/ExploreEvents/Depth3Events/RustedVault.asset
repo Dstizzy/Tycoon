@@ -14,38 +14,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: A large rusted vault has sunken to the bottom of the ravine
   choiceA:
-    buttonText: Collect the resources around the vault.
+    buttonText: Collect surrounding resources
+    resultText: You've quickly collected some scattered resources around the vault.
     pearlChange: 15
     oreChange: 0
-    crystalChange: 10
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Carefully retrieve the vault, but risk taking damage
+    buttonText: Carefully retrieve
+    resultText: The vault has been retrieved and opened, with valuable loot inside.
+      Did you take any damage?
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
-    minPearl: 0
-    maxPearl: 0
-    minOre: 0
-    maxOre: 0
+    loseOre: 0
+    minPearl: 20
+    maxPearl: 65
+    minOre: 25
+    maxOre: 75
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
-    healthDamage: -10
+    healthDamage: -20
