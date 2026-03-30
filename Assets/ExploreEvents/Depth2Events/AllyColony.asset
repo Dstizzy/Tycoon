@@ -12,39 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: AllyColony
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your team has reached an ally's harbor
+  description: Your team has reached an ally's harbor. They can help repair your
+    ship
   choiceA:
-    buttonText: Stay one turn to restore some health
-    goldChange: 0
+    buttonText: Stay 1 turn; +20 health
+    resultText: 
+    pearlChange: 0
     oreChange: 0
     healthChange: 20
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 1
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Keep on moving
-    goldChange: 0
+    buttonText: Keep going
+    resultText: 
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: An underwater volcano ahead is erupting!
   choiceA:
-    buttonText: Use 3 fuel to power to ship's shields
-    goldChange: 0
+    buttonText: Use shields (-3 fuel)
+    resultText: The shields have protected your ship, but it has cost you some fuel!
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: -3
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
     buttonText: Brace for impact!
-    goldChange: 0
+    resultText: The impact from the volcano has damaged your hull.
+    pearlChange: 0
     oreChange: 0
     healthChange: -30
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

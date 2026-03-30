@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: 1_00Start
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 
-  mapPosition: {x: -160, y: 5}
-  isExplored: 1
-  nodeDepth: 0
+  mapPosition: {x: -220, y: 55}
+  isExplored: 0
+  nodeDepth: 1
   type: 0
   navigationStory: 
   choiceAText: 

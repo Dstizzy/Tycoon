@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: There is a sea cave ahead that passes through a large stone cliff
   choiceA:
-    buttonText: Pass through the cave, risking hull damage
-    goldChange: 0
+    buttonText: Pass through, risk damage
+    resultText: You made it through, but did you damage your hull?
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
     healthDamage: -20
   choiceB:
-    buttonText: Go over the cliff, using extra fuel
-    goldChange: 0
+    buttonText: Go over, use fuel
+    resultText: Going over has cost you some extra fuel.
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: -1
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

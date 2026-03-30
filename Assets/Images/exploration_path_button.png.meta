@@ -103,10 +103,10 @@ TextureImporter:
       name: exploration_path_button_0
       rect:
         serializedVersion: 2
-        x: 56
-        y: 72
-        width: 575
-        height: 222
+        x: 52
+        y: 105
+        width: 537
+        height: 169
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

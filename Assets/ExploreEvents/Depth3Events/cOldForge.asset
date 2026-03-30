@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: cOldForge
   m_EditorClassIdentifier: Main::ExploreEvents
-  description: An ancient, submerged forge was built directly around a magma vent.
-    The heavy stone doors are sealed shut by centuries of mineral buildup.
+  description: An submerged forge was built directly around a magma vent. The stone
+    doors are sealed shut by mineral buildup.
   choiceA:
-    buttonText: Break off the volcanic glass that has formed around the forge
+    buttonText: Break volcanic glass
+    resultText: Taking the glass has resulted in a gain of pearls!
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
@@ -33,10 +33,10 @@ MonoBehaviour:
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Send your dive crew inside to search for valuable items
+    buttonText: Search inside
+    resultText: Your dive team has returned with a valuable discovery.
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

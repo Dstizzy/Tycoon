@@ -19,8 +19,10 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI finalRewards; // Text of all the final exploration rewards
    [SerializeField] private TextMeshProUGUI decisionFuelText; // Text showing current fuel on decision panel
    [SerializeField] private TextMeshProUGUI decisionHealthText; // Text showing current health on decision panel
-   [SerializeField] private TextMeshProUGUI exploreFuelText; // Text showing current fuel on explore panel
-   [SerializeField] private TextMeshProUGUI exploreHealthText; // Text showing current health on explore panel
+   [SerializeField] private TextMeshProUGUI inventoryFuelText; // Text showing current fuel on explore panel
+   [SerializeField] private TextMeshProUGUI inventoryHealthText; // Text showing current health on explore panel
+   [SerializeField] private TextMeshProUGUI exploreFuelText;
+   [SerializeField] private TextMeshProUGUI exploreHealthText; 
 
    [Header("Ship Level Settings")]
    public int shipLevel { get; private set; } = 1; // Current level of the ship
@@ -85,6 +87,7 @@ public class ShipManager : MonoBehaviour
       UpdateStatsToLevel();
       currentHealth = maxHealth;
       currentFuel = maxFuel;
+
    }
 
    private void Start()
@@ -147,14 +150,18 @@ public class ShipManager : MonoBehaviour
    // Update the ship's fuel and health in the decision and explore panels
    private void UpdateShipUI()
    {
-      if (decisionFuelText != null)
-         decisionFuelText.text = $"fuel: {currentFuel}/{maxFuel}";
-      if (decisionHealthText != null)
-         decisionHealthText.text = $"{currentHealth}/{maxHealth}";
+      if (exploreHealthText != null)
+         exploreHealthText.text = $"{currentHealth}/{maxHealth}";
       if (exploreFuelText != null)
          exploreFuelText.text = $"{currentFuel}/{maxFuel}";
-      if (exploreHealthText != null)
-         exploreHealthText.text = $"health: {currentHealth}/{maxHealth}";
+      if (decisionFuelText != null)
+         decisionFuelText.text = $"{currentFuel}/{maxFuel}";
+      if (decisionHealthText != null)
+         decisionHealthText.text = $"{currentHealth}/{maxHealth}";
+      if (inventoryFuelText != null)
+         inventoryFuelText.text = $"{currentFuel}/{maxFuel}";
+      if (inventoryHealthText != null)
+         inventoryHealthText.text = $"{currentHealth}/{maxHealth}";
    }
 
    // Applies permanent stat boosts to the ship
