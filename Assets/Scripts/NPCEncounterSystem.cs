@@ -1957,10 +1957,24 @@ public class NPCEncounterSystem : MonoBehaviour
         };
     }
 
+   // Returns the first NPC profile matching the requested personality.
+   public NPCProfile GetProfileByPersonality(NPCPersonality personality)
+   {
+      if (npcProfiles == null)
+         return null;
 
-    // ─────────────────────────────────────────────────────────────────────
-    //  Public getters
-    // ─────────────────────────────────────────────────────────────────────
+      foreach (NPCProfile currentProfile in npcProfiles)
+      {
+         if (currentProfile != null && currentProfile.personality == personality)
+            return currentProfile;
+      }
+
+      return null;
+   }
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Public getters
+   // ─────────────────────────────────────────────────────────────────────
 
     public NPCProfile GetCurrentNPC()                  => currentNPC;
     public EncounterScenario GetCurrentScenario()      => currentScenario;
