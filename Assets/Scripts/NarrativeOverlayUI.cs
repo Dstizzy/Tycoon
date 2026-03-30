@@ -185,7 +185,7 @@ public class NarrativeOverlayUI : MonoBehaviour
       dialogueText.enableWordWrapping = true;
       dialogueText.richText = true;
 
-      nextButton = CreateButton("NextButton", dialoguePanel.transform, "Next ¨", out TextMeshProUGUI _);
+      nextButton = CreateButton("NextButton", dialoguePanel.transform, "Next >", out TextMeshProUGUI _);
       RectTransform nextRect = nextButton.GetComponent<RectTransform>();
       nextRect.anchorMin = new Vector2(1f, 0f);
       nextRect.anchorMax = new Vector2(1f, 0f);
