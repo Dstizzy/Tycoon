@@ -239,6 +239,10 @@ public class PopUpManager : MonoBehaviour
             break;
       }
       DisablePlayerInput();
+
+      // Show a one-time building explanation when narrative tutorial is enabled
+      if (BuildingTutorialGuideManager.Instance != null && buildingTransform != null)
+         BuildingTutorialGuideManager.Instance.TryShowBuildingGuide(buildingTransform.tag);
    }
 
    public void DisablePlayerInput()
