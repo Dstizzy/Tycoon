@@ -12,40 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
   m_Name: InkCloud
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: An ink cloud from a squid hinders your crew's visibility, and you
-    have scraped a rock face.
+  description: An ink cloud from a squid sticks to the windshield and hinders your
+    crew's visibility.
   choiceA:
-    buttonText: -10 health
-    goldChange: 0
+    buttonText: Push ahead
+    resultText: The ink caused a minor ship collision.
+    pearlChange: 0
     oreChange: 0
     healthChange: -10
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
     buttonText: 
-    goldChange: 0
+    resultText: 
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

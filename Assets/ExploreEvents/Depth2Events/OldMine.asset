@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: You have found an abandoned mine
   choiceA:
-    buttonText: Risk hull damage to search for resources
+    buttonText: Search it
+    resultText: You have found resources, but did you make it out damage-free?
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
-    maxPearl: 10
+    maxPearl: 25
     minOre: 0
-    maxOre: 15
+    maxOre: 30
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.3
     healthDamage: -15
   choiceB:
-    buttonText: 
+    buttonText: Avoid the risk
+    resultText: 
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

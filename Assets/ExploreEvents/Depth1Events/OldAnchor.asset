@@ -14,37 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: An old anchor is lodged slightly off the path lodged in coral
   choiceA:
-    buttonText: Pry it loose
+    buttonText: Pry loose
+    resultText: You have gained materials from the anchor, but it costed you a minor
+      scrape on the coral.
     pearlChange: 0
     oreChange: 10
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
     healthDamage: -5
   choiceB:
-    buttonText: Ignore it and keep going
+    buttonText: Ignore
+    resultText: 
     pearlChange: 0
     oreChange: 0
-    crystalChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
     waitTurn: 0
+    loseOre: 0
     minPearl: 0
     maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

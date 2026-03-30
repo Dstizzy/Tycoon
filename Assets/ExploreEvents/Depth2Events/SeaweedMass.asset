@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
   description: A huge mass of seaweed blocks the path ahead
   choiceA:
-    buttonText: Wait a turn for the seaweed to pass by
-    goldChange: 0
+    buttonText: Wait 1 turn
+    resultText: 
+    pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: Push through the seaweed but risk hull damage
-    goldChange: 0
+    buttonText: Push through
+    resultText: The thick seaweed ripped off some of your ship.
+    pearlChange: 0
     oreChange: 0
     healthChange: -20
     fuelChange: 0
-    inventoryChange: 0
-    harpoonChange: 0
-    artifactChange: 0
     waitTurn: 0
-    minGold: 0
-    maxGold: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
     minOre: 0
     maxOre: 0
+    requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0

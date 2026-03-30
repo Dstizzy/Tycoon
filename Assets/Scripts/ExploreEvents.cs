@@ -13,6 +13,7 @@ public class ExploreEvents : ScriptableObject
 public struct EventChoice
 {
    public string buttonText; // Text displayed on the physical button
+   public string resultText;
 
    [Header("Guaranteed Result")]
    // Flat rate resource changes applied to ship's inventory when button is clicked (use negative values for costs/damage)

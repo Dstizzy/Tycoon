@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: 2_09Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 2_09
-  mapPosition: {x: 44, y: -37}
+  mapPosition: {x: 30, y: 10}
   isExplored: 0
   nodeDepth: 2
   type: 1
   navigationStory: The path ahead splits in two
-  choiceAText: Take the left route
+  choiceAText: Left path
   pathA: {fileID: 11400000, guid: 3a0beeab9da4572499a84fac7121ec15, type: 2}
-  choiceBText: Take the right route
+  choiceBText: Right path
   pathB: {fileID: 11400000, guid: a2d4720dd029c4343ae6487ccb4e600d, type: 2}
   choiceCText: 
   pathC: {fileID: 0}

@@ -23,7 +23,6 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI decisionResults; // Describes an event choice's results
    [SerializeField] private TextMeshProUGUI shipInventory; // Lists the ship's current inventory
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
- //  [SerializeField] private GameObject exploreShipIcon; // Visual representation of ship on map
 
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer buildingSpriteRenderer;
@@ -42,11 +41,8 @@ public class ExplorationUnitManager : MonoBehaviour
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
    private int lastProcessedTurn = 0;
-   private bool skipFirstTurn = false;
 
-  // public  bool tutorialFunction = false; // Checks if the Exploration Unit function has been explained in the tutorial
-
-   public static ExplorationUnitManager Instance {get; private set; }
+   public static ExplorationUnitManager Instance { get; private set; }
    private void Awake()
    {
       // Verify all panels are assigned and disable them at startup
@@ -74,9 +70,9 @@ public class ExplorationUnitManager : MonoBehaviour
       if (isExploring && TurnManager.Instance.currentTurn > lastProcessedTurn)
       {
          // A new turn has started, but we wait until the UI is clear
-        
-            lastProcessedTurn = TurnManager.Instance.currentTurn;
-            HandleNewTurn();
+
+         lastProcessedTurn = TurnManager.Instance.currentTurn;
+         HandleNewTurn();
       }
    }
 
@@ -84,14 +80,12 @@ public class ExplorationUnitManager : MonoBehaviour
    private void OnEnable()
    {
       ShipManager.OnShipDeath += HandleExplorationDone;
-      TurnManager.OnTurnEnded += HandleNewTurn;
    }
 
    // Event destroyer
    private void OnDisable()
    {
       ShipManager.OnShipDeath -= HandleExplorationDone;
-      TurnManager.OnTurnEnded -= HandleNewTurn;
    }
 
    // Activates the requested exploration unit panel
@@ -105,7 +99,7 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-  //             bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               //             bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
                bool canExplore = !isExploring; //&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
@@ -122,12 +116,12 @@ public class ExplorationUnitManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            //Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
-            /*if (yesButton != null)
+            Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
+            if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
-            }*/
+            }
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
          default:
@@ -139,20 +133,22 @@ public class ExplorationUnitManager : MonoBehaviour
    // Starts exploration, gets the starting node, and queues the first move
    public void StartExploration()
    {
-      Debug.Log("Exploration started");
       isExploring = true;
       lastProcessedTurn = TurnManager.Instance.currentTurn;
-      skipFirstTurn = true;
       if (MapManager.Instance.startingNode != null)
       {
-         nextTurnDestination = MapManager.Instance.startingNode.nextNode;
+         MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
+         nextTurnDestination = null;
       }
-//      if (tutorialFunction)
- //     {
- //        tutorialFunction = false;
- //        HandleTutorial?.Invoke();
- //     }
       CloseExplorationPanel();
+      StartCoroutine(InitializeFirstTurnRoutine());
+   }
+
+   //
+   private System.Collections.IEnumerator InitializeFirstTurnRoutine()
+   {
+      yield return new WaitForEndOfFrame();
+      HandleNewTurn();
    }
 
    //
@@ -298,7 +294,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       // If anything changed, shows the results of the decision
       if (results.HasChanges())
-         ShowResultsPanel(results, currentNode);
+         ShowResultsPanel(results, currentNode, choice.resultText);
       // Otherwise, move on to the next turn
       else
       {
@@ -316,101 +312,97 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles map movements and spawning new events
    public void HandleNewTurn()
    {
-      Debug.Log("New turn detected in exploration");
-      if (isExploring)
+      if (!isExploring) return;
+      Debug.Log("Processing HandleNewTurn...");
+      // Handle if user lost a turn
+      if (isWaiting)
       {
-         // Handle if user lost a turn
-         if (isWaiting)
-         {
-            shipManager.NewTurn();
-            if (!isExploring) return;
-            isWaiting = false;
-            return;
-         }
-         // If destination exists, move the ship on the map
-         MapNode nextNode = nextTurnDestination;
-         if (nextNode != null)
-         {
-            MapManager.Instance.MoveToNode(nextNode);
-            nextTurnDestination = null;
-         }
-         // Burn fuel and depth damage for current turn
          shipManager.NewTurn();
-         if (!isExploring)
-            return;
-         // Determine node type landed on
-         MapNode current = MapManager.Instance.currentNode;
+         if (!isExploring) return;
+         isWaiting = false;
+         return;
+      }
+      // If destination exists, move the ship on the map
+      if (nextTurnDestination != null)
+      {
+         MapManager.Instance.MoveToNode(nextTurnDestination);
+         nextTurnDestination = null;
+      }
+      // Burn fuel and depth damage for current turn
+      shipManager.NewTurn();
+      if (!isExploring) return;
 
-         // Trigger finale and stop if current node is an end node
-         if (current.isFinalNode)
-         {
-            HandleFinalNode(current);
-            return;
-         }
-         // Open the decision panel UI
-         decisionPanel.gameObject.SetActive(true);
-       //  if(tutorialFunction)
-       //  {
-       //     decisionPanel.Find("Arrow").gameObject.SetActive(true);
-       //     decisionPanel.Find("Arrow2").gameObject.SetActive(true);
-        //    decisionPanel.Find("FirstText").gameObject.SetActive(true);
-       //  }
+      // Determine node type landed on
+      MapNode current = MapManager.Instance.currentNode;
+
+      if(current == null)
+      {
+         Debug.LogError("ExplorationManager: Current Node is NULL");
+         return;
+      }   
+
+      // Trigger finale and stop if current node is an end node
+      if (current.isFinalNode)
+      {
+         HandleFinalNode(current);
+         return;
+      }
+      // Open the decision panel UI
+      decisionPanel.gameObject.SetActive(true);
+
+      // Set up inventory button on decisionPanel
+      Button inventoryButton = decisionPanel.Find("CargoTab").GetComponent<Button>();
+      inventoryButton.onClick.RemoveAllListeners();
+      inventoryButton.onClick.AddListener(() =>
+      {
+         ShowInventoryPanel();
+         CloseDecisionPanel();
+      });
+
+      // Set up return ship button on decisionPanel
+      Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
+      returnShip.onClick.RemoveAllListeners();
+      returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
+
+      // Handle a directional node decision
+      if (current.type == MapNode.NodeType.Directional)
+      {
+         eventController.scenarioText.text = current.navigationStory;
 
          SetupButtons(
-               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
-               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
-               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true);
+            current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+            current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
+            current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true
+         );
+      }
+      // Handle event node decision
+      else
+      {
+         // Pull random event from database based on current depth
+         ExploreEvents randomEvent = eventDatabase.GetRandomEvent(current.nodeDepth);
 
-         // Set up inventory button on decisionPanel
-         Button inventoryButton = decisionPanel.Find("ShipInventory").GetComponent<Button>();
-         inventoryButton.onClick.RemoveAllListeners();
-         inventoryButton.onClick.AddListener(() => ShowInventoryPanel());
-
-         // Set up return ship button on decisionPanel
-         Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
-         returnShip.onClick.RemoveAllListeners();
-         returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
-
-         // Handle a directional node decision
-         if (current.type == MapNode.NodeType.Directional)
+         if (randomEvent != null)
          {
-            eventController.scenarioText.text = current.navigationStory;
+            eventController.SetEventPanel(randomEvent);
+            // 1. Check if they can afford it AND if they meet the Tier 2 requirement
+            bool canAffordA = shipManager.CanAfford(randomEvent.choiceA) && (!randomEvent.choiceA.requiresLabTier || shipManager.isTier2Unlocked);
+            bool canAffordB = shipManager.CanAfford(randomEvent.choiceB) && (!randomEvent.choiceB.requiresLabTier || shipManager.isTier2Unlocked);
 
+            // 2. Format the text (Add [LOCKED] if they don't have the upgrade)
+            string textA = randomEvent.choiceA.buttonText;
+            if (randomEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked)
+               textA = "[LOCKED] " + textA;
+
+            string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
+            if (textB != null && randomEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked)
+               textB = "[LOCKED] " + textB;
+
+            // 3. Set up the event choices
             SetupButtons(
-               current.choiceAText, () => { nextTurnDestination = current.pathA; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
-               current.choiceBText, () => { nextTurnDestination = current.pathB; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true,
-               current.choiceCText, () => { nextTurnDestination = current.pathC; if (!CheckForDepthIncrease(nextTurnDestination)) CloseDecisionPanel(); }, true
+               textA, () => ProcessDecision(randomEvent.choiceA, current), canAffordA,
+               textB, () => ProcessDecision(randomEvent.choiceB, current), canAffordB,
+               null, null, false
             );
-         }
-         // Handle event node decision
-         else
-         {
-            // Pull random event from database based on current depth
-            ExploreEvents randomEvent = eventDatabase.GetRandomEvent(current.nodeDepth);
-
-            if (randomEvent != null)
-            {
-               eventController.SetEventPanel(randomEvent);
-               // 1. Check if they can afford it AND if they meet the Tier 2 requirement
-               bool canAffordA = shipManager.CanAfford(randomEvent.choiceA) && (!randomEvent.choiceA.requiresLabTier || shipManager.isTier2Unlocked);
-               bool canAffordB = shipManager.CanAfford(randomEvent.choiceB) && (!randomEvent.choiceB.requiresLabTier || shipManager.isTier2Unlocked);
-
-               // 2. Format the text (Add [LOCKED] if they don't have the upgrade)
-               string textA = randomEvent.choiceA.buttonText;
-               if (randomEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked)
-                  textA = "[LOCKED] " + textA;
-
-               string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
-               if (textB != null && randomEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked)
-                  textB = "[LOCKED] " + textB;
-
-               // 3. Set up the event choices
-               SetupButtons(
-                  textA, () => ProcessDecision(randomEvent.choiceA, current), canAffordA,
-                  textB, () => ProcessDecision(randomEvent.choiceB, current), canAffordB,
-                  null, null, false
-               );
-            }
          }
       }
    }
@@ -462,18 +454,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
-
-  /*    if(tutorialFunction)
-      {
-         explorePanel.Find("Arrow").gameObject.SetActive(true);
-         explorePanel.Find("FirstText").gameObject.SetActive(true);
-      }
-      else
-      {
-         explorePanel.Find("Arrow").gameObject.SetActive(false);
-         explorePanel.Find("FirstText").gameObject.SetActive(false);
-      }
- */  }
+   }
 
    //
    private void ShowInfoPanel()
@@ -489,7 +470,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       panelManager.OpenPanel(upgradePanel.gameObject);
 
-      /*int upgradeCost = GetUpgradeCost();
+      int upgradeCost = GetUpgradeCost();
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
       TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
       Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
@@ -524,15 +505,15 @@ public class ExplorationUnitManager : MonoBehaviour
       }
 
       if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(false);*/
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    // Shows the event results panel with the all results from an event
-   private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode)
+   private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode, string resultMessage)
    {
       decisionResultsPanel.gameObject.SetActive(true);
       SetDecisionInteractable(false);
-      string resultsText = "";
+      string resultsText = $"{resultMessage}\n\n";
 
       // Checks to see if event resulted in any ship or inventory changes, and show changes on panel
       if (results.pearlChanged != 0)
@@ -596,11 +577,12 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       inventoryPanel.gameObject.SetActive(true);
       SetDecisionInteractable(false);
-      Button closeInventoryPanel = inventoryPanel.Find("ClosePanelButton").GetComponent<Button>();
+      Button closeInventoryPanel = inventoryPanel.Find("ChartsTab").GetComponent<Button>();
       closeInventoryPanel.onClick.RemoveAllListeners();
       closeInventoryPanel.onClick.AddListener(() =>
       {
          inventoryPanel.gameObject.SetActive(false);
+         decisionPanel.gameObject.SetActive(true);
          SetDecisionInteractable(true);
       });
 
@@ -642,10 +624,10 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       panelManager.ClosePanel(explorePanel.gameObject);
 
-   //   if (tutorialFunction)
-   //   {
-    //     HandleTutorial?.Invoke();
-    //  }
+      //   if (tutorialFunction)
+      //   {
+      //     HandleTutorial?.Invoke();
+      //  }
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -678,16 +660,17 @@ public class ExplorationUnitManager : MonoBehaviour
       Debug.Log("Closing decision panel");
       decisionPanel.gameObject.SetActive(false);
 
-   /*   if (tutorialFunction)
-      {
-         if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
-         if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
-         if (decisionPanel.Find("FirstText")) decisionPanel.Find("FirstText").gameObject.SetActive(false);
+      /*   if (tutorialFunction)
+         {
+            if (decisionPanel.Find("Arrow")) decisionPanel.Find("Arrow").gameObject.SetActive(false);
+            if (decisionPanel.Find("Arrow2")) decisionPanel.Find("Arrow2").gameObject.SetActive(false);
+            if (decisionPanel.Find("FirstText")) decisionPanel.Find("FirstText").gameObject.SetActive(false);
 
-         tutorialFunction = false;
-         HandleTutorial?.Invoke();
-      }
- */  }
+            tutorialFunction = false;
+            HandleTutorial?.Invoke();
+         }
+    */
+   }
 
    private void UpdateExplorationSprites()
    {

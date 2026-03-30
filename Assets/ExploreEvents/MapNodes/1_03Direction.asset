@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: 1_03Direction
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   nodeName: 1_03
-  mapPosition: {x: -90, y: 5}
-  isExplored: 1
+  mapPosition: {x: -132, y: 55}
+  isExplored: 0
   nodeDepth: 1
   type: 1
-  navigationStory: You have come to a coral reef, and you must go around it.
-  choiceAText: Go to the left
+  navigationStory: You have come to a large ravine in the ocean floor.
+  choiceAText: Take left side
   pathA: {fileID: 11400000, guid: bd3d86b077522bb47ac284a063d07531, type: 2}
-  choiceBText: Go to the right
+  choiceBText: Take right side
   pathB: {fileID: 11400000, guid: e4c4230130a10a64fa7cea00d999f17a, type: 2}
   choiceCText: 
   pathC: {fileID: 0}
