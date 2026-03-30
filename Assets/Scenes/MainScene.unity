@@ -27449,6 +27449,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549055553}
   m_CullTransparentMesh: 1
+--- !u!1 &550084991 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7026030790246975435, guid: aff3a4c5b414bf94a98cb9c9838d84a7, type: 3}
+  m_PrefabInstance: {fileID: 1451428518}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &551665207
 GameObject:
   m_ObjectHideFlags: 0
@@ -33324,7 +33329,7 @@ MonoBehaviour:
   - {fileID: 978953384}
   - {fileID: 952983952}
   - {fileID: 1102698752}
-  npcPrefab: {fileID: 0}
+  npcPrefab: {fileID: 550084991}
   spawnOffset: {x: -6, y: -1, z: 0}
   spawnChancePerTurn: 100
   dialogueUI: {fileID: 2091636200}
