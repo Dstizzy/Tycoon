@@ -15,8 +15,8 @@ MonoBehaviour:
   description: A narrow fissure is seen that could save fuel
   choiceA:
     buttonText: Squeeze through
-    resultText: You have made it through and saved fuel, but scraped the rocks a
-      few times.
+    resultText: You have made it through and saved fuel, but may have scraped the
+      rocks a few times.
     pearlChange: 0
     oreChange: 0
     healthChange: 0
