@@ -395,14 +395,8 @@ public class ExplorationUnitManager : MonoBehaviour
             bool canAffordA = shipManager.CanAfford(randomEvent.choiceA) && (!randomEvent.choiceA.requiresLabTier || shipManager.isTier2Unlocked);
             bool canAffordB = shipManager.CanAfford(randomEvent.choiceB) && (!randomEvent.choiceB.requiresLabTier || shipManager.isTier2Unlocked);
 
-            // 2. Format the text (Add [LOCKED] if they don't have the upgrade)
             string textA = randomEvent.choiceA.buttonText;
-            if (randomEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked)
-               textA = "[LOCKED] " + textA;
-
             string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
-            if (textB != null && randomEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked)
-               textB = "[LOCKED] " + textB;
 
             // 3. Set up the event choices
             SetupButtons(
