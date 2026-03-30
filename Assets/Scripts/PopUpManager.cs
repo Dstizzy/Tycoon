@@ -171,13 +171,15 @@ public class PopUpManager : MonoBehaviour
       // 1. ANCHOR METHOD (Check for manual override first)
       // ========================================================
       Transform anchor = buildingTransform.Find("PopupAnchor");
-      if (anchor != null) {
+      if (anchor != null) 
+      {
          fixedPopUpPosition = anchor.position;
       }
       // ========================================================
       // 2. BOUNDS METHOD (Automatically find the top-left edge)
       // ========================================================
-      else if (buildingTransform.TryGetComponent<Collider2D>(out Collider2D coll)) {
+      else if (buildingTransform.TryGetComponent<Collider2D>(out Collider2D coll)) 
+      {
          // coll.bounds.min.x gets the exact left edge of the collider
          // coll.bounds.max.y gets the exact top edge of the collider
          float leftPadding = 1.5f; // How far to the left of the building the buttons should start
@@ -196,7 +198,6 @@ public class PopUpManager : MonoBehaviour
          Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
          fixedPopUpPosition = buildingTransform.position + offset;
       }
-
 
       buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge")) ? buildingButtonsPreFab.Length : 2;
 
