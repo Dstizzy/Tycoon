@@ -2684,6 +2684,8 @@ GameObject:
   - component: {fileID: 60308848}
   - component: {fileID: 60308847}
   - component: {fileID: 60308846}
+  - component: {fileID: 60308850}
+  - component: {fileID: 60308849}
   m_Layer: 5
   m_Name: OkButton
   m_TagString: Untagged
@@ -2793,6 +2795,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 60308844}
   m_CullTransparentMesh: 1
+--- !u!114 &60308849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60308844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &60308850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60308844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &62695032
 GameObject:
   m_ObjectHideFlags: 0
@@ -3745,7 +3776,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &82078138
 Transform:
   m_ObjectHideFlags: 0
@@ -16625,7 +16656,6 @@ GameObject:
   - component: {fileID: 244847641}
   - component: {fileID: 244847640}
   - component: {fileID: 244847639}
-  - component: {fileID: 244847644}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -16763,22 +16793,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &244847644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 244847637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::CursorManager
-  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
-  normalHotspot: {x: 0, y: 0}
-  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
-  hoverHotspot: {x: 20, y: 12}
 --- !u!1 &248358240
 GameObject:
   m_ObjectHideFlags: 0
@@ -23559,6 +23573,8 @@ GameObject:
   - component: {fileID: 438353167}
   - component: {fileID: 438353166}
   - component: {fileID: 438353165}
+  - component: {fileID: 438353169}
+  - component: {fileID: 438353168}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -23667,6 +23683,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 438353163}
   m_CullTransparentMesh: 1
+--- !u!114 &438353168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438353163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &438353169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438353163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &439276222
 GameObject:
   m_ObjectHideFlags: 0
@@ -24231,6 +24276,8 @@ GameObject:
   - component: {fileID: 455152185}
   - component: {fileID: 455152184}
   - component: {fileID: 455152183}
+  - component: {fileID: 455152187}
+  - component: {fileID: 455152186}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -24352,6 +24399,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 455152181}
   m_CullTransparentMesh: 1
+--- !u!114 &455152186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455152181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &455152187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455152181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &459783872
 GameObject:
   m_ObjectHideFlags: 0
@@ -29867,6 +29943,8 @@ GameObject:
   - component: {fileID: 612783604}
   - component: {fileID: 612783603}
   - component: {fileID: 612783602}
+  - component: {fileID: 612783606}
+  - component: {fileID: 612783605}
   m_Layer: 5
   m_Name: OkButton
   m_TagString: Untagged
@@ -29976,6 +30054,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 612783600}
   m_CullTransparentMesh: 1
+--- !u!114 &612783605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612783600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &612783606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612783600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &613112422
 GameObject:
   m_ObjectHideFlags: 0
@@ -30401,6 +30508,8 @@ GameObject:
   - component: {fileID: 624977450}
   - component: {fileID: 624977449}
   - component: {fileID: 624977448}
+  - component: {fileID: 624977454}
+  - component: {fileID: 624977453}
   m_Layer: 5
   m_Name: CargoTab
   m_TagString: Untagged
@@ -30550,6 +30659,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 624977446}
   m_CullTransparentMesh: 1
+--- !u!114 &624977453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624977446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &624977454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624977446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &625370710
 GameObject:
   m_ObjectHideFlags: 0
@@ -33641,6 +33779,8 @@ GameObject:
   - component: {fileID: 695518569}
   - component: {fileID: 695518568}
   - component: {fileID: 695518567}
+  - component: {fileID: 695518571}
+  - component: {fileID: 695518570}
   m_Layer: 5
   m_Name: ReturnButton
   m_TagString: Untagged
@@ -33750,6 +33890,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695518565}
   m_CullTransparentMesh: 1
+--- !u!114 &695518570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695518565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &695518571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695518565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &695617371
 GameObject:
   m_ObjectHideFlags: 0
@@ -36588,7 +36757,6 @@ GameObject:
   - component: {fileID: 740628280}
   - component: {fileID: 740628279}
   - component: {fileID: 740628278}
-  - component: {fileID: 740628283}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -36726,22 +36894,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &740628283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740628276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::CursorManager
-  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
-  normalHotspot: {x: 0, y: 0}
-  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
-  hoverHotspot: {x: 20, y: 12}
 --- !u!1 &745048333
 GameObject:
   m_ObjectHideFlags: 0
@@ -39497,6 +39649,8 @@ GameObject:
   - component: {fileID: 805720395}
   - component: {fileID: 805720394}
   - component: {fileID: 805720393}
+  - component: {fileID: 805720397}
+  - component: {fileID: 805720396}
   m_Layer: 5
   m_Name: Choice1
   m_TagString: Untagged
@@ -39606,6 +39760,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 805720391}
   m_CullTransparentMesh: 1
+--- !u!114 &805720396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805720391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &805720397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805720391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &809574266
 GameObject:
   m_ObjectHideFlags: 0
@@ -45066,7 +45249,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &826836820
 Transform:
   m_ObjectHideFlags: 0
@@ -51261,6 +51444,8 @@ GameObject:
   - component: {fileID: 988164703}
   - component: {fileID: 988164702}
   - component: {fileID: 988164701}
+  - component: {fileID: 988164705}
+  - component: {fileID: 988164704}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -51370,6 +51555,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988164699}
   m_CullTransparentMesh: 1
+--- !u!114 &988164704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988164699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &988164705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988164699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &993980322
 GameObject:
   m_ObjectHideFlags: 0
@@ -54010,6 +54224,8 @@ GameObject:
   - component: {fileID: 1055355572}
   - component: {fileID: 1055355571}
   - component: {fileID: 1055355570}
+  - component: {fileID: 1055355574}
+  - component: {fileID: 1055355573}
   m_Layer: 5
   m_Name: Return
   m_TagString: Untagged
@@ -54119,6 +54335,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1055355568}
   m_CullTransparentMesh: 1
+--- !u!114 &1055355573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055355568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1055355574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055355568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1061192112
 GameObject:
   m_ObjectHideFlags: 0
@@ -60897,6 +61142,8 @@ GameObject:
   - component: {fileID: 1223592999}
   - component: {fileID: 1223592998}
   - component: {fileID: 1223592997}
+  - component: {fileID: 1223593001}
+  - component: {fileID: 1223593000}
   m_Layer: 5
   m_Name: KeepGoing
   m_TagString: Untagged
@@ -61006,6 +61253,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1223592995}
   m_CullTransparentMesh: 1
+--- !u!114 &1223593000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223592995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1223593001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223592995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1223937315
 GameObject:
   m_ObjectHideFlags: 0
@@ -63338,6 +63614,8 @@ GameObject:
   - component: {fileID: 1273320001}
   - component: {fileID: 1273320000}
   - component: {fileID: 1273319999}
+  - component: {fileID: 1273320003}
+  - component: {fileID: 1273320002}
   m_Layer: 5
   m_Name: Choice2
   m_TagString: Untagged
@@ -63447,6 +63725,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1273319997}
   m_CullTransparentMesh: 1
+--- !u!114 &1273320002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1273319997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1273320003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1273319997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1273935485
 GameObject:
   m_ObjectHideFlags: 0
@@ -64409,6 +64716,8 @@ GameObject:
   - component: {fileID: 1293658525}
   - component: {fileID: 1293658524}
   - component: {fileID: 1293658523}
+  - component: {fileID: 1293658527}
+  - component: {fileID: 1293658526}
   m_Layer: 5
   m_Name: Choice3
   m_TagString: Untagged
@@ -64518,6 +64827,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293658521}
   m_CullTransparentMesh: 1
+--- !u!114 &1293658526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293658521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1293658527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293658521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1294832895
 GameObject:
   m_ObjectHideFlags: 0
@@ -73759,6 +74097,8 @@ GameObject:
   - component: {fileID: 1512658493}
   - component: {fileID: 1512658492}
   - component: {fileID: 1512658491}
+  - component: {fileID: 1512658495}
+  - component: {fileID: 1512658494}
   m_Layer: 5
   m_Name: Return
   m_TagString: Untagged
@@ -73868,6 +74208,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1512658489}
   m_CullTransparentMesh: 1
+--- !u!114 &1512658494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512658489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1512658495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512658489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1514747184
 GameObject:
   m_ObjectHideFlags: 0
@@ -75157,6 +75526,8 @@ GameObject:
   - component: {fileID: 1548224814}
   - component: {fileID: 1548224813}
   - component: {fileID: 1548224812}
+  - component: {fileID: 1548224818}
+  - component: {fileID: 1548224817}
   m_Layer: 5
   m_Name: ChartsTab
   m_TagString: Untagged
@@ -75306,6 +75677,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548224810}
   m_CullTransparentMesh: 1
+--- !u!114 &1548224817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548224810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1548224818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548224810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1548865038
 GameObject:
   m_ObjectHideFlags: 0
@@ -86410,6 +86810,8 @@ GameObject:
   - component: {fileID: 1678825907}
   - component: {fileID: 1678825906}
   - component: {fileID: 1678825905}
+  - component: {fileID: 1678825909}
+  - component: {fileID: 1678825908}
   m_Layer: 5
   m_Name: Confirm
   m_TagString: Untagged
@@ -86519,6 +86921,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1678825903}
   m_CullTransparentMesh: 1
+--- !u!114 &1678825908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678825903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1678825909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678825903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1678867023
 GameObject:
   m_ObjectHideFlags: 0
@@ -99347,6 +99778,8 @@ GameObject:
   - component: {fileID: 1942032653}
   - component: {fileID: 1942032652}
   - component: {fileID: 1942032651}
+  - component: {fileID: 1942032655}
+  - component: {fileID: 1942032654}
   m_Layer: 5
   m_Name: YesButton
   m_TagString: Untagged
@@ -99456,6 +99889,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942032649}
   m_CullTransparentMesh: 1
+--- !u!114 &1942032654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942032649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &1942032655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942032649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &1944239795
 GameObject:
   m_ObjectHideFlags: 0
@@ -102799,6 +103261,8 @@ GameObject:
   - component: {fileID: 2006285486}
   - component: {fileID: 2006285485}
   - component: {fileID: 2006285484}
+  - component: {fileID: 2006285488}
+  - component: {fileID: 2006285487}
   m_Layer: 5
   m_Name: ExploreButton
   m_TagString: Untagged
@@ -102908,6 +103372,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2006285482}
   m_CullTransparentMesh: 1
+--- !u!114 &2006285487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006285482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &2006285488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006285482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &2008146483
 GameObject:
   m_ObjectHideFlags: 0
@@ -106535,6 +107028,8 @@ GameObject:
   - component: {fileID: 2105267320}
   - component: {fileID: 2105267319}
   - component: {fileID: 2105267318}
+  - component: {fileID: 2105267322}
+  - component: {fileID: 2105267321}
   m_Layer: 5
   m_Name: KeepGoing
   m_TagString: Untagged
@@ -106644,6 +107139,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2105267316}
   m_CullTransparentMesh: 1
+--- !u!114 &2105267321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105267316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbeb0461af365145b596c855e908781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::CursorManager
+  normalCursor: {fileID: 2800000, guid: b71ce09173a5e3a47b10726d562c8561, type: 3}
+  normalHotspot: {x: 0, y: 0}
+  hoverCursor: {fileID: 2800000, guid: 0c3e9e14fa12cd3448453455d3010d31, type: 3}
+  hoverHotspot: {x: 20, y: 12}
+--- !u!114 &2105267322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105267316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates: []
 --- !u!1 &2106729850
 GameObject:
   m_ObjectHideFlags: 0
