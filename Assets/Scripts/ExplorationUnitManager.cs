@@ -215,19 +215,6 @@ public class ExplorationUnitManager : MonoBehaviour
       }
       else
          slotTransform.gameObject.SetActive(false);
-
-      /*   // Find the correct sprite from your list
-         Sprite spriteToUse = itemVisualsList.Find(x => x.name == itemName).icon;
-         if (spriteToUse == null) return;
-
-         GameObject slot = Instantiate(rewardSlotPrefab, container);
-
-         // Find children by name and set values
-         Image img = slot.transform.Find("Icon").GetComponent<Image>();
-         TextMeshProUGUI txt = slot.transform.Find("Count").GetComponent<TextMeshProUGUI>();
-
-         img.sprite = spriteToUse;
-         txt.text = amount > 0 ? $"+{amount}" : amount.ToString();   */
    }
 
    private void ClearContainer(Transform container)
