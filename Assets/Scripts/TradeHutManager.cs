@@ -24,7 +24,7 @@ public class TradeHutManager : MonoBehaviour
                     public  Transform BuyPanel;       
                     public  Transform RecycleButton;
    [SerializeField] private RectTransform flipTarget;
-   [SerializeField] private RectTransform buyContainer;
+   [SerializeField] private Transform worldEventSymbols;
 
    public PanelManager panelManager;
    public List<Transform> SellItems { get; private set; }
@@ -75,6 +75,10 @@ public class TradeHutManager : MonoBehaviour
                engineChance,
 
                worldEvent;
+
+   public Image worldEventItem,
+                worldEventChange;
+
 
    private WorldEventTypes crudeToolEvent,
                            harpoonEvent,
@@ -1287,6 +1291,7 @@ public class TradeHutManager : MonoBehaviour
    // Determines world event selection and shift direction for the next cycle.
    public void WorldEventChance() 
    {
+
       int worldEvent1 = (int)WorldEventTypes.CrudeToolEvent,
           finalWorldEvent;
 
@@ -1298,8 +1303,43 @@ public class TradeHutManager : MonoBehaviour
          else
             finalWorldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent);
 
-      worldEvent     = Rng.Next(worldEvent1, finalWorldEvent + 1);
-      shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
+
+      worldEvent       = Rng.Next(worldEvent1, finalWorldEvent + 1);
+      WorldEventItemVisual(worldEvent);
+      shiftDirection   = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
+      worldEventChange.sprite = shiftDirection < 50 ? worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite 
+                                                    : worldEventSymbols.Find("decreaseSymbol").GetComponent<Image>().sprite;
+   }
+
+   public void WorldEventItemVisual(int worldEvent) 
+   {
+      switch (worldEvent) 
+      {
+         case (int) WorldEventTypes.CrudeToolEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.CrudeTool);
+            break;
+         case (int) WorldEventTypes.HarpoonEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.Harpoon);
+            break;
+         case (int) WorldEventTypes.DivingBellEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.DivingBell);
+            break;
+         case (int) WorldEventTypes.PressureValveEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.PressureValve);
+            break;
+         case (int) WorldEventTypes.DeepSeaWarEvent:
+            worldEventItem.sprite= GetItemSprite(ItemType.Harpoon);
+            break;
+         case (int) WorldEventTypes.PrecisionLensEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.PrecisionLens);
+            break;
+         case (int) WorldEventTypes.ClockworkEngineEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.Engine);
+            break;
+         default:
+            Debug.LogError("Unkown Item: " +  worldEvent);
+            break;
+      }
    }
 
    public void WorldEventNewsTickerText() 

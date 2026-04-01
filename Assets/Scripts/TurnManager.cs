@@ -119,6 +119,9 @@ public class TurnManager : MonoBehaviour
          {
             tradeHutManager.ResetWorldEventShifts();
             tradeHutManager.WorldEventChance();
+
+            tradeHutManager.worldEventItem.gameObject.SetActive(false);
+            tradeHutManager.worldEventChange.gameObject.SetActive(false);
          }
 
          // Apply the market shift
@@ -130,6 +133,14 @@ public class TurnManager : MonoBehaviour
             newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
             newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+
+            if(eventCountdown == 5) 
+            {
+               tradeHutManager.worldEventItem.gameObject.SetActive(true);
+               tradeHutManager.worldEventChange.gameObject.SetActive(true);
+            }
+               
+
          }
 
          // Predict the next turn
