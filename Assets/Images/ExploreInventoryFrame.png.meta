@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 86b9b300a9753de4dae46ac8f294a9a8
+guid: 676a881c3c26d714f84576aa74ac9048
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3377525360765534341
-    second: DecisionButtons_0
+      213: 3248319677423664638
+    second: ExploreInventoryFrame_0
+  - first:
+      213: -1506464454228375859
+    second: ExploreInventoryFrame_1
+  - first:
+      213: -8629363381479147105
+    second: ExploreInventoryFrame_2
+  - first:
+      213: -8356161446331224378
+    second: ExploreInventoryFrame_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DecisionButtons_0
+      name: ExploreInventoryFrame_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 3
-        width: 677
-        height: 334
+        x: 8
+        y: 0
+        width: 770
+        height: 1286
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b7f72bb449e9021d0800000000000000
-      internalID: -3377525360765534341
+      spriteID: efdbfb94989541d20800000000000000
+      internalID: 3248319677423664638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExploreInventoryFrame_1
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1283
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc607fa7f86f71be0800000000000000
+      internalID: -1506464454228375859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExploreInventoryFrame_2
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 26
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f99fb2199b75e3880800000000000000
+      internalID: -8629363381479147105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExploreInventoryFrame_3
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 33
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ceec99ff63f80c80800000000000000
+      internalID: -8356161446331224378
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      DecisionButtons_0: -3377525360765534341
+      ExploreInventoryFrame_0: 3248319677423664638
+      ExploreInventoryFrame_1: -1506464454228375859
+      ExploreInventoryFrame_2: -8629363381479147105
+      ExploreInventoryFrame_3: -8356161446331224378
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -24,6 +24,18 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI shipInventory; // Lists the ship's current inventory
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
 
+   [Header("Icon UI Settings")]
+   [SerializeField] private GameObject rewardSlotPrefab;
+   [SerializeField] private Transform inventoryIconContainer;
+   [System.Serializable] 
+   public struct ItemVisuals
+   {
+      public string name;
+      public Sprite icon;
+   }
+   public List<ItemVisuals> itemVisualsList;
+
+
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer buildingSpriteRenderer;
    [SerializeField] private List<Sprite> explorationLevelSprites;
@@ -189,6 +201,38 @@ public class ExplorationUnitManager : MonoBehaviour
       {
          Debug.Log("Not enough pearls to upgrade!");
       }
+   }
+   private void SpawnRewardIcon(Transform container, string itemName, int amount)
+   {
+      Transform slotTransform = inventoryIconContainer.Find(itemName);
+      if (slotTransform == null) return;
+
+      if(amount > 0)
+      {
+         slotTransform.gameObject.SetActive(true);
+         TextMeshProUGUI txt = slotTransform.Find("Count").GetComponent<TextMeshProUGUI>();
+         txt.text = $"x{amount}";
+      }
+      else
+         slotTransform.gameObject.SetActive(false);
+
+      /*   // Find the correct sprite from your list
+         Sprite spriteToUse = itemVisualsList.Find(x => x.name == itemName).icon;
+         if (spriteToUse == null) return;
+
+         GameObject slot = Instantiate(rewardSlotPrefab, container);
+
+         // Find children by name and set values
+         Image img = slot.transform.Find("Icon").GetComponent<Image>();
+         TextMeshProUGUI txt = slot.transform.Find("Count").GetComponent<TextMeshProUGUI>();
+
+         img.sprite = spriteToUse;
+         txt.text = amount > 0 ? $"+{amount}" : amount.ToString();   */
+   }
+
+   private void ClearContainer(Transform container)
+   {
+      foreach (Transform child in container) Destroy(child.gameObject);
    }
 
    // Checks if exploration is entering a new depth tier when ship is not currently at safe level
@@ -583,6 +627,17 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       inventoryPanel.gameObject.SetActive(true);
       SetDecisionInteractable(false);
+
+      SpawnRewardIcon(inventoryIconContainer, "Pearl", shipManager.GetPearl());
+      SpawnRewardIcon(inventoryIconContainer, "Ore", shipManager.GetOre());
+      SpawnRewardIcon(inventoryIconContainer, "Patch Kit", shipManager.GetPatchKit());
+      SpawnRewardIcon(inventoryIconContainer, "Harpoon", shipManager.GetHarpoon());
+      SpawnRewardIcon(inventoryIconContainer, "Crude Tool", shipManager.GetCrudeTool());
+      SpawnRewardIcon(inventoryIconContainer, "Pressure Valve", shipManager.GetPressureValve());
+      SpawnRewardIcon(inventoryIconContainer, "Diving Bell", shipManager.GetDivingBell());
+      SpawnRewardIcon(inventoryIconContainer, "Clockwork Engine", shipManager.GetClockworkEngine());
+      SpawnRewardIcon(inventoryIconContainer, "Precision Lens", shipManager.GetPrecisionLens());
+
       Button closeInventoryPanel = inventoryPanel.Find("ChartsTab").GetComponent<Button>();
       closeInventoryPanel.onClick.RemoveAllListeners();
       closeInventoryPanel.onClick.AddListener(() =>
@@ -591,29 +646,6 @@ public class ExplorationUnitManager : MonoBehaviour
          decisionPanel.gameObject.SetActive(true);
          SetDecisionInteractable(true);
       });
-
-      string currentInventory = "";
-
-      if (shipManager.GetPearl() > 0)
-         currentInventory += $"Pearl: {shipManager.GetPearl()}\n";
-      if (shipManager.GetOre() > 0)
-         currentInventory += $"Ore: {shipManager.GetOre()}\n";
-      if (shipManager.GetPatchKit() > 0)
-         currentInventory += $"Patch Kit: {shipManager.GetPatchKit()}\n";
-      if (shipManager.GetHarpoon() > 0)
-         currentInventory += $"Harpoons: {shipManager.GetHarpoon()}\n";
-      if (shipManager.GetCrudeTool() > 0)
-         currentInventory += $"Crude Tool: {shipManager.GetCrudeTool()}\n";
-      if (shipManager.GetPressureValve() > 0)
-         currentInventory += $"Pressure Valve: {shipManager.GetPressureValve()}\n";
-      if (shipManager.GetDivingBell() > 0)
-         currentInventory += $"Diving Bell: {shipManager.GetDivingBell()}\n";
-      if (shipManager.GetClockworkEngine() > 0)
-         currentInventory += $"Clockwork Engine: {shipManager.GetClockworkEngine()}\n";
-      if (shipManager.GetPrecisionLens() > 0)
-         currentInventory += $"Precision Lens: {shipManager.GetPrecisionLens()}\n";
-
-      shipInventory.text = currentInventory;
    }
 
    public void SetDecisionInteractable(bool isInteractable)
