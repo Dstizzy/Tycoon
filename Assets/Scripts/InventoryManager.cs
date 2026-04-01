@@ -46,30 +46,31 @@ public class InventoryManager : MonoBehaviour
 
 
    public const int RESOURCE_SPACING = 30,
-                    PEARL_POSITION = 0,
-                    ORE_POSITION = PEARL_POSITION + 13,
+                    PEARL_POSITION   = 0,
+                    ORE_POSITION     = PEARL_POSITION + 13,
 
-                    CRUDE_TOOL_POSITION = 0,
-                    HARPOON_POSITION = CRUDE_TOOL_POSITION + 10,
-                    PATCH_KIT_POSITION = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION = HARPOON_POSITION + 10,
-                    DIVING_BELL_POSITION = HARPOON_POSITION,
-                    ENGINE_POSITION = PRESSURE_VALVE_POSITION + 10,
-                    PRECISION_LENS_POSITION = PRESSURE_VALVE_POSITION,
+                    CRUDE_TOOL_POSITION         = 0,
+                    HARPOON_POSITION            = CRUDE_TOOL_POSITION + 10,
+                    DIVING_BELL_POSITION        = CRUDE_TOOL_POSITION,
+                    PRESSURE_VALVE_POSITION     = HARPOON_POSITION + 10,
+                    PATCH_KIT_POSITION          = HARPOON_POSITION,
+                    ENGINE_POSITION             = PRESSURE_VALVE_POSITION + 10,
+                    PRECISION_LENS_POSITION     = PRESSURE_VALVE_POSITION,
                     MERCENARY_ENGINEER_POSITION = ENGINE_POSITION;
 
-   public const string PEARL_TAG = "Pearl",
-                       CRYSTAL_TAG = "Crystal",
-                       ORE_TAG = "Ore",
-                       CRUDE_TOOL_TAG = "Crude Tool",
-                       HARPOON_TAG = "Harpoon",
-                       PATCH_KIT_TAG = "Patch Kit",
-                       PRESSURE_VALVE_TAG = "Pressure Valve",
-                       DIVING_BELL_TAG = "Diving Bell",
-                       ENGINE_TAG = "Engine",
-                       PRECISION_LENS_TAG = "Precision Lens",
-                       RAW_ORE_CHUNK_TAG = "Raw Ore Chunk",
+   public const string PEARL_TAG              = "Pearl",
+                       CRYSTAL_TAG            = "Crystal",
+                       ORE_TAG                = "Ore",
+                       CRUDE_TOOL_TAG         = "Crude Tool",
+                       HARPOON_TAG            = "Harpoon",
+                       PATCH_KIT_TAG          = "Patch Kit",
+                       PRESSURE_VALVE_TAG     = "Pressure Valve",
+                       DIVING_BELL_TAG        = "Diving Bell",
+                       ENGINE_TAG             = "Engine",
+                       PRECISION_LENS_TAG     = "Precision Lens",
+                       RAW_ORE_CHUNK_TAG      = "Raw Ore Chunk",
                        MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
+
    // Holds a reference to the singleton instance of this class.
    public static InventoryManager Instance { get; private set; }
 
@@ -197,10 +198,10 @@ public class InventoryManager : MonoBehaviour
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
@@ -597,57 +598,6 @@ public class InventoryManager : MonoBehaviour
 
       return isSuccess;
    }
-
-   //public bool TryAddCrystal(int crystalAmount)
-   //{
-   //   bool isSuccess = false;
-
-   //   if (crystalCount >= MAX_CRYSTAL_COUNT)
-   //   {
-   //      Debug.LogError("Crystal count is at maximum!");
-   //      ticker.ShowTicker("CRystal count is at maximum!", Color.red, MessageTypes.ResultMessage);
-   //   }
-   //   else
-   //      if ((crystalCount + crystalAmount) > MAX_CRYSTAL_COUNT)
-   //      ticker.ShowTicker("Cannot add crystals - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
-   //   else
-   //   {
-   //      crystalCount += crystalAmount;
-   //      isSuccess = true;
-   //   }
-
-   //   OnCrystalCountChanged?.Invoke(crystalCount);
-   //   CrystalCountText.text = " x" + crystalCount.ToString();
-
-   //   return isSuccess;
-   //}
-
-   //public bool TrySpendCrystal(int crystalAmount)
-   //{
-   //   bool isSuccess = false;
-
-   //   if (crystalCount <= MIN_CRYSTAL_COUNT)
-   //   {
-   //      ticker.ShowTicker("Crystal count is at minimum", Color.red, MessageTypes.ResultMessage);
-   //      Debug.LogError("Crystal count is at minimum!");
-   //   }
-   //   else
-   //      if (crystalCount < crystalAmount)
-   //   {
-   //      ticker.ShowTicker($"Cannot spend crystals, only {crystalCount} available!", Color.red, MessageTypes.ResultMessage);
-   //      Debug.LogError("Not enough crystals to spend!");
-   //   }
-   //   else
-   //   {
-   //      crystalCount -= crystalAmount;
-   //      isSuccess = true;
-   //   }
-
-   //   OnCrystalCountChanged?.Invoke(crystalCount);
-   //   CrystalCountText.text = " x" + crystalCount.ToString();
-
-   //   return isSuccess;
-   //}
 
    public bool TryAddOre(int oreAmount)
    {

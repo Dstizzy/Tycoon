@@ -220,8 +220,8 @@ public class TradeHutManager : MonoBehaviour
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool), GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 3.0f, HARPOON_TAG);
-      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 0.0f, PRESSURE_VALVE_TAG, -75);
-      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 3.0f, DIVING_BELL_TAG, -75);
+      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 0.0f, DIVING_BELL_TAG, -75);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 3.0f, PRESSURE_VALVE_TAG, -75);
       CreateSellItem(GetItemSprite(ItemType.PrecisionLens), GetItemValue(ItemType.PrecisionLens), 0.0f, PRECISION_LENS_TAG, -150);
       CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 3.0f, ENGINE_TAG, -150);
 
@@ -312,7 +312,7 @@ public class TradeHutManager : MonoBehaviour
       if (LabManager.currentCommerceTier < LabManager.TIER_ONE)
          tradeItemTransform.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(false);
 
-     if(itemTag != CRUDE_TOOL_TAG && itemTag != HARPOON_TAG) 
+     if(itemTag != CRUDE_TOOL_TAG && itemTag != HARPOON_TAG && itemTag != DIVING_BELL_TAG) 
      {
          tradeItemTransform.Find("ItemButton").gameObject.SetActive(false);
          tradeItemTransform.Find("ItemCount").gameObject.SetActive(false);
@@ -695,7 +695,7 @@ public class TradeHutManager : MonoBehaviour
 
             // Adds new craftable items to the inventory/craft list (pressure valve, diving bell)
             InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
+            InventoryManager.Instance.CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
 
             // Removes the tier 2 blueprint from the buy panel
             BuyItems.Find(item => item.CompareTag(INDUSTRIAL_BLUEPRINT_TAG)).gameObject.SetActive(false);
@@ -957,40 +957,6 @@ public class TradeHutManager : MonoBehaviour
 
       return;
    }
-
-   //public void MysterBoxResult(ResourceType resource, int resourceAmount) 
-   //{
-   //   MysteryBoxPanel.Find("StartingView").gameObject.SetActive(false);
-
-   //   Transform ResultContainer = MysteryBoxPanel.Find("ResultContainer");
-   //   Transform ResultTemplate  = ResultContainer.Find("ResultTemplate");
-   //   Transform ResultTransform = Instantiate(ResultTemplate, ResultContainer);
-
-   //   ResultTransform.Find("CurrencyIcon").GetComponent<Image>().sprite = GetResourceSprite(resource);
-   //   ResultTransform.Find("CurrencyObtained").GetComponent<TextMeshProUGUI>().text = resourceAmount.ToString();
-
-   //   currentMysteryBoxResult = ResultTransform;
-   //   ResultTransform.gameObject.SetActive(true);
-   //}
-
-   //public void OpenMysterBox() 
-   //{
-
-   //   int successChance = Rng.Next(1, 101);
-
-   //   if(successChance <= 60) 
-   //   { 
-   //      MysterBoxResult(ResourceType.Pearl, 200);
-   //      InventoryManager.Instance.TryAddPearl(200);
-   //   }
-   //   else 
-   //   {
-   //      MysterBoxResult(ResourceType.Crystal, 50);
-   //      InventoryManager.Instance.TryAddPearl(50);
-   //   }
-   //}
-
-   // Shows market shifts for next turn
    
    public void CraftMarketForesight() 
    {
@@ -1099,8 +1065,8 @@ public class TradeHutManager : MonoBehaviour
    // Helper method to keep your UI updates clean and perfectly matched to the math
    private void UpdateMarketPreviewUI(
       ItemType itemType, WorldEventTypes eventType, string itemTag,
-      int minSellCost, int maxSellCost, int baseValue = 0,
-      int chance = 0, int fluctuation = 0)
+      int minSellCost, int maxSellCost, int baseValue,
+      int chance, int fluctuation)
    {
        int currentVal = GetItemValue(itemType);
        int preview    = currentVal;
