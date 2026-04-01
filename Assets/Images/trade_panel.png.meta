@@ -106,10 +106,10 @@ TextureImporter:
       name: trade_panel_0
       rect:
         serializedVersion: 2
-        x: 109
-        y: 18
-        width: 452
-        height: 354
+        x: 6
+        y: 3
+        width: 646
+        height: 380
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -120,28 +120,6 @@ TextureImporter:
       bones: []
       spriteID: 44ecc93410eda4a30800000000000000
       internalID: 4200413699487092292
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: trade_panel_1
-      rect:
-        serializedVersion: 2
-        x: 504
-        y: 3
-        width: 154
-        height: 370
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3ba5bf889fc111a0800000000000000
-      internalID: -6840458104846046402
       vertices: []
       indices: 
       edges: []
