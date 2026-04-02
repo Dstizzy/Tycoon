@@ -379,7 +379,6 @@ public class ShipManager : MonoBehaviour
       returnShip.onClick.RemoveAllListeners();
       returnShip.onClick.AddListener(() => {
          StartCoroutine(FinishExploration());
-         StartCoroutine(ClosePanels());
          explorationUnitManager.SetDecisionInteractable(true);
       });
       Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
