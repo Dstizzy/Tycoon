@@ -16,13 +16,15 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private Transform healthPanel; // UI panel informing user that ship's health is gone
    [SerializeField] private Transform confirmReturnPanel; // UI panel asking user if they want to send ship back
    [SerializeField] private Transform finalRewardsPanel; // UI panel that shows total rewards at the end of exploration
-   [SerializeField] private TextMeshProUGUI finalRewards; // Text of all the final exploration rewards
    [SerializeField] private TextMeshProUGUI decisionFuelText; // Text showing current fuel on decision panel
    [SerializeField] private TextMeshProUGUI decisionHealthText; // Text showing current health on decision panel
    [SerializeField] private TextMeshProUGUI inventoryFuelText; // Text showing current fuel on explore panel
    [SerializeField] private TextMeshProUGUI inventoryHealthText; // Text showing current health on explore panel
    [SerializeField] private TextMeshProUGUI exploreFuelText;
-   [SerializeField] private TextMeshProUGUI exploreHealthText; 
+   [SerializeField] private TextMeshProUGUI exploreHealthText;
+
+   [Header("Final Rewards Panel UI")]
+   [SerializeField] private Transform rewardsContainer;
 
    [Header("Ship Level Settings")]
    public int shipLevel { get; private set; } = 1; // Current level of the ship
@@ -396,9 +398,19 @@ public class ShipManager : MonoBehaviour
    {
       ClosePanels();
       explorationUnitManager.CloseDecisionPanel();
+      finalRewardsPanel.gameObject.SetActive(true);
+
+      TrySpawnRewardRow(rewardsContainer, "Pearl", currentPearl);
+      TrySpawnRewardRow(rewardsContainer, "Ore", currentOre);
+      TrySpawnRewardRow(rewardsContainer, "Patch Kit", currentPatchKit);
+      TrySpawnRewardRow(rewardsContainer, "Harpoon", currentHarpoon);
+      TrySpawnRewardRow(rewardsContainer, "Crude Tool", currentCrudeTool);
+      TrySpawnRewardRow(rewardsContainer, "Pressure Valve", currentPressureValve);
+      TrySpawnRewardRow(rewardsContainer, "Diving Bell", currentDivingBell);
+      TrySpawnRewardRow(rewardsContainer, "Clockwork Engine", currentClockworkEngine);
+      TrySpawnRewardRow(rewardsContainer, "Precision Lens", currentPrecisionLens);
 
       // Activate and populate total rewards panel
-      finalRewardsPanel.gameObject.SetActive(true);
       Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
       confirmRewards.onClick.RemoveAllListeners();
       confirmRewards.onClick.AddListener(() =>
@@ -407,29 +419,22 @@ public class ShipManager : MonoBehaviour
          AddRewards();
       });
 
-      // Build summary text for final rewards panel based on ship's current inventory
-      string totalRewards = "";
-      if (currentPearl > 0)
-         totalRewards += $"Pearl: {currentPearl}\n";
-      if (currentOre > 0)
-         totalRewards += $"Ore: {currentOre}\n";
-      if (currentPatchKit > 0)
-         totalRewards += $"Patch Kits: {currentPatchKit}\n";
-      if (currentHarpoon > 0)
-         totalRewards += $"Harpoons: {currentHarpoon}\n";
-      if (currentCrudeTool > 0)
-         totalRewards += $"Crude Tools: {currentCrudeTool}\n";
-      if (currentPressureValve > 0)
-         totalRewards += $"Pressure Valve: {currentPressureValve}\n";
-      if (currentDivingBell > 0)
-         totalRewards += $"Diving Bells: {currentDivingBell}\n";
-      if (currentClockworkEngine > 0)
-         totalRewards += $"Clockwork Engines: {currentClockworkEngine}\n";
-      if (currentPrecisionLens > 0)
-         totalRewards += $"Precision Lenses: {currentPrecisionLens}\n";
-      finalRewards.text = totalRewards;
-
       ResetShip();
+   }
+
+   private void TrySpawnRewardRow(Transform container, string itemName, int amount)
+   {
+      Transform slotTransform = rewardsContainer.Find(itemName);
+      if (slotTransform == null) return;
+
+      if (amount > 0)
+      {
+         slotTransform.gameObject.SetActive(true);
+         TextMeshProUGUI txt = slotTransform.Find("Count").GetComponent<TextMeshProUGUI>();
+         txt.text = $"x{amount}";
+      }
+      else
+         slotTransform.gameObject.SetActive(false);
    }
 
    // Moves rewards from ship inventory to main game inventory

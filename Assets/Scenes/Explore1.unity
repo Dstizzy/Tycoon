@@ -52437,13 +52437,13 @@ MonoBehaviour:
   healthPanel: {fileID: 1477175176}
   confirmReturnPanel: {fileID: 1460775490}
   finalRewardsPanel: {fileID: 1171787374}
-  finalRewards: {fileID: 0}
   decisionFuelText: {fileID: 1702350817}
   decisionHealthText: {fileID: 671343598}
   inventoryFuelText: {fileID: 775746027}
   inventoryHealthText: {fileID: 578270726}
   exploreFuelText: {fileID: 646191062}
   exploreHealthText: {fileID: 1605004737}
+  rewardsContainer: {fileID: 1054515032}
   isTier2Unlocked: 0
 --- !u!114 &863821289
 MonoBehaviour:
@@ -52530,29 +52530,8 @@ MonoBehaviour:
   newDepthPanel: {fileID: 763969885}
   inventoryPanel: {fileID: 1821362273}
   decisionResults: {fileID: 2125612613}
-  shipInventory: {fileID: 0}
   depthWarningText: {fileID: 1539091632}
-  rewardSlotPrefab: {fileID: 5126163522773990440, guid: 5af7897b44bfde242a25da24d7ae5cd8, type: 3}
   inventoryIconContainer: {fileID: 1115018730}
-  itemVisualsList:
-  - name: Pearl
-    icon: {fileID: 8686295293490032475, guid: b0f977259d7670d4188c7db0fd7772f8, type: 3}
-  - name: Ore
-    icon: {fileID: -3215638422625849363, guid: 6e08e0ee8f105d94f9fba630398baa74, type: 3}
-  - name: Patch Kit
-    icon: {fileID: 4245571623706891739, guid: d01d9691b69413748b0527f664c25460, type: 3}
-  - name: Harpoon
-    icon: {fileID: 4337179028517637788, guid: cbb4033e5fcf6564ca03fc4d791b06c0, type: 3}
-  - name: Crude Tool
-    icon: {fileID: 6485558323749539720, guid: a6fdb9fc9ad20714ab85998672e4be86, type: 3}
-  - name: Pressure Valve
-    icon: {fileID: 5662290855432871155, guid: 2c585cee0e53ba64dba80a7ed20919b5, type: 3}
-  - name: Diving Bell
-    icon: {fileID: -2542159536658533531, guid: 0108d4bf6ee1b3d4cbdd814c9a6fb390, type: 3}
-  - name: Clockwork Engine
-    icon: {fileID: 7258802640479471264, guid: ee6abe2cdc1603d438286ed84611533d, type: 3}
-  - name: Precision Lens
-    icon: {fileID: -1319794350510518352, guid: b062ba077776cee4c862332d8224058e, type: 3}
   buildingSpriteRenderer: {fileID: 0}
   explorationLevelSprites: []
   explorationLevelText: {fileID: 0}
@@ -64728,7 +64707,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1136942408}
   m_Layer: 5
-  m_Name: Pearls
+  m_Name: Pearl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

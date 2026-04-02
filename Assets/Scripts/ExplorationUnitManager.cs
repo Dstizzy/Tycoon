@@ -21,20 +21,10 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private Transform inventoryPanel; // Shows the ship's current inventory
 
    [SerializeField] private TextMeshProUGUI decisionResults; // Describes an event choice's results
-   [SerializeField] private TextMeshProUGUI shipInventory; // Lists the ship's current inventory
    [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
 
    [Header("Icon UI Settings")]
-   [SerializeField] private GameObject rewardSlotPrefab;
    [SerializeField] private Transform inventoryIconContainer;
-   [System.Serializable] 
-   public struct ItemVisuals
-   {
-      public string name;
-      public Sprite icon;
-   }
-   public List<ItemVisuals> itemVisualsList;
-
 
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer buildingSpriteRenderer;
