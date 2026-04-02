@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class ShipManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class ShipManager : MonoBehaviour
    public const int LAB_T1_HEALTH_BONUS = 10; // Health added to ship from tier 1 lab upgrade
    public const int LAB_T1_FUEL_BONUS = 2; // Fuel added to ship from tier 1 lab upgrade
    public const int LAB_T3_LOOT_MULTIPLIER = 2; // How much loot is multiplied from tier 3 lab upgrade
+
+   public PanelManager panelManager;
 
    [Header("UI References")]
    [SerializeField] private ExplorationUnitManager explorationUnitManager;
@@ -323,15 +326,20 @@ public class ShipManager : MonoBehaviour
    {
       if (currentFuel <= 0)
       {
-         OpenFuelPanel();
-         Button confirmFuelButton = fuelPanel.Find("OkButton").GetComponent<Button>();
-         confirmFuelButton.onClick.RemoveAllListeners();
-         confirmFuelButton.onClick.AddListener(() =>
-         {
-            ClosePanels();
-            FinishExploration();
-         });
+         explorationUnitManager.SetDecisionInteractable(false);
+         StartCoroutine(LowFuelSequence());
       }
+   }
+   private IEnumerator LowFuelSequence()
+   {
+      yield return new WaitForSeconds(0.2f);
+      OpenFuelPanel();
+      Button confirmFuelButton = fuelPanel.Find("OkButton").GetComponent<Button>();
+      confirmFuelButton.onClick.RemoveAllListeners();
+      confirmFuelButton.onClick.AddListener(() =>
+      {
+         StartCoroutine(FinishExploration());
+      });
    }
 
    // Triggers the fail-state UI sequence when health is empty
@@ -342,7 +350,7 @@ public class ShipManager : MonoBehaviour
       confirmHealthButton.onClick.RemoveAllListeners();
       confirmHealthButton.onClick.AddListener(() =>
       {
-         ClosePanels();
+         StartCoroutine(ClosePanels());
          explorationUnitManager.CloseDecisionPanel();
          ResetShip();
       });
@@ -351,90 +359,143 @@ public class ShipManager : MonoBehaviour
    // Opens the panel that tells ship fuel is empty
    private void OpenFuelPanel()
    {
-      fuelPanel.gameObject.SetActive(true);
-      explorationUnitManager.SetDecisionInteractable(false);
+      panelManager.OpenPanel(fuelPanel.gameObject);
    }
 
    // Opens the panel that tells ship has been destroyed
    private void OpenHealthPanel()
    {
-      healthPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(healthPanel.gameObject);
       explorationUnitManager.SetDecisionInteractable(false);
    }
 
    // Opens panel to confirm ship to return to base
    public void OpenConfirmReturnPanel()
    {
-      confirmReturnPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(confirmReturnPanel.gameObject);
       explorationUnitManager.SetDecisionInteractable(false);
 
       Button returnShip = confirmReturnPanel.Find("Return").GetComponent<Button>();
       returnShip.onClick.RemoveAllListeners();
       returnShip.onClick.AddListener(() => {
-         FinishExploration();
-         ClosePanels();
+         StartCoroutine(FinishExploration());
+         StartCoroutine(ClosePanels());
          explorationUnitManager.SetDecisionInteractable(true);
       });
       Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
       stayOut.onClick.RemoveAllListeners();
       stayOut.onClick.AddListener(() =>
       {
-         ClosePanels();
+         StartCoroutine(ClosePanels());
          explorationUnitManager.SetDecisionInteractable(true);
       });
    }
 
    // Closes health, fuel, and return panels
-   private void ClosePanels()
+   private IEnumerator ClosePanels()
    {
-      healthPanel.gameObject.SetActive(false);
-      fuelPanel.gameObject.SetActive(false);
-      confirmReturnPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(healthPanel.gameObject);
+      panelManager.ClosePanel(fuelPanel.gameObject);
+      panelManager.ClosePanel(confirmReturnPanel.gameObject);
       explorationUnitManager.SetDecisionInteractable(false);
+      yield return new WaitForSeconds(0.2f);
    }
 
    // Ends a successful exploration, shows total rewards and trasfers inventory to main game inventory
-   public void FinishExploration()
+   public IEnumerator FinishExploration()
    {
-      ClosePanels();
+      yield return StartCoroutine(ClosePanels());
       explorationUnitManager.CloseDecisionPanel();
-      finalRewardsPanel.gameObject.SetActive(true);
+      if (rewardsContainer != null)
+      {
+         foreach (Transform child in rewardsContainer)
+         {
+            child.gameObject.SetActive(false);
+            child.localScale = Vector3.zero;
+         }
+      }
 
-      TrySpawnRewardRow(rewardsContainer, "Pearl", currentPearl);
-      TrySpawnRewardRow(rewardsContainer, "Ore", currentOre);
-      TrySpawnRewardRow(rewardsContainer, "Patch Kit", currentPatchKit);
-      TrySpawnRewardRow(rewardsContainer, "Harpoon", currentHarpoon);
-      TrySpawnRewardRow(rewardsContainer, "Crude Tool", currentCrudeTool);
-      TrySpawnRewardRow(rewardsContainer, "Pressure Valve", currentPressureValve);
-      TrySpawnRewardRow(rewardsContainer, "Diving Bell", currentDivingBell);
-      TrySpawnRewardRow(rewardsContainer, "Clockwork Engine", currentClockworkEngine);
-      TrySpawnRewardRow(rewardsContainer, "Precision Lens", currentPrecisionLens);
+      yield return StartCoroutine(ShowRewardsSequence());
 
       // Activate and populate total rewards panel
       Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
       confirmRewards.onClick.RemoveAllListeners();
       confirmRewards.onClick.AddListener(() =>
       {
+         CloseFinalRewardsPanel();
          finalRewardsPanel.gameObject.SetActive(false);
          AddRewards();
+         ResetShip();
       });
-
-      ResetShip();
    }
 
-   private void TrySpawnRewardRow(Transform container, string itemName, int amount)
+   private IEnumerator ShowRewardsSequence()
+   {
+      yield return new WaitForSeconds(0.5f);
+      finalRewardsPanel.gameObject.SetActive(true);
+      yield return new WaitForSeconds(0.6f);
+      float delayBetweenItems = 0.2f;
+      var rewards = new (string Name, int Amount)[]
+      {
+        ("Pearl", currentPearl),
+        ("Ore", currentOre),
+        ("Patch Kit", currentPatchKit),
+        ("Harpoon", currentHarpoon),
+        ("Crude Tool", currentCrudeTool),
+        ("Pressure Valve", currentPressureValve),
+        ("Diving Bell", currentDivingBell),
+        ("Clockwork Engine", currentClockworkEngine),
+        ("Precision Lens", currentPrecisionLens)
+      };
+
+      foreach (var reward in rewards)
+      {
+         Transform itemRow = TrySpawnRewardRow(rewardsContainer, reward.Name, reward.Amount);
+         if (itemRow != null && itemRow.gameObject.activeSelf)
+         {
+            StartCoroutine(AnimatePop(itemRow));
+            yield return new WaitForSeconds(delayBetweenItems);
+         }
+      }
+   }
+
+   private Transform TrySpawnRewardRow(Transform container, string itemName, int amount)
    {
       Transform slotTransform = rewardsContainer.Find(itemName);
-      if (slotTransform == null) return;
+      if (slotTransform == null) return null;
 
       if (amount > 0)
       {
          slotTransform.gameObject.SetActive(true);
+         slotTransform.localScale = Vector3.zero;
          TextMeshProUGUI txt = slotTransform.Find("Count").GetComponent<TextMeshProUGUI>();
          txt.text = $"x{amount}";
+         return slotTransform;
       }
       else
+      {
          slotTransform.gameObject.SetActive(false);
+         return null;
+      }
+   }
+
+   private IEnumerator AnimatePop(Transform target)
+   {
+      float duration = 0.5f;
+      float elapsed = 0.0f;
+      Vector3 startScale = Vector3.zero;
+      Vector3 endScale = Vector3.one;
+
+      while (elapsed < duration)
+      {
+         elapsed += Time.deltaTime;
+         float percent = elapsed / duration;
+         float curve = Mathf.Sin(percent * Mathf.PI * 1.2f) / 1.2f;
+         target.localScale = Vector3.LerpUnclamped(startScale, endScale, percent + (1f - percent) * curve);
+
+         yield return null;
+      }
+      target.localScale = endScale;
    }
 
    // Moves rewards from ship inventory to main game inventory
@@ -461,5 +522,19 @@ public class ShipManager : MonoBehaviour
          if (currentPrecisionLens > 0)
             InventoryManager.Instance.TryAddPrecisionLens(currentPrecisionLens);
       }
+   }
+
+   public void ShowFinalRewardsPanel()
+   {
+      panelManager.OpenPanel(finalRewardsPanel.gameObject);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
+
+   public void CloseFinalRewardsPanel()
+   {
+      panelManager.ClosePanel(finalRewardsPanel.gameObject);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 }

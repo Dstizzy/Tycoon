@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -107,7 +107,6 @@ public class ExplorationUnitManager : MonoBehaviour
                if (canExplore)
                {
                   exploreButton.onClick.AddListener(() => StartExploration());
-                  Debug.Log("Exploration Start button clicked");
                }
             }
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
@@ -147,9 +146,9 @@ public class ExplorationUnitManager : MonoBehaviour
    }
 
    //
-   private System.Collections.IEnumerator InitializeFirstTurnRoutine()
+   private IEnumerator InitializeFirstTurnRoutine()
    {
-      yield return new WaitForEndOfFrame();
+      yield return new WaitForSeconds(0.5f);
       HandleNewTurn();
    }
 
@@ -205,11 +204,6 @@ public class ExplorationUnitManager : MonoBehaviour
       }
       else
          slotTransform.gameObject.SetActive(false);
-   }
-
-   private void ClearContainer(Transform container)
-   {
-      foreach (Transform child in container) Destroy(child.gameObject);
    }
 
    // Checks if exploration is entering a new depth tier when ship is not currently at safe level
@@ -381,7 +375,7 @@ public class ExplorationUnitManager : MonoBehaviour
          return;
       }
       // Open the decision panel UI
-      decisionPanel.gameObject.SetActive(true);
+      ShowDecisionPanel();
 
       // Set up inventory button on decisionPanel
       Button inventoryButton = decisionPanel.Find("CargoTab").GetComponent<Button>();
@@ -389,7 +383,7 @@ public class ExplorationUnitManager : MonoBehaviour
       inventoryButton.onClick.AddListener(() =>
       {
          ShowInventoryPanel();
-         CloseDecisionPanel();
+         decisionPanel.gameObject.SetActive(false);
       });
 
       // Set up return ship button on decisionPanel
@@ -454,13 +448,13 @@ public class ExplorationUnitManager : MonoBehaviour
       if (isWinner)
       {
          decisionResults.text = "MISSION ACCOMPLISHED!\nYou have found the vessel piece.\nYou will now return.";
-         decisionResultsPanel.gameObject.SetActive(true);
+         panelManager.OpenPanel(decisionResultsPanel.gameObject);
          Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
          confirmEnd.onClick.RemoveAllListeners();
          confirmEnd.onClick.AddListener(() =>
          {
             shipManager.FinishExploration();
-            decisionResultsPanel.gameObject.SetActive(false);
+            panelManager.ClosePanel(decisionResultsPanel.gameObject);
          });
       }
       else
@@ -535,10 +529,18 @@ public class ExplorationUnitManager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
+   public void ShowDecisionPanel()
+   {
+      panelManager.OpenPanel(decisionPanel.gameObject);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
+
    // Shows the event results panel with the all results from an event
    private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode, string resultMessage)
    {
-      decisionResultsPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(decisionResultsPanel.gameObject);
       SetDecisionInteractable(false);
       string resultsText = $"{resultMessage}\n\n";
 
@@ -585,18 +587,24 @@ public class ExplorationUnitManager : MonoBehaviour
       continueButton.onClick.RemoveAllListeners();
       continueButton.onClick.AddListener(() =>
       {
-         decisionResultsPanel.gameObject.SetActive(false);
-         SetDecisionInteractable(true);
-
-         if (currentNode != null)
-         {
-            nextTurnDestination = currentNode.nextNode;
-            if (!CheckForDepthIncrease(nextTurnDestination))
-               CloseDecisionPanel();
-         }
-         else
-            CloseDecisionPanel();
+         StartCoroutine(ResultsDelay(currentNode));
       });
+   }
+
+   //
+   private IEnumerator ResultsDelay(MapNode currentNode)
+   {
+      panelManager.ClosePanel(decisionResultsPanel.gameObject);
+      SetDecisionInteractable(true);
+      yield return new WaitForSeconds(0.2f);
+      if (currentNode != null)
+      {
+         nextTurnDestination = currentNode.nextNode;
+         if (!CheckForDepthIncrease(nextTurnDestination))
+            CloseDecisionPanel();
+      }
+      else
+         CloseDecisionPanel();
    }
 
    // Shows the inventory panel with ship's current resources
@@ -667,8 +675,10 @@ public class ExplorationUnitManager : MonoBehaviour
    // closes the decision panel
    public void CloseDecisionPanel()
    {
-      Debug.Log("Closing decision panel");
-      decisionPanel.gameObject.SetActive(false);
+      panelManager.ClosePanel(decisionPanel.gameObject);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    private void UpdateExplorationSprites()
