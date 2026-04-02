@@ -74,7 +74,8 @@ public class TradeHutManager : MonoBehaviour
                precisionLensChance,
                engineChance,
 
-               worldEvent;
+               worldEvent,
+               currentWorldEventChance;
 
    private WorldEventTypes crudeToolEvent,
                            harpoonEvent,
@@ -114,7 +115,15 @@ public class TradeHutManager : MonoBehaviour
                     FIRST_TUTORIAL   = 1,
                     SECOND_TUTORIAL = 2,
 
-                    INSURANCE_POLICY_PAYOUT = 500;
+                    INSURANCE_POLICY_PAYOUT = 500,
+                    
+                    TIER_ONE          = 1,
+                    TIER_TWO          = 2,
+                    TIER_THREE        = 3,
+
+                    TIER_ONE_CHANCE   = 50,
+                    TIER_TWO_CHANCE   = 35,
+                    TIER_THREE_CHANCE = 25;
       
    public const string RAW_ORE_CHUNK_TAG        = "Raw Ore Chunk",
                        INDUSTRIAL_BLUEPRINT_TAG = "Industrial Blueprint",
@@ -1016,24 +1025,26 @@ public class TradeHutManager : MonoBehaviour
        UpdateMarketPreviewUI(
            ItemType.CrudeTool, crudeToolEvent, CRUDE_TOOL_TAG,
            MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE, base_crude_tool_value,
-           crudeToolChance, crudeToolFluctuation);
+           crudeToolChance, crudeToolFluctuation, 1);
         
        UpdateMarketPreviewUI(
           ItemType.Harpoon, harpoonEvent, HARPOON_TAG,
           MIN_HARPOON_VALUE, MAX_HARPOON_VALUE, base_harpoon_value,
-          harpoonChance, harpoonFluctuation);
-       
-       if (ForgeManager.Instance.hasTier2Blueprint) 
+          harpoonChance, harpoonFluctuation, 1);
+
+      UpdateMarketPreviewUI(
+             ItemType.DivingBell, divingBellEvent, DIVING_BELL_TAG,
+             MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE, base_diving_bell_value,
+             divingBellChance, divingBellFluctuation, 1);
+
+      if (ForgeManager.Instance.hasTier2Blueprint) 
        {
            UpdateMarketPreviewUI(
               ItemType.PressureValve, pressureValveEvent, PRESSURE_VALVE_TAG,
               MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE, base_pressure_valve_value,
-              pressureValveChance, pressureValveFluctuation);
+              pressureValveChance, pressureValveFluctuation, 2);
 
-           UpdateMarketPreviewUI(
-              ItemType.DivingBell, divingBellEvent, DIVING_BELL_TAG,
-              MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE,base_diving_bell_value,
-              divingBellChance, divingBellFluctuation);
+          
        }
    
        if (ForgeManager.Instance.hasTier3Blueprint) 
@@ -1041,12 +1052,12 @@ public class TradeHutManager : MonoBehaviour
            UpdateMarketPreviewUI(
               ItemType.PrecisionLens, precisionLensEvent, PRECISION_LENS_TAG,
               MIN_PRECISION_LENS_VALUE, MAX_PRECISION_LENS_VALUE, base_precision_lens_value,
-              precisionLensChance, precisionLensFluctuation);
+              precisionLensChance, precisionLensFluctuation, 3);
 
            UpdateMarketPreviewUI(
               ItemType.Engine, engineEvent, ENGINE_TAG,
               MIN_ENGINE_VALUE, MAX_ENGINE_VALUE, base_engine_value,
-              engineChance, engineFluctuation);
+              engineChance, engineFluctuation, 3);
        }
    }
 
@@ -1066,12 +1077,20 @@ public class TradeHutManager : MonoBehaviour
    private void UpdateMarketPreviewUI(
       ItemType itemType, WorldEventTypes eventType, string itemTag,
       int minSellCost, int maxSellCost, int baseValue,
-      int chance, int fluctuation)
+      int chance, int fluctuation, int itemTier)
    {
-       int currentVal = GetItemValue(itemType);
-       int preview    = currentVal;
-   
-      Debug.Log("Current world event" + worldEvent.ToString());
+       int currentVal    = GetItemValue(itemType),
+           preview       = currentVal;
+
+       currentWorldEventChance 
+          = itemTier == TIER_ONE 
+          ? TIER_ONE_CHANCE 
+          : itemTier == TIER_TWO
+          ? TIER_TWO_CHANCE
+          : itemTier == TIER_THREE
+          ? TIER_THREE_CHANCE
+          : TIER_ONE_CHANCE;
+
        // World event market preview
        if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
        {
@@ -1094,7 +1113,7 @@ public class TradeHutManager : MonoBehaviour
                 break;
 
              default:
-                if (shiftDirection <= 50)
+                if (shiftDirection <= currentWorldEventChance)
                    preview += currentVal;
                 else
                    preview -= currentVal;
@@ -1125,7 +1144,7 @@ public class TradeHutManager : MonoBehaviour
                      break;
 
                 default:
-                   if (shiftDirection <= 50)
+                   if (shiftDirection <= currentWorldEventChance)
                       preview = currentVal - baseValue;
                    else
                       preview = currentVal + baseValue;
@@ -1136,7 +1155,6 @@ public class TradeHutManager : MonoBehaviour
           // Standard Fluctuation Preview
           else
           { 
-             Debug.Log("Here: " + preview.ToString());
              if (chance <= 30) 
                 preview += fluctuation;
              else 
@@ -1167,19 +1185,19 @@ public class TradeHutManager : MonoBehaviour
            ItemType.Harpoon, harpoonEvent, 
            harpoonChance, harpoonFluctuation, 
            TryIncreaseHarpoonSellValue, TryDecreaseHarpoonSellValue);
-   
-       // Apply Tier 2
-       if (ForgeManager.Instance.hasTier2Blueprint) 
+
+      ApplyStoredShift(
+              ItemType.DivingBell, divingBellEvent,
+              divingBellChance, divingBellFluctuation,
+              TryIncreaseDivingBellValue, TryDecreaseDivingBellValue);
+
+      // Apply Tier 2
+      if (ForgeManager.Instance.hasTier2Blueprint) 
        {
            ApplyStoredShift(
               ItemType.PressureValve, pressureValveEvent, 
               pressureValveChance, pressureValveFluctuation, 
               TryIncreasePressureValveValue, TryDecreasePressureValveValue);
-
-           ApplyStoredShift(
-              ItemType.DivingBell, divingBellEvent, 
-              divingBellChance, divingBellFluctuation, 
-              TryIncreaseDivingBellValue, TryDecreaseDivingBellValue);
        }
    
        // Apply Tier 3
@@ -1226,7 +1244,7 @@ public class TradeHutManager : MonoBehaviour
                 break;
 
               default:
-                 if (shiftDirection <= 50) 
+                 if (shiftDirection <= currentWorldEventChance) 
                     increaseSellValueMethod(GetItemValue(itemType));
                  else 
                     decreaseSellValueMethod(GetItemValue(itemType));
@@ -1312,7 +1330,7 @@ public class TradeHutManager : MonoBehaviour
      {
          // Undo the crude tool event shift based on previous direction
          case (int)WorldEventTypes.CrudeToolEvent:
-           if (shiftDirection <= 50) 
+           if (shiftDirection <= TIER_ONE_CHANCE) 
               TryDecreaseCrudeToolSellValue(GetItemValue(ItemType.CrudeTool) - base_crude_tool_value);
            else
               TryIncreaseCrudeToolSellValue(base_crude_tool_value - GetItemValue(ItemType.CrudeTool));
@@ -1323,13 +1341,23 @@ public class TradeHutManager : MonoBehaviour
 
          // Undo the crude tool event shift based on previous direction
          case (int)WorldEventTypes.HarpoonEvent:
-            if (shiftDirection <= 50) 
+            if (shiftDirection <= TIER_ONE_CHANCE) 
                TryDecreaseHarpoonSellValue(GetItemValue(ItemType.Harpoon) - base_harpoon_value);
             else 
                TryIncreaseHarpoonSellValue(base_harpoon_value - GetItemValue(ItemType.Harpoon));
 
             // Flag the reset for harpoon
             lastResetTurn[ItemType.Harpoon] = true;
+            break;
+
+         // Undo the diving bell event shift based on previous shift
+         case (int)WorldEventTypes.DivingBellEvent:
+            if (shiftDirection <= TIER_ONE_CHANCE)
+               TryDecreaseDivingBellValue(GetItemValue(ItemType.DivingBell) - base_diving_bell_value);
+            else
+               TryIncreaseDivingBellValue(base_diving_bell_value - GetItemValue(ItemType.DivingBell));
+
+            lastResetTurn[ItemType.DivingBell] = true;
             break;
 
          case (int)WorldEventTypes.IndustrialGoldRushEvent:
@@ -1343,7 +1371,7 @@ public class TradeHutManager : MonoBehaviour
 
          // Undo the pressure valve event shift based on previous direction
          case (int)WorldEventTypes.PressureValveEvent:
-           if (shiftDirection <= 50)
+           if (shiftDirection <= TIER_TWO_CHANCE)
               TryDecreasePressureValveValue(GetItemValue(ItemType.PressureValve) - base_pressure_valve_value);
            else
               TryIncreasePressureValveValue(base_pressure_valve_value - GetItemValue(ItemType.PressureValve));
@@ -1352,15 +1380,6 @@ public class TradeHutManager : MonoBehaviour
            lastResetTurn[ItemType.PressureValve] = true;
            break;
 
-         // Undo the diving bell event shift based on previous shift
-         case (int)WorldEventTypes.DivingBellEvent:
-            if (shiftDirection <= 50)
-               TryDecreaseDivingBellValue(GetItemValue(ItemType.DivingBell) - base_diving_bell_value);
-            else
-               TryIncreaseDivingBellValue(base_diving_bell_value - GetItemValue(ItemType.DivingBell));
-
-            lastResetTurn[ItemType.DivingBell] = true;
-            break;
 
          case (int)WorldEventTypes.DeepSeaWarEvent:
             TryDecreaseHarpoonSellValue(GetItemValue(ItemType.Harpoon) - base_harpoon_value);
@@ -1372,7 +1391,7 @@ public class TradeHutManager : MonoBehaviour
 
          // Undo the precision lens event shift based on previous shift
          case (int)WorldEventTypes.PrecisionLensEvent:
-            if (shiftDirection <= 50)
+            if (shiftDirection <= TIER_THREE_CHANCE)
                TryDecreasePrecisionLensValue(GetItemValue(ItemType.PrecisionLens) - base_precision_lens_value);
             else
                TryIncreasePrecisionLensValue(base_precision_lens_value - GetItemValue(ItemType.PrecisionLens));
@@ -1382,7 +1401,7 @@ public class TradeHutManager : MonoBehaviour
 
          // Undo the engine event shift based on previous direction
          case (int)WorldEventTypes.ClockworkEngineEvent:
-           if (shiftDirection <= 50)
+           if (shiftDirection <= TIER_THREE_CHANCE)
               TryDecreaseEngineSellValue(GetItemValue(ItemType.Engine) - base_engine_value);
            else
               TryIncreaseEngineSellValue(base_engine_value - GetItemValue(ItemType.Engine));
