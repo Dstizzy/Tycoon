@@ -134,9 +134,9 @@ public class TradeHutManager : MonoBehaviour
                        CLOCKWORK_BLUEPRINT_TAG  = "Clockwork Blueprint",
                        INSURANCE_POLICY_TAG     = "Insurance Policy";
    
-   public bool isTier3BuffACtive   = false;
-   public bool tutorialFunctionOne = false;
-   public bool tutorialFunctionTwo = false;
+   public bool isTier3BuffACtive       = false;
+   public bool tutorialFunctionOne     = false;
+   public bool tutorialFunctionTwo     = false;
    public bool isInsurancePolicyActive = false;
 
    [Header("Submerge Settings")]
@@ -232,17 +232,17 @@ public class TradeHutManager : MonoBehaviour
       ticker = TickerSystem.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool), GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
-      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 3.0f, HARPOON_TAG);
-      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 0.0f, DIVING_BELL_TAG, -75);
-      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 3.0f, PRESSURE_VALVE_TAG, -75);
-      CreateSellItem(GetItemSprite(ItemType.PrecisionLens), GetItemValue(ItemType.PrecisionLens), 0.0f, PRECISION_LENS_TAG, -150);
-      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 3.0f, ENGINE_TAG, -150);
+      CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 2.5f, HARPOON_TAG);
+      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 0.0f, DIVING_BELL_TAG, -90);
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 2.5f, PRESSURE_VALVE_TAG, -90);
+      CreateSellItem(GetItemSprite(ItemType.PrecisionLens), GetItemValue(ItemType.PrecisionLens), 0.0f, PRECISION_LENS_TAG, -165);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.5f, ENGINE_TAG, -165);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
-      CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.5f, INDUSTRIAL_BLUEPRINT_TAG);
+      CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.2f, INDUSTRIAL_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, CLOCKWORK_BLUEPRINT_TAG, -30);
-      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.5f, MERCENARY_ENGINEER_TAG, -30);
-      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), 0.0f, INSURANCE_POLICY_TAG, -65);
+      CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.2f, MERCENARY_ENGINEER_TAG, -30);
+      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), .7f, INSURANCE_POLICY_TAG, -65);
    }
 
    public void OnEnable()

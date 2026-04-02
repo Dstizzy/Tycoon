@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 1f1a41e1f12389949b2f6ca9c7e9b847
+guid: aa9301c6da538c94f899c5e69c53d6ed
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: 4200413699487092292
     second: trade_panel_0
-  - first:
-      213: -6840458104846046402
-    second: trade_panel_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -106,10 +103,10 @@ TextureImporter:
       name: trade_panel_0
       rect:
         serializedVersion: 2
-        x: 87
-        y: 28
-        width: 538
-        height: 349
+        x: 183
+        y: 58
+        width: 1096
+        height: 710
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c2a26a480ee7450499d56f4a3925855b
+    spriteID: d70a448a9ecf92142a146d0806761282
     internalID: 0
     vertices: []
     indices: 
@@ -139,7 +136,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       trade_panel_0: 4200413699487092292
-      trade_panel_1: -6840458104846046402
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
