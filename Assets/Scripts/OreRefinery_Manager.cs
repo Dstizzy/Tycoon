@@ -26,7 +26,7 @@ public class OreRefinery_Manager : MonoBehaviour
    public TextMeshProUGUI oreRefineryLevelText;
 
    [Header("Ore Visuals")]
-   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
+   [SerializeField] private List<SpriteRenderer> buildingSpriteRenderer;
    [SerializeField] private List<Sprite> oreLevelSprites;
 
    [Header("Upgrade Costs")]
@@ -414,7 +414,8 @@ public class OreRefinery_Manager : MonoBehaviour
 
       if (buildingSpriteRenderer != null && index < oreLevelSprites.Count)
       {
-         buildingSpriteRenderer.sprite = oreLevelSprites[index];
+         buildingSpriteRenderer[index - 1].gameObject.SetActive(false);
+         buildingSpriteRenderer[index].gameObject.SetActive(true);
          Debug.Log($"Forge Visuals Updated to Level {oreLevel}");
       }
    }
