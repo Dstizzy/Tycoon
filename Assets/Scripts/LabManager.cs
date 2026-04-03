@@ -240,10 +240,6 @@ public class LabManager : MonoBehaviour
       Button t1Btn = tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>();
        Button t2Btn = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>();
        Button t3Btn = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>();
-
-      // Clear and Re-assign
-       commerceTab.transform.Find("backArrow").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
-       commerceTab.transform.Find("backArrow").gameObject.GetComponent<Button>().onClick.AddListener(() => BackToInitialTab(tab));
    
        t1Btn.onClick.RemoveAllListeners();
        t1Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
@@ -564,8 +560,6 @@ public class LabManager : MonoBehaviour
       // Get rid of the tier 2 lock and turn on buttons and text                               
       if (tier == 2)
       {
-         tab.transform.Find("lockContainer/tierTwoLock").gameObject.SetActive(false);
-
          currentColor = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color;
          currentColor.a = 1.0f;
          tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Image>().color = currentColor;
@@ -584,7 +578,6 @@ public class LabManager : MonoBehaviour
             Debug.Log("Accessing wrong tier node");
             return;
          }
-         tab.transform.Find("lockContainer/tierThreeLock").gameObject.SetActive(false);
 
          currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
          currentColor.a = 255;
