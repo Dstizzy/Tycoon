@@ -103,12 +103,12 @@ TextureImporter:
       name: victory_icon_0
       rect:
         serializedVersion: 2
-        x: 82
-        y: 82
+        x: 202
+        y: 52
         width: 335
-        height: 336
+        height: 266
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 61de7b465590efd4f91e097bd2cdd551
     internalID: 0
     vertices: []
     indices: 
