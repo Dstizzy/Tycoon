@@ -19,12 +19,9 @@ public class ItemSprites : MonoBehaviour {
     public Sprite merceneryEngineer;
     public Sprite insurancePolicy;
 
-    private void Awake() {
-        if (itemSprites != null && itemSprites != this) {
-            Destroy(gameObject);
-        } else {
-            itemSprites = this;
-        }
+    private void Awake() 
+    {
+      itemSprites = this;
     }
 
     public Sprite GetSprite(ItemType itemType) 
