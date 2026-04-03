@@ -486,7 +486,6 @@ public class LabManager : MonoBehaviour
    {
       if (tabType == commerceTab)
       {
-         initialTab.transform.Find("commerceLine").gameObject.SetActive(true);
          HandleFlask();
 
          // Removes the negative world events
@@ -500,7 +499,6 @@ public class LabManager : MonoBehaviour
       // Unlock tier 3 itme (Artifact); Crafting results in two items being made               
       else if (tabType == productionTab)
       {
-         initialTab.transform.Find("productionLine").gameObject.SetActive(true);
          HandleFlask();
 
          Debug.Log("Unlock Faster Crafting and Tier 3 Blueprints");
@@ -513,7 +511,6 @@ public class LabManager : MonoBehaviour
       /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
       {
-         initialTab.transform.Find("explorationLine").gameObject.SetActive(true);
          HandleFlask();
 
          if (shipManager != null)
@@ -531,23 +528,22 @@ public class LabManager : MonoBehaviour
    // Handles evolution of flask
    public void HandleFlask()
    {
-      if(initialTab.transform.Find("FlaskButton/Flask").gameObject.activeSelf)
+      if(initialTab.transform.Find("PanelFlask1").gameObject.activeSelf)
       {
-         initialTab.transform.Find("FlaskButton/Flask").gameObject.SetActive(false);
-         initialTab.transform.Find("FlaskButton/Flask1").gameObject.SetActive(true);
-         victoryButton = initialTab.transform.Find("FlaskButton/Flask1").gameObject.GetComponent<Button>();
+         initialTab.transform.Find("PanelFlask1").gameObject.SetActive(false);
+         initialTab.transform.Find("PanelFlask2").gameObject.SetActive(true);
       }
-      else if(initialTab.transform.Find("FlaskButton/Flask1").gameObject.activeSelf)
+      else if(initialTab.transform.Find("PanelFlask2").gameObject.activeSelf)
       {
-         initialTab.transform.Find("FlaskButton/Flask1").gameObject.SetActive(false);
-         initialTab.transform.Find("FlaskButton/Flask2").gameObject.SetActive(true);
-         victoryButton = initialTab.transform.Find("FlaskButton/Flask2").gameObject.GetComponent<Button>();
+         initialTab.transform.Find("PanelFlask2").gameObject.SetActive(false);
+         initialTab.transform.Find("PanelFlask3").gameObject.SetActive(true);
       }
-      else if(initialTab.transform.Find("FlaskButton/Flask2").gameObject.activeSelf)
+      else if(initialTab.transform.Find("PanelFlask3").gameObject.activeSelf)
       {
-         initialTab.transform.Find("FlaskButton/Flask2").gameObject.SetActive(false);
-         initialTab.transform.Find("FlaskButton/Flask3").gameObject.SetActive(true);
-         victoryButton = initialTab.transform.Find("FlaskButton/Flask3").gameObject.GetComponent<Button>();
+         initialTab.transform.Find("PanelFlask3").gameObject.SetActive(false);
+         initialTab.transform.Find("PanelFlask4").gameObject.SetActive(true);
+         ActivateHead();
+
       }
       else
          Debug.Log("There is no flask");
@@ -683,63 +679,61 @@ public class LabManager : MonoBehaviour
    // Activates the head of the submarine
    public void ActivateHead()
    {
-      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
-      {
-         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
-      }
+      var headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/HeadText").GetComponent<Image>();
+      var color = headTextImage.color;
+      color.a = .5f;
+      headTextImage.color = color;
 
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/Line").GetComponent<Image>();
+      color = headTextImage.color;
+      color.a = .5f;
+      headTextImage.color = color;
+
+      headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/HeadInfo").GetComponent<Image>();
+      color = headTextImage.color;
+      color.a = .5f;
+      headTextImage.color = color;
+
+      victoryPanel.transform.Find("SubInfo/HeadPart/completed").gameObject.SetActive(true);
+
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
       {
          ActivateFinalForm();
       }
       else
       {
-         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(false);
-         else
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
-      }
-   }
-
-   // Activates the body of the submarine
-   public void ActivateBody()
-   {
-      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
-      {
-         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
-      }
-
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(false);
-         else
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.SetActive(true);
+         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineHead").gameObject.SetActive(false);
+         victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
       }
    }
 
    // Activates the tail of the submarine
    public void ActivateTail()
    {
-      if (victoryPanel.transform.Find("QuestionMark").gameObject.activeSelf)
-      {
-         victoryPanel.transform.Find("QuestionMark").gameObject.SetActive(false);
-      }
+      var headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/TailText").GetComponent<Image>();
+      var color = headTextImage.color;
+      color.a = .5f;
+      headTextImage.color = color;
 
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineBody").gameObject.activeSelf && victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
+      headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/Line").GetComponent<Image>();
+      color = headTextImage.color;
+      color.a = .5f;
+      headTextImage.color = color;
+
+      headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/TailInfo").GetComponent<Image>();
+      color = headTextImage.color;
+      color.a = .5f;
+      headTextImage.color = color;
+
+      victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
       {
          ActivateFinalForm();
       }
       else
       {
-         if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(false);
-         else
-            victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
+         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineTail").gameObject.SetActive(false);   
+         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
       }
    }
 
