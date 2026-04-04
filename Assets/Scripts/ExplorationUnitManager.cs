@@ -468,40 +468,67 @@ public class ExplorationUnitManager : MonoBehaviour
    //
    private void ShowUpgradePanel()
    {
+      int pearlUpgradeCost = 0;
+      int oreUpgradeCost = 0;
+      string upgradeTitle = "";
+      string upgradeExplanation = "";
+
       panelManager.OpenPanel(upgradePanel.gameObject);
 
-      int upgradeCost = GetUpgradeCost();
+      Transform titleTextTransform = upgradePanel.Find("Title");
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
-      TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : upgradePanel.GetComponentInChildren<TextMeshProUGUI>();
-      Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
+      Transform pearlCostTransform = upgradePanel.Find("PearlCostText");
+      Transform oreCostTransform = upgradePanel.Find("OreCostText");
+      Transform explanationTransform = upgradePanel.Find("ExplanationText");
 
-      Transform pearlTextObj = upgradePanel.Find("PearlCostText");
-      if (pearlTextObj != null)
+      TextMeshProUGUI title = titleTextTransform != null ? titleTextTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI pearlCostText = pearlCostTransform != null ? pearlCostTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI oreCostText = oreCostTransform != null ? oreCostTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI expText = explanationTransform != null ? explanationTransform.GetComponent<TextMeshProUGUI>() : null;
+
+      if (shipManager.shipLevel == 1)
       {
-         pearlTextObj.gameObject.SetActive(true);
-         pearlTextObj.GetComponent<TextMeshProUGUI>().text = upgradeCost.ToString();
+         pearlUpgradeCost = LEVEL2_PEARL_COST;
+         upgradeTitle = "REWARD: ";
+         upgradeExplanation = "";
+      }
+      else if (shipManager.shipLevel == 2)
+      {
+         pearlUpgradeCost = LEVEL3_PEARL_COST;
+         upgradeTitle = "REWARD:";
+         upgradeExplanation = "";
       }
 
       if (shipManager.shipLevel < MAX_SHIP_LEVEL)
       {
+         if (title != null)
+            title.text = $"LEVEL {shipManager.shipLevel + 1} UPGRADE";
          if (upgradeText != null)
+            upgradeText.text = upgradeTitle;
+
+         if (pearlCostText != null)
+            pearlCostText.text = $"{pearlUpgradeCost}";
+
+         if (expText != null)
          {
-            int targetLevel = shipManager.shipLevel + 1;
-            upgradeText.text = $"Would you like to upgrade to lvl {targetLevel}?";
+            expText.gameObject.SetActive(true);
+            expText.text = $"<color=black>{upgradeExplanation}</color>";
          }
-         yesButton.gameObject.SetActive(true);
-         yesButton.interactable = !isExploring && (InventoryManager.Instance.pearlCount >= upgradeCost);
+
+         Transform yesBtn = upgradePanel.Find("YesButton");
+         if (yesBtn != null) yesBtn.gameObject.SetActive(true);
       }
       else
       {
          if (upgradeText != null)
             upgradeText.text = "Max Level Reached!";
 
-         if (pearlTextObj != null) pearlTextObj.gameObject.SetActive(false);
-         Transform imagesObj = upgradePanel.Find("UpgradePanelImages");
-         if (imagesObj != null) imagesObj.gameObject.SetActive(false);
+         if (expText != null)
+            expText.gameObject.SetActive(false); // Hide explanation if max level
 
-         yesButton.gameObject.SetActive(false);
+         Transform yesBtn = upgradePanel.Find("YesButton");
+         if (yesBtn != null) yesBtn.gameObject.SetActive(false);
       }
 
       if (MainUIManager.mainUI != null)

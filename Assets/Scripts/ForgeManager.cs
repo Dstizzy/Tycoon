@@ -561,31 +561,45 @@ public class ForgeManager : MonoBehaviour
    private void ShowUpgradePanel()
    {
       int upgradeCost = 0;
+      string upgradeTitle = "";
       string upgradeExplanation = "";
 
       panelManager.OpenPanel(upgradePanel.gameObject);
 
+      Transform titleTextTransform = upgradePanel.Find("Title");
       Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+      Transform pearlCostTransform = upgradePanel.Find("PearlCostText");
+      Transform oreCostTransform = upgradePanel.Find("OreCostText");
       Transform explanationTransform = upgradePanel.Find("ExplanationText");
 
+      TextMeshProUGUI title = titleTextTransform != null ? titleTextTransform.GetComponent<TextMeshProUGUI>() : null;
       TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI pearlCostText = pearlCostTransform != null ? pearlCostTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI oreCostText = oreCostTransform != null ? oreCostTransform.GetComponent<TextMeshProUGUI>() : null;
       TextMeshProUGUI expText = explanationTransform != null ? explanationTransform.GetComponent<TextMeshProUGUI>() : null;
 
       if (forgeLevel == 1)
       {
          upgradeCost = 300;
-         upgradeExplanation = "Bonus: Unlocks a 2nd simultaneous crafting slot!";
+         upgradeTitle = "REWARD: Unlock 2nd Crafting Slot";
+         upgradeExplanation = "This upgrade increases your simultaneous crafting capacity to 2";
       }
       else if (forgeLevel == 2)
       {
          upgradeCost = 700;
-         upgradeExplanation = "Bonus: Unlocks a 3rd simultaneous crafting slot!";
+         upgradeTitle = "REWARD: Unlock 3nd Crafting Slot";
+         upgradeExplanation = "This upgrade increases your simultaneous crafting capacity to 2";
       }
 
       if (forgeLevel < ENDING_LEVEL)
       {
+         if (title != null)
+            title.text = $"LEVEL {forgeLevel + 1} UPGRADE";
          if (upgradeText != null)
-            upgradeText.text = $"Would you like to upgrade\nto next level for {upgradeCost} pearls?";
+            upgradeText.text = upgradeTitle;
+
+         if (pearlCostText != null)
+            pearlCostText.text = $"{upgradeCost}";
 
          if (expText != null)
          {
@@ -611,6 +625,7 @@ public class ForgeManager : MonoBehaviour
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
+
    private void CloseCraftPanel()
    {
       panelManager.ClosePanel(craftPanel.gameObject);

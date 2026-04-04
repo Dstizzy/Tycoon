@@ -90,7 +90,7 @@ public class LabManager : MonoBehaviour
 
       if (victoryButton != null)
       {
-         victoryPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() =>
+         victoryPanel.transform.Find("BackArrow").GetComponent<Button>().onClick.AddListener(() =>
          {
             AudioManager.Instance.PlayClick();
             panelManager.ClosePanel(victoryPanel.gameObject);
