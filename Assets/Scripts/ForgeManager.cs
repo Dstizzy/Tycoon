@@ -1,9 +1,11 @@
-﻿using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using System.Collections.Generic;
+﻿using Codice.Client.BaseCommands.Import;
 using System;
+using System.Collections.Generic;
+using TMPro;
+using Unity.Jobs;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class CraftingJob
@@ -12,6 +14,7 @@ public class CraftingJob
    public int amount;
    public int turnsRemaining;
    public string itemName;
+   public int index;
 }
 
 public class ForgeManager : MonoBehaviour
@@ -105,6 +108,7 @@ public class ForgeManager : MonoBehaviour
    /* Private state variables */
    private Transform currentCraftWindow;
    private List<Item.ItemType> stagingItems = new List<Item.ItemType>();
+   private List<bool> craftingItems = new List<bool>();
    private Toggle currentOverclockToggle;
    private Image craftSlot1;
    private Image craftSlot2;
@@ -250,7 +254,8 @@ public class ForgeManager : MonoBehaviour
       // Refresh Visuals based on Staging List
       UpdateStagingUI();
 
-      windowTransform.gameObject.SetActive(true);
+      if(stagingItems.Count != activeJobs.Count)
+         windowTransform.gameObject.SetActive(true);
    }
 
 
@@ -260,10 +265,11 @@ public class ForgeManager : MonoBehaviour
       // 1. Determine Capacity based on Level
       int maxStagingSlots = forgeLevel;
 
+
       // 2. Logic: If list is full, clear it and start new. Otherwise, add to it.
       if (stagingItems.Count >= maxStagingSlots)
       {
-         stagingItems.Clear();
+         Debug.Log("You are at max capacity");
       }
 
       // 3. Add the item
@@ -272,7 +278,29 @@ public class ForgeManager : MonoBehaviour
          craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
          craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
       }
-      stagingItems.Add(itemType);
+
+      if(stagingItems.Count < maxStagingSlots)
+         stagingItems.Add(itemType);
+
+      for(int i = 0; i < stagingItems.Count; i++)
+      {
+         if(i == stagingItems.Count - 1)
+         {
+            switch(i)
+            {
+               case 0:
+                  AddXButton(0);
+                  break;
+               case 1:
+                  AddXButton(1);
+                  break;
+               case 2:
+                  AddXButton(2);
+                  break;
+            }
+         }
+      }
+
 
       // 4. Determine Container
       Transform targetContainer = null;
@@ -628,13 +656,69 @@ public class ForgeManager : MonoBehaviour
 
    private void CloseCraftPanel()
    {
+      int itemCheck = 0;
+
       panelManager.ClosePanel(craftPanel.gameObject);
       if (errorPanel != null) errorPanel.SetActive(false);
 
       if (activeQueuePanel != null)
          activeQueuePanel.SetActive(false);
 
-      stagingItems.Clear();
+      Debug.Log(craftingItems.Count);
+      if (craftingItems.Count <= 0)
+         stagingItems.Clear();
+      else
+      {
+         foreach(var item in activeJobs)
+         {
+            switch(item.index)
+            {
+               case 0:
+                  itemCheck += 1;
+                  break;
+               case 1:
+                  itemCheck += 3;
+                  break;
+               case 2:
+                  itemCheck += 5;
+                  break;
+            }
+         }
+         switch(itemCheck)
+         {
+            case 1:
+               if(stagingItems.Count > 1)
+                  stagingItems.RemoveAt(1);
+               if(stagingItems.Count > 2)
+                  stagingItems.RemoveAt(2);
+               break;
+            case 3:
+               stagingItems.RemoveAt(0);
+               if(stagingItems.Count > 2)
+                  stagingItems.RemoveAt(2);
+               break;
+            case 4:
+               if (stagingItems.Count > 2)
+                  stagingItems.RemoveAt(2);
+               break;
+            case 5:
+               stagingItems.RemoveAt(0);
+               stagingItems.RemoveAt(1);
+               break;
+            case 6:
+               stagingItems.RemoveAt(1);
+               break;
+            case 8:
+               stagingItems.RemoveAt(0);
+               break;
+         }
+      }
+      craftPanel.transform.Find("xButton1").gameObject.SetActive(false);
+      craftPanel.transform.Find("xButton1").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+      craftPanel.transform.Find("xButton2").gameObject.SetActive(false);
+      craftPanel.transform.Find("xButton2").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+      craftPanel.transform.Find("xButton3").gameObject.SetActive(false);
+      craftPanel.transform.Find("xButton3").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
 
       if (currentCraftWindow != null)
          Destroy(currentCraftWindow.gameObject);
@@ -659,6 +743,12 @@ public class ForgeManager : MonoBehaviour
 
    public void CloseAllTierPanels()
    {
+      craftPanel.transform.Find("xButton1").gameObject.SetActive(false);
+      craftPanel.transform.Find("xButton2").gameObject.SetActive(false);
+      craftPanel.transform.Find("xButton3").gameObject.SetActive(false);
+      craftPanel.transform.Find("GearWheel1").gameObject.SetActive(false);
+      craftPanel.transform.Find("GearWheel2").gameObject.SetActive(false);
+      craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
       tier1Panel.SetActive(false);
       tier2Panel.SetActive(false);
       tier3Panel.SetActive(false);
@@ -672,6 +762,44 @@ public class ForgeManager : MonoBehaviour
          Destroy(currentCraftWindow.gameObject);
 
       Transform targetContainer = null;
+
+      switch (stagingItems.Count)
+      {
+         case 1:
+            if(activeJobs.Count < 1)
+               craftPanel.transform.Find("xButton1").gameObject.SetActive(true);
+            break;
+         case 2:
+            if (activeJobs.Count < 1)
+               craftPanel.transform.Find("xButton1").gameObject.SetActive(true);
+            if(activeJobs.Count < 2)
+               craftPanel.transform.Find("xButton2").gameObject.SetActive(true);
+            break;
+         case 3:
+            if (activeJobs.Count < 1)
+               craftPanel.transform.Find("xButton1").gameObject.SetActive(true);
+            if (activeJobs.Count < 2)
+               craftPanel.transform.Find("xButton2").gameObject.SetActive(true);
+            if (activeJobs.Count < 3)
+               craftPanel.transform.Find("xButton3").gameObject.SetActive(true);
+            break;
+      }
+
+      switch (craftingItems.Count)
+      {
+         case 1:
+            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
+            break;
+         case 2:
+            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
+            craftPanel.transform.Find("GearWheel2").gameObject.SetActive(true);
+            break;
+         case 3:
+            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
+            craftPanel.transform.Find("GearWheel2").gameObject.SetActive(true);
+            craftPanel.transform.Find("GearWheel3").gameObject.SetActive(true);
+            break;
+      }
 
       switch (tier)
       {
@@ -772,8 +900,10 @@ public class ForgeManager : MonoBehaviour
 
             if (job.turnsRemaining <= 0)
             {
+               RemoveCraftedItem(job);
                DeliverItem(job);
                activeJobs.RemoveAt(jobCount);
+               UpdateStagingUI();
                Debug.Log($"Crafting Complete: {job.itemName}");
 
                finishedItems.Add($"{job.amount}x {job.itemName}");
@@ -886,7 +1016,13 @@ public class ForgeManager : MonoBehaviour
 
    public void CraftStagedItems()
    {
-      if (hasCraftedThisTurn)
+      List<int> activeIndexes = new List<int>();
+      foreach(var job in activeJobs)
+      {
+         Debug.Log($"Active Job - Item: {job.itemName}, Turns Remaining: {job.turnsRemaining}, Index: {job.index}");
+         activeIndexes.Add(job.index);
+      }
+      /*if (hasCraftedThisTurn)
       {
          Debug.Log("Already crafted this turn!");
          ticker.ShowTicker("You can only craft once per turn!", Color.red, TickerSystem.MessageTypes.ResultMessage);
@@ -902,7 +1038,7 @@ public class ForgeManager : MonoBehaviour
          CloseForgePanel(CRAFT_BUTTON);
 
          return;
-      }
+      }*/
 
       if (stagingItems.Count == 0) return;
 
@@ -910,43 +1046,65 @@ public class ForgeManager : MonoBehaviour
       bool isOverclocked = (currentOverclockToggle != null && currentOverclockToggle.isOn);
 
       // Calculate Total Cost
-      foreach (var type in stagingItems)
+      for(int i = 0; i < stagingItems.Count; i++)
       {
-         totalCost += GetItemCost(type);
+         if(!activeIndexes.Contains(i))
+            totalCost += GetItemCost(stagingItems[i]);
       }
 
       // Check Affordability
       if (InventoryManager.Instance.TrySpendOre(totalCost))
       {
-         hasCraftedThisTurn = true;
+         //hasCraftedThisTurn = true;
 
          string successMessage = "Successfully Queued: ";
          List<string> itemNames = new List<string>();
 
          // Process Each Item
-         foreach (var type in stagingItems)
+         for (int i = 0; i < stagingItems.Count; i++)
          {
-            int amount = isOverclocked ? 2 : 1;
-            int turns = isMercenaryEngineerActive ? 0 : GetTurnsNeeded(type);
+            if(!activeIndexes.Contains(i))
+            {
+               craftingItems.Add(true);
 
-            isMercenaryEngineerActive = false;
+               int amount = isOverclocked ? 2 : 1;
+               int turns = isMercenaryEngineerActive ? 0 : GetTurnsNeeded(stagingItems[i]);
 
-            CraftingJob job = new CraftingJob();
-            job.itemType = type;
-            job.amount = amount;
-            job.itemName = type.ToString();
-            job.turnsRemaining = turns;
+               isMercenaryEngineerActive = false;
 
-            activeJobs.Add(job);
-            Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
+               CraftingJob job = new CraftingJob();
+               job.itemType = stagingItems[i];
+               job.amount = amount;
+               job.itemName = stagingItems[i].ToString();
+               job.turnsRemaining = turns;
+               job.index = i;
 
-            itemNames.Add($"{amount}x {job.itemName}");
+               activeJobs.Add(job);
+               Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining at index {job.index}.");
+
+               itemNames.Add($"{amount}x {job.itemName}");
+            }
          }
          successMessage += string.Join(", ", itemNames);
 
          ticker.ShowTicker(successMessage, Color.green, TickerSystem.MessageTypes.ResultMessage);
 
-         stagingItems.Clear();
+
+         switch (craftingItems.Count)
+         {
+            case 1:
+               craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
+               break;
+            case 2:
+               craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
+               craftPanel.transform.Find("GearWheel2").gameObject.SetActive(true);
+               break;
+            case 3:
+               craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
+               craftPanel.transform.Find("GearWheel2").gameObject.SetActive(true);
+               craftPanel.transform.Find("GearWheel3").gameObject.SetActive(true);
+               break;
+         }
          UpdateStagingUI();
 
          if (currentOverclockToggle != null) currentOverclockToggle.isOn = false;
@@ -1103,6 +1261,95 @@ public class ForgeManager : MonoBehaviour
          if (t1_bg_lvl3) t1_bg_lvl3.SetActive(true);
          if (t2_bg_lvl3) t2_bg_lvl3.SetActive(true);
          if (t3_bg_lvl3) t3_bg_lvl3.SetActive(true);
+      }
+   }
+
+   public void AddXButton(int index)
+   {
+      switch(index)
+      {
+         case 0:
+            craftPanel.transform.Find("xButton1").gameObject.SetActive(true);
+            craftPanel.transform.Find("xButton1").gameObject.GetComponent<Button>().onClick.AddListener(() =>
+            {
+               stagingItems.RemoveAt(index);
+               UpdateStagingUI();
+               craftPanel.transform.Find("xButton1").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+               if (stagingItems.Count > 0)
+                  AddXButton(0);
+               else
+                  craftPanel.transform.Find("xButton1").gameObject.SetActive(false);
+
+               if (stagingItems.Count > 1)
+               {
+                  AddXButton(1);
+                  craftPanel.transform.Find("xButton3").gameObject.SetActive(false);
+               }
+                  
+               else
+                  craftPanel.transform.Find("xButton2").gameObject.SetActive(false);
+            });
+            break;
+         case 1:
+            craftPanel.transform.Find("xButton2").gameObject.SetActive(true);
+            craftPanel.transform.Find("xButton2").gameObject.GetComponent<Button>().onClick.AddListener(() =>
+            {
+               stagingItems.RemoveAt(index);
+               UpdateStagingUI();
+               craftPanel.transform.Find("xButton2").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+               if (stagingItems.Count > 1)
+               {
+                  AddXButton(1);
+                  craftPanel.transform.Find("xButton3").gameObject.SetActive(false);
+               }
+               else
+                  craftPanel.transform.Find("xButton2").gameObject.SetActive(false);
+            });
+            break;
+         case 2:
+            craftPanel.transform.Find("xButton3").gameObject.SetActive(true);
+            craftPanel.transform.Find("xButton3").gameObject.GetComponent<Button>().onClick.AddListener(() =>
+            {
+               stagingItems.RemoveAt(index);
+               UpdateStagingUI();
+               craftPanel.transform.Find("xButton3").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+               craftPanel.transform.Find("xButton3").gameObject.SetActive(false);
+            });
+            break;
+      }
+   }
+
+   public void RemoveCraftedItem(CraftingJob job)
+   {
+      Debug.Log($"This is the job index: {job.index}");
+      Debug.Log($"This is the staging count before removal: {stagingItems.Count}");
+      stagingItems.RemoveAt(job.index);
+      craftingItems.RemoveAt(craftingItems.Count - 1);
+      foreach(var item in activeJobs)
+      {
+         if(item.index > job.index)
+            item.index -= 1;
+      }
+      Debug.Log(stagingItems.Count);
+      switch(job.index)
+      {
+         case 0:
+            if(stagingItems.Count > 1)
+               craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
+            if(stagingItems.Count > 0)
+               craftPanel.transform.Find("GearWheel2").gameObject.SetActive(false);
+            if(stagingItems.Count >= 0)
+               craftPanel.transform.Find("GearWheel1").gameObject.SetActive(false);
+            break;
+         case 1:
+            if (stagingItems.Count > 1)
+               craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
+            if (stagingItems.Count > 0)
+               craftPanel.transform.Find("GearWheel2").gameObject.SetActive(false);
+            break;
+         case 2:
+            craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
+            break;
       }
    }
 }

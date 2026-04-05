@@ -22,8 +22,8 @@ public class UIFade : MonoBehaviour
 
    public void Disappear(float duration) 
    {
-      gameObject.SetActive(false);
       StartCoroutine(FadeOut(duration));
+      gameObject.SetActive(false);
    }
 
    IEnumerator FadeIn(float duration)

@@ -17,6 +17,10 @@ public class OreRefinery_Manager : MonoBehaviour
    const int UPGRADE_BUTTON = 2;
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL   = 3;
+   const int LEVEL_2_PEARL_COST = 100;
+   const int LEVEL_2_ORE_COST = 50;
+   const int LEVEL_3_PEARL_COST = 300;
+   const int LEVEL_3_ORE_COST = 100;
 
    public PanelManager panelManager;
    [SerializeField] private Transform infoPanel;
@@ -161,15 +165,15 @@ public class OreRefinery_Manager : MonoBehaviour
 
       if (oreLevel == 1)
       {
-         pearlUpgradeCost = level2PearlCost;
-         oreUpgradeCost = level2OreCost;
+         pearlUpgradeCost = LEVEL_2_PEARL_COST;
+         oreUpgradeCost = LEVEL_2_ORE_COST;
          upgradeTitle = "REWARD: Increase Ore/Turn";
          upgradeExplanation = "The ore gained every turn increases to 25 but increases jamming";
       }
       if (oreLevel == 2)
       {
-         pearlUpgradeCost = 300;
-         oreUpgradeCost = 100;
+         pearlUpgradeCost = LEVEL_3_PEARL_COST;
+         oreUpgradeCost = LEVEL_3_ORE_COST;
          upgradeTitle = "REWARD: Increase Ore/Turn";
          upgradeExplanation = "The ore gained every turn increases to 60 but increases jamming";
       }
