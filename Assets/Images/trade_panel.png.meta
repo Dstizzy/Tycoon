@@ -106,10 +106,10 @@ TextureImporter:
       name: trade_panel_0
       rect:
         serializedVersion: 2
-        x: 179
-        y: 78
-        width: 1092
-        height: 690
+        x: 221
+        y: 62
+        width: 900
+        height: 600
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

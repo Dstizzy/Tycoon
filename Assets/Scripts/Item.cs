@@ -170,6 +170,8 @@ public class Item {
 
     public static Sprite GetItemSprite(ItemType itemType) 
     {
+      ItemSprites.itemSprites = UnityEngine.Object.FindFirstObjectByType<ItemSprites>();
+        
         if (ItemSprites.itemSprites == null) 
         {
             Debug.LogError("ItemSprites.Instance is NULL! Cannot retrieve sprites.");
