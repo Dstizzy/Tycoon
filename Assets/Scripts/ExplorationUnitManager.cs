@@ -25,6 +25,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
    [Header("Icon UI Settings")]
    [SerializeField] private Transform inventoryIconContainer;
+   [SerializeField] private Transform resultsIconContainer;
 
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer buildingSpriteRenderer;
@@ -135,6 +136,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public void StartExploration()
    {
       isExploring = true;
+      SetDecisionInteractable(true);
       lastProcessedTurn = TurnManager.Instance.currentTurn;
       if (MapManager.Instance.startingNode != null)
       {
@@ -542,53 +544,95 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       panelManager.OpenPanel(decisionResultsPanel.gameObject);
       SetDecisionInteractable(false);
-      string resultsText = $"{resultMessage}\n\n";
+      decisionResults.text = resultMessage;
 
-      // Checks to see if event resulted in any ship or inventory changes, and show changes on panel
-      if (results.pearlChanged != 0)
+      // Hide all previous results
+      if (resultsIconContainer != null)
       {
-         string sign = results.pearlChanged > 0 ? "+" : "";
-         resultsText += $"Pearl: {sign}{results.pearlChanged}\n";
-      }
-      if (results.oreChanged != 0)
-      {
-         string sign = results.oreChanged > 0 ? "+" : "";
-         resultsText += $"Ore: {sign}{results.oreChanged}\n";
-      }
-      if (results.patchKitChanged > 0)
-         resultsText += $"Patch Kit: +{results.patchKitChanged}\n";
-      if (results.harpoonChanged > 0)
-         resultsText += $"Harpoon: +{results.harpoonChanged}\n";
-      if (results.crudeToolChanged > 0)
-         resultsText += $"Crude Tool: +{results.crudeToolChanged}\n";
-      if (results.pressureValveChanged > 0)
-         resultsText += $"Pressure Valve: +{results.pressureValveChanged}\n";
-      if (results.divingBellChanged > 0)
-         resultsText += $"Diving Bell: +{results.divingBellChanged}\n";
-      if (results.clockworkEngineChanged > 0)
-         resultsText += $"Clockwork Engine: +{results.clockworkEngineChanged}\n";
-      if (results.precisionLensChanged > 0)
-         resultsText += $"Precision Lens: +{results.precisionLensChanged}\n";
-      if (results.healthChanged != 0)
-      {
-         string sign = results.healthChanged > 0 ? "+" : "";
-         resultsText += $"Health: {sign}{results.healthChanged}\n";
-      }
-      if (results.fuelChanged != 0)
-      {
-         string sign = results.fuelChanged > 0 ? "+" : "";
-         resultsText += $"Fuel: {sign}{results.fuelChanged}";
+         foreach (Transform child in resultsIconContainer)
+         {
+            child.gameObject.SetActive(false);
+            child.localScale = Vector3.zero;
+         }
       }
 
-      decisionResults.text = resultsText;
+      // Start animation sequence for results
+      StartCoroutine(ShowDecisionResultsSequence(results, currentNode));
+   }
 
-      // Sets up confirm button for results panel
+   private IEnumerator ShowDecisionResultsSequence(ShipManager.RoundResults results,  MapNode currentNode)
+   {
+      float delayBetweenItems = 0.2f;
+      var resultData = new (string Name, int Amount)[]
+      {
+         ("Pearl", results.pearlChanged),
+         ("Ore", results.oreChanged),
+         ("Patch Kit", results.patchKitChanged),
+         ("Harpoon", results.harpoonChanged),
+         ("Crude Tool", results.crudeToolChanged),
+         ("Pressure Valve", results.pressureValveChanged),
+         ("Diving Bell", results.divingBellChanged),
+         ("Clockwork Engine", results.clockworkEngineChanged),
+         ("Precision Lens", results.precisionLensChanged),
+         ("Health", results.healthChanged),
+         ("Fuel", results.fuelChanged)
+      };
+
+      foreach (var item in resultData)
+      {
+         if (item.Amount != 0)
+         {
+            Transform iconRow = TrySpawnResultIcon(item.Name, item.Amount);
+            if (iconRow != null)
+            {
+               // Trigger the "Pop" animation (Shared logic with ShipManager)
+               yield return new WaitForSeconds(delayBetweenItems);
+               StartCoroutine(AnimatePop(iconRow));
+            }
+         }
+      }
+      // Configure the button to move forward
       Button continueButton = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
       continueButton.onClick.RemoveAllListeners();
       continueButton.onClick.AddListener(() =>
       {
          StartCoroutine(ResultsDelay(currentNode));
       });
+   }
+
+   private Transform TrySpawnResultIcon(string itemName, int amount)
+   {
+      Transform slotTransform = resultsIconContainer.Find(itemName);
+      if (slotTransform == null) return null;
+
+      slotTransform.gameObject.SetActive(true);
+
+      TextMeshProUGUI txt = slotTransform.Find("Count").GetComponent<TextMeshProUGUI>();
+      if (txt != null)
+      {
+         string sign = amount > 0 ? "+" : "-";
+         txt.text = $"{sign}{amount}";
+      }
+      return slotTransform;
+   }
+
+   private IEnumerator AnimatePop(Transform target)
+   {
+      float duration = 0.4f;
+      float elapsed = 0.0f;
+      Vector3 startScale = Vector3.zero;
+      Vector3 endScale = Vector3.one;
+
+      while (elapsed < duration)
+      {
+         elapsed += Time.deltaTime;
+         float percent = elapsed / duration;
+         // Ease out elastic effect
+         float curve = Mathf.Sin(percent * Mathf.PI * 1.2f) / 1.2f;
+         target.localScale = Vector3.LerpUnclamped(startScale, endScale, percent + (1f - percent) * curve);
+         yield return null;
+      }
+      target.localScale = endScale;
    }
 
    //

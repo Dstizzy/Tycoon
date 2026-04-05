@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 85c9b6b1b4cc0894b9d16441bc598f1e
+guid: f33d591a70ca67d4d86d52dcdded42cc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5261828451655107739
-    second: ExploreChoiceRewards_0
+      213: 4700141321165658037
+    second: ExploreHealthBar_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ExploreChoiceRewards_0
+      name: ExploreHealthBar_0
       rect:
         serializedVersion: 2
-        x: 39
-        y: 6
-        width: 545
-        height: 376
+        x: 44
+        y: 98
+        width: 538
+        height: 120
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 84, y: 144, z: 86, w: 128}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b9442f13915c50940800000000000000
-      internalID: 5261828451655107739
+      spriteID: 5b7d63211a14a3140800000000000000
+      internalID: 4700141321165658037
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c272611d29174fa459a1d41842c773b0
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ExploreChoiceRewards_0: 5261828451655107739
+      ExploreHealthBar_0: 4700141321165658037
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

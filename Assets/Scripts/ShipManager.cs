@@ -324,86 +324,70 @@ public class ShipManager : MonoBehaviour
    // Triggers the fail-state UI sequence when fuel is empty
    public void LowFuel()
    {
-      if (currentFuel <= 0)
+      if (currentFuel <= 0 && explorationUnitManager.isExploring)
       {
+         explorationUnitManager.isExploring = false;
          explorationUnitManager.SetDecisionInteractable(false);
-         StartCoroutine(LowFuelSequence());
+
+         panelManager.OpenPanel(fuelPanel.gameObject);
+         Button btn = fuelPanel.Find("OkButton").GetComponent<Button>();
+         btn.onClick.RemoveAllListeners();
+         btn.onClick.AddListener(() => StartCoroutine(FinishExploration()));
       }
-   }
-   private IEnumerator LowFuelSequence()
-   {
-      yield return new WaitForSeconds(0.2f);
-      OpenFuelPanel();
-      Button confirmFuelButton = fuelPanel.Find("OkButton").GetComponent<Button>();
-      confirmFuelButton.onClick.RemoveAllListeners();
-      confirmFuelButton.onClick.AddListener(() =>
-      {
-         StartCoroutine(FinishExploration());
-      });
    }
 
    // Triggers the fail-state UI sequence when health is empty
    public void ShipDestruction()
    {
-      OpenHealthPanel();
-      Button confirmHealthButton = healthPanel.Find("OkButton").GetComponent<Button>();
-      confirmHealthButton.onClick.RemoveAllListeners();
-      confirmHealthButton.onClick.AddListener(() =>
+      explorationUnitManager.isExploring = false;
+      explorationUnitManager.SetDecisionInteractable(false);
+      panelManager.OpenPanel(healthPanel.gameObject);
+      Button btn = healthPanel.Find("OkButton").GetComponent<Button>();
+      btn.onClick.RemoveAllListeners();
+      btn.onClick.AddListener(() => 
       {
-         StartCoroutine(ClosePanels());
+         panelManager.ClosePanel(healthPanel.gameObject);
          explorationUnitManager.CloseDecisionPanel();
          ResetShip();
+         explorationUnitManager.SetDecisionInteractable(true);
       });
-   }
-
-   // Opens the panel that tells ship fuel is empty
-   private void OpenFuelPanel()
-   {
-      panelManager.OpenPanel(fuelPanel.gameObject);
-   }
-
-   // Opens the panel that tells ship has been destroyed
-   private void OpenHealthPanel()
-   {
-      panelManager.OpenPanel(healthPanel.gameObject);
-      explorationUnitManager.SetDecisionInteractable(false);
    }
 
    // Opens panel to confirm ship to return to base
    public void OpenConfirmReturnPanel()
    {
+      if (!explorationUnitManager.isExploring) return;
+
       panelManager.OpenPanel(confirmReturnPanel.gameObject);
       explorationUnitManager.SetDecisionInteractable(false);
 
       Button returnShip = confirmReturnPanel.Find("Return").GetComponent<Button>();
       returnShip.onClick.RemoveAllListeners();
-      returnShip.onClick.AddListener(() => {
-         StartCoroutine(FinishExploration());
-         explorationUnitManager.SetDecisionInteractable(true);
-      });
+      returnShip.onClick.AddListener(() => StartCoroutine(FinishExploration()));
+  
       Button stayOut = confirmReturnPanel.Find("KeepGoing").GetComponent<Button>();
       stayOut.onClick.RemoveAllListeners();
       stayOut.onClick.AddListener(() =>
       {
-         StartCoroutine(ClosePanels());
+         panelManager.ClosePanel(confirmReturnPanel.gameObject);
          explorationUnitManager.SetDecisionInteractable(true);
       });
    }
 
+
    // Closes health, fuel, and return panels
-   private IEnumerator ClosePanels()
+   private void ClosePanels()
    {
       panelManager.ClosePanel(healthPanel.gameObject);
       panelManager.ClosePanel(fuelPanel.gameObject);
       panelManager.ClosePanel(confirmReturnPanel.gameObject);
-      explorationUnitManager.SetDecisionInteractable(false);
-      yield return new WaitForSeconds(0.2f);
    }
 
    // Ends a successful exploration, shows total rewards and trasfers inventory to main game inventory
    public IEnumerator FinishExploration()
    {
-      yield return StartCoroutine(ClosePanels());
+      explorationUnitManager.isExploring = false;
+      ClosePanels();
       explorationUnitManager.CloseDecisionPanel();
       if (rewardsContainer != null)
       {
@@ -416,12 +400,12 @@ public class ShipManager : MonoBehaviour
 
       yield return StartCoroutine(ShowRewardsSequence());
 
+      explorationUnitManager.SetDecisionInteractable(true);
       // Activate and populate total rewards panel
       Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
       confirmRewards.onClick.RemoveAllListeners();
       confirmRewards.onClick.AddListener(() =>
       {
-         CloseFinalRewardsPanel();
          finalRewardsPanel.gameObject.SetActive(false);
          AddRewards();
          ResetShip();
