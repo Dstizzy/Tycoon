@@ -29,6 +29,10 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private List<Sprite> explorationLevelSprites;
    [SerializeField] private TextMeshProUGUI explorationLevelText;
 
+   [Header("Level UI")]
+   [SerializeField] private Transform levelCanvas;
+
+
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to next turn
 
    // ID constants for the base menu buttons
@@ -59,6 +63,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private void Start()
    {
       UpdateExplorationSprites();
+      UpdateLevel();
       if (explorationLevelText != null && shipManager != null)
       {
          explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
@@ -160,6 +165,7 @@ public class ExplorationUnitManager : MonoBehaviour
       {
          shipManager.UpgradeShip();
          UpdateExplorationSprites();
+         UpdateLevel();
 
          if (explorationLevelText != null)
             explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
@@ -719,4 +725,14 @@ public class ExplorationUnitManager : MonoBehaviour
       if (shipManager.shipLevel == 2) return LEVEL3_PEARL_COST;
       return 0;
    }
+
+   private void UpdateLevel()
+   {
+      if (explorationLevelText != null && shipManager != null)
+      {
+         explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+      }
+   }
+
+
 }
