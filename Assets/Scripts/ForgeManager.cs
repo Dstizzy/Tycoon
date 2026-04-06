@@ -26,9 +26,9 @@ public class ForgeManager : MonoBehaviour
    const int STARTING_LEVEL = 1;
    const int CRUDE_TOOL_COST = 10;
    const int HARPOON_COST = 25;
-   const int PATCH_KIT_COST = 15;
+   const int PATCH_KIT_COST = 75;
    const int PRESSUREV_VALVE_COST = 50;
-   const int DIVING_BELL_COST = 75;
+   const int DIVING_BELL_COST = 15;
    const int ENGINE_COST = 150;
    const int PRECISION_LENS_COST = 200;
    const int TIER_1 = 1;
@@ -101,6 +101,10 @@ public class ForgeManager : MonoBehaviour
    [SerializeField] private GameObject t3_bg_lvl1;
    [SerializeField] private GameObject t3_bg_lvl2;
    [SerializeField] private GameObject t3_bg_lvl3;
+
+   [Header("Tier Panel Modifiers")]
+   [SerializeField] private List<Toggle> overclockToggles;
+   [SerializeField] private List<Toggle> mercenaryToggles;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -475,6 +479,7 @@ public class ForgeManager : MonoBehaviour
       UpdateTierButtonState(t3, TIER_3, hasTier3Blueprint);
 
       RefreshTurnValues();
+      RefreshModifiers();
 
       if (t1 != null)
       {
@@ -685,6 +690,7 @@ public class ForgeManager : MonoBehaviour
       {
          CreateCraftWindow(targetContainer);
       }
+      RefreshModifiers();
    }
 
    public void UnlockOverclock()
@@ -706,14 +712,14 @@ public class ForgeManager : MonoBehaviour
          case Item.ItemType.Harpoon:
             turns = 1;
             break;
-         case Item.ItemType.PatchKit:
+         case Item.ItemType.DivingBell:
             turns = 1;
             break;
          case Item.ItemType.PressureValve:
             turns = isLabTier3Unlocked ? 1 : 2;
             break;
-         case Item.ItemType.DivingBell:
-            turns = 2;
+         case Item.ItemType.PatchKit:
+            turns = 1;
             break;
          case Item.ItemType.Engine:
             turns = 3;
@@ -892,7 +898,14 @@ public class ForgeManager : MonoBehaviour
       if (stagingItems.Count == 0) return;
 
       int totalCost = 0;
-      bool isOverclocked = (currentOverclockToggle != null && currentOverclockToggle.isOn);
+
+      // Check if ANY Overclock toggle is currently checked
+      bool isOverclocked = false;
+      foreach (Toggle t in overclockToggles) { if (t != null && t.isOn) isOverclocked = true; }
+
+      // Check if ANY Mercenary toggle is currently checked
+      bool useMercenary = false;
+      foreach (Toggle t in mercenaryToggles) { if (t != null && t.isOn) useMercenary = true; }
 
       // Calculate Total Cost
       foreach (var type in stagingItems)
@@ -905,6 +918,12 @@ public class ForgeManager : MonoBehaviour
       {
          hasCraftedThisTurn = true;
 
+         // NEW: Deduct the mercenary from inventory if used
+         if (useMercenary)
+         {
+            InventoryManager.Instance.TryUseMercenaryEngineer(1);
+         }
+
          string successMessage = "Successfully Queued: ";
          List<string> itemNames = new List<string>();
 
@@ -912,31 +931,47 @@ public class ForgeManager : MonoBehaviour
          foreach (var type in stagingItems)
          {
             int amount = isOverclocked ? 2 : 1;
-            int turns = isMercenaryEngineerActive ? 0 : GetTurnsNeeded(type);
 
-            isMercenaryEngineerActive = false;
+            if (useMercenary)
+            {
+               CraftingJob instantJob = new CraftingJob { itemType = type, amount = amount, itemName = type.ToString() };
+               DeliverItem(instantJob);
 
-            CraftingJob job = new CraftingJob();
-            job.itemType = type;
-            job.amount = amount;
-            job.itemName = type.ToString();
-            job.turnsRemaining = turns;
+               Debug.Log($"[Instant Craft] {instantJob.itemName}");
+               itemNames.Add($"{amount}x {instantJob.itemName}");
+            }
+            else
+            {
+               int turns = GetTurnsNeeded(type);
+               CraftingJob job = new CraftingJob { itemType = type, amount = amount, itemName = type.ToString(), turnsRemaining = turns };
 
-            activeJobs.Add(job);
-            Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
-
-            itemNames.Add($"{amount}x {job.itemName}");
+               activeJobs.Add(job);
+               Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
+               itemNames.Add($"{amount}x {job.itemName}");
+            }
          }
-         successMessage += string.Join(", ", itemNames);
+
+         if (useMercenary)
+         {
+            successMessage = "Instant Craft Complete: " + string.Join(", ", itemNames);
+         }
+         else
+         {
+            successMessage += string.Join(", ", itemNames);
+         }
 
          ticker.ShowTicker(successMessage, Color.green, TickerSystem.MessageTypes.ResultMessage);
 
          stagingItems.Clear();
          UpdateStagingUI();
 
-         if (currentOverclockToggle != null) currentOverclockToggle.isOn = false;
+         // Turn all toggles back off after crafting
+         foreach (Toggle t in overclockToggles) { if (t != null) t.isOn = false; }
+         foreach (Toggle t in mercenaryToggles) { if (t != null) t.isOn = false; }
 
          UpdateProgressVisuals();
+         // ... (rest of method stays the same)
+
 
          CloseAllTierPanels();
          if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
@@ -1088,6 +1123,29 @@ public class ForgeManager : MonoBehaviour
          if (t1_bg_lvl3) t1_bg_lvl3.SetActive(true);
          if (t2_bg_lvl3) t2_bg_lvl3.SetActive(true);
          if (t3_bg_lvl3) t3_bg_lvl3.SetActive(true);
+      }
+   }
+   private void RefreshModifiers()
+   {
+      bool hasMercenary = InventoryManager.Instance.mercenaryEngineerCount > 0;
+
+  
+      foreach (Toggle toggle in overclockToggles)
+      {
+         if (toggle != null)
+         {
+            toggle.gameObject.SetActive(isOverclockUnlocked);
+            toggle.isOn = false; 
+         }
+      }
+
+      foreach (Toggle t in mercenaryToggles)
+      {
+         if (t != null)
+         {
+            t.gameObject.SetActive(hasMercenary);
+            t.isOn = false; 
+         }
       }
    }
 }

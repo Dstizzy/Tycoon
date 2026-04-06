@@ -255,7 +255,7 @@ public class HoverScript : MonoBehaviour
       }
    }
 
-   private void SetLevelPanel(Transform canvas, int level)
+   public void SetLevelPanel(Transform canvas, int level)
    {
       if (canvas == null)
          return;
