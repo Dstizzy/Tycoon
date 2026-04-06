@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e2b297d0795e4ca4da0d20c8f13af2e1
+guid: d36c5d6bccb97694687feef7fdd33aad
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 705062146944875339
-    second: exploration_path_button_0
+      213: -2672534523800040486
+    second: gear_symbol_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: exploration_path_button_0
+      name: gear_symbol_0
       rect:
         serializedVersion: 2
-        x: 56
-        y: 83
-        width: 570
-        height: 206
+        x: 166
+        y: 45
+        width: 303
+        height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b4b393d7942e8c900800000000000000
-      internalID: 705062146944875339
+      spriteID: adb4ee2a20049ead0800000000000000
+      internalID: -2672534523800040486
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d8ae463abf047174e857c0731b9caa6a
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      exploration_path_button_0: 705062146944875339
+      gear_symbol_0: -2672534523800040486
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

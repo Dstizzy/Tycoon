@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e2b297d0795e4ca4da0d20c8f13af2e1
+guid: 174d7e7f12b449a46ab17658f1f3b669
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 705062146944875339
-    second: exploration_path_button_0
+      213: -3061406521583229366
+    second: lab_panel_flask_empty_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: exploration_path_button_0
+      name: lab_panel_flask_empty_0
       rect:
         serializedVersion: 2
-        x: 56
-        y: 83
-        width: 570
-        height: 206
+        x: 15
+        y: 4
+        width: 643
+        height: 350
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b4b393d7942e8c900800000000000000
-      internalID: 705062146944875339
+      spriteID: a46a7f71df2b385d0800000000000000
+      internalID: -3061406521583229366
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d8ae463abf047174e857c0731b9caa6a
+    spriteID: 30cda1e453c983843b9106bb1d42d3b5
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      exploration_path_button_0: 705062146944875339
+      lab_panel_flask_empty_0: -3061406521583229366
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
