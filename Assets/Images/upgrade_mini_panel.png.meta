@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d0d938323dfce462ca9adfd8331a1d2e
+guid: 718a0a51204e11240b24d80ec7741ce9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5305827946631993213
-    second: craftingPanel_0
+      213: -5327748580375483216
+    second: upgrade_mini_panel_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,56 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: craftingPanel_0
+      name: upgrade_mini_panel_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 0
-        width: 2526
-        height: 1628
+        x: 30
+        y: 84
+        width: 648
+        height: 244
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 388e8a11899ed56b0800000000000000
-      internalID: -5305827946631993213
+      spriteID: 0bca02ec4e80016b0800000000000000
+      internalID: -5327748580375483216
       vertices: []
       indices: 
       edges: []
@@ -174,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      craftingPanel_0: -5305827946631993213
+      upgrade_mini_panel_0: -5327748580375483216
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

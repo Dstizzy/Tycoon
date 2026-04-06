@@ -789,27 +789,19 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
-
       if (divingBellCount >= MAX_DIVING_BELL_COUNT)
       {
-         Debug.LogError("Diving Bell count is at maximum!");
          ticker.ShowTicker($"Diving Bell count is at maximum!", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
-      else
-         if ((divingBellCount + divingBellAmount) > MAX_DIVING_BELL_COUNT)
-      {
-         Debug.LogError("Diving Bell count is at maximum!");
-         ticker.ShowTicker($"Cannot add diving bells - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
-         return isSuccess;
-      }
-      else
-      {
-         isSuccess = true;
-         divingBellCount += divingBellAmount;
-      }
 
-      DivingBellCountText.text = " x" + divingBellCount.ToString();
+      isSuccess = true;
+      divingBellCount += divingBellAmount;
+
+      if (DivingBellCountText != null)
+      {
+         DivingBellCountText.text = " x" + divingBellCount.ToString();
+      }
 
       return isSuccess;
    }

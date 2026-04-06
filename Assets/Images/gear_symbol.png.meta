@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c8dd4dde79eb54f8b83c101012d4079c
+guid: d36c5d6bccb97694687feef7fdd33aad
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -699188426216521099
-    second: newcrafting_0
+      213: -2672534523800040486
+    second: gear_symbol_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,66 +96,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: newcrafting_0
+      name: gear_symbol_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 771
-        height: 1024
+        x: 166
+        y: 45
+        width: 303
+        height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 572cc40b4dbfb46f0800000000000000
-      internalID: -699188426216521099
+      spriteID: adb4ee2a20049ead0800000000000000
+      internalID: -2672534523800040486
       vertices: []
       indices: 
       edges: []
@@ -164,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 87cde14e88519485d89de0157fdd4126
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      newcrafting_0: -699188426216521099
+      gear_symbol_0: -2672534523800040486
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
