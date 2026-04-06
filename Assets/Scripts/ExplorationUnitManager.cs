@@ -251,10 +251,19 @@ public class ExplorationUnitManager : MonoBehaviour
                              string textC, UnityAction actionC, bool interactableC)
    {
       Transform container = decisionPanel.Find("ButtonContainer");
+      MapNode currentNode = MapManager.Instance.currentNode;
       foreach (Transform child in container)
       {
+         // 1. Reset the Hover component logic
          NodeHover hover = child.GetComponent<NodeHover>();
          if (hover != null) hover.isTierLocked = false;
+
+         // 2. Ensure the button is active (will be hidden later if no text)
+         child.gameObject.SetActive(true);
+
+         // 3. Reset interactable to true by default before specific logic applies
+         Button btn = child.GetComponent<Button>();
+         if (btn != null) btn.interactable = true;
       }
 
       ExploreEvents currentEvent = eventController.currentEvent;
@@ -268,7 +277,8 @@ public class ExplorationUnitManager : MonoBehaviour
          button1.onClick.RemoveAllListeners();
          if (actionA != null) button1.onClick.AddListener(actionA);
 
-         bool isLockedA = currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
+         bool isLockedA = (currentNode != null && currentNode.type != MapNode.NodeType.Directional) && 
+                           currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
 
          NodeHover hover1 = button1.GetComponent<NodeHover>();
          if (hover1 != null) hover1.isTierLocked = isLockedA;
@@ -285,7 +295,8 @@ public class ExplorationUnitManager : MonoBehaviour
             button2.onClick.RemoveAllListeners();
             if (actionB != null) button2.onClick.AddListener(actionB);
 
-            bool isLockedB = currentEvent != null && currentEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked;
+            bool isLockedB = (currentNode != null && currentNode.type != MapNode.NodeType.Directional) && 
+                              currentEvent != null && currentEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked;
             NodeHover hover2 = button2.GetComponent<NodeHover>();
             if (hover2 != null) hover2.isTierLocked = isLockedB;
             button2.interactable = interactableB && !isLockedB;
