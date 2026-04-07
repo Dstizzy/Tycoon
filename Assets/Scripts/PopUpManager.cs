@@ -199,7 +199,7 @@ public class PopUpManager : MonoBehaviour
          fixedPopUpPosition = buildingTransform.position + offset;
       }
 
-      buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge")) ? buildingButtonsPreFab.Length : 2;
+      buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge") || buildingTransform.CompareTag("Ore Refinery")) ? buildingButtonsPreFab.Length : 2;
 
       for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++)
       {
@@ -212,6 +212,7 @@ public class PopUpManager : MonoBehaviour
 
          string uniqueButtonName = buildingTransform.tag switch
          {
+            "Ore Refinery"      => "Patch",
             "Trade Hut"         => "Trade",
             "Lab"               => "Research",
             "Exploration Unit"  => "Explore",
@@ -224,10 +225,10 @@ public class PopUpManager : MonoBehaviour
          switch (buttonIndex)
          {
             case 0:
-               buttonText = buildingTransform.CompareTag("Ore Refinery") ? "Info" : uniqueButtonName;
+               buttonText = uniqueButtonName;
                break;
             case 1:
-               buttonText = buildingTransform.CompareTag("Ore Refinery") ? "Upgrade" : "Info";
+               buttonText = "Info";
                break;
             case 2:
                buttonText = "Upgrade";

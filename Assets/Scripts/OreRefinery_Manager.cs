@@ -13,8 +13,9 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public static OreRefinery_Manager Instance { get; private set; }
 
-   const int INFO_BUTTON    = 1;
-   const int UPGRADE_BUTTON = 2;
+   const int PATCH_BUTTON   = 1;
+   const int INFO_BUTTON    = 2;
+   const int UPGRADE_BUTTON = 3;
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL   = 3;
    const int LEVEL_2_PEARL_COST = 100;
@@ -23,6 +24,7 @@ public class OreRefinery_Manager : MonoBehaviour
    const int LEVEL_3_ORE_COST = 100;
 
    public PanelManager panelManager;
+   [SerializeField] private Transform patchPanel;
    [SerializeField] private Transform infoPanel;
    [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;
@@ -88,11 +90,20 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public void RequestOreRefinoryPanel(int buttonID)
    {
+
+      Button exitBtn;
       switch (buttonID)
       {
+
+         case PATCH_BUTTON:
+            ShowPatchPanel();
+            exitBtn = patchPanel.transform.Find("ExitButton").GetComponent<Button>();
+            exitBtn.onClick.RemoveAllListeners(); 
+            exitBtn.onClick.AddListener(() => CloseOreRefinoryPanel(PATCH_BUTTON));
+            break;
          case INFO_BUTTON:
             ShowInfoPanel();
-            Button exitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
+            exitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
             exitBtn.onClick.RemoveAllListeners(); 
             exitBtn.onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
             break;
@@ -119,6 +130,9 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       switch (buttonID)
       {
+         case PATCH_BUTTON:
+            ClosePatchPanel();
+            break;
          case INFO_BUTTON:
             CloseInfoPanel();
             break;
@@ -221,6 +235,14 @@ public class OreRefinery_Manager : MonoBehaviour
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
+
+   private void ClosePatchPanel()
+   {
+      panelManager.ClosePanel(patchPanel.gameObject);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    private void CloseInfoPanel()
@@ -440,5 +462,21 @@ public class OreRefinery_Manager : MonoBehaviour
          buildingSpriteRenderer[index].gameObject.SetActive(true);
          Debug.Log($"Forge Visuals Updated to Level {oreLevel}");
       }
+   }
+
+   public void ShowPatchPanel()
+   {
+      panelManager.OpenPanel(patchPanel.gameObject);
+
+      patchPanel.transform.Find("UnjamButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      patchPanel.transform.Find("UnjamButton").GetComponent<Button>().onClick.AddListener(() =>
+      {
+         patchPanel.transform.Find("UnjamButton").GetComponent<Button>().interactable = false;
+         InventoryManager.Instance.TryUsePatchKit(1);
+         //TurnManager.Instance.currentTurn
+      });
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      
    }
 }
