@@ -91,6 +91,11 @@ public class TurnManager : MonoBehaviour
    // Advances the game to the next turn and updates the UI,
    public async void EndTurn()
    {
+      progressBar.SetActive(true);
+      PopUpManager.Instance.DisablePlayerInput();
+      await Task.Delay(1000);
+      progressBar.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
       Debug.Log("### TurnManager Start() ###");
 
       // Do nothing if the game is already over
@@ -107,9 +112,7 @@ public class TurnManager : MonoBehaviour
       }
       else
       {
-         progressBar.SetActive(true);
-         await Task.Delay(1000);
-         progressBar.SetActive(false);
+         progressBar.transform.rotation = Quaternion.identity;
          UpdateTurnUI();
          HandleJamming();
          HandleEnemy();
@@ -213,6 +216,28 @@ public class TurnManager : MonoBehaviour
    public void HandleEnemy()
    {
       GameObject decisionEnemyPanel;
+      int harpoonAmount;
+
+      if (currentTurn <= 20)
+      {
+         harpoonAmount = 1;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 1      ?;";
+      }
+      else if (currentTurn > 20 && currentTurn <= 40)
+      {
+         harpoonAmount = 2;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 2      ?;";
+      }
+      else if (currentTurn > 40 && currentTurn <= 60)
+      {
+         harpoonAmount = 3;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 3      ?;";
+            }
+      else
+      {
+         harpoonAmount = 4;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 4      ?;";
+            }
 
       HandleHeat();
       HandleProgressBar();
@@ -243,7 +268,7 @@ public class TurnManager : MonoBehaviour
          uiFade.Appear(1.0f);
          enemyPanel.SetActive(true);
 
-         if (InventoryManager.Instance.harpoonCount > 0)
+         if (InventoryManager.Instance.harpoonCount < harpoonAmount)
          {
             decisionEnemyPanel = enemyPanel.transform.Find("OptionalEnemyPanel").gameObject;
             decisionEnemyPanel.SetActive(true);
@@ -252,7 +277,7 @@ public class TurnManager : MonoBehaviour
             yesBtn.onClick.RemoveAllListeners();
             yesBtn.onClick.AddListener(() =>
             {
-               InventoryManager.Instance.TryUseHarpoon(1);
+               InventoryManager.Instance.TryUseHarpoon(harpoonAmount);
 
                heatLevel = 0;
                DeactivateHeatNodes();
