@@ -139,8 +139,6 @@ public class TurnManager : MonoBehaviour
                tradeHutManager.worldEventItem.gameObject.SetActive(true);
                tradeHutManager.worldEventChange.gameObject.SetActive(true);
             }
-               
-
          }
 
          // Predict the next turn

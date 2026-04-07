@@ -77,8 +77,8 @@ public class TradeHutManager : MonoBehaviour
                worldEvent,
                currentWorldEventChance;
 
-   public Image worldEventItem,
-                worldEventChange;
+   public Image   worldEventItem,
+                  worldEventChange;
 
 
    private WorldEventTypes crudeToolEvent,
@@ -1299,6 +1299,7 @@ public class TradeHutManager : MonoBehaviour
    {
       switch (worldEvent) 
       {
+         // Tier 1
          case (int) WorldEventTypes.CrudeToolEvent:
             worldEventItem.sprite = GetItemSprite(ItemType.CrudeTool);
             break;
@@ -1308,17 +1309,27 @@ public class TradeHutManager : MonoBehaviour
          case (int) WorldEventTypes.DivingBellEvent:
             worldEventItem.sprite = GetItemSprite(ItemType.DivingBell);
             break;
+         case (int) WorldEventTypes.IndustrialGoldRushEvent:
+            worldEventItem.sprite = GetItemSprite(ItemType.CrudeTool);
+            break;
+
+         // Tier 2
          case (int) WorldEventTypes.PressureValveEvent:
             worldEventItem.sprite = GetItemSprite(ItemType.PressureValve);
             break;
          case (int) WorldEventTypes.DeepSeaWarEvent:
-            worldEventItem.sprite= GetItemSprite(ItemType.Harpoon);
+            worldEventItem.sprite = GetItemSprite(ItemType.Harpoon);
             break;
+
+         // Tier 3
          case (int) WorldEventTypes.PrecisionLensEvent:
             worldEventItem.sprite = GetItemSprite(ItemType.PrecisionLens);
             break;
          case (int) WorldEventTypes.ClockworkEngineEvent:
             worldEventItem.sprite = GetItemSprite(ItemType.Engine);
+            break;
+         case (int) WorldEventTypes.ScavengersHolidayEvent:
+            worldEventItem.gameObject.SetActive(false);
             break;
          default:
             Debug.LogError("Unkown Item: " +  worldEvent);
