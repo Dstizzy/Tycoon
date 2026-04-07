@@ -564,4 +564,19 @@ public class NarrativeOverlayUI : MonoBehaviour
              (dialoguePanel != null && dialoguePanel.activeSelf) ||
              (togglePanel != null && togglePanel.activeSelf);
    }
+
+   public void DisposeOverlay()
+   {
+      HideAll();
+      SetGameplayBlocked(false);
+
+      if (canvasObject != null)
+      {
+         Destroy(canvasObject);
+         canvasObject = null;
+      }
+
+      if (Instance == this)
+         Instance = null;
+   }
 }

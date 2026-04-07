@@ -756,5 +756,8 @@ public class LabManager : MonoBehaviour
       victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
       victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
+
+      if (!GameEndingState.HasEndingTriggered)
+         GameEndingState.LoadSuccessEnding();
    }
 }

@@ -156,6 +156,9 @@ public class TurnManager : MonoBehaviour
    // Ends the game when the maximum number of turns is reached.
    void EndGame()
    {
+      if (GameEndingState.HasEndingTriggered)
+         return;
+
       _isGameActive = false;
       Debug.Log("Game over! Reached max turn(" + maxTurns + ").");
 
@@ -168,6 +171,8 @@ public class TurnManager : MonoBehaviour
       {
          endTurnButton.interactable = false;
       }
+
+      GameEndingState.LoadFailureEnding();
    }
 
    // Handles the jamming logic for the Ore Refinery at the start of each turn
