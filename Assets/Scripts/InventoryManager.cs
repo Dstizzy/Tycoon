@@ -201,7 +201,7 @@ public class InventoryManager : MonoBehaviour
       CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
       //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
       //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
@@ -839,27 +839,19 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
-
       if (divingBellCount >= MAX_DIVING_BELL_COUNT)
       {
-         Debug.LogError("Diving Bell count is at maximum!");
          ticker.ShowTicker($"Diving Bell count is at maximum!", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
-      else
-         if ((divingBellCount + divingBellAmount) > MAX_DIVING_BELL_COUNT)
-      {
-         Debug.LogError("Diving Bell count is at maximum!");
-         ticker.ShowTicker($"Cannot add diving bells - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
-         return isSuccess;
-      }
-      else
-      {
-         isSuccess = true;
-         divingBellCount += divingBellAmount;
-      }
 
-      DivingBellCountText.text = " x" + divingBellCount.ToString();
+      isSuccess = true;
+      divingBellCount += divingBellAmount;
+
+      if (DivingBellCountText != null)
+      {
+         DivingBellCountText.text = " x" + divingBellCount.ToString();
+      }
 
       return isSuccess;
    }
