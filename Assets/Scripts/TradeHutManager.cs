@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using TMPro;
-using UnityEditor.Experimental.GraphView;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -973,73 +972,76 @@ public class TradeHutManager : MonoBehaviour
    
    public void CraftMarketForesight() 
    {
-       // 1. Roll all chances and fluctuations for the upcoming turn ONCE
-       crudeToolChance     = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-       harpoonChance       = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-       pressureValveChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-       divingBellChance    = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-       precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
-       engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      // 1. Roll all chances and fluctuations for the upcoming turn ONCE
+      crudeToolChance     = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      harpoonChance       = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      pressureValveChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      divingBellChance    = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      precisionLensChance = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
+      engineChance        = Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX + 1);
    
-       crudeToolFluctuation     = GetItemSellValueFluctuation(base_crude_tool_value);
-       harpoonFluctuation       = GetItemSellValueFluctuation(base_harpoon_value);
-       pressureValveFluctuation = GetItemSellValueFluctuation(base_pressure_valve_value);
-       divingBellFluctuation    = GetItemSellValueFluctuation(base_diving_bell_value);
-       precisionLensFluctuation = GetItemSellValueFluctuation(base_precision_lens_value);
-       engineFluctuation        = GetItemSellValueFluctuation(base_engine_value);
+      crudeToolFluctuation     = GetItemSellValueFluctuation(base_crude_tool_value);
+      harpoonFluctuation       = GetItemSellValueFluctuation(base_harpoon_value);
+      pressureValveFluctuation = GetItemSellValueFluctuation(base_pressure_valve_value);
+      divingBellFluctuation    = GetItemSellValueFluctuation(base_diving_bell_value);
+      precisionLensFluctuation = GetItemSellValueFluctuation(base_precision_lens_value);
+      engineFluctuation        = GetItemSellValueFluctuation(base_engine_value);
 
-       harpoonEvent =
-          (worldEvent == (int) WorldEventTypes.DeepSeaWarEvent) 
-          ? WorldEventTypes.DeepSeaWarEvent
-          : (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
-          ? WorldEventTypes.IndustrialGoldRushEvent
-          : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
-          ? WorldEventTypes.ScavengersHolidayEvent
-          : WorldEventTypes.HarpoonEvent;
+      harpoonEvent =
+         (worldEvent == (int) WorldEventTypes.DeepSeaWarEvent) 
+         ? WorldEventTypes.DeepSeaWarEvent
+         : (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
+         ? WorldEventTypes.IndustrialGoldRushEvent
+         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.HarpoonEvent;
 
-       crudeToolEvent =
-          (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
-          ? WorldEventTypes.IndustrialGoldRushEvent
-          : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
-          ? WorldEventTypes.ScavengersHolidayEvent
-          : WorldEventTypes.CrudeToolEvent;
+      crudeToolEvent =
+         (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
+         ? WorldEventTypes.IndustrialGoldRushEvent
+         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.CrudeToolEvent;
 
-       pressureValveEvent =
-          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
-          ? WorldEventTypes.ScavengersHolidayEvent
-          : WorldEventTypes.PressureValveEvent;
+      divingBellEvent =
+         (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent)
+         ? WorldEventTypes.IndustrialGoldRushEvent
+         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.DivingBellEvent;
 
-       divingBellEvent =
-          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
-          ? WorldEventTypes.ScavengersHolidayEvent
-          : WorldEventTypes.DivingBellEvent;
+      pressureValveEvent =
+         (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.PressureValveEvent;
 
-       precisionLensEvent =
-          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
-          ? WorldEventTypes.ScavengersHolidayEvent
-          : WorldEventTypes.PressureValveEvent;
 
-       engineEvent =
-          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
-          ? WorldEventTypes.ScavengersHolidayEvent
-          : WorldEventTypes.ClockworkEngineEvent;
+      precisionLensEvent =
+         (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.PressureValveEvent;
+
+      engineEvent =
+         (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.ClockworkEngineEvent;
 
    
-       // 2. Update UI Previews based on these exact rolls
-       UpdateMarketPreviewUI(
-           ItemType.CrudeTool, crudeToolEvent, CRUDE_TOOL_TAG,
-           MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE, base_crude_tool_value,
-           crudeToolChance, crudeToolFluctuation, 1);
-        
-       UpdateMarketPreviewUI(
-          ItemType.Harpoon, harpoonEvent, HARPOON_TAG,
-          MIN_HARPOON_VALUE, MAX_HARPOON_VALUE, base_harpoon_value,
-          harpoonChance, harpoonFluctuation, 1);
+      // 2. Update UI Previews based on these exact rolls
+      UpdateMarketPreviewUI(
+         ItemType.CrudeTool, crudeToolEvent, CRUDE_TOOL_TAG,
+         MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE, base_crude_tool_value,
+         crudeToolChance, crudeToolFluctuation, 1);
+       
+      UpdateMarketPreviewUI(
+         ItemType.Harpoon, harpoonEvent, HARPOON_TAG,
+         MIN_HARPOON_VALUE, MAX_HARPOON_VALUE, base_harpoon_value,
+         harpoonChance, harpoonFluctuation, 1);
 
       UpdateMarketPreviewUI(
-             ItemType.DivingBell, divingBellEvent, DIVING_BELL_TAG,
-             MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE, base_diving_bell_value,
-             divingBellChance, divingBellFluctuation, 1);
+         ItemType.DivingBell, divingBellEvent, DIVING_BELL_TAG,
+         MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE, base_diving_bell_value,
+         divingBellChance, divingBellFluctuation, 1);
 
       if (ForgeManager.Instance.hasTier2Blueprint) 
        {
@@ -1105,11 +1107,12 @@ public class TradeHutManager : MonoBehaviour
                 break;
 
              case (int)WorldEventTypes.IndustrialGoldRushEvent:
-                if (itemType == ItemType.CrudeTool)
-                   preview = base_pressure_valve_value;
-                else
-                  if (itemType == ItemType.Harpoon)
-                   preview = base_diving_bell_value;
+                //if (itemType == ItemType.CrudeTool)
+                //   preview = base_pressure_valve_value;
+                //else
+                //  if (itemType == ItemType.Harpoon)
+                //     preview = base_pressure_valve_value;
+                preview = base_pressure_valve_value;
                 break;
 
              case (int) WorldEventTypes.ScavengersHolidayEvent:
@@ -1310,7 +1313,7 @@ public class TradeHutManager : MonoBehaviour
             worldEventItem.sprite = GetItemSprite(ItemType.DivingBell);
             break;
          case (int) WorldEventTypes.IndustrialGoldRushEvent:
-            worldEventItem.sprite = GetItemSprite(ItemType.CrudeTool);
+            worldEventItem.sprite = WorldEventSprites.worldEventSprites.GetWorldEventSprite(WorldEventTypes.IndustrialGoldRushEvent);
             break;
 
          // Tier 2
@@ -1335,6 +1338,15 @@ public class TradeHutManager : MonoBehaviour
             Debug.LogError("Unkown Item: " +  worldEvent);
             break;
       }
+   }
+
+   public void DisplayWorldEventVisual(bool isWorldEventVisualAcive, bool isWorldEventChangeVisualActive) 
+   {
+      if(worldEvent == (int) WorldEventTypes.ScavengersHolidayEvent)
+         isWorldEventVisualAcive = false; 
+
+      worldEventItem.gameObject.SetActive(isWorldEventVisualAcive);
+      worldEventChange.gameObject.SetActive(isWorldEventChangeVisualActive);
    }
 
    public void WorldEventNewsTickerText() 
