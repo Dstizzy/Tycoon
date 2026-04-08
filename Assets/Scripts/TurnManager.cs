@@ -1,4 +1,6 @@
-﻿using System;
+﻿//using Codice.Client.Common.GameUI;
+using JetBrains.Annotations;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TMPro;
@@ -31,7 +33,9 @@ public class TurnManager : MonoBehaviour
    [SerializeField] private UIFade uiFade;                   // Panel fade script
    public TickerSystem newsTicker;                           // The wolrd event news ticker panel
    public static int jammingChance = 5;                      // Chance of ore refinery jamming
-
+   public static bool isJamPrevented = false;                // Flag to check if the ore refinery is being prevented from jamming
+   public static int MaintenanceCounter = 5;                 // Counter for the number of times preventative maintenance has been performed
+   public static int previousJammingChance;                  // Keeps track of the jamming chance before preventative maintenance
 
    // Public Unity fields
    [Header("Turn Setting")]
@@ -91,6 +95,12 @@ public class TurnManager : MonoBehaviour
    // Advances the game to the next turn and updates the UI,
    public async void EndTurn()
    {
+      progressBar.SetActive(true);
+      PopUpManager.Instance.DisablePlayerInput();
+      await Task.Delay(1000);
+      progressBar.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
+      progressBar.transform.rotation = Quaternion.identity;
       Debug.Log("### TurnManager Start() ###");
 
       // Do nothing if the game is already over
@@ -107,12 +117,13 @@ public class TurnManager : MonoBehaviour
       }
       else
       {
-         progressBar.SetActive(true);
-         await Task.Delay(1000);
-         progressBar.SetActive(false);
          UpdateTurnUI();
          HandleJamming();
          HandleEnemy();
+
+         if(isJamPrevented)
+            HandlePreventativeMaintenance();
+         
 
          // Handle world event reset
          if (eventCountdown == 1) 
@@ -213,6 +224,28 @@ public class TurnManager : MonoBehaviour
    public void HandleEnemy()
    {
       GameObject decisionEnemyPanel;
+      int harpoonAmount;
+
+      if (currentTurn <= 20)
+      {
+         harpoonAmount = 1;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 1      ?;";
+      }
+      else if (currentTurn > 20 && currentTurn <= 40)
+      {
+         harpoonAmount = 2;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 2      ?;";
+      }
+      else if (currentTurn > 40 && currentTurn <= 60)
+      {
+         harpoonAmount = 3;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 3      ?;";
+            }
+      else
+      {
+         harpoonAmount = 4;
+         enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 4      ?;";
+            }
 
       HandleHeat();
       HandleProgressBar();
@@ -243,7 +276,7 @@ public class TurnManager : MonoBehaviour
          uiFade.Appear(1.0f);
          enemyPanel.SetActive(true);
 
-         if (InventoryManager.Instance.harpoonCount > 0)
+         if (InventoryManager.Instance.harpoonCount < harpoonAmount)
          {
             decisionEnemyPanel = enemyPanel.transform.Find("OptionalEnemyPanel").gameObject;
             decisionEnemyPanel.SetActive(true);
@@ -252,7 +285,7 @@ public class TurnManager : MonoBehaviour
             yesBtn.onClick.RemoveAllListeners();
             yesBtn.onClick.AddListener(() =>
             {
-               InventoryManager.Instance.TryUseHarpoon(1);
+               InventoryManager.Instance.TryUseHarpoon(harpoonAmount);
 
                heatLevel = 0;
                DeactivateHeatNodes();
@@ -396,5 +429,25 @@ public class TurnManager : MonoBehaviour
       heatProgressBar.transform.Find("Node11").gameObject.SetActive(false);
       heatProgressBar.transform.Find("Node12").gameObject.SetActive(false);
       heatProgressBar.transform.Find("Node13").gameObject.SetActive(false);
+   }
+
+   public void HandlePreventativeMaintenance()
+   {
+      if(jammingChance > 0)
+      {
+         jammingChance = 0;
+      }
+      if (isJamPrevented)
+      {
+         MaintenanceCounter--;
+         oreManager.ChangeMaintenanceCounter(MaintenanceCounter);
+         if(MaintenanceCounter <= 0)
+         {
+            isJamPrevented = false;
+            MaintenanceCounter = 5;
+            jammingChance = previousJammingChance;
+            oreManager.ActivateUnjamButton();
+         }
+      }
    }
 }

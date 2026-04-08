@@ -103,12 +103,12 @@ TextureImporter:
       name: exploration_path_button_0
       rect:
         serializedVersion: 2
-        x: 52
-        y: 105
-        width: 537
-        height: 169
+        x: 56
+        y: 83
+        width: 570
+        height: 206
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d8ae463abf047174e857c0731b9caa6a
     internalID: 0
     vertices: []
     indices: 
