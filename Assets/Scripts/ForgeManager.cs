@@ -1,4 +1,4 @@
-﻿using Codice.Client.BaseCommands.Import;
+﻿//using Codice.Client.BaseCommands.Import;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -32,7 +32,7 @@ public class ForgeManager : MonoBehaviour
    const int PATCH_KIT_COST = 75;
    const int PRESSUREV_VALVE_COST = 50;
    const int DIVING_BELL_COST = 15;
-   const int ENGINE_COST = 150;
+   const int ENGINE_COST = 250;
    const int PRECISION_LENS_COST = 200;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
@@ -865,7 +865,7 @@ public class ForgeManager : MonoBehaviour
             turns = 1;
             break;
          case Item.ItemType.Engine:
-            turns = 3;
+            turns = 4;
             break;
          case Item.ItemType.PrecisionLens:
             turns = 3;
@@ -899,6 +899,7 @@ public class ForgeManager : MonoBehaviour
 
       for (jobCount = activeJobs.Count - 1; jobCount >= 0; jobCount--)
       {
+         Debug.Log(activeJobs.Count);
          if (jobCount < maxParallelSlots)
          {
             CraftingJob job = activeJobs[jobCount];
@@ -906,8 +907,10 @@ public class ForgeManager : MonoBehaviour
 
             if (job.turnsRemaining <= 0)
             {
-               RemoveCraftedItem(job);
+               Debug.Log(stagingItems.Count);
+               Debug.Log($"Crafting Complete: {job.itemName}");
                DeliverItem(job);
+               RemoveCraftedItem(job);
                activeJobs.RemoveAt(jobCount);
                UpdateStagingUI();
                Debug.Log($"Crafting Complete: {job.itemName}");
@@ -1079,6 +1082,7 @@ public class ForgeManager : MonoBehaviour
          string successMessage = "Successfully Queued: ";
          List<string> itemNames = new List<string>();
 
+         Debug.Log(stagingItems.Count);
          // Process Each Item
          for (int i = 0; i < stagingItems.Count; i++)
          {
@@ -1098,6 +1102,7 @@ public class ForgeManager : MonoBehaviour
                CraftingJob job = new CraftingJob { itemType = stagingItems[i], amount = amount, itemName = stagingItems[i].ToString(), turnsRemaining = turns };
 
                activeJobs.Add(job);
+               craftingItems.Add(true);
                Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
                itemNames.Add($"{amount}x {job.itemName}");
             }
