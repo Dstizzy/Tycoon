@@ -475,7 +475,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowUpgradePanel()
    {
       int pearlUpgradeCost = 0;
-      int oreUpgradeCost = 0;
+      //int oreUpgradeCost = 0;
       string upgradeTitle = "";
       string upgradeExplanation = "";
 
