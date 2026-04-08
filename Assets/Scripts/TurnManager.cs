@@ -85,7 +85,6 @@ public class TurnManager : MonoBehaviour
       tradeHutManager = TradeHutManager.Instance;
       UpdateTurnUI();
       tradeHutManager.WorldEventChance();
-      progressBar.GetComponent<Animator>().SetTrigger("StartProgressBar");
    }
 
    // Advances the game to the next turn and updates the UI,
