@@ -664,8 +664,9 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       int newVal = startVal + change;
       mainText.text = $"{newVal}/{max}";
+      string sign = change > 0 ? "+" : "" ;
+      deltaText.text = $"{sign}{change}";
 
-      deltaText.text = (change > 0 ? "+" : "") + change.ToString();
       deltaText.color = change > 0 ? Color.green : Color.red;
       deltaText.gameObject.SetActive(true);
 
@@ -683,9 +684,9 @@ public class ExplorationUnitManager : MonoBehaviour
          deltaText.transform.localPosition = Vector3.Lerp(startPos, endPos, t);
          deltaText.alpha = Mathf.Lerp(1, 0, t);
 
-         deltaText.text = $"{change}";
          yield return null;
       }
+
       deltaText.gameObject.SetActive(false);
       deltaText.transform.localPosition = startPos;
    }

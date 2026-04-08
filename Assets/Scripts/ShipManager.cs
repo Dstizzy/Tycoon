@@ -362,7 +362,7 @@ public class ShipManager : MonoBehaviour
    // Opens the panel that tells ship fuel is empty
    private void OpenFuelPanel()
    {
-      fuelPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(fuelPanel.gameObject);
       explorationUnitManager.SetDecisionInteractable(false);
    }
 
@@ -427,7 +427,7 @@ public class ShipManager : MonoBehaviour
       confirmRewards.onClick.RemoveAllListeners();
       confirmRewards.onClick.AddListener(() =>
       {
-         finalRewardsPanel.gameObject.SetActive(false);
+         CloseFinalRewardsPanel();
          AddRewards();
          ResetShip();
       });
@@ -437,7 +437,7 @@ public class ShipManager : MonoBehaviour
    {
       yield return new WaitForSeconds(0.5f);
       finalRewardsPanel.gameObject.SetActive(true);
-      yield return new WaitForSeconds(0.6f);
+      yield return new WaitForSeconds(0.3f);
       float delayBetweenItems = 0.2f;
       var rewards = new (string Name, int Amount)[]
       {
