@@ -137,7 +137,10 @@ public class TurnManager : MonoBehaviour
             newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
 
             if(eventCountdown == 5) 
+            {
+               TradeHutManager.Instance.InsurancePolicyCheck();
                TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
+            }
          }
 
          // Predict the next turn

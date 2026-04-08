@@ -1284,18 +1284,17 @@ public class TradeHutManager : MonoBehaviour
       if(ForgeManager.Instance.hasTier3Blueprint)
          finalWorldEvent = (int)WorldEventTypes.ScavengersHolidayEvent;
       else
-         if(ForgeManager.Instance.hasTier2Blueprint)
+         if (ForgeManager.Instance.hasTier2Blueprint) 
             finalWorldEvent = (int)(WorldEventTypes.DeepSeaWarEvent);
          else
             finalWorldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent);
 
 
-      worldEvent = Rng.Next(worldEvent1, finalWorldEvent + 1);
+      worldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent); //Rng.Next(worldEvent1, finalWorldEvent + 1);
       WorldEventItemVisual(worldEvent);
 
       shiftDirection          = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
-      worldEventChange.sprite = shiftDirection < 50 ? worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite 
-                                                    : worldEventSymbols.Find("decreaseSymbol").GetComponent<Image>().sprite;
+
    }
 
    public void WorldEventItemVisual(int worldEvent) 
@@ -1340,10 +1339,28 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-   public void DisplayWorldEventVisual(bool isWorldEventVisualAcive, bool isWorldEventChangeVisualActive) 
+   public void DisplayWorldEventVisual(
+      bool isWorldEventVisualAcive, 
+      bool isWorldEventChangeVisualActive) 
    {
-      if(worldEvent == (int) WorldEventTypes.ScavengersHolidayEvent)
-         isWorldEventVisualAcive = false; 
+      if(worldEvent == (int) WorldEventTypes.DeepSeaWarEvent || worldEvent == (int) WorldEventTypes.IndustrialGoldRushEvent)
+            worldEventChange.sprite = worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite;
+      else 
+      { 
+         if(worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
+            worldEventChange.sprite = worldEventSymbols.Find("decreaseSymbol").GetComponent<Image>().sprite;
+         else 
+         { 
+            worldEventChange.sprite = 
+               shiftDirection < 50 
+               ? worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite
+               : worldEventSymbols.Find("decreaseSymbol").GetComponent<Image>().sprite;
+         }
+      }
+
+
+      if (worldEvent == (int) WorldEventTypes.ScavengersHolidayEvent)
+         isWorldEventVisualAcive = false;
 
       worldEventItem.gameObject.SetActive(isWorldEventVisualAcive);
       worldEventChange.gameObject.SetActive(isWorldEventChangeVisualActive);
@@ -1500,11 +1517,10 @@ public class TradeHutManager : MonoBehaviour
 
    public void InsurancePolicyCheck() 
    {
-      if(shiftDirection > currentWorldEventChance) 
-      { 
+      if(isInsurancePolicyActive && (shiftDirection > currentWorldEventChance))
          InventoryManager.Instance.TryAddPearl(INSURANCE_POLICY_PAYOUT);
-         isInsurancePolicyActive = false;
-      }
+      
+      isInsurancePolicyActive = false;
       
       return;
    }
