@@ -5942,8 +5942,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124112552}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 9.3769}
-  m_LocalScale: {x: 0.26540747, y: 0.29725638, z: 0.26540747}
+  m_LocalPosition: {x: 0, y: 0, z: 10.997}
+  m_LocalScale: {x: 0.59889764, y: 0.6707654, z: 0.59889764}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1629814577}
@@ -5956,7 +5956,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2, y: 2}
+  m_AnchoredPosition: {x: -20, y: -17}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &132522703
@@ -50526,6 +50526,278 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 970162654}
   m_CullTransparentMesh: 1
+--- !u!1 &970546114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 970546116}
+  - component: {fileID: 970546115}
+  m_Layer: 0
+  m_Name: EndingSequenceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &970546115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970546114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f5f8fab0d2ddf4498f46b2476d37680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::EndingSequenceManager
+  startSceneName: StartScreenScene
+  successRoot: {fileID: 0}
+  failureRoot: {fileID: 0}
+  titleText: {fileID: 0}
+  bodyText: {fileID: 0}
+  speakerNameText: {fileID: 0}
+  portraitImage: {fileID: 0}
+  fadeImage: {fileID: 0}
+  speakerProfiles: []
+  successBuildings: []
+  submarineTransform: {fileID: 0}
+  successDuration: 5
+  successBounceAmount: 12
+  successBounceSpeed: 2.5
+  submarineRiseDistance: 260
+  submarineRiseDuration: 3.5
+  submarineFloatDuration: 2.5
+  submarineFloatAmount: 18
+  submarineFloatSpeed: 1.8
+  successFinalHoldDuration: 1.8
+  successLaunchHoldDuration: 1.5
+  successPostLaunchHoldDuration: 1.5
+  successLines:
+  - speaker: 1
+    dialogue:
+      text: "WAIT WAIT WAIT\u2014 it worked?!"
+      expression: 3
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: Nearly trips over the lab console.
+      expression: 3
+      isAction: 1
+  - speaker: 1
+    dialogue:
+      text: It actually worked! The submarine is complete! COMPLETE complete!
+      expression: 5
+      isAction: 0
+  - speaker: 0
+    dialogue:
+      text: Good heavens.
+      expression: 3
+      isAction: 0
+  - speaker: 0
+    dialogue:
+      text: At last, a plan with the rare quality of being finished.
+      expression: 4
+      isAction: 0
+  - speaker: 2
+    dialogue:
+      text: ...Shiny... big shiny...
+      expression: 1
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: Hold on, hold on, nobody touch anything dramatic for five seconds.
+      expression: 3
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: I just want to enjoy one successful moment in this cursed workplace.
+      expression: 4
+      isAction: 0
+  - speaker: 4
+    dialogue:
+      text: HA! I knew all that last-minute crafting would pay off!
+      expression: 1
+      isAction: 0
+  - speaker: 4
+    dialogue:
+      text: Look at that finish! Gorgeous! Practically heroic!
+      expression: 5
+      isAction: 0
+  - speaker: 3
+    dialogue:
+      text: Route's clear.
+      expression: 0
+      isAction: 0
+  - speaker: 3
+    dialogue:
+      text: If we're leaving, then we leave now.
+      expression: 4
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: We're really doing this!
+      expression: 1
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: No more backup plans! No more backup-backup plans! No more maybe-we-survive-if-the-volcano-gets-bored
+        plans!
+      expression: 5
+      isAction: 0
+  - speaker: 0
+    dialogue:
+      text: A pity. I was just beginning to appreciate the local panic economy.
+      expression: 1
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: Don't joke like that right now!
+      expression: 2
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: ...Actually, no, keep joking. If I stop moving, I might cry.
+      expression: 1
+      isAction: 0
+  - speaker: 2
+    dialogue:
+      text: ...Happy...
+      expression: 1
+      isAction: 0
+  - speaker: 2
+    dialogue:
+      text: ...Everyone... happy...
+      expression: 5
+      isAction: 0
+  - speaker: 3
+    dialogue:
+      text: Engines are responding.
+      expression: 0
+      isAction: 0
+  - speaker: 3
+    dialogue:
+      text: That's our window.
+      expression: 4
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: Then what are we waiting for?!
+      expression: 3
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: Everybody cheer! Somebody wave! Somebody do something cinematic!
+      expression: 5
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: The launch platform rattles with cheers, laughter, and far too many people
+        talking at once.
+      expression: 0
+      isAction: 1
+  successLaunchLines:
+  - speaker: 5
+    dialogue:
+      text: "Hey\u2014!"
+      expression: 3
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: We're actually rising. We're actually rising!
+      expression: 1
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: The engines are stable!
+      expression: 3
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: They're actually stable!
+      expression: 5
+      isAction: 0
+  - speaker: 3
+    dialogue:
+      text: Then stop sounding surprised and keep us moving.
+      expression: 0
+      isAction: 0
+  successPostLaunchLines:
+  - speaker: 1
+    dialogue:
+      text: WOO! We are officially in the dramatic departure part!
+      expression: 5
+      isAction: 0
+  - speaker: 3
+    dialogue:
+      text: Maintain course.
+      expression: 0
+      isAction: 0
+  - speaker: 2
+    dialogue:
+      text: ...Pretty...
+      expression: 1
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: You know what?
+      expression: 4
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: For once, this ridiculous plan actually worked.
+      expression: 1
+      isAction: 0
+  failureBuildings: []
+  cameraShakeTarget: {fileID: 0}
+  failureDuration: 4.5
+  failureBounceAmount: 12
+  failureBounceSpeed: 6
+  cameraShakeStrength: 16
+  failureShakeStartLineIndex: 1
+  failureFinalHoldDuration: 1.1
+  failureLines:
+  - speaker: 5
+    dialogue:
+      text: "Wait. No. No no no\u2014"
+      expression: 3
+      isAction: 0
+  - speaker: 1
+    dialogue:
+      text: That sound is BAD! That's a very bad sound!
+      expression: 3
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: Everybody run!
+      expression: 5
+      isAction: 0
+  - speaker: 5
+    dialogue:
+      text: The entire outpost lurches as the volcano finally erupts.
+      expression: 2
+      isAction: 1
+  lineInterval: 1.8
+  fadeDuration: 1.5
+--- !u!4 &970546116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970546114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 299.81506, y: 253.75871, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &970675870
 GameObject:
   m_ObjectHideFlags: 0
@@ -58913,7 +59185,7 @@ RectTransform:
   m_GameObject: {fileID: 1178633854}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2203574, y: 0.2203574, z: 0.2203574}
+  m_LocalScale: {x: 0.20857252, y: 0.20857252, z: 0.20857252}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1229296623}
@@ -58933,7 +59205,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -43, y: -348}
+  m_AnchoredPosition: {x: -36.607, y: -352.54}
   m_SizeDelta: {x: 878.2872, y: 510.4403}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1178633856
@@ -60548,7 +60820,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1759, y: 482}
+  m_AnchoredPosition: {x: 1785, y: 808}
   m_SizeDelta: {x: 206.6451, y: 95.7053}
   m_Pivot: {x: 0.50000155, y: 0.5000001}
 --- !u!114 &1229296624
@@ -71895,7 +72167,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1056, y: 538}
+  m_AnchoredPosition: {x: -1025.9999, y: 864}
   m_SizeDelta: {x: 84, y: 85.542}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1476855128
@@ -73781,7 +74053,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.2, y: -70}
+  m_AnchoredPosition: {x: -0.000030517578, y: 0.00024414062}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1520313771
@@ -89313,53 +89585,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1759200546}
   m_CullTransparentMesh: 1
---- !u!1 &1763222826
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1763222828}
-  - component: {fileID: 1763222827}
-  m_Layer: 0
-  m_Name: DebugTools
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1763222827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1763222826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eaa2e666fd0ce940b84195d0273bc65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::EndingDebugShortcut
-  triggerSuccessKey: 289
-  triggerFailureKey: 290
-  enableDebugShortcut: 1
---- !u!4 &1763222828
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1763222826}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1766705528
 GameObject:
   m_ObjectHideFlags: 0
@@ -107519,4 +107744,4 @@ SceneRoots:
   - {fileID: 477945659}
   - {fileID: 1880990461}
   - {fileID: 745969559}
-  - {fileID: 1763222828}
+  - {fileID: 970546116}
