@@ -227,7 +227,7 @@ public class TradeHutManager : MonoBehaviour
       // Reset scales to 1 manually to prevent the "Zero Scale" recording bug
       TradePanels.localScale = Vector3.one;
       TradePanels.gameObject.SetActive(false);
-      inv = InventoryManager.Instance;
+      inv    = InventoryManager.Instance;
       ticker = TickerSystem.Instance;
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool), GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
@@ -1031,24 +1031,24 @@ public class TradeHutManager : MonoBehaviour
       UpdateMarketPreviewUI(
          ItemType.CrudeTool, crudeToolEvent, CRUDE_TOOL_TAG,
          MIN_CRUDE_TOOL_VALUE, MAX_CRUDE_TOOL_VALUE, base_crude_tool_value,
-         crudeToolChance, crudeToolFluctuation, 1);
+         crudeToolChance, crudeToolFluctuation, TIER_ONE);
        
       UpdateMarketPreviewUI(
          ItemType.Harpoon, harpoonEvent, HARPOON_TAG,
          MIN_HARPOON_VALUE, MAX_HARPOON_VALUE, base_harpoon_value,
-         harpoonChance, harpoonFluctuation, 1);
+         harpoonChance, harpoonFluctuation, TIER_ONE);
 
       UpdateMarketPreviewUI(
          ItemType.DivingBell, divingBellEvent, DIVING_BELL_TAG,
          MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE, base_diving_bell_value,
-         divingBellChance, divingBellFluctuation, 1);
+         divingBellChance, divingBellFluctuation, TIER_ONE);
 
       if (ForgeManager.Instance.hasTier2Blueprint) 
        {
            UpdateMarketPreviewUI(
               ItemType.PressureValve, pressureValveEvent, PRESSURE_VALVE_TAG,
               MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE, base_pressure_valve_value,
-              pressureValveChance, pressureValveFluctuation, 2);
+              pressureValveChance, pressureValveFluctuation, TIER_TWO);
 
           
        }
@@ -1058,12 +1058,12 @@ public class TradeHutManager : MonoBehaviour
            UpdateMarketPreviewUI(
               ItemType.PrecisionLens, precisionLensEvent, PRECISION_LENS_TAG,
               MIN_PRECISION_LENS_VALUE, MAX_PRECISION_LENS_VALUE, base_precision_lens_value,
-              precisionLensChance, precisionLensFluctuation, 3);
+              precisionLensChance, precisionLensFluctuation, TIER_THREE);
 
            UpdateMarketPreviewUI(
               ItemType.Engine, engineEvent, ENGINE_TAG,
               MIN_ENGINE_VALUE, MAX_ENGINE_VALUE, base_engine_value,
-              engineChance, engineFluctuation, 3);
+              engineChance, engineFluctuation, TIER_THREE);
        }
    }
 
@@ -1182,30 +1182,30 @@ public class TradeHutManager : MonoBehaviour
 
    // Shifts the sell market each turn and during world events
   public void MarketFluctuate() 
-   { 
-       ApplyStoredShift(
-          ItemType.CrudeTool, crudeToolEvent, 
-          crudeToolChance, crudeToolFluctuation, 
-          TryIncreaseCrudeToolSellValue, TryDecreaseCrudeToolSellValue);
+  { 
+     ApplyStoredShift(
+        ItemType.CrudeTool, crudeToolEvent, 
+        crudeToolChance, crudeToolFluctuation, 
+        TryIncreaseCrudeToolSellValue, TryDecreaseCrudeToolSellValue);
              
-        ApplyStoredShift(
-           ItemType.Harpoon, harpoonEvent, 
-           harpoonChance, harpoonFluctuation, 
-           TryIncreaseHarpoonSellValue, TryDecreaseHarpoonSellValue);
+     ApplyStoredShift(
+        ItemType.Harpoon, harpoonEvent, 
+        harpoonChance, harpoonFluctuation, 
+        TryIncreaseHarpoonSellValue, TryDecreaseHarpoonSellValue);
 
       ApplyStoredShift(
-              ItemType.DivingBell, divingBellEvent,
-              divingBellChance, divingBellFluctuation,
-              TryIncreaseDivingBellValue, TryDecreaseDivingBellValue);
+         ItemType.DivingBell, divingBellEvent,
+         divingBellChance, divingBellFluctuation,
+         TryIncreaseDivingBellValue, TryDecreaseDivingBellValue);
 
       // Apply Tier 2
       if (ForgeManager.Instance.hasTier2Blueprint) 
-       {
-           ApplyStoredShift(
-              ItemType.PressureValve, pressureValveEvent, 
-              pressureValveChance, pressureValveFluctuation, 
-              TryIncreasePressureValveValue, TryDecreasePressureValveValue);
-       }
+      {
+         ApplyStoredShift(
+            ItemType.PressureValve, pressureValveEvent, 
+            pressureValveChance, pressureValveFluctuation, 
+            TryIncreasePressureValveValue, TryDecreasePressureValveValue);
+      }
    
        // Apply Tier 3
        if (ForgeManager.Instance.hasTier3Blueprint) 
@@ -1222,7 +1222,7 @@ public class TradeHutManager : MonoBehaviour
        }
    }
    
-   // Helper method to execute the exact math we promised the player
+   // Aplies the market the shift
    private void ApplyStoredShift(
       ItemType itemType, WorldEventTypes eventType,
       int change, int fluctuation, 
@@ -1278,7 +1278,6 @@ public class TradeHutManager : MonoBehaviour
    // Determines world event selection and shift direction for the next cycle.
    public void WorldEventChance() 
    {
-
       int worldEvent1 = (int)WorldEventTypes.CrudeToolEvent,
           finalWorldEvent;
 
@@ -1291,9 +1290,10 @@ public class TradeHutManager : MonoBehaviour
             finalWorldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent);
 
 
-      worldEvent       = Rng.Next(worldEvent1, finalWorldEvent + 1);
+      worldEvent = Rng.Next(worldEvent1, finalWorldEvent + 1);
       WorldEventItemVisual(worldEvent);
-      shiftDirection   = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
+
+      shiftDirection          = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
       worldEventChange.sprite = shiftDirection < 50 ? worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite 
                                                     : worldEventSymbols.Find("decreaseSymbol").GetComponent<Image>().sprite;
    }
@@ -1386,116 +1386,128 @@ public class TradeHutManager : MonoBehaviour
       }
    }
 
-  public void ResetWorldEventShifts() 
-  {
-     // Determine which world event was active and reverse its effect on item values
-     switch (worldEvent) 
-     {
-         // Undo the crude tool event shift based on previous direction
-         case (int)WorldEventTypes.CrudeToolEvent:
-           if (shiftDirection <= TIER_ONE_CHANCE) 
-              TryDecreaseCrudeToolSellValue(GetItemValue(ItemType.CrudeTool) - base_crude_tool_value);
-           else
-              TryIncreaseCrudeToolSellValue(base_crude_tool_value - GetItemValue(ItemType.CrudeTool));
-
-            // Flag the reset for crude tool
-            lastResetTurn[ItemType.CrudeTool] = true;
-            break;
-
-         // Undo the crude tool event shift based on previous direction
-         case (int)WorldEventTypes.HarpoonEvent:
+   public void ResetWorldEventShifts() 
+   {
+      // Determine which world event was active and reverse its effect on item values
+      switch (worldEvent) 
+      {
+          // Undo the crude tool event shift based on previous direction
+          case (int)WorldEventTypes.CrudeToolEvent:
             if (shiftDirection <= TIER_ONE_CHANCE) 
-               TryDecreaseHarpoonSellValue(GetItemValue(ItemType.Harpoon) - base_harpoon_value);
-            else 
-               TryIncreaseHarpoonSellValue(base_harpoon_value - GetItemValue(ItemType.Harpoon));
-
-            // Flag the reset for harpoon
-            lastResetTurn[ItemType.Harpoon] = true;
-            break;
-
-         // Undo the diving bell event shift based on previous shift
-         case (int)WorldEventTypes.DivingBellEvent:
-            if (shiftDirection <= TIER_ONE_CHANCE)
-               TryDecreaseDivingBellValue(GetItemValue(ItemType.DivingBell) - base_diving_bell_value);
+               TryDecreaseCrudeToolSellValue(GetItemValue(ItemType.CrudeTool) - base_crude_tool_value);
             else
-               TryIncreaseDivingBellValue(base_diving_bell_value - GetItemValue(ItemType.DivingBell));
-
-            lastResetTurn[ItemType.DivingBell] = true;
-            break;
-
-         case (int)WorldEventTypes.IndustrialGoldRushEvent:
-            TryDecreaseCrudeToolSellValue(base_pressure_valve_value - base_crude_tool_value);
-            TryDecreaseHarpoonSellValue(base_diving_bell_value - base_harpoon_value);
-
-            // Flag the reset for harpoon
-            lastResetTurn[ItemType.CrudeTool] = true;
-            lastResetTurn[ItemType.Harpoon]   = true;
-            break;
-
-         // Undo the pressure valve event shift based on previous direction
-         case (int)WorldEventTypes.PressureValveEvent:
-           if (shiftDirection <= TIER_TWO_CHANCE)
-              TryDecreasePressureValveValue(GetItemValue(ItemType.PressureValve) - base_pressure_valve_value);
-           else
-              TryIncreasePressureValveValue(base_pressure_valve_value - GetItemValue(ItemType.PressureValve));
-  
-           // Flag the reset for Pressure Valve
-           lastResetTurn[ItemType.PressureValve] = true;
-           break;
-
-
-         case (int)WorldEventTypes.DeepSeaWarEvent:
-            TryDecreaseHarpoonSellValue(GetItemValue(ItemType.Harpoon) - base_harpoon_value);
-
-            // Flag the reset for harpoon
-            lastResetTurn[ItemType.Harpoon] = true;
-            break;
-
-
-         // Undo the precision lens event shift based on previous shift
-         case (int)WorldEventTypes.PrecisionLensEvent:
-            if (shiftDirection <= TIER_THREE_CHANCE)
-               TryDecreasePrecisionLensValue(GetItemValue(ItemType.PrecisionLens) - base_precision_lens_value);
+               TryIncreaseCrudeToolSellValue(base_crude_tool_value - GetItemValue(ItemType.CrudeTool));
+   
+             // Flag the reset for crude tool
+             lastResetTurn[ItemType.CrudeTool] = true;
+             break;
+   
+          // Undo the crude tool event shift based on previous direction
+          case (int)WorldEventTypes.HarpoonEvent:
+             if (shiftDirection <= TIER_ONE_CHANCE) 
+                TryDecreaseHarpoonSellValue(GetItemValue(ItemType.Harpoon) - base_harpoon_value);
+             else 
+                TryIncreaseHarpoonSellValue(base_harpoon_value - GetItemValue(ItemType.Harpoon));
+   
+             // Flag the reset for harpoon
+             lastResetTurn[ItemType.Harpoon] = true;
+             break;
+   
+          // Undo the diving bell event shift based on previous shift
+          case (int)WorldEventTypes.DivingBellEvent:
+             if (shiftDirection <= TIER_ONE_CHANCE)
+                TryDecreaseDivingBellValue(GetItemValue(ItemType.DivingBell) - base_diving_bell_value);
+             else
+                TryIncreaseDivingBellValue(base_diving_bell_value - GetItemValue(ItemType.DivingBell));
+   
+             lastResetTurn[ItemType.DivingBell] = true;
+             break;
+   
+          case (int)WorldEventTypes.IndustrialGoldRushEvent:
+             TryDecreaseCrudeToolSellValue(base_pressure_valve_value - base_crude_tool_value);
+             TryDecreaseHarpoonSellValue(base_diving_bell_value - base_harpoon_value);
+   
+             // Flag the reset for harpoon
+             lastResetTurn[ItemType.CrudeTool] = true;
+             lastResetTurn[ItemType.Harpoon]   = true;
+             break;
+   
+          // Undo the pressure valve event shift based on previous direction
+          case (int)WorldEventTypes.PressureValveEvent:
+            if (shiftDirection <= TIER_TWO_CHANCE)
+               TryDecreasePressureValveValue(GetItemValue(ItemType.PressureValve) - base_pressure_valve_value);
             else
-               TryIncreasePrecisionLensValue(base_precision_lens_value - GetItemValue(ItemType.PrecisionLens));
-
-            lastResetTurn[ItemType.PrecisionLens] = true;
-            break;
-
-         // Undo the engine event shift based on previous direction
-         case (int)WorldEventTypes.ClockworkEngineEvent:
-           if (shiftDirection <= TIER_THREE_CHANCE)
-              TryDecreaseEngineSellValue(GetItemValue(ItemType.Engine) - base_engine_value);
-           else
-              TryIncreaseEngineSellValue(base_engine_value - GetItemValue(ItemType.Engine));
-  
-           // Flag the reset for Engine
-           lastResetTurn[ItemType.Engine] = true;
-           break;
-
-         case (int)WorldEventTypes.ScavengersHolidayEvent:
-            TryIncreaseCrudeToolSellValue(scavengerHolidayDeduction[ItemType.CrudeTool]);
-            TryIncreaseHarpoonSellValue(scavengerHolidayDeduction[ItemType.Harpoon]);
-            TryIncreasePressureValveValue(scavengerHolidayDeduction[ItemType.PressureValve]);
-            TryIncreaseDivingBellValue(scavengerHolidayDeduction[ItemType.DivingBell]);
-            TryIncreasePrecisionLensValue(scavengerHolidayDeduction[ItemType.PrecisionLens]);
-            TryIncreaseEngineSellValue(scavengerHolidayDeduction[ItemType.Engine]);
-
-            // Flag the reset for Engine
-            lastResetTurn[ItemType.CrudeTool]     = true;
-            lastResetTurn[ItemType.Harpoon]       = true;
+               TryIncreasePressureValveValue(base_pressure_valve_value - GetItemValue(ItemType.PressureValve));
+   
+            // Flag the reset for Pressure Valve
             lastResetTurn[ItemType.PressureValve] = true;
-            lastResetTurn[ItemType.DivingBell]    = true;
-            lastResetTurn[ItemType.PrecisionLens] = true;
-            lastResetTurn[ItemType.Engine]        = true;
             break;
-  
-        // Unknown event should be logged for debugging
-        default:
-           Debug.LogError("Unknown Event");
-           break;
-     }
-  }
+   
+   
+          case (int)WorldEventTypes.DeepSeaWarEvent:
+             TryDecreaseHarpoonSellValue(GetItemValue(ItemType.Harpoon) - base_harpoon_value);
+   
+             // Flag the reset for harpoon
+             lastResetTurn[ItemType.Harpoon] = true;
+             break;
+   
+   
+          // Undo the precision lens event shift based on previous shift
+          case (int)WorldEventTypes.PrecisionLensEvent:
+             if (shiftDirection <= TIER_THREE_CHANCE)
+                TryDecreasePrecisionLensValue(GetItemValue(ItemType.PrecisionLens) - base_precision_lens_value);
+             else
+                TryIncreasePrecisionLensValue(base_precision_lens_value - GetItemValue(ItemType.PrecisionLens));
+   
+             lastResetTurn[ItemType.PrecisionLens] = true;
+             break;
+   
+          // Undo the engine event shift based on previous direction
+          case (int)WorldEventTypes.ClockworkEngineEvent:
+            if (shiftDirection <= TIER_THREE_CHANCE)
+               TryDecreaseEngineSellValue(GetItemValue(ItemType.Engine) - base_engine_value);
+            else
+               TryIncreaseEngineSellValue(base_engine_value - GetItemValue(ItemType.Engine));
+   
+            // Flag the reset for Engine
+            lastResetTurn[ItemType.Engine] = true;
+            break;
+   
+          // Undo Scavenger Holiday event shift
+          case (int)WorldEventTypes.ScavengersHolidayEvent:
+             TryIncreaseCrudeToolSellValue(scavengerHolidayDeduction[ItemType.CrudeTool]);
+             TryIncreaseHarpoonSellValue(scavengerHolidayDeduction[ItemType.Harpoon]);
+             TryIncreasePressureValveValue(scavengerHolidayDeduction[ItemType.PressureValve]);
+             TryIncreaseDivingBellValue(scavengerHolidayDeduction[ItemType.DivingBell]);
+             TryIncreasePrecisionLensValue(scavengerHolidayDeduction[ItemType.PrecisionLens]);
+             TryIncreaseEngineSellValue(scavengerHolidayDeduction[ItemType.Engine]);
+   
+             // Flag the reset for Scavenger Holiday Event
+             lastResetTurn[ItemType.CrudeTool]     = true;
+             lastResetTurn[ItemType.Harpoon]       = true;
+             lastResetTurn[ItemType.PressureValve] = true;
+             lastResetTurn[ItemType.DivingBell]    = true;
+             lastResetTurn[ItemType.PrecisionLens] = true;
+             lastResetTurn[ItemType.Engine]        = true;
+             break;
+   
+         // Unknown event should be logged for debugging
+         default:
+            Debug.LogError("Unknown Event");
+            break;
+      }
+   }
+
+   public void InsurancePolicyCheck() 
+   {
+      if(shiftDirection > currentWorldEventChance) 
+      { 
+         InventoryManager.Instance.TryAddPearl(INSURANCE_POLICY_PAYOUT);
+         isInsurancePolicyActive = false;
+      }
+      
+      return;
+   }
 
    public void ChangeItemValueText(int newAmount, ItemType itemType) 
    {
@@ -1596,10 +1608,6 @@ public class TradeHutManager : MonoBehaviour
       Debug.Log(TradePanels.transform.localScale);
       panelManager.OpenPanel(TradePanels.gameObject);
 
-      // Ensure Sell tab is visible, Buy is not
-      SellPanel.gameObject.SetActive(true);
-      BuyPanel.gameObject.SetActive(false);
-
       ShowSellPanel();
 
       if (MainUIManager.mainUI != null)
@@ -1682,13 +1690,15 @@ public class TradeHutManager : MonoBehaviour
    }
 
    public void ShowBuyWindow() 
-    {
-      BuyWindow.gameObject.SetActive(true);
+   {
+      panelManager.OpenPanel(BuyWindow.gameObject);
+      //BuyWindow.gameObject.SetActive(true);
    }
 
    public void ShowSellWindow() 
    {
-      SellWindow.gameObject.SetActive(true);
+      panelManager.OpenPanel(SellWindow.gameObject);
+      //SellWindow.gameObject.SetActive(true);
    }
 
    private void CloseTradePanel() 
@@ -1766,15 +1776,4 @@ public class TradeHutManager : MonoBehaviour
    {
       BuyWindow.gameObject?.SetActive(false);
    }
-
-   //public void CloseMysteryBoxPanel() 
-   //{
-   //   if(currentMysteryBoxResult != null) 
-   //   {
-   //      Destroy(currentMysteryBoxResult.gameObject);
-   //      currentMysteryBoxResult = null;
-   //   }
-   //   MysteryBoxPanel.gameObject.SetActive(false);
-   //}
-
 }
