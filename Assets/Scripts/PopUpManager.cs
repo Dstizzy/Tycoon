@@ -73,7 +73,8 @@ public class PopUpManager : MonoBehaviour
       EventSystem.current.RaycastAll(eventData, raycastResults);
 
       /* If the list is not empty, a UI element was hit. Ignore hover logic.                                                                          */
-      if (raycastResults.Count > 0) return;
+      if (raycastResults.Count > 0) 
+         return;
 
       Vector2 mouseScreenPos = eventData.position;
 
@@ -161,13 +162,44 @@ public class PopUpManager : MonoBehaviour
    }
    private void CreateBuildingButtons(Transform buildingTransform)
    {
-      Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
-      Vector3 fixedPopUpPosition = buildingTransform.position + offset;
-      float buttonSpacing = 2.0f;
+      Vector3 fixedPopUpPosition;
+      int     buttonCount;
+      float   buttonSpacing = 2.0f;
+              popUps        = new();
 
-      popUps = new();
+      // ========================================================
+      // 1. ANCHOR METHOD (Check for manual override first)
+      // ========================================================
+      Transform anchor = buildingTransform.Find("PopupAnchor");
+      if (anchor != null) 
+      {
+         fixedPopUpPosition = anchor.position;
+      }
+      // ========================================================
+      // 2. BOUNDS METHOD (Automatically find the top-left edge)
+      // ========================================================
+      else if (buildingTransform.TryGetComponent<Collider2D>(out Collider2D coll)) 
+      {
+         // coll.bounds.min.x gets the exact left edge of the collider
+         // coll.bounds.max.y gets the exact top edge of the collider
+         float leftPadding = 1.5f; // How far to the left of the building the buttons should start
+         float topOffset = 0.5f;   // Nudge it slightly down from the absolute top
 
-      int buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge")) ? buildingButtonsPreFab.Length : 2;
+         float startX = coll.bounds.min.x - leftPadding;
+         float startY = coll.bounds.max.y - topOffset;
+
+         fixedPopUpPosition = new Vector3(startX, startY, buildingTransform.position.z);
+      }
+      // ========================================================
+      // 3. FALLBACK METHOD (Your original code)
+      // ========================================================
+      else 
+      {
+         Vector3 offset = new Vector3(-6.0f, 3.0f, 0f);
+         fixedPopUpPosition = buildingTransform.position + offset;
+      }
+
+      buttonCount = (buildingTransform.CompareTag("Exploration Unit") || buildingTransform.CompareTag("Forge") || buildingTransform.CompareTag("Ore Refinery")) ? buildingButtonsPreFab.Length : 2;
 
       for (int buttonIndex = 0; buttonIndex < buttonCount; buttonIndex++)
       {
@@ -180,11 +212,12 @@ public class PopUpManager : MonoBehaviour
 
          string uniqueButtonName = buildingTransform.tag switch
          {
-            "Trade Hut" => "Trade",
-            "Lab" => "Research",
-            "Exploration Unit" => "Explore",
-            "Forge" => "Craft",
-            _ => "BuildingButton"
+            "Ore Refinery"      => "Patch",
+            "Trade Hut"         => "Trade",
+            "Lab"               => "Research",
+            "Exploration Unit"  => "Explore",
+            "Forge"             => "Craft",
+            _                   => "BuildingButton"
          };
 
          string buttonText;
@@ -192,10 +225,10 @@ public class PopUpManager : MonoBehaviour
          switch (buttonIndex)
          {
             case 0:
-               buttonText = buildingTransform.CompareTag("Ore Refinery") ? "Info" : uniqueButtonName;
+               buttonText = uniqueButtonName;
                break;
             case 1:
-               buttonText = buildingTransform.CompareTag("Ore Refinery") ? "Upgrade" : "Info";
+               buttonText = "Info";
                break;
             case 2:
                buttonText = "Upgrade";

@@ -13,12 +13,18 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public static OreRefinery_Manager Instance { get; private set; }
 
-   const int INFO_BUTTON    = 1;
-   const int UPGRADE_BUTTON = 2;
+   const int PATCH_BUTTON   = 1;
+   const int INFO_BUTTON    = 2;
+   const int UPGRADE_BUTTON = 3;
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL   = 3;
+   const int LEVEL_2_PEARL_COST = 100;
+   const int LEVEL_2_ORE_COST = 50;
+   const int LEVEL_3_PEARL_COST = 300;
+   const int LEVEL_3_ORE_COST = 100;
 
    public PanelManager panelManager;
+   [SerializeField] private Transform patchPanel;
    [SerializeField] private Transform infoPanel;
    [SerializeField] public Transform upgradePanel;
    [SerializeField] private GameObject buildingCanvas;
@@ -26,19 +32,18 @@ public class OreRefinery_Manager : MonoBehaviour
    public TextMeshProUGUI oreRefineryLevelText;
 
    [Header("Ore Visuals")]
-   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
+   [SerializeField] private List<SpriteRenderer> buildingSpriteRenderer;
    [SerializeField] private List<Sprite> oreLevelSprites;
 
    [Header("Upgrade Costs")]
    [SerializeField] private int level2PearlCost = 100;
    [SerializeField] private int level2OreCost = 50;
-   [SerializeField] private int level3PearlCost = 100;
-   [SerializeField] private int level3OreCost = 50;
+   [SerializeField] private int level3PearlCost = 300;
+   [SerializeField] private int level3OreCost = 100;
 
    TickerSystem ticker;
 
    public int  oreLevel          = STARTING_LEVEL;
-   public int  jammingChance     = 0;
    public bool IsBlocked         = false;
    public bool tutorialUpgrade   = false;
    public bool manualResetOption = false;
@@ -84,11 +89,20 @@ public class OreRefinery_Manager : MonoBehaviour
 
    public void RequestOreRefinoryPanel(int buttonID)
    {
+
+      Button exitBtn;
       switch (buttonID)
       {
+
+         case PATCH_BUTTON:
+            ShowPatchPanel();
+            exitBtn = patchPanel.transform.Find("ExitButton").GetComponent<Button>();
+            exitBtn.onClick.RemoveAllListeners(); 
+            exitBtn.onClick.AddListener(() => CloseOreRefinoryPanel(PATCH_BUTTON));
+            break;
          case INFO_BUTTON:
             ShowInfoPanel();
-            Button exitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
+            exitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
             exitBtn.onClick.RemoveAllListeners(); 
             exitBtn.onClick.AddListener(() => CloseOreRefinoryPanel(INFO_BUTTON));
             break;
@@ -115,6 +129,9 @@ public class OreRefinery_Manager : MonoBehaviour
    {
       switch (buttonID)
       {
+         case PATCH_BUTTON:
+            ClosePatchPanel();
+            break;
          case INFO_BUTTON:
             CloseInfoPanel();
             break;
@@ -137,68 +154,94 @@ public class OreRefinery_Manager : MonoBehaviour
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
+
    private void ShowUpgradePanel()
    {
+      int pearlUpgradeCost = 0;
+      int oreUpgradeCost = 0;
+      string upgradeTitle = "";
+      string upgradeExplanation = "";
+
       panelManager.OpenPanel(upgradePanel.gameObject);
 
-      if(tutorialUpgrade)
-         upgradePanel.Find("Arrow").gameObject.SetActive(true);
+      Transform titleTextTransform = upgradePanel.Find("Title");
+      Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+      Transform pearlCostTransform = upgradePanel.Find("PearlCostText");
+      Transform oreCostTransform = upgradePanel.Find("OreCostText");
+      Transform explanationTransform = upgradePanel.Find("ExplanationText");
 
-      if (MainUIManager.mainUI != null)
-         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      TextMeshProUGUI title = titleTextTransform != null ? titleTextTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI upgradeText = mainTextTransform != null ? mainTextTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI pearlCostText = pearlCostTransform != null ? pearlCostTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI oreCostText = oreCostTransform != null ? oreCostTransform.GetComponent<TextMeshProUGUI>() : null;
+      TextMeshProUGUI expText = explanationTransform != null ? explanationTransform.GetComponent<TextMeshProUGUI>() : null;
+
+      if (oreLevel == 1)
+      {
+         pearlUpgradeCost = LEVEL_2_PEARL_COST;
+         oreUpgradeCost = LEVEL_2_ORE_COST;
+         upgradeTitle = "REWARD: Increase Ore/Turn";
+         upgradeExplanation = "The ore gained every turn increases to 25 but increases jamming";
+      }
+      if (oreLevel == 2)
+      {
+         pearlUpgradeCost = LEVEL_3_PEARL_COST;
+         oreUpgradeCost = LEVEL_3_ORE_COST;
+         upgradeTitle = "REWARD: Increase Ore/Turn";
+         upgradeExplanation = "The ore gained every turn increases to 60 but increases jamming";
+      }
 
       if (oreLevel < ENDING_LEVEL)
       {
-         int targetLevel = oreLevel + 1;
-         Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
+         Debug.Log(oreLevel);
+         if (title != null)
+            title.text = $"LEVEL {oreLevel +1} UPGRADE";
+         if (upgradeText != null)
+            upgradeText.text = upgradeTitle;
 
-         if (mainTextTransform != null)
+         if (pearlCostText != null)
+            pearlCostText.text = $"{pearlUpgradeCost}";
+
+         if (oreCostText != null)
+            oreCostText.text = $"{oreUpgradeCost}";
+
+         if (expText != null)
          {
-            TextMeshProUGUI upgradeText = mainTextTransform.GetComponent<TextMeshProUGUI>();
-            upgradeText.text = $"Would you like to upgrade to lvl {targetLevel}?";
+            expText.gameObject.SetActive(true);
+            expText.text = $"<color=black>{upgradeExplanation}</color>";
          }
 
-         Transform pearlTextObj = upgradePanel.Find("PearlCostText");
-         if (pearlTextObj != null)
-         {
-            pearlTextObj.gameObject.SetActive(true);
-            pearlTextObj.GetComponent<TextMeshProUGUI>().text = NextUpgradeCostInPearls.ToString();
-         }
-
-         Transform oreTextObj = upgradePanel.Find("OreCostText");
-         if (oreTextObj != null)
-         {
-            oreTextObj.gameObject.SetActive(true);
-            oreTextObj.GetComponent<TextMeshProUGUI>().text = NextUpgradeCostInOre.ToString();
-         }
-
-         Transform imagesObj = upgradePanel.Find("UpgradePanelImages");
-         if (imagesObj != null) imagesObj.gameObject.SetActive(true);
-
-         Button yesBtn = upgradePanel.Find("YesButton").GetComponent<Button>();
+         Transform yesBtn = upgradePanel.Find("YesButton");
          if (yesBtn != null) yesBtn.gameObject.SetActive(true);
       }
       else
       {
-         Transform mainTextTransform = upgradePanel.Find("UpgradePanelText");
-         if (mainTextTransform != null)
-         {
-            TextMeshProUGUI upgradeText = mainTextTransform.GetComponent<TextMeshProUGUI>();
+         if (upgradeText != null)
             upgradeText.text = "Max Level Reached!";
-         }
 
-         Transform pearlTextObj = upgradePanel.Find("PearlCostText");
-         if (pearlTextObj != null) pearlTextObj.gameObject.SetActive(false);
+         if(pearlCostText != null)
+            pearlCostText.gameObject.SetActive(false);
 
-         Transform oreTextObj = upgradePanel.Find("OreCostText");
-         if (oreTextObj != null) oreTextObj.gameObject.SetActive(false);
+         if (oreCostText != null)
+            oreCostText.gameObject.SetActive(false);
 
-         Transform imagesObj = upgradePanel.Find("UpgradePanelImages");
-         if (imagesObj != null) imagesObj.gameObject.SetActive(false);
+         if (expText != null)
+            expText.gameObject.SetActive(false); // Hide explanation if max level
 
-         Button yesBtn = upgradePanel.Find("YesButton").GetComponent<Button>();
+         Transform yesBtn = upgradePanel.Find("YesButton");
          if (yesBtn != null) yesBtn.gameObject.SetActive(false);
       }
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
+
+   private void ClosePatchPanel()
+   {
+      panelManager.ClosePanel(patchPanel.gameObject);
+
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
    private void CloseInfoPanel()
@@ -328,13 +371,13 @@ public class OreRefinery_Manager : MonoBehaviour
    // Reduces jamming percentage when user unlocks tier 1 in lab
    public void ReduceJamming(int oreAmount)
    {
-      jammingChance -= oreAmount;
+      TurnManager.jammingChance -= oreAmount;
 
-      if (jammingChance < 0)
-         jammingChance = 0;
+      if (TurnManager.jammingChance < 0)
+         TurnManager.jammingChance = 0;
 
-      Debug.Log($"Refinery improved! Jamming chance is now {jammingChance}%");
-      ticker.ShowTicker($"Refinery improved! Jamming chance is now {jammingChance}%", Color.green, MessageTypes.ResultMessage);
+      Debug.Log($"Refinery improved! Jamming chance is now {TurnManager.jammingChance}%");
+      ticker.ShowTicker($"Refinery improved! Jamming chance is now {TurnManager.jammingChance}%", Color.green, MessageTypes.ResultMessage);
    }
 
    private void ProduceOres()
@@ -371,7 +414,12 @@ public class OreRefinery_Manager : MonoBehaviour
          InventoryManager.Instance.TrySpendPearl(NextUpgradeCostInPearls);
          InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
          
-         oreLevel++;
+         oreLevel += 1;
+         if(TurnManager.isJamPrevented)
+            TurnManager.previousJammingChance += 5;
+         else
+            TurnManager.jammingChance += 5;
+
          UpdateOreRefinerySprites();
          CalculateRefineryValues();
 
@@ -414,8 +462,45 @@ public class OreRefinery_Manager : MonoBehaviour
 
       if (buildingSpriteRenderer != null && index < oreLevelSprites.Count)
       {
-         buildingSpriteRenderer.sprite = oreLevelSprites[index];
+         buildingSpriteRenderer[index - 1].gameObject.SetActive(false);
+         buildingSpriteRenderer[index].gameObject.SetActive(true);
          Debug.Log($"Forge Visuals Updated to Level {oreLevel}");
+      }
+   }
+
+   public void ShowPatchPanel()
+   {
+      panelManager.OpenPanel(patchPanel.gameObject);
+
+      patchPanel.transform.Find("UnjamButton").GetComponent<Button>().onClick.RemoveAllListeners();
+      patchPanel.transform.Find("UnjamButton").GetComponent<Button>().onClick.AddListener(() =>
+      {
+         if(InventoryManager.Instance.TryUsePatchKit(1))
+         {
+            patchPanel.transform.Find("UnjamButton").gameObject.SetActive(false);
+            InventoryManager.Instance.TryUsePatchKit(1);
+            TurnManager.isJamPrevented = true;
+            CloseOreRefinoryPanel(PATCH_BUTTON);
+            patchPanel.transform.Find("TurnText").gameObject.SetActive(true);
+            patchPanel.transform.Find("TurnText").GetComponent<TextMeshProUGUI>().text = ($"5 turns left...");
+         }
+      });
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
+   }
+
+   public void ActivateUnjamButton()
+   {
+      patchPanel.transform.Find("UnjamButton").gameObject.SetActive(true);
+   }
+
+   public void ChangeMaintenanceCounter(int maintenanceCounter)
+   {
+      patchPanel.transform.Find("TurnText").GetComponent<TextMeshProUGUI>().text = ($"{maintenanceCounter.ToString()} turns left...");
+      if(maintenanceCounter <= 0)
+      {
+         TurnManager.isJamPrevented = false;
+         patchPanel.transform.Find("TurnText").gameObject.SetActive(false);
       }
    }
 }
