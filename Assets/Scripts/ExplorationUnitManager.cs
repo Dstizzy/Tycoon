@@ -843,6 +843,4 @@ public class ExplorationUnitManager : MonoBehaviour
          explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
       }
    }
-
-
 }
