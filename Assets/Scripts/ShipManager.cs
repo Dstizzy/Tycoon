@@ -74,6 +74,10 @@ public class ShipManager : MonoBehaviour
       public int precisionLensChanged;
       public int healthChanged;
       public int fuelChanged;
+      public int healthBefore;
+      public int fuelBefore;
+      public int maxHealth;
+      public int maxFuel;
 
       // Tracks if event changed status or inventory of the ship
       public bool HasChanges()
@@ -188,6 +192,11 @@ public class ShipManager : MonoBehaviour
    {
       RoundResults finalResults = new RoundResults();
 
+      finalResults.healthBefore = currentHealth;
+      finalResults.fuelBefore = currentFuel;
+      finalResults.maxHealth = maxHealth;
+      finalResults.maxFuel = maxFuel;
+
       // Calculate base and random loot for pearls and ore
       int actualPearl = results.pearlChange + UnityEngine.Random.Range(results.minPearl, results.maxPearl + 1);
       int actualOre = 0;
@@ -262,7 +271,6 @@ public class ShipManager : MonoBehaviour
       }
 
       UpdateShipUI();
-
       return finalResults;
    }
 

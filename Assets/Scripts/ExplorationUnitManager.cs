@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using JetBrains.Annotations;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
@@ -26,6 +27,11 @@ public class ExplorationUnitManager : MonoBehaviour
    [Header("Icon UI Settings")]
    [SerializeField] private Transform inventoryIconContainer;
    [SerializeField] private Transform resultsIconContainer;
+   [Header("Results Animation Settings")]
+   [SerializeField] private TextMeshProUGUI resultsHealthText;
+   [SerializeField] private TextMeshProUGUI resultsFuelText;
+   [SerializeField] private TextMeshProUGUI floatingResultsHealth;
+   [SerializeField] private TextMeshProUGUI floatingResultsFuel;
 
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer buildingSpriteRenderer;
@@ -573,6 +579,16 @@ public class ExplorationUnitManager : MonoBehaviour
 
    private IEnumerator ShowDecisionResultsSequence(ShipManager.RoundResults results,  MapNode currentNode)
    {
+      resultsHealthText.text = $"{results.healthBefore}/{results.maxHealth}";
+      resultsFuelText.text = $"{results.fuelBefore}/{results.maxFuel}";
+      floatingResultsHealth.gameObject.SetActive(false);
+      floatingResultsFuel.gameObject.SetActive(false);
+
+      if(results.healthChanged != 0)
+         StartCoroutine(AnimateStatChange(resultsHealthText, floatingResultsHealth, results.healthBefore, results.healthChanged, results.maxHealth));
+      if (results.fuelChanged != 0)
+         StartCoroutine(AnimateStatChange(resultsFuelText, floatingResultsFuel, results.fuelBefore, results.fuelChanged, results.maxFuel));
+
       float delayBetweenItems = 0.2f;
       var resultData = new (string Name, int Amount)[]
       {
@@ -609,6 +625,36 @@ public class ExplorationUnitManager : MonoBehaviour
       {
          StartCoroutine(ResultsDelay(currentNode));
       });
+   }
+
+   private IEnumerator AnimateStatChange(TextMeshProUGUI mainText, TextMeshProUGUI deltaText, int startVal, int change, int max)
+   {
+      int newVal = startVal + change;
+      mainText.text = $"{newVal}/{max}";
+
+      deltaText.text = (change > 0 ? "+" : "") + change.ToString();
+      deltaText.color = change > 0 ? Color.green : Color.red;
+      deltaText.gameObject.SetActive(true);
+
+      Vector3 startPos = deltaText.transform.localPosition;
+      Vector3 endPos = startPos + (change > 0 ? new Vector3(0, 30, 0) : new Vector3(0, -30, 0));
+
+      float duration = 2.0f;
+      float elapsed = 0.0f;
+
+      while (elapsed < duration)
+      {
+         elapsed += Time.deltaTime;
+         float t = elapsed / duration;
+
+         deltaText.transform.localPosition = Vector3.Lerp(startPos, endPos, t);
+         deltaText.alpha = Mathf.Lerp(1, 0, t);
+
+         deltaText.text = $"{change}";
+         yield return null;
+      }
+      deltaText.gameObject.SetActive(false);
+      deltaText.transform.localPosition = startPos;
    }
 
    private Transform TrySpawnResultIcon(string itemName, int amount)
