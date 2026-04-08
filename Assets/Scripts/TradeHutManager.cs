@@ -76,8 +76,8 @@ public class TradeHutManager : MonoBehaviour
                worldEvent,
                currentWorldEventChance;
 
-   public Image   worldEventItem,
-                  worldEventChange;
+   public Image  worldEventItem,
+                 worldEventChange;
 
 
    private WorldEventTypes crudeToolEvent,
