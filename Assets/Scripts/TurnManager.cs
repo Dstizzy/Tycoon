@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Codice.Client.Common.GameUI;
+using JetBrains.Annotations;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TMPro;
@@ -31,7 +33,9 @@ public class TurnManager : MonoBehaviour
    [SerializeField] private UIFade uiFade;                   // Panel fade script
    public TickerSystem newsTicker;                           // The wolrd event news ticker panel
    public static int jammingChance = 5;                      // Chance of ore refinery jamming
-
+   public static bool isJamPrevented = false;                // Flag to check if the ore refinery is being prevented from jamming
+   public static int MaintenanceCounter = 5;                 // Counter for the number of times preventative maintenance has been performed
+   public static int previousJammingChance;                  // Keeps track of the jamming chance before preventative maintenance
 
    // Public Unity fields
    [Header("Turn Setting")]
@@ -96,6 +100,7 @@ public class TurnManager : MonoBehaviour
       await Task.Delay(1000);
       progressBar.SetActive(false);
       PopUpManager.Instance.EnablePlayerInput();
+      progressBar.transform.rotation = Quaternion.identity;
       Debug.Log("### TurnManager Start() ###");
 
       // Do nothing if the game is already over
@@ -112,10 +117,13 @@ public class TurnManager : MonoBehaviour
       }
       else
       {
-         progressBar.transform.rotation = Quaternion.identity;
          UpdateTurnUI();
          HandleJamming();
          HandleEnemy();
+
+         if(isJamPrevented)
+            HandlePreventativeMaintenance();
+         
 
          // Handle world event reset
          if (eventCountdown == 1) 
@@ -421,5 +429,25 @@ public class TurnManager : MonoBehaviour
       heatProgressBar.transform.Find("Node11").gameObject.SetActive(false);
       heatProgressBar.transform.Find("Node12").gameObject.SetActive(false);
       heatProgressBar.transform.Find("Node13").gameObject.SetActive(false);
+   }
+
+   public void HandlePreventativeMaintenance()
+   {
+      if(jammingChance > 0)
+      {
+         jammingChance = 0;
+      }
+      if (isJamPrevented)
+      {
+         MaintenanceCounter--;
+         oreManager.ChangeMaintenanceCounter(MaintenanceCounter);
+         if(MaintenanceCounter <= 0)
+         {
+            isJamPrevented = false;
+            MaintenanceCounter = 5;
+            jammingChance = previousJammingChance;
+            oreManager.ActivateUnjamButton();
+         }
+      }
    }
 }

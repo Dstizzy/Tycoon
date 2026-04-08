@@ -32,7 +32,7 @@ public class ForgeManager : MonoBehaviour
    const int PATCH_KIT_COST = 75;
    const int PRESSUREV_VALVE_COST = 50;
    const int DIVING_BELL_COST = 15;
-   const int ENGINE_COST = 150;
+   const int ENGINE_COST = 250;
    const int PRECISION_LENS_COST = 200;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
@@ -865,7 +865,7 @@ public class ForgeManager : MonoBehaviour
             turns = 1;
             break;
          case Item.ItemType.Engine:
-            turns = 3;
+            turns = 4;
             break;
          case Item.ItemType.PrecisionLens:
             turns = 3;

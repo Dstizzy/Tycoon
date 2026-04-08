@@ -44,7 +44,6 @@ public class OreRefinery_Manager : MonoBehaviour
    TickerSystem ticker;
 
    public int  oreLevel          = STARTING_LEVEL;
-   public int  jammingChance     = 0;
    public bool IsBlocked         = false;
    public bool tutorialUpgrade   = false;
    public bool manualResetOption = false;
@@ -372,13 +371,13 @@ public class OreRefinery_Manager : MonoBehaviour
    // Reduces jamming percentage when user unlocks tier 1 in lab
    public void ReduceJamming(int oreAmount)
    {
-      jammingChance -= oreAmount;
+      TurnManager.jammingChance -= oreAmount;
 
-      if (jammingChance < 0)
-         jammingChance = 0;
+      if (TurnManager.jammingChance < 0)
+         TurnManager.jammingChance = 0;
 
-      Debug.Log($"Refinery improved! Jamming chance is now {jammingChance}%");
-      ticker.ShowTicker($"Refinery improved! Jamming chance is now {jammingChance}%", Color.green, MessageTypes.ResultMessage);
+      Debug.Log($"Refinery improved! Jamming chance is now {TurnManager.jammingChance}%");
+      ticker.ShowTicker($"Refinery improved! Jamming chance is now {TurnManager.jammingChance}%", Color.green, MessageTypes.ResultMessage);
    }
 
    private void ProduceOres()
@@ -416,6 +415,11 @@ public class OreRefinery_Manager : MonoBehaviour
          InventoryManager.Instance.TrySpendOre(NextUpgradeCostInOre);
          
          oreLevel += 1;
+         if(TurnManager.isJamPrevented)
+            TurnManager.previousJammingChance += 5;
+         else
+            TurnManager.jammingChance += 5;
+
          UpdateOreRefinerySprites();
          CalculateRefineryValues();
 
@@ -471,12 +475,32 @@ public class OreRefinery_Manager : MonoBehaviour
       patchPanel.transform.Find("UnjamButton").GetComponent<Button>().onClick.RemoveAllListeners();
       patchPanel.transform.Find("UnjamButton").GetComponent<Button>().onClick.AddListener(() =>
       {
-         patchPanel.transform.Find("UnjamButton").GetComponent<Button>().interactable = false;
-         InventoryManager.Instance.TryUsePatchKit(1);
-         //TurnManager.Instance.currentTurn
+         if(InventoryManager.Instance.TryUsePatchKit(1))
+         {
+            patchPanel.transform.Find("UnjamButton").gameObject.SetActive(false);
+            InventoryManager.Instance.TryUsePatchKit(1);
+            TurnManager.isJamPrevented = true;
+            CloseOreRefinoryPanel(PATCH_BUTTON);
+            patchPanel.transform.Find("TurnText").gameObject.SetActive(true);
+            patchPanel.transform.Find("TurnText").GetComponent<TextMeshProUGUI>().text = ($"5 turns left...");
+         }
       });
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
-      
+   }
+
+   public void ActivateUnjamButton()
+   {
+      patchPanel.transform.Find("UnjamButton").gameObject.SetActive(true);
+   }
+
+   public void ChangeMaintenanceCounter(int maintenanceCounter)
+   {
+      patchPanel.transform.Find("TurnText").GetComponent<TextMeshProUGUI>().text = ($"{maintenanceCounter.ToString()} turns left...");
+      if(maintenanceCounter <= 0)
+      {
+         TurnManager.isJamPrevented = false;
+         patchPanel.transform.Find("TurnText").gameObject.SetActive(false);
+      }
    }
 }
