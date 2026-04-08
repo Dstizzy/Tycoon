@@ -17793,6 +17793,8 @@ GameObject:
   - component: {fileID: 250150652}
   - component: {fileID: 250150651}
   - component: {fileID: 250150650}
+  - component: {fileID: 250150653}
+  - component: {fileID: 250150654}
   m_Layer: 5
   m_Name: ItemInfoCanvas
   m_TagString: Untagged
@@ -17883,6 +17885,30 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 3
   m_TargetDisplay: 0
+--- !u!114 &250150653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250150648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4937a2986656bca45a372dcb043c1a9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::UIFade
+--- !u!225 &250150654
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250150648}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &250811308
 GameObject:
   m_ObjectHideFlags: 0
@@ -89944,7 +89970,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1595537942}
-  uiFade: {fileID: 0}
+  uiFade: {fileID: 250150653}
 --- !u!114 &1673445072
 MonoBehaviour:
   m_ObjectHideFlags: 0

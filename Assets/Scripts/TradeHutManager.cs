@@ -834,10 +834,20 @@ public class TradeHutManager : MonoBehaviour
             owned    = inv.harpoonCount;
             itemType = ItemType.Harpoon;
             break;
+         case DIVING_BELL_TAG:
+            current  = divingBellSellCount;
+            owned    = inv.divingBellCount;
+            itemType = ItemType.DivingBell;
+            break;
          case PRESSURE_VALVE_TAG:
             current  = pressureValveSellCount;
             owned    = inv.pressureValveCount;
             itemType = ItemType.PressureValve;
+            break;
+         case PRECISION_LENS_TAG:
+            current  = precisionLensSellCount;
+            owned    = inv.precisionLensCount;
+            itemType = ItemType.PrecisionLens;
             break;
          case ENGINE_TAG:
             current  = engineSellCount;
@@ -856,7 +866,7 @@ public class TradeHutManager : MonoBehaviour
          else
          {
             if (owned > 0)
-               ticker.ShowTicker($"Cannot select that many ÅEyou only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Cannot select that many {item.tag}s. You only have {owned} {item.tag}{(owned == 1 ? "" : "s")}.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
          }
@@ -868,7 +878,7 @@ public class TradeHutManager : MonoBehaviour
          else 
          {
             if (owned > 0)
-               ticker.ShowTicker($"Nothing selected to remove ÅEyou own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
+               ticker.ShowTicker($"Nothing selected to remove. You own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
             else
                ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
          }
@@ -882,11 +892,11 @@ public class TradeHutManager : MonoBehaviour
          case HARPOON_TAG: 
            harpoonSellCount = current; 
            break;
-         case PRESSURE_VALVE_TAG: 
-           pressureValveSellCount = current; 
-           break;
          case DIVING_BELL_TAG: 
            divingBellSellCount = current; 
+           break;
+         case PRESSURE_VALVE_TAG: 
+           pressureValveSellCount = current; 
            break;
          case PRECISION_LENS_TAG: 
            precisionLensSellCount = current; 
@@ -1290,7 +1300,7 @@ public class TradeHutManager : MonoBehaviour
             finalWorldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent);
 
 
-      worldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent); //Rng.Next(worldEvent1, finalWorldEvent + 1);
+      worldEvent = Rng.Next(worldEvent1, finalWorldEvent + 1);
       WorldEventItemVisual(worldEvent);
 
       shiftDirection          = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
