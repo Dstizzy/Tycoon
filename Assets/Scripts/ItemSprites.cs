@@ -3,7 +3,7 @@ using UnityEngine;
 using static Item;
 
 public class ItemSprites : MonoBehaviour {
-    public static ItemSprites itemSprites { get; private set; }
+    public static ItemSprites itemSprites { get; set; }
     
     [Header("Item Sprites")]
     public Sprite crudeTool;
@@ -19,12 +19,16 @@ public class ItemSprites : MonoBehaviour {
     public Sprite merceneryEngineer;
     public Sprite insurancePolicy;
 
-    private void Awake() {
-        if (itemSprites != null && itemSprites != this) {
-            Destroy(gameObject);
-        } else {
-            itemSprites = this;
-        }
+    private void Awake() 
+    {
+
+      if (itemSprites != null && itemSprites != this) 
+      {
+         Destroy(gameObject);
+         return;
+      }
+
+      itemSprites = this;
     }
 
     public Sprite GetSprite(ItemType itemType) 

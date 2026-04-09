@@ -58,8 +58,6 @@ public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
       uiFade.Disappear(.5f);
       InfoPopUp.SetActive(false);
    }
-
-    
 }
 
 

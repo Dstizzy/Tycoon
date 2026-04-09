@@ -89,7 +89,6 @@ public class TurnManager : MonoBehaviour
       tradeHutManager = TradeHutManager.Instance;
       UpdateTurnUI();
       tradeHutManager.WorldEventChance();
-      progressBar.GetComponent<Animator>().SetTrigger("StartProgressBar");
    }
 
    // Advances the game to the next turn and updates the UI,
@@ -130,6 +129,8 @@ public class TurnManager : MonoBehaviour
          {
             tradeHutManager.ResetWorldEventShifts();
             tradeHutManager.WorldEventChance();
+
+            TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
          }
 
          // Apply the market shift
@@ -141,6 +142,12 @@ public class TurnManager : MonoBehaviour
             newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
             newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+
+            if(eventCountdown == 5) 
+            {
+               TradeHutManager.Instance.InsurancePolicyCheck();
+               TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
+            }
          }
 
          // Predict the next turn

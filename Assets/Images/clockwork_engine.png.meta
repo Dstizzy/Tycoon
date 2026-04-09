@@ -103,12 +103,12 @@ TextureImporter:
       name: clockwork_engine_0
       rect:
         serializedVersion: 2
-        x: 196
-        y: 74
-        width: 258
-        height: 248
+        x: 175
+        y: 31
+        width: 311
+        height: 311
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: dbfee547a309ebf41ab8b8939f3bde70
     internalID: 0
     vertices: []
     indices: 

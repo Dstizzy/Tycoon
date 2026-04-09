@@ -1,19 +1,16 @@
 using System;
 
-using TMPro;
-
 using UnityEngine;
-using static TradeHutManager;
 
 public class Item {
 
    /* Public static properties                                          */
-   public static int base_crude_tool_value = 30;
-   public static int base_harpoon_value = 60;
-   public static int base_pressure_valve_value = 180;
-   public static int base_diving_bell_value = 250;
+   public static int base_crude_tool_value     = 30;
+   public static int base_harpoon_value        = 60;
+   public static int base_diving_bell_value    = 180;
+   public static int base_pressure_valve_value = 250;
    public static int base_precision_lens_value = 600;
-   public static int base_engine_value = 900;
+   public static int base_engine_value         = 900;
 
    private static int crudeToolSellValue     { get; set; } = base_crude_tool_value;
    private static int harpoonSellValue       { get; set; } = base_harpoon_value;
@@ -30,13 +27,13 @@ public class Item {
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 180;
+   public const int MAX_CRUDE_TOOL_VALUE           = 250;
    public const int MIN_HARPOON_VALUE              = 0;
    public const int MAX_HARPOON_VALUE              = 250;
+   public const int MIN_DIVING_BELL_VALUE          = 0;
+   public const int MAX_DIVING_BELL_VALUE          = 250;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
    public const int MAX_PRESSURE_VALVE_VALUE       = 540;
-   public const int MIN_DIVING_BELL_VALUE          = 0;
-   public const int MAX_DIVING_BELL_VALUE          = 750;
    public const int MIN_PRECISION_LENS_VALUE       = 0;
    public const int MAX_PRECISION_LENS_VALUE       = 1800;
    public const int MIN_ENGINE_VALUE               = 0;
@@ -170,6 +167,8 @@ public class Item {
 
     public static Sprite GetItemSprite(ItemType itemType) 
     {
+      ItemSprites.itemSprites = UnityEngine.Object.FindFirstObjectByType<ItemSprites>();
+        
         if (ItemSprites.itemSprites == null) 
         {
             Debug.LogError("ItemSprites.Instance is NULL! Cannot retrieve sprites.");
