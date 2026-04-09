@@ -1156,34 +1156,19 @@ public class InventoryManager : MonoBehaviour
    public void ShowInventoryPanel()
    {
       panelManager.OpenPanel(InventoryPanel.gameObject);
+      CraftsPanel.gameObject.SetActive(false);
       ResourcePanel.gameObject.SetActive(true);
+
       if (tutorialFunction)
       {
          InventoryPanel.transform.Find("Arrow").gameObject.SetActive(true);
       }
+
       // Added for camera fix
       PopUpManager.Instance.DisablePlayerInput();
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
-   }
-
-   public void ShowResourcePanel()
-   {
-      if (CraftsPanel.gameObject.activeSelf)
-         CloseCraftsPanel();
-
-      ResourcePanel.gameObject.SetActive(true);
-   }
-   private void ShowResourceWindow()
-   {
-      panelManager.OpenPanel(ResourceWindow.gameObject);
-      //ResourceWindow.gameObject.SetActive(true);
-   }
-   private void ShowCraftWindow()
-   {
-      panelManager.OpenPanel(CraftWindow.gameObject);
-      //CraftWindow.gameObject.SetActive(true);
    }
 
    public void CloseInventoryPanel()
@@ -1205,24 +1190,34 @@ public class InventoryManager : MonoBehaviour
          currentResource = null;
       }
 
-      if (ResourceWindow.gameObject.activeSelf)
-         CloseResourcePanel();
+      //if (ResourceWindow.gameObject.activeSelf)
+      //   CloseResourcePanel();
 
-      if (CraftWindow.gameObject.activeSelf)
-         CloseCraftsPanel();
+      //if (CraftWindow.gameObject.activeSelf)
+      //   CloseCraftsPanel();
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
-   private void CloseResourcePanel()
+
+   public void ShowResourcePanel()
    {
-      ResourcePanel.gameObject.SetActive(false);
+      if (CraftsPanel.gameObject.activeSelf) 
+      { 
+         CloseCraftsPanel();
+         CloseCraftWindow();
+      }
+
+      ResourcePanel.gameObject.SetActive(true);
    }
 
    public void ShowCraftsPanel()
    {
-      if (ResourcePanel.gameObject.activeSelf)
+      if (ResourcePanel.gameObject.activeSelf) 
+      { 
          CloseResourcePanel();
+         CloseResourceWindow();
+      }
 
       CraftsPanel.gameObject.SetActive(true);
       if(tutorialFunction)
@@ -1233,6 +1228,23 @@ public class InventoryManager : MonoBehaviour
       }
    }
 
+   private void ShowResourceWindow()
+   {
+      panelManager.OpenPanel(ResourceWindow.gameObject);
+      //ResourceWindow.gameObject.SetActive(true);
+   }
+   private void ShowCraftWindow()
+   {
+      panelManager.OpenPanel(CraftWindow.gameObject);
+      //CraftWindow.gameObject.SetActive(true);
+   }
+
+   
+   private void CloseResourcePanel()
+   {
+      ResourcePanel.gameObject.SetActive(false);
+   }
+   
    private void CloseCraftsPanel()
    {
       CraftsPanel.gameObject.SetActive(false);
@@ -1241,6 +1253,15 @@ public class InventoryManager : MonoBehaviour
          InventoryPanel.transform.Find("Arrow3").gameObject.SetActive(false);
          tutorialFunction = false;
       }
+   }
+   public void CloseResourceWindow()
+   {
+      ResourceWindow.gameObject.SetActive(false);
+   }
+
+   public void CloseCraftWindow()
+   {
+      CraftWindow.gameObject.SetActive(false);
    }
 
    private void CheckUpgradeResources()
