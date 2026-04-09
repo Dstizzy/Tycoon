@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8c0e1d40ddc3abe40b875f4bfba6e762
+guid: 545991fd62cb64e4492bc1ee07f4361b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -509172283506404370
-    second: inventory_exit_button_0
+      213: -4139504335752477060
+    second: inventory_panel_1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: inventory_exit_button_0
+      name: inventory_panel_1_0
       rect:
         serializedVersion: 2
-        x: 258
-        y: 19
-        width: 518
-        height: 516
+        x: 10
+        y: 7
+        width: 943
+        height: 544
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ee35020818e0fe8f0800000000000000
-      internalID: -509172283506404370
+      spriteID: c76c8491db68d86c0800000000000000
+      internalID: -4139504335752477060
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 22af2173940b2334583ae2984a6cf020
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      inventory_exit_button_0: -509172283506404370
+      inventory_panel_1_0: -4139504335752477060
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
