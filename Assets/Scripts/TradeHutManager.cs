@@ -106,7 +106,8 @@ public class TradeHutManager : MonoBehaviour
                     INFO_BUTTON     = 2,     
                     UPGRADE_BUTTON  = 3,
 
-                    BUY_ITEM_SPACING = 30,
+                    SELL_ITEM_SPACING = 25,
+                    BUY_ITEM_SPACING  = 25,
 
                     PEARL_REWARD_MINIMUM = 20,
                     PEARL_REWARD_MAXIMUM = 40,
@@ -232,16 +233,18 @@ public class TradeHutManager : MonoBehaviour
 
       CreateSellItem(GetItemSprite(ItemType.CrudeTool), GetItemValue(ItemType.CrudeTool), 0.0f, CRUDE_TOOL_TAG);
       CreateSellItem(GetItemSprite(ItemType.Harpoon), GetItemValue(ItemType.Harpoon), 2.5f, HARPOON_TAG);
-      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 0.0f, DIVING_BELL_TAG, -90);
-      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 2.5f, PRESSURE_VALVE_TAG, -90);
-      CreateSellItem(GetItemSprite(ItemType.PrecisionLens), GetItemValue(ItemType.PrecisionLens), 0.0f, PRECISION_LENS_TAG, -165);
-      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.5f, ENGINE_TAG, -165);
+      CreateSellItem(GetItemSprite(ItemType.DivingBell), GetItemValue(ItemType.DivingBell), 0.0f, DIVING_BELL_TAG, -85);
+
+      CreateSellItem(GetItemSprite(ItemType.PressureValve), GetItemValue(ItemType.PressureValve), 2.5f, PRESSURE_VALVE_TAG, -85);
+
+      CreateSellItem(GetItemSprite(ItemType.PrecisionLens), GetItemValue(ItemType.PrecisionLens), 0.0f, PRECISION_LENS_TAG, -160);
+      CreateSellItem(GetItemSprite(ItemType.Engine), GetItemValue(ItemType.Engine), 2.5f, ENGINE_TAG, -160);
 
       CreateBuyItem(GetItemSprite(ItemType.RawOreChunk), GetItemPrice(ItemType.RawOreChunk), 0.0f, RAW_ORE_CHUNK_TAG);
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.2f, INDUSTRIAL_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, CLOCKWORK_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.2f, MERCENARY_ENGINEER_TAG, -30);
-      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), .7f, INSURANCE_POLICY_TAG, -65);
+      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), .7f, INSURANCE_POLICY_TAG, -60);
    }
 
    public void OnEnable()
@@ -280,7 +283,7 @@ public class TradeHutManager : MonoBehaviour
       tradeItemRectTransform = tradeItemTransform.GetComponent<RectTransform>();
 
       tradeItemTransform.tag = itemTag;
-      tradeItemRectTransform.anchoredPosition = new Vector2(BUY_ITEM_SPACING * positionIndex, verticalIndex);
+      tradeItemRectTransform.anchoredPosition = new Vector2(SELL_ITEM_SPACING * positionIndex, verticalIndex);
 
       // Populate the the item properties                                                           
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
@@ -324,15 +327,15 @@ public class TradeHutManager : MonoBehaviour
       if (LabManager.currentCommerceTier < LabManager.TIER_ONE)
          tradeItemTransform.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(false);
 
-     if(itemTag != CRUDE_TOOL_TAG && itemTag != HARPOON_TAG && itemTag != DIVING_BELL_TAG) 
-     {
-         tradeItemTransform.Find("ItemButton").gameObject.SetActive(false);
-         tradeItemTransform.Find("ItemCount").gameObject.SetActive(false);
-         tradeItemTransform.Find("ItemValue").gameObject.SetActive(false);
-         tradeItemTransform.Find("Pearl_Icon").gameObject.SetActive(false);
-         tradeItemTransform.Find("ItemShadow").gameObject.SetActive(true);
-         tradeItemTransform.Find("Chain").gameObject.SetActive(true);
-     }
+     //if(itemTag != CRUDE_TOOL_TAG && itemTag != HARPOON_TAG && itemTag != DIVING_BELL_TAG) 
+     //{
+     //    tradeItemTransform.Find("ItemButton").gameObject.SetActive(false);
+     //    tradeItemTransform.Find("ItemCount").gameObject.SetActive(false);
+     //    tradeItemTransform.Find("ItemValue").gameObject.SetActive(false);
+     //    tradeItemTransform.Find("Pearl_Icon").gameObject.SetActive(false);
+     //    tradeItemTransform.Find("ItemShadow").gameObject.SetActive(true);
+     //    tradeItemTransform.Find("Chain").gameObject.SetActive(true);
+     //}
 
       // Dynamically add a listener to the button, which creates a sell window when clicked         
       itemButton.onClick.AddListener(() => CreateSellWindow(itemSprite, GetResourceSprite(ResourceType.Pearl), itemValue, itemTag));
