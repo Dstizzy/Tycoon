@@ -983,10 +983,10 @@ public class ForgeManager : MonoBehaviour
       // SLOT 1: Shows the first item in the staging list
       if (craftSlot1 != null)
       {
-         if (stagingItems.Count > 0)
+         if (activeJobs.Count > 0)
          {
             craftSlot1.gameObject.SetActive(true);
-            craftSlot1.sprite = Item.GetItemSprite(stagingItems[0]);
+            craftSlot1.sprite = Item.GetItemSprite(activeJobs[0].itemType);
          }
          else
          {
@@ -997,10 +997,10 @@ public class ForgeManager : MonoBehaviour
       // SLOT 2: Shows the second item 
       if (craftSlot2 != null)
       {
-         if (forgeLevel >= 2 && stagingItems.Count > 1)
+         if (forgeLevel >= 2 && activeJobs.Count > 1)
          {
             craftSlot2.gameObject.SetActive(true);
-            craftSlot2.sprite = Item.GetItemSprite(stagingItems[1]);
+            craftSlot2.sprite = Item.GetItemSprite(activeJobs[1].itemType);
          }
          else
          {
@@ -1011,10 +1011,10 @@ public class ForgeManager : MonoBehaviour
       // SLOT 3: Shows the third item
       if (craftSlot3 != null)
       {
-         if (forgeLevel >= 3 && stagingItems.Count > 2)
+         if (forgeLevel >= 3 && activeJobs.Count > 2)
          {
             craftSlot3.gameObject.SetActive(true);
-            craftSlot3.sprite = Item.GetItemSprite(stagingItems[2]);
+            craftSlot3.sprite = Item.GetItemSprite(activeJobs[2].itemType);
          }
          else
          {

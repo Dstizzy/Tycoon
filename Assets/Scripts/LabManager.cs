@@ -657,7 +657,6 @@ public class LabManager : MonoBehaviour
          if (skeleton != null)
          {
             skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
-            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
             skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
          }
 
@@ -680,21 +679,6 @@ public class LabManager : MonoBehaviour
    // Activates the head of the submarine
    public void ActivateHead()
    {
-      var headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/HeadText").GetComponent<Image>();
-      var color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
-
-      headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/Line").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
-
-      headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/HeadInfo").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
-
       victoryPanel.transform.Find("SubInfo/HeadPart/completed").gameObject.SetActive(true);
 
       if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
@@ -711,21 +695,6 @@ public class LabManager : MonoBehaviour
    // Activates the tail of the submarine
    public void ActivateTail()
    {
-      var headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/TailText").GetComponent<Image>();
-      var color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
-
-      headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/Line").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
-
-      headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/TailInfo").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
-
       victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
       if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
       {
@@ -750,6 +719,35 @@ public class LabManager : MonoBehaviour
    {
       victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubInfo/BuySect/HeadPart").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
+      victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>().onClick.AddListener(() => 
+      {
+         if(InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUseEngine(1))
+         {
+            ActivateHead();
+         }
+         else
+         {
+            Debug.Log("Not enough resources to buy head");
+             ticker.ShowTicker("Not enough resources to buy head", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         }
+      });
+   }
+
+   public void UnlockTail()
+   {
+      victoryPanel.transform.Find("SubInfo/TailPart").gameObject.SetActive(false);
+      victoryPanel.transform.Find("SubInfo/BuySect/TailPart").gameObject.SetActive(true);
+      victoryPanel.transform.Find("SubInfo/BuySect/TailPart/TailBuyButton").GetComponent<Button>().onClick.AddListener(() =>
+      {
+         if (InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUsePrecisionLens(1))
+         {
+            ActivateTail();
+         }
+         else
+         {
+            Debug.Log("Not enough resources to buy tail");
+            ticker.ShowTicker("Not enough resources to buy tail", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         }
+      });
    }
 }
