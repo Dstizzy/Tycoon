@@ -182,13 +182,13 @@ public class InventoryManager : MonoBehaviour
 
       pearlCount         = 5000;
       oreCount           = 5000;
-      crudeToolCount     = 5000;
-      harpoonCount       = 5000;
-      patchKitCount      = 5000;
-      pressureValveCount = 5000;
-      divingBellCount    = 5000;
-      precisionLensCount = 5000;
-      engineCount        = 5000;
+      crudeToolCount     = 0;
+      harpoonCount       = 5;
+      patchKitCount      = 0;
+      pressureValveCount = 0;
+      divingBellCount    = 0;
+      precisionLensCount = 0;
+      engineCount        = 0;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */

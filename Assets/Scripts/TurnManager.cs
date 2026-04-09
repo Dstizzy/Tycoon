@@ -247,12 +247,12 @@ public class TurnManager : MonoBehaviour
       {
          harpoonAmount = 3;
          enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 3      ?;";
-            }
+      }
       else
       {
          harpoonAmount = 4;
          enemyPanel.transform.Find("OptionalEnemyPanel/Text").GetComponent<TextMeshProUGUI>().text = "Would you like to defend with 4      ?;";
-            }
+      }
 
       HandleHeat();
       HandleProgressBar();
@@ -283,7 +283,7 @@ public class TurnManager : MonoBehaviour
          uiFade.Appear(1.0f);
          enemyPanel.SetActive(true);
 
-         if (InventoryManager.Instance.harpoonCount < harpoonAmount)
+         if (InventoryManager.Instance.harpoonCount >= harpoonAmount)
          {
             decisionEnemyPanel = enemyPanel.transform.Find("OptionalEnemyPanel").gameObject;
             decisionEnemyPanel.SetActive(true);
