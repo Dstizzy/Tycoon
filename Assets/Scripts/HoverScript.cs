@@ -137,7 +137,7 @@ public class HoverScript : MonoBehaviour
 
          case "Exploration Unit":
             if (shipManager != null)
-               SetLevelPanel(ExplorationUnitCanvas, shipManager.shipLevel);
+               SetLevelPanel(ExplorationUnitCanvas, shipManager.ShipLevel);
             break;
 
          case "IdleIndicator":
