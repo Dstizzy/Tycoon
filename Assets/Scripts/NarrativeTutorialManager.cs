@@ -2,27 +2,63 @@
 using System.Collections;
 using UnityEngine;
 
-// Controls the simplified narrative tutorial flow.
-// This tutorial does not rely on building interaction while it is running.
-// It only shows dialogue and optional highlight targets, then returns control to gameplay.
+// Runs the optional narrative tutorial after the intro flow finishes.
+//
+// High-level flow:
+// 1. NarrativeFlowManager decides whether the player wants the tutorial.
+// 2. If enabled, BeginTutorial() starts this manager.
+// 3. Each TutorialStep is played in order using NarrativeOverlayUI.
+// 4. Optional highlight targets are shown while the current step is active.
+// 5. When all steps finish, control returns to normal gameplay.
+//
+// This class is intentionally focused on "scripted onboarding":
+// - It does not manage building logic directly.
+// - It does not create UI itself.
+// - It simply sequences dialogue + highlights + optional rewards.
 public class NarrativeTutorialManager : MonoBehaviour
 {
+   // Represents one tutorial step in the sequence.
+   //
+   // A step can contain:
+   // - who is speaking
+   // - which dialogue layout to use
+   // - the actual dialogue lines
+   // - optional world-space highlight targets
+   // - optional UI highlight targets
+   // - an optional pearl reward granted after the step finishes
    [System.Serializable]
    public class TutorialStep
    {
       public NPCEncounterSystem.NPCPersonality speaker;
+
+      // Internal note for designers / developers.
+      // Useful in the Inspector to identify the purpose of the step quickly.
       [TextArea] public string note;
+
+      // Controls whether the dialogue appears at the bottom or top of the screen.
       public NarrativeOverlayUI.DialogueLayoutMode layoutMode = NarrativeOverlayUI.DialogueLayoutMode.StoryBottom;
+
+      // Dialogue lines shown for this tutorial step.
       public NPCEncounterSystem.DialogueLine[] lines;
+
+      // Optional world objects to highlight during this step.
       public HighlightTarget[] highlightTargets;
+
+      // Optional UI elements to highlight during this step.
       public UIHighlightTarget[] uiHighlightTargets;
+
+      // Optional pearl reward granted after this step completes.
       public int pearlRewardOnComplete;
    }
 
+   // The ordered list of tutorial steps shown when the narrative tutorial is enabled.
    [SerializeField] private TutorialStep[] tutorialSteps;
 
+   // Prevents the tutorial from being started multiple times simultaneously.
    private bool isTutorialRunning;
 
+   // Ensures the tutorial always has content.
+   // If no steps were configured in the Inspector, default steps are generated automatically.
    private void Awake()
    {
       if (tutorialSteps == null || tutorialSteps.Length == 0)
@@ -32,6 +68,11 @@ public class NarrativeTutorialManager : MonoBehaviour
       }
    }
 
+   // Public entry point used by NarrativeFlowManager.
+   //
+   // onTutorialFinished is invoked when:
+   // - the full tutorial sequence finishes normally, or
+   // - there are no valid tutorial steps to play.
    public void BeginTutorial(Action onTutorialFinished)
    {
       if (isTutorialRunning)
@@ -48,6 +89,18 @@ public class NarrativeTutorialManager : MonoBehaviour
       StartCoroutine(RunTutorial(onTutorialFinished));
    }
 
+   // Main tutorial coroutine.
+   //
+   // Plays each step in order:
+   // - resolve speaker profile
+   // - show highlights
+   // - block gameplay
+   // - play dialogue
+   // - wait until dialogue completes
+   // - grant optional rewards
+   // - hide highlights
+   //
+   // When all steps are done, the completion callback is fired.
    private IEnumerator RunTutorial(Action onTutorialFinished)
    {
       isTutorialRunning = true;
@@ -63,15 +116,18 @@ public class NarrativeTutorialManager : MonoBehaviour
 
          Debug.Log($"[NarrativeTutorialManager] Playing tutorial step {stepIndex}: {currentStep.note}");
 
+         // Resolve the speaker portrait/profile from the NPC encounter database.
          NPCEncounterSystem.NPCProfile speakerProfile = null;
          if (NPCEncounterSystem.Instance != null)
             speakerProfile = NPCEncounterSystem.Instance.GetProfileByPersonality(currentStep.speaker);
 
+         // Turn on any requested highlights before the dialogue starts.
          ShowHighlights(currentStep.highlightTargets);
          ShowUIHighlights(currentStep.uiHighlightTargets);
 
          bool dialogueFinished = false;
 
+         // While tutorial dialogue is playing, gameplay input should remain blocked.
          NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
          NarrativeOverlayUI.Instance.PlaySequence(
             speakerProfile,
@@ -80,11 +136,14 @@ public class NarrativeTutorialManager : MonoBehaviour
             false,
             () => dialogueFinished = true);
 
+         // Wait until the overlay reports that the dialogue has finished.
          yield return new WaitUntil(() => dialogueFinished);
 
+         // Optional step reward.
          if (currentStep.pearlRewardOnComplete > 0 && InventoryManager.Instance != null)
             InventoryManager.Instance.TryAddPearl(currentStep.pearlRewardOnComplete);
 
+         // Clean up highlights before moving to the next tutorial step.
          HideHighlights(currentStep.highlightTargets);
          HideUIHighlights(currentStep.uiHighlightTargets);
       }
@@ -94,6 +153,7 @@ public class NarrativeTutorialManager : MonoBehaviour
       onTutorialFinished?.Invoke();
    }
 
+   // Shows all world highlight targets for the current step.
    private void ShowHighlights(HighlightTarget[] highlightTargets)
    {
       if (highlightTargets == null) return;
@@ -105,6 +165,7 @@ public class NarrativeTutorialManager : MonoBehaviour
       }
    }
 
+   // Hides all world highlight targets for the current step.
    private void HideHighlights(HighlightTarget[] highlightTargets)
    {
       if (highlightTargets == null) return;
@@ -116,6 +177,12 @@ public class NarrativeTutorialManager : MonoBehaviour
       }
    }
 
+   // Generates a default tutorial sequence directly in code.
+   //
+   // This is useful when:
+   // - no tutorial steps were set up in the Inspector yet
+   // - the scene is missing serialized tutorial content
+   // - developers need a reliable fallback during iteration
    [ContextMenu("Create Simplified Narrative Tutorial Steps")]
    private void CreateSimplifiedTutorialSteps()
    {
@@ -207,6 +274,8 @@ public class NarrativeTutorialManager : MonoBehaviour
       };
    }
 
+   // Convenience factory used when generating the default tutorial steps in code.
+   // All generated steps currently use Dolphin as the tutorial narrator.
    private TutorialStep CreateStep(
       string note,
       NarrativeOverlayUI.DialogueLayoutMode layoutMode,
@@ -225,6 +294,7 @@ public class NarrativeTutorialManager : MonoBehaviour
       };
    }
 
+   // Shows all UI highlight targets for the current step.
    private void ShowUIHighlights(UIHighlightTarget[] uiHighlightTargets)
    {
       if (uiHighlightTargets == null) return;
@@ -236,6 +306,7 @@ public class NarrativeTutorialManager : MonoBehaviour
       }
    }
 
+   // Hides all UI highlight targets for the current step.
    private void HideUIHighlights(UIHighlightTarget[] uiHighlightTargets)
    {
       if (uiHighlightTargets == null) return;
