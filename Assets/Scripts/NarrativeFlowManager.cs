@@ -1,18 +1,23 @@
 using System.Collections;
 using UnityEngine;
 
-// Entry point for the main-scene narrative flow.
-// Order:
-// 1. Main scene loads
-// 2. Black screen intro with Dolphin
-// 3. Tutorial on/off toggle
-// 4. Optional narrative tutorial
-// 5. Gameplay starts
+// Entry point for the main-scene narrative onboarding flow.
+//
+// Execution order:
+// 1. Main scene finishes loading.
+// 2. Dolphin intro dialogue plays over a black screen.
+// 3. The player chooses whether to enable the narrative tutorial.
+// 4. If enabled, NarrativeTutorialManager runs the step-by-step tutorial.
+// 5. Gameplay input is restored.
+//
+// This class does not implement tutorial content itself.
+// It only coordinates the startup flow and hands off to other systems.
 public class NarrativeFlowManager : MonoBehaviour
 {
    [Header("Dependencies")]
    [SerializeField] private NarrativeTutorialManager narrativeTutorialManager;
 
+   // Intro dialogue played once at the start of the scene.
    private readonly NPCEncounterSystem.DialogueLine[] introLines =
    {
       new NPCEncounterSystem.DialogueLine("...Hello? Can you hear me?", NPCEncounterSystem.ExpressionType.Neutral),
@@ -23,6 +28,8 @@ public class NarrativeFlowManager : MonoBehaviour
       new NPCEncounterSystem.DialogueLine("I'll walk you through the basics if you want.", NPCEncounterSystem.ExpressionType.Happy),
    };
 
+   // Runs automatically when the scene starts.
+   // Handles intro dialogue, tutorial toggle, optional tutorial handoff, and cleanup.
    private IEnumerator Start()
    {
       yield return null;
@@ -42,6 +49,7 @@ public class NarrativeFlowManager : MonoBehaviour
 
       bool introFinished = false;
 
+      // Play the opening intro sequence.
       NarrativeOverlayUI.Instance.PlaySequence(
          dolphinProfile,
          introLines,
@@ -54,6 +62,7 @@ public class NarrativeFlowManager : MonoBehaviour
       bool toggleAnswered = false;
       bool playTutorial = TutorialFlowSettings.NarrativeTutorialEnabled;
 
+      // Ask the player whether they want the tutorial enabled.
       NarrativeOverlayUI.Instance.ShowTutorialToggle(currentChoice =>
       {
          playTutorial = currentChoice;
@@ -66,6 +75,7 @@ public class NarrativeFlowManager : MonoBehaviour
       NarrativeOverlayUI.Instance.FadeTo(0f, 0.4f, () => fadeFinished = true);
       yield return new WaitUntil(() => fadeFinished);
 
+      // Hand off to the main narrative tutorial if enabled.
       if (playTutorial)
       {
          if (narrativeTutorialManager != null)
@@ -82,6 +92,7 @@ public class NarrativeFlowManager : MonoBehaviour
          }
       }
 
+      // Final cleanup: hide overlay UI and restore gameplay input.
       NarrativeOverlayUI.Instance.HideAll();
       NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
    }

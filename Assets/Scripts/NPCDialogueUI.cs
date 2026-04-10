@@ -66,14 +66,15 @@ public class NPCDialogueUI : MonoBehaviour
     private Coroutine typingCoroutine;
     private bool     isUIGenerated    = false;
     private bool     isDialogueActive = false;
+    private bool preserveNPCOnClose = false;
 
 
-    // ─────────────────────────────────────────────────────────────────────
-    //  Unity lifecycle
-    // ─────────────────────────────────────────────────────────────────────
+   // ─────────────────────────────────────────────────────────────────────
+   //  Unity lifecycle
+   // ─────────────────────────────────────────────────────────────────────
 
-    // Enforces Singleton and keeps the object active
-    private void Awake()
+   // Enforces Singleton and keeps the object active
+   private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -252,11 +253,11 @@ public class NPCDialogueUI : MonoBehaviour
         closeButton = closeObj.GetComponent<Button>();
         closeButton.onClick.AddListener(CloseDialogue);
         RectTransform clRect = closeObj.GetComponent<RectTransform>();
-        clRect.anchorMin        = new Vector2(1, 0);
-        clRect.anchorMax        = new Vector2(1, 0);
-        clRect.pivot            = new Vector2(1, 0);
-        clRect.sizeDelta        = new Vector2(200, 80);
-        clRect.anchoredPosition = new Vector2(-10, 10);
+        clRect.anchorMin        = new Vector2(1, 1);
+        clRect.anchorMax        = new Vector2(1, 1);
+        clRect.pivot            = new Vector2(1, 1);
+        clRect.sizeDelta        = new Vector2(180, 70);
+        clRect.anchoredPosition = new Vector2(-10, -10);
         closeObj.SetActive(false);
 
         dialoguePanel.SetActive(false);
@@ -376,6 +377,7 @@ public class NPCDialogueUI : MonoBehaviour
         npcNameText.text = npc.npcName ?? "Unknown";
         HideAllButtons();
         nextButton.gameObject.SetActive(true);
+        closeButton.gameObject.SetActive(true);
         dialoguePanel.SetActive(true);
 
         PopUpManager.Instance?.DisablePlayerInput();
@@ -545,20 +547,37 @@ public class NPCDialogueUI : MonoBehaviour
             }
         }
 
-        closeButton.gameObject.SetActive(true); // Allow closing without choosing
+        if (nextButton != null)
+           nextButton.gameObject.SetActive(false);
+
+        if (closeButton != null)
+           closeButton.gameObject.SetActive(true);
     }
 
-    // Hides every interactive button
-    private void HideAllButtons()
-    {
-        if (choiceButtons != null)
-            foreach (var b in choiceButtons) if (b != null) b.gameObject.SetActive(false);
-        if (nextButton  != null) nextButton.gameObject.SetActive(false);
-        if (closeButton != null) closeButton.gameObject.SetActive(false);
-    }
+   private void HideChoiceButtonsAndNextButton()
+   {
+      if (choiceButtons != null)
+         foreach (Button currentButton in choiceButtons)
+            if (currentButton != null)
+               currentButton.gameObject.SetActive(false);
 
-    // Fallback: if there are no valid choices, just show the close button
-    private void ShowCloseButtonAsFallback()
+      if (nextButton != null)
+         nextButton.gameObject.SetActive(false);
+   }
+
+   // Hides every interactive button
+   private void HideAllButtons()
+   {
+      if (choiceButtons != null) foreach (Button currentButton in choiceButtons) if (currentButton != null) currentButton.gameObject.SetActive(false);
+      if (nextButton != null)
+         nextButton.gameObject.SetActive(false);
+
+      if (closeButton != null)
+         closeButton.gameObject.SetActive(false);
+   }
+
+   // Fallback: if there are no valid choices, just show the close button
+   private void ShowCloseButtonAsFallback()
     {
         if (choiceButtons != null)
             foreach (var b in choiceButtons) if (b != null) b.gameObject.SetActive(false);
@@ -583,13 +602,15 @@ public class NPCDialogueUI : MonoBehaviour
 
       // Lock in the interaction so player can't pick again
       hasInteracted = true;
-      HideAllButtons();
+      preserveNPCOnClose = outcome.keepNpcAfterClose; 
+      HideChoiceButtonsAndNextButton();
 
       if (outcome.resultDialogues != null && outcome.resultDialogues.Length > 0)
       {
          currentDialogueLines = outcome.resultDialogues;
          currentLineIndex = 0;
          nextButton.gameObject.SetActive(true);
+         closeButton.gameObject.SetActive(true);
          DisplayCurrentLine();
          if (coroutineRunner != null)
             coroutineRunner.StartCoroutine(AppendRewardInfo(outcome));
@@ -637,26 +658,33 @@ public class NPCDialogueUI : MonoBehaviour
 
    // Resets all state and hides the panel
    private void CloseDialogue()
-    {
-        if (typingCoroutine != null && coroutineRunner != null)
-        { coroutineRunner.StopCoroutine(typingCoroutine); typingCoroutine = null; }
+   {
+      if (typingCoroutine != null && coroutineRunner != null)
+      {
+         coroutineRunner.StopCoroutine(typingCoroutine);
+         typingCoroutine = null;
+      }
 
-        isTyping         = false;
-        isDialogueActive = false;
-        hasInteracted    = false;
-        currentNPC       = null;
-        currentScenario  = null;
-        currentDialogueLines = null;
-        currentLineIndex = 0;
+      bool keepNpc = preserveNPCOnClose || !hasInteracted;
 
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
+      isTyping = false;
+      isDialogueActive = false;
+      preserveNPCOnClose = false;
+      currentNPC = null;
+      currentScenario = null;
+      currentDialogueLines = null;
+      currentLineIndex = 0;
+      hasInteracted = false;
 
-        NPCEncounterSystem.Instance?.OnDialogueEnded();
-        PopUpManager.Instance?.EnablePlayerInput();
-    }
+      if (dialoguePanel != null)
+         dialoguePanel.SetActive(false);
 
-    // Destroys the canvas we created when this component is destroyed
-    private void OnDestroy()
+      NPCEncounterSystem.Instance?.OnDialogueEnded(!keepNpc);
+      PopUpManager.Instance?.EnablePlayerInput();
+   }
+
+   // Destroys the canvas we created when this component is destroyed
+   private void OnDestroy()
     {
         if (canvasObject != null) Destroy(canvasObject);
     }
