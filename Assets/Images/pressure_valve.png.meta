@@ -103,12 +103,12 @@ TextureImporter:
       name: pressure_valve_0
       rect:
         serializedVersion: 2
-        x: 203
-        y: 77
-        width: 225
-        height: 239
+        x: 396
+        y: 131
+        width: 504
+        height: 526
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8809c1ee2ff819a49ade39ac37a9bf35
     internalID: 0
     vertices: []
     indices: 
