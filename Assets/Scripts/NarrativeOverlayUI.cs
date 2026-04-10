@@ -327,6 +327,10 @@ public class NarrativeOverlayUI : MonoBehaviour
       currentToggleAction = null;
    }
 
+   // Enables or disables gameplay interaction while overlay dialogue is active.
+   //
+   // This blocks normal player actions and is used to ensure scripted onboarding
+   // or tutorial dialogue is not interrupted by unrelated input.
    public void SetGameplayBlocked(bool isBlocked)
    {
       if (blockInputImage != null)
@@ -413,6 +417,19 @@ public class NarrativeOverlayUI : MonoBehaviour
       typingCoroutine = null;
    }
 
+   // Starts a dialogue sequence on the overlay UI.
+   //
+   // This method is used by:
+   // - NarrativeFlowManager (scene intro)
+   // - NarrativeTutorialManager (step-based tutorial)
+   // - BuildingTutorialGuideManager (one-time building guides)
+   // - event-based tutorial prompts (enemy attack, refinery jam, etc.)
+   //
+   // Important:
+   // - This method only handles dialogue display.
+   // - It does not wait for arbitrary gameplay conditions by itself.
+   // - If a tutorial step should continue after a specific button click,
+   //   that waiting logic should usually live in the calling manager.
    public void PlaySequence(
       NPCEncounterSystem.NPCProfile profile,
       NPCEncounterSystem.DialogueLine[] dialogueLines,
