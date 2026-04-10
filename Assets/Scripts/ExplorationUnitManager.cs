@@ -9,29 +9,29 @@ using JetBrains.Annotations;
 public class ExplorationUnitManager : MonoBehaviour
 {
    public PanelManager panelManager;
-   [SerializeField] private EventDatabase     eventDatabase;   // Holds all random events that can occur on nodes
+   [SerializeField] private EventDatabase     eventDatabase;   // Contains all potential node events
    [SerializeField] private EventUIController eventController; // Manages UI of current event
-   [SerializeField] private ShipManager       shipManager;     // Handles ship's health, fuel, and inventory
+   [SerializeField] private ShipManager       shipManager;     // Tracks the ship's stats and inventory
 
    [SerializeField] private Transform explorePanel;         // Panel to start an expedition
-   [SerializeField] private Transform upgradePanel;         // Panel to upgrade exploration unit
-   [SerializeField] private Transform infoPanel;            // Panel to show info
+   [SerializeField] private Transform upgradePanel;         // Panel to upgrade the exploration unit
+   [SerializeField] private Transform infoPanel;            // Panel to show general exploration info
    [SerializeField] private Transform decisionPanel;        // Pop-up panel during exploration where user makes choices
    [SerializeField] private Transform decisionResultsPanel; // Shows results from a event decision
    [SerializeField] private Transform newDepthPanel;        // Warns that a dangerous depth tier is being entered
    [SerializeField] private Transform inventoryPanel;       // Shows the ship's current inventory
 
-   [SerializeField] private TextMeshProUGUI decisionResults;  // Describes an event choice's results
-   [SerializeField] private TextMeshProUGUI depthWarningText; // Displays predicted depth damage
+   [SerializeField] private TextMeshProUGUI decisionResults;  // Displays the narrative outcome of an event choice
+   [SerializeField] private TextMeshProUGUI depthWarningText; // Displays the calculated pressure damage when new depth is entered
 
    [Header("Icon UI Settings")]
-   [SerializeField] private Transform inventoryIconContainer;
-   [SerializeField] private Transform resultsIconContainer;
+   [SerializeField] private Transform inventoryIconContainer; // Holds item slots in cargo panel
+   [SerializeField] private Transform resultsIconContainer;   // Holds item slots in decision results panel
    [Header("Results Animation Settings")]
-   [SerializeField] private TextMeshProUGUI resultsHealthText;
-   [SerializeField] private TextMeshProUGUI resultsFuelText;
-   [SerializeField] private TextMeshProUGUI floatingResultsHealth;
-   [SerializeField] private TextMeshProUGUI floatingResultsFuel;
+   [SerializeField] private TextMeshProUGUI resultsHealthText;     // Health fraction displayed on decision results panel
+   [SerializeField] private TextMeshProUGUI resultsFuelText;       // Fuel fraction displayed on decision resullts panel
+   [SerializeField] private TextMeshProUGUI floatingResultsHealth; // Fading floating text in decision results panel for health change
+   [SerializeField] private TextMeshProUGUI floatingResultsFuel;   // Fading floating text in decision results panel for fuel change
 
    [Header("Exploration Visuals")]
    [SerializeField] private SpriteRenderer  buildingSpriteRenderer;
@@ -39,22 +39,22 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI explorationLevelText;
 
    [Header("Level UI")]
-   [SerializeField] private Transform levelCanvas;
+   [SerializeField] private Transform levelCanvas; // Canvas showing current exploration unit level
 
 
-   private MapNode nextTurnDestination; // Map node ship is scheduled to move to next turn
+   private MapNode nextTurnDestination; // Map node ship is scheduled to move to on next turn
 
    // ID constants for the base menu buttons
    const int EXPLORE_BUTTON    = 1;
    const int INFO_BUTTON       = 2;
    const int UPGRADE_BUTTON    = 3;
-   const int LEVEL2_PEARL_COST = 200;
-   const int LEVEL3_PEARL_COST = 500;
-   const int MAX_SHIP_LEVEL    = 3;
+   const int LEVEL2_PEARL_COST = 200; // Pearl cost to reach level 2
+   const int LEVEL3_PEARL_COST = 500; // Pearl cost to reach level 3
+   const int MAX_SHIP_LEVEL    = 3;   // The maximum level the exploration unit can reach
 
    public  bool isExploring       = false; // Determines if exploration is currently ongoing
    private bool isWaiting         = false; // Triggered when an event causes user to lose an exploration turn
-   private int  lastProcessedTurn = 0;
+   private int  lastProcessedTurn = 0;     // Tracks the last turn that has been processed
 
    public static ExplorationUnitManager Instance { get; private set; }
 
@@ -105,6 +105,7 @@ public class ExplorationUnitManager : MonoBehaviour
       {
          case EXPLORE_BUTTON:
             ShowExplorationPanel();
+            // Dynamically configure start button interactability
             Button exploreButton = explorePanel.Find("ExploreButton").GetComponent<Button>();
             if (exploreButton != null)
             {
@@ -117,6 +118,7 @@ public class ExplorationUnitManager : MonoBehaviour
                   exploreButton.onClick.AddListener(() => StartExploration());
                }
             }
+            // Setup exit button
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
             break;
          case INFO_BUTTON:
@@ -125,12 +127,14 @@ public class ExplorationUnitManager : MonoBehaviour
             break;
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
+            // Setup upgrade confirmation button
             Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
             if (yesButton != null)
             {
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
             }
+            // Setup exit button
             upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseUpgradePanel());
             break;
          default:
@@ -145,27 +149,30 @@ public class ExplorationUnitManager : MonoBehaviour
       isExploring = true;
       SetDecisionInteractable(true);
       lastProcessedTurn = TurnManager.Instance.currentTurn;
+
       if (MapManager.Instance.startingNode != null)
       {
          MapManager.Instance.MoveToNode(MapManager.Instance.startingNode);
          nextTurnDestination = null;
       }
+
       CloseExplorationPanel();
       StartCoroutine(InitializeFirstTurnRoutine());
    }
 
-   //
+   // Initialize the first decision (with a slight delay for UI transitions)
    private IEnumerator InitializeFirstTurnRoutine()
    {
       yield return new WaitForSeconds(0.5f);
       HandleNewTurn();
    }
 
-   //
+   // Upgrades the ship if it is currently able to be upgraded
    public void ConfirmUpgrade()
    {
       int upgradeCost = GetUpgradeCost();
-
+      
+      // Upgrade ship if is not at max level and if it can be afforded
       if (shipManager.ShipLevel < MAX_SHIP_LEVEL && InventoryManager.Instance.TrySpendPearl(upgradeCost))
       {
          shipManager.UpgradeShip();
@@ -175,6 +182,7 @@ public class ExplorationUnitManager : MonoBehaviour
          if (explorationLevelText != null)
             explorationLevelText.text = "Level " + shipManager.ShipLevel.ToString();
 
+         // Disable upgrade button if max level has been reached
          if (shipManager.ShipLevel == MAX_SHIP_LEVEL)
          {
             if (InventoryManager.Instance.ExplorationUnitUpgradeIcon != null)
@@ -191,6 +199,8 @@ public class ExplorationUnitManager : MonoBehaviour
          PopUpManager.Instance.EnablePlayerInput();
       }
    }
+
+   // Updates the cargo tab panel to show current ship inventory
    private void SpawnRewardIcon(string itemName, int amount)
    {
       Transform slotTransform = inventoryIconContainer.Find(itemName);
@@ -206,7 +216,7 @@ public class ExplorationUnitManager : MonoBehaviour
          slotTransform.gameObject.SetActive(false);
    }
 
-   // Checks if exploration is entering a new depth tier when ship is not currently at safe level
+   // Interrupts movement with warning panel if ship is moving into depth beyond current ship level
    private bool CheckForDepthIncrease(MapNode targetNode)
    {
       // If target depth is greater than current depth and ship level is lower whan target depth level
@@ -225,7 +235,7 @@ public class ExplorationUnitManager : MonoBehaviour
          sendHome.onClick.RemoveAllListeners();
          keepGoing.onClick.RemoveAllListeners();
 
-         // Option 1: Send ship back to the base
+         // Option 1: Abort current exploration to secure loot
          sendHome.onClick.AddListener(() =>
          {
             nextTurnDestination = null;
@@ -243,23 +253,20 @@ public class ExplorationUnitManager : MonoBehaviour
       return false;
    }
 
-   // Configures up to 3 choice buttons on the decision panel
+   // Populates up to 3 choice buttons on the decision panel with scenario data
    private void SetupButtons(string textA, UnityAction actionA, bool interactableA,
                              string textB, UnityAction actionB, bool interactableB,
                              string textC, UnityAction actionC, bool interactableC)
    {
       Transform container = decisionPanel.Find("ButtonContainer");
       MapNode currentNode = MapManager.Instance.currentNode;
+
+      // Reset button lock and hover logic for new decision
       foreach (Transform child in container)
       {
-         // 1. Reset the Hover component logic
          NodeHover hover = child.GetComponent<NodeHover>();
          if (hover != null) hover.isTierLocked = false;
-
-         // 2. Ensure the button is active (will be hidden later if no text)
          child.gameObject.SetActive(true);
-
-         // 3. Reset interactable to true by default before specific logic applies
          Button btn = child.GetComponent<Button>();
          if (btn != null) btn.interactable = true;
       }
@@ -275,6 +282,7 @@ public class ExplorationUnitManager : MonoBehaviour
          button1.onClick.RemoveAllListeners();
          if (actionA != null) button1.onClick.AddListener(actionA);
 
+         // Check if choice is locked by Lab upgrades
          bool isLockedA = (currentNode  != null && currentNode.type != MapNode.NodeType.Directional) && 
                            currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
 
@@ -282,7 +290,7 @@ public class ExplorationUnitManager : MonoBehaviour
          if (hover1 != null) hover1.isTierLocked = isLockedA;
          button1.interactable = interactableA && !isLockedA;
       }
-      // Sets up choice 2 if there is text for it
+      // Sets up choice 2 if it exists for current scenario
       Button button2 = container.Find("Choice2").GetComponent<Button>();
       if (button2 != null)
       {
@@ -293,6 +301,7 @@ public class ExplorationUnitManager : MonoBehaviour
             button2.onClick.RemoveAllListeners();
             if (actionB != null) button2.onClick.AddListener(actionB);
 
+            // Check if choice is locked by Lab upgrades
             bool isLockedB = (currentNode  != null && currentNode.type != MapNode.NodeType.Directional) && 
                               currentEvent != null && currentEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked;
             NodeHover hover2 = button2.GetComponent<NodeHover>();
@@ -303,7 +312,7 @@ public class ExplorationUnitManager : MonoBehaviour
          else
             button2.gameObject.SetActive(false);
       }
-      // Sets up choice 3 if there is text for it
+      // Sets up choice 3 if it exists for current scenario
       Button button3 = container.Find("Choice3").GetComponent<Button>();
       if (button3 != null)
       {
@@ -321,7 +330,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
-   // Processes the user's choice on an event node
+   // Calculates mathematical outcome of an event choice and displays the summary
    private void ProcessDecision(EventChoice choice, MapNode currentNode)
    {
       // Send choice to the ShipManager to calculate and apply all damage and loot
@@ -331,7 +340,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if (choice.waitTurn)
          isWaiting = true;
 
-      // If anything changed, shows the results of the decision
+      // Show choice summary if ship stats were changed or loot was gained
       if (results.HasChanges())
          ShowResultsPanel(results, currentNode, choice.resultText);
       // Otherwise, move on to the next turn
@@ -346,11 +355,11 @@ public class ExplorationUnitManager : MonoBehaviour
             CloseDecisionPanel();
    }
 
-   // Handles map movements and spawning new events
+   // Handles logic for new turn starting (movement, ship stat losses, event generation)
    public void HandleNewTurn()
    {
       if (!isExploring) return;
-      // Handle if user lost a turn
+      // Handle if user has to skip a turn
       if (isWaiting)
       {
          shipManager.NewTurn();
@@ -358,35 +367,29 @@ public class ExplorationUnitManager : MonoBehaviour
          isWaiting = false;
          return;
       }
-      // If destination exists, move the ship on the map
+      // Execute ship map movement if next destination exists
       if (nextTurnDestination != null)
       {
          MapManager.Instance.MoveToNode(nextTurnDestination);
          nextTurnDestination = null;
       }
-      // Burn fuel and depth damage for current turn
+      // Decrement fuel and apply potential pressure hull damage
       shipManager.NewTurn();
       if (!isExploring) return;
 
-      // Determine node type landed on
       MapNode current = MapManager.Instance.currentNode;
+      if(current == null) return;
 
-      if(current == null)
-      {
-         Debug.LogError("ExplorationManager: Current Node is NULL");
-         return;
-      }   
-
-      // Trigger finale and stop if current node is an end node
+      // Check for exploration end condition
       if (current.isFinalNode)
       {
          HandleFinalNode(current);
          return;
       }
-      // Open the decision panel UI
+
       ShowDecisionPanel();
 
-      // Set up inventory button on decisionPanel
+      // Set up cargo tab button on decision panel
       Button inventoryButton = decisionPanel.Find("CargoTab").GetComponent<Button>();
       inventoryButton.onClick.RemoveAllListeners();
       inventoryButton.onClick.AddListener(() =>
@@ -395,7 +398,7 @@ public class ExplorationUnitManager : MonoBehaviour
          decisionPanel.gameObject.SetActive(false);
       });
 
-      // Set up return ship button on decisionPanel
+      // Set up return ship button on decision panel
       Button returnShip = decisionPanel.Find("ReturnButton").GetComponent<Button>();
       returnShip.onClick.RemoveAllListeners();
       returnShip.onClick.AddListener(() => shipManager.OpenConfirmReturnPanel());
@@ -414,20 +417,17 @@ public class ExplorationUnitManager : MonoBehaviour
       // Handle event node decision
       else
       {
-         // Pull random event from database based on current depth
+         // Generate a random event from current depth table
          ExploreEvents randomEvent = eventDatabase.GetRandomEvent(current.nodeDepth);
-
          if (randomEvent != null)
          {
             eventController.SetEventPanel(randomEvent);
-            // 1. Check if they can afford it AND if they meet the Tier 2 requirement
             bool canAffordA = shipManager.CanAfford(randomEvent.choiceA) && (!randomEvent.choiceA.requiresLabTier || shipManager.isTier2Unlocked);
             bool canAffordB = shipManager.CanAfford(randomEvent.choiceB) && (!randomEvent.choiceB.requiresLabTier || shipManager.isTier2Unlocked);
 
             string textA = randomEvent.choiceA.buttonText;
             string textB = !string.IsNullOrEmpty(randomEvent.choiceB.buttonText) ? randomEvent.choiceB.buttonText : null;
 
-            // 3. Set up the event choices
             SetupButtons(
                textA, () => ProcessDecision(randomEvent.choiceA, current), canAffordA,
                textB, () => ProcessDecision(randomEvent.choiceB, current), canAffordB,
@@ -477,7 +477,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
-   //
+   // Show the main exploration panel
    private void ShowExplorationPanel()
    {
       panelManager.OpenPanel(explorePanel.gameObject);
@@ -485,7 +485,7 @@ public class ExplorationUnitManager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
-   //
+   // Show the exploration information panel
    private void ShowInfoPanel()
    {
       panelManager.OpenPanel(infoPanel.gameObject);
@@ -493,12 +493,14 @@ public class ExplorationUnitManager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
-   //
+   // Show and dynamically update the exploration upgrade panel
    private void ShowUpgradePanel()
    {
       int pearlUpgradeCost = 0;
       //int oreUpgradeCost = 0;
-      string upgradeTitle = "";
+
+      // Locate and update text fields on upgrade panel
+      string upgradeTitle       = "";
       string upgradeExplanation = "";
 
       panelManager.OpenPanel(upgradePanel.gameObject);
@@ -563,6 +565,7 @@ public class ExplorationUnitManager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
+   // Shows the exploration event decision panel
    public void ShowDecisionPanel()
    {
       panelManager.OpenPanel(decisionPanel.gameObject);
@@ -570,14 +573,14 @@ public class ExplorationUnitManager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
-   // Shows the event results panel with the all results from an event
+   // Prepares decision results panel and triggers stat and reward animations
    private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode, string resultMessage)
    {
       panelManager.OpenPanel(decisionResultsPanel.gameObject);
       SetDecisionInteractable(false);
       decisionResults.text = resultMessage;
 
-      // Hide all previous results
+      // Clear previous decision results
       if (resultsIconContainer != null)
          foreach (Transform child in resultsIconContainer)
          {
@@ -589,19 +592,22 @@ public class ExplorationUnitManager : MonoBehaviour
       StartCoroutine(ShowDecisionResultsSequence(results, currentNode));
    }
 
+   // Manages the sequential animation of stat changes and loot icons in decision results panel
    private IEnumerator ShowDecisionResultsSequence(ShipManager.RoundResults results,  MapNode currentNode)
    {
+      // Set up the health and fuel text
       resultsHealthText.text = $"{results.healthBefore}/{results.maxHealth}";
       resultsFuelText.text   = $"{results.fuelBefore}/{results.maxFuel}";
       floatingResultsHealth.gameObject.SetActive(false);
       floatingResultsFuel.gameObject.SetActive(false);
 
+      // Run ship health or fuel animation if either stat was changed by decision result
       if(results.healthChanged != 0)
          StartCoroutine(AnimateStatChange(resultsHealthText, floatingResultsHealth, results.healthBefore, results.healthChanged, results.maxHealth));
       if (results.fuelChanged != 0)
          StartCoroutine(AnimateStatChange(resultsFuelText, floatingResultsFuel, results.fuelBefore, results.fuelChanged, results.maxFuel));
 
-      float delayBetweenItems = 0.2f;
+      float delayBetweenItems = 0.2f; // The time delay between items popping in to panel
       var resultData = new (string Name, int Amount)[]
       {
          ("Pearl",            results.pearlChanged),
@@ -617,6 +623,7 @@ public class ExplorationUnitManager : MonoBehaviour
          ("Fuel",             results.fuelChanged)
       };
 
+      // Check for each loot item in the decision results
       foreach (var item in resultData)
       {
          if (item.Amount != 0)
@@ -624,7 +631,7 @@ public class ExplorationUnitManager : MonoBehaviour
             Transform iconRow = TrySpawnResultIcon(item.Name, item.Amount);
             if (iconRow != null)
             {
-               // Trigger the "Pop" animation (Shared logic with ShipManager)
+               // Trigger the "Pop" animation
                yield return new WaitForSeconds(delayBetweenItems);
                StartCoroutine(AnimatePop(iconRow));
             }
@@ -639,36 +646,39 @@ public class ExplorationUnitManager : MonoBehaviour
       });
    }
 
+   // Animates floating fuel and health results, and updates stat fractions
    private IEnumerator AnimateStatChange(TextMeshProUGUI mainText, TextMeshProUGUI deltaText, int startVal, int change, int max)
    {
+      // Update the stat fraction with the post-result values
       int newVal     = startVal + change;
       mainText.text  = $"{newVal}/{max}";
+
+      // Set up floating stat with correct sign, value, color, and starting/ending position
       string sign    = change > 0 ? "+" : "" ;
       deltaText.text = $"{sign}{change}";
-
       deltaText.color = change > 0 ? Color.green : Color.red;
       deltaText.gameObject.SetActive(true);
-
       Vector3 startPos = deltaText.transform.localPosition;
       Vector3 endPos   = startPos + (change > 0 ? new Vector3(0, 30, 0) : new Vector3(0, -30, 0));
 
-      float duration = 2.0f;
+      float duration = 2.0f; // How long the floating text animation lasts
       float elapsed  = 0.0f;
 
+      // Run the floating stat animation
       while (elapsed < duration)
       {
          elapsed += Time.deltaTime;
          float t  = elapsed / duration;
-
          deltaText.transform.localPosition = Vector3.Lerp(startPos, endPos, t);
          deltaText.alpha                   = Mathf.Lerp(1, 0, t);
-          
          yield return null;
       }
+      // Hide floating stat and reset back to original position
       deltaText.gameObject.SetActive(false);
       deltaText.transform.localPosition = startPos;
    }
 
+   // Searches for specific icon object and configures its quantity
    private Transform TrySpawnResultIcon(string itemName, int amount)
    {
       Transform slotTransform = resultsIconContainer.Find(itemName);
@@ -685,6 +695,7 @@ public class ExplorationUnitManager : MonoBehaviour
       return slotTransform;
    }
 
+   // Elastic pop animation for rewards icon entries
    private IEnumerator AnimatePop(Transform target)
    {
       float duration     = 0.4f;
@@ -703,7 +714,7 @@ public class ExplorationUnitManager : MonoBehaviour
       target.localScale = endScale;
    }
 
-   //
+   // Closes results panel and moves to next map node
    private IEnumerator ResultsDelay(MapNode currentNode)
    {
       panelManager.ClosePanel(decisionResultsPanel.gameObject);
@@ -719,7 +730,7 @@ public class ExplorationUnitManager : MonoBehaviour
          CloseDecisionPanel();
    }
 
-   // Shows the inventory panel with ship's current resources
+   // Shows and populates cargo tab panel with all resources currently held
    private void ShowInventoryPanel()
    {
       inventoryPanel.gameObject.SetActive(true);
@@ -735,6 +746,7 @@ public class ExplorationUnitManager : MonoBehaviour
       SpawnRewardIcon("Clockwork Engine", shipManager.GetClockworkEngine());
       SpawnRewardIcon("Precision Lens",   shipManager.GetPrecisionLens());
 
+      // Set up the charts tab button to return to the decision panel
       Button closeInventoryPanel = inventoryPanel.Find("ChartsTab").GetComponent<Button>();
       closeInventoryPanel.onClick.RemoveAllListeners();
       closeInventoryPanel.onClick.AddListener(() =>
@@ -745,6 +757,7 @@ public class ExplorationUnitManager : MonoBehaviour
       });
    }
 
+   // Controls if buttons on decision panel are interactable
    public void SetDecisionInteractable(bool isInteractable)
    {
       CanvasGroup cg = decisionPanel.GetComponent<CanvasGroup>();
@@ -754,7 +767,7 @@ public class ExplorationUnitManager : MonoBehaviour
          Debug.LogWarning("DecisionPanel is missing a canvas group component");
    }
 
-   // closes the exploration panel
+   // Closes the exploration panel
    private void CloseExplorationPanel()
    {
       panelManager.ClosePanel(explorePanel.gameObject);
@@ -763,7 +776,7 @@ public class ExplorationUnitManager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
-   // closes the info panel
+   // Closes the info panel
    private void CloseInfoPanel()
    {
       panelManager.ClosePanel(infoPanel.gameObject);
@@ -772,7 +785,7 @@ public class ExplorationUnitManager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
-   // closes the upgrade panel
+   // Closes the upgrade panel
    private void CloseUpgradePanel()
    {
       panelManager.ClosePanel(upgradePanel.gameObject);
@@ -781,7 +794,7 @@ public class ExplorationUnitManager : MonoBehaviour
       PopUpManager.Instance.EnablePlayerInput();
    }
 
-   // closes the decision panel
+   // Closes the decision panel
    public void CloseDecisionPanel()
    {
       panelManager.ClosePanel(decisionPanel.gameObject);
@@ -789,6 +802,7 @@ public class ExplorationUnitManager : MonoBehaviour
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
 
+   // Changes exploration building sprite based on current level
    private void UpdateExplorationSprites()
    {
       if (shipManager == null) return;
@@ -803,6 +817,7 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
+   // Returns the cost of the next exploraiton unit upgrade
    private int GetUpgradeCost()
    {
       if (shipManager.ShipLevel == 1) return LEVEL2_PEARL_COST;
@@ -810,6 +825,7 @@ public class ExplorationUnitManager : MonoBehaviour
       return 0;
    }
 
+   // Syncs the level text label with the current level
    private void UpdateLevel()
    {
       if (explorationLevelText != null && shipManager != null)
