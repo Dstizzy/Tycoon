@@ -18414,7 +18414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &273069172
 RectTransform:
   m_ObjectHideFlags: 0
@@ -23661,6 +23661,7 @@ GameObject:
   - component: {fileID: 391609824}
   - component: {fileID: 391609823}
   - component: {fileID: 391609822}
+  - component: {fileID: 391609828}
   m_Layer: 5
   m_Name: ItemButton
   m_TagString: Untagged
@@ -23820,6 +23821,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 391609820}
   m_CullTransparentMesh: 1
+--- !u!114 &391609828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 391609820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4092be2ade07ff2428429457e44de311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  posAmplitude: 3
+  posFrequency: 0.5
+  rotAmplitude: 2
+  rotFrequency: 0.3
+  randomizePhase: 1
+  manualPhaseOffset: 0
 --- !u!1 &395407074
 GameObject:
   m_ObjectHideFlags: 0
@@ -32790,8 +32809,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279904832
-  m_fontColor: {r: 0.2528302, g: 0.16406135, b: 0.10065503, a: 1}
+    rgba: 4290374655
+  m_fontColor: {r: 1, g: 0.92156863, b: 0.7254902, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -34985,14 +35004,14 @@ RectTransform:
   m_GameObject: {fileID: 623615369}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.926742, y: 1.6081, z: 1.6081}
+  m_LocalScale: {x: 3.2634585, y: 1.793109, z: 1.793109}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 552663390}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 543, y: 830}
+  m_AnchoredPosition: {x: 219, y: 950}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &623615371
@@ -43328,6 +43347,7 @@ GameObject:
   - component: {fileID: 780533837}
   - component: {fileID: 780533839}
   - component: {fileID: 780533838}
+  - component: {fileID: 780533840}
   m_Layer: 5
   m_Name: ResourceButton
   m_TagString: Untagged
@@ -43503,6 +43523,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates: []
+--- !u!114 &780533840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780533831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4092be2ade07ff2428429457e44de311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::UIItemBobbing
+  posAmplitude: 4
+  posFrequency: 0.5
+  rotAmplitude: 2
+  rotFrequency: 0.3
+  randomizePhase: 1
+  manualPhaseOffset: 0
 --- !u!1 &781245617
 GameObject:
   m_ObjectHideFlags: 0
@@ -56102,7 +56140,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 38, y: -10}
+  m_AnchoredPosition: {x: -5, y: -3}
   m_SizeDelta: {x: 92.9522, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &972618435
@@ -56125,7 +56163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Next
+  m_text: Next Day
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
@@ -56159,7 +56197,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -56190,7 +56228,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -35.59758, y: 0, z: -15.543606, w: 0}
+  m_margin: {x: -35.59758, y: 0, z: -48.42768, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -75759,7 +75797,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -65, y: 5}
+  m_AnchoredPosition: {x: -62.6, y: 5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1368438908
@@ -82133,7 +82171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1520313770
 RectTransform:
   m_ObjectHideFlags: 0
@@ -86004,14 +86042,14 @@ RectTransform:
   m_GameObject: {fileID: 1626482721}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5357754, y: 2.3052504, z: 2.3052504}
+  m_LocalScale: {x: 3.443528, y: 2.7473617, z: 2.5205152}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 552663390}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 224, y: 830}
+  m_AnchoredPosition: {x: -140, y: 937}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1626482723
@@ -86754,8 +86792,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279773504
-  m_fontColor: {r: 0.2528302, g: 0.15960898, b: 0.0930224, a: 1}
+    rgba: 4290374655
+  m_fontColor: {r: 1, g: 0.92156863, b: 0.7254902, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -92888,6 +92926,7 @@ GameObject:
   - component: {fileID: 1670801480}
   - component: {fileID: 1670801485}
   - component: {fileID: 1670801484}
+  - component: {fileID: 1670801486}
   m_Layer: 5
   m_Name: CraftButton
   m_TagString: Untagged
@@ -93047,6 +93086,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates: []
+--- !u!114 &1670801486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670801478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4092be2ade07ff2428429457e44de311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::UIItemBobbing
+  posAmplitude: 4
+  posFrequency: 0.5
+  rotAmplitude: 2
+  rotFrequency: 0.3
+  randomizePhase: 1
+  manualPhaseOffset: 0
 --- !u!1 &1671195209
 GameObject:
   m_ObjectHideFlags: 0
@@ -98343,8 +98400,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278982438
-  m_fontColor: {r: 0.14716971, g: 0.08901916, b: 0.047483053, a: 1}
+    rgba: 4290309119
+  m_fontColor: {r: 1, g: 0.9198386, b: 0.72264147, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -101343,15 +101400,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   crudeTool: {fileID: 6485558323749539720, guid: a6fdb9fc9ad20714ab85998672e4be86, type: 3}
-  harpoon: {fileID: 4337179028517637788, guid: cbb4033e5fcf6564ca03fc4d791b06c0, type: 3}
-  patchKit: {fileID: 4245571623706891739, guid: d01d9691b69413748b0527f664c25460, type: 3}
+  harpoon: {fileID: -5215367235926594388, guid: 24b0b10461dcf18468bf3ffda972b26f, type: 3}
+  patchKit: {fileID: 5555476768896317777, guid: afd559a38c914c040afcb103a5f5354c, type: 3}
   pressureValve: {fileID: 5662290855432871155, guid: 2c585cee0e53ba64dba80a7ed20919b5, type: 3}
-  divingBells: {fileID: -2542159536658533531, guid: 0108d4bf6ee1b3d4cbdd814c9a6fb390, type: 3}
+  divingBells: {fileID: 2767171471016258671, guid: 6e764b41c8105c4429fab0ae5aec7298, type: 3}
   engine: {fileID: 7258802640479471264, guid: ee6abe2cdc1603d438286ed84611533d, type: 3}
-  precisionLens: {fileID: 2870322122652898633, guid: 4917f840ee489cd40a9516c12789732f, type: 3}
+  precisionLens: {fileID: -1319794350510518352, guid: b062ba077776cee4c862332d8224058e, type: 3}
   rareOre: {fileID: -5284811538944271241, guid: 54d54257d2968134b9f6946e3d8f9542, type: 3}
-  industrialBluePrint: {fileID: -1646138214832153251, guid: 3068f515cedeb5f4fb8a38459fbc6113, type: 3}
-  clockworkBlueprint: {fileID: 7444199029921566949, guid: ab626fe708164d349b14a9bd1b6f57ae, type: 3}
+  industrialBluePrint: {fileID: 2144817978164629364, guid: ca070ec26f6a2844ab51f561af80dc82, type: 3}
+  clockworkBlueprint: {fileID: 5606768716404190820, guid: 3b0e2948179c3f749ad1f2f931cbf1f2, type: 3}
   merceneryEngineer: {fileID: -2829295964344789390, guid: 47924e259639e5d419158177712565c5, type: 3}
   insurancePolicy: {fileID: 6858282456046168796, guid: 20c1eab0915c8294597d23f0d32e881e, type: 3}
 --- !u!1 &1853012930
@@ -102226,6 +102283,7 @@ GameObject:
   - component: {fileID: 1866820507}
   - component: {fileID: 1866820506}
   - component: {fileID: 1866820505}
+  - component: {fileID: 1866820511}
   m_Layer: 5
   m_Name: ItemButton
   m_TagString: Untagged
@@ -102385,6 +102443,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866820503}
   m_CullTransparentMesh: 1
+--- !u!114 &1866820511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866820503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4092be2ade07ff2428429457e44de311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Main::UIItemBobbing
+  posAmplitude: 3
+  posFrequency: 0.5
+  rotAmplitude: 2
+  rotFrequency: 0.3
+  randomizePhase: 1
+  manualPhaseOffset: 0
 --- !u!1 &1868383931
 GameObject:
   m_ObjectHideFlags: 0
@@ -103529,7 +103605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6d120c6ee4a924e90e8a77f629003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Main::WorldEventSprites
-  industrialGodlRushEventIcon: {fileID: -1485996903411638064, guid: 70375c301c38a614eb538cfe2384c3ba, type: 3}
+  industrialGodlRushEventIcon: {fileID: 5405715980779790427, guid: d315d7645b8795b40ada9756415c83be, type: 3}
 --- !u!1 &1900026127
 GameObject:
   m_ObjectHideFlags: 0
@@ -107456,7 +107532,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -28.932537, y: 13}
+  m_AnchoredPosition: {x: -27.8, y: 13.4}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1973948923
@@ -114924,8 +115000,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279706419
-  m_fontColor: {r: 0.19999999, g: 0.13594338, b: 0.090188675, a: 1}
+    rgba: 4290505727
+  m_fontColor: {r: 1, g: 0.92156863, b: 0.73333335, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
