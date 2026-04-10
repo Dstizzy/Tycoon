@@ -655,14 +655,13 @@ public class ExplorationUnitManager : MonoBehaviour
       Vector3 startPos = deltaText.transform.localPosition;
       Vector3 endPos   = startPos + (change > 0 ? new Vector3(0, FLOATING_STAT_DISTANCE, 0) : new Vector3(0, -FLOATING_STAT_DISTANCE, 0));
 
-      float duration = FLOATING_STAT_DURATION; // How long the floating text animation lasts
       float elapsed  = 0.0f;
 
       // Run the floating stat animation
-      while (elapsed < duration)
+      while (elapsed < FLOATING_STAT_DURATION)
       {
          elapsed += Time.deltaTime;
-         float t  = elapsed / duration;
+         float t  = elapsed / FLOATING_STAT_DURATION;
          deltaText.transform.localPosition = Vector3.Lerp(startPos, endPos, t);
          deltaText.alpha                   = Mathf.Lerp(1, 0, t);
          yield return null;
@@ -692,15 +691,14 @@ public class ExplorationUnitManager : MonoBehaviour
    // Elastic pop animation for rewards icon entries
    private IEnumerator AnimatePop(Transform target)
    {
-      float duration     = POP_DURATION;
       float elapsed      = 0.0f;
       Vector3 startScale = Vector3.zero;
       Vector3 endScale   = Vector3.one;
 
-      while (elapsed < duration)
+      while (elapsed < POP_DURATION)
       {
          elapsed += Time.deltaTime;
-         float percent = elapsed / duration;
+         float percent = elapsed / POP_DURATION;
          float curve   = Mathf.Sin(percent * Mathf.PI * 1.2f) / 1.2f;
          target.localScale = Vector3.LerpUnclamped(startScale, endScale, percent + (1f - percent) * curve);
          yield return null;
