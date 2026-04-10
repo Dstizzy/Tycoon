@@ -1303,7 +1303,7 @@ public class TradeHutManager : MonoBehaviour
       worldEvent = Rng.Next(worldEvent1, finalWorldEvent + 1);
       WorldEventItemVisual(worldEvent);
 
-      shiftDirection          = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
+      shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
 
    }
 

@@ -45,18 +45,19 @@ public class InventoryManager : MonoBehaviour
                     MIN_MERCENARY_ENGINEER_COUNT = 0;
 
 
-   public const int RESOURCE_SPACING = 30,
+   public const int RESOURCE_SPACING = 35,
+                    CRAFT_SPACING    = 33,
                     PEARL_POSITION   = 0,
                     ORE_POSITION     = PEARL_POSITION + 13,
 
                     CRUDE_TOOL_POSITION         = 0,
                     HARPOON_POSITION            = CRUDE_TOOL_POSITION + 10,
-                    DIVING_BELL_POSITION        = CRUDE_TOOL_POSITION,
-                    PRESSURE_VALVE_POSITION     = HARPOON_POSITION + 10,
-                    PATCH_KIT_POSITION          = HARPOON_POSITION,
-                    ENGINE_POSITION             = PRESSURE_VALVE_POSITION + 10,
-                    PRECISION_LENS_POSITION     = PRESSURE_VALVE_POSITION,
-                    MERCENARY_ENGINEER_POSITION = ENGINE_POSITION;
+                    DIVING_BELL_POSITION        = HARPOON_POSITION + 10,
+                    PRESSURE_VALVE_POSITION     = DIVING_BELL_POSITION + 10,
+                    PATCH_KIT_POSITION          = CRUDE_TOOL_POSITION,
+                    PRECISION_LENS_POSITION     = HARPOON_POSITION,
+                    ENGINE_POSITION             = DIVING_BELL_POSITION,
+                    MERCENARY_ENGINEER_POSITION = PRESSURE_VALVE_POSITION;
 
    public const string PEARL_TAG              = "Pearl",
                        CRYSTAL_TAG            = "Crystal",
@@ -195,19 +196,18 @@ public class InventoryManager : MonoBehaviour
    {
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Pearl), PEARL_POSITION, PEARL_TAG);
       CreateResource(Resources.GetResourceSprite(Resources.ResourceType.Ore), ORE_POSITION, ORE_TAG);
-      //CreateResource(GetItemSprite(ItemType.RawOreChunk), ORE_POSITION + 10, RAW_ORE_CHUNK_TAG); 
 
       CreateCraft(GetItemSprite(ItemType.CrudeTool), CRUDE_TOOL_POSITION, CRUDE_TOOL_TAG);
       CreateCraft(GetItemSprite(ItemType.Harpoon), HARPOON_POSITION, HARPOON_TAG);
-      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG, -450);
-      //CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -450);
-      //CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG);
-      //CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -450);
-      //CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
+      CreateCraft(GetItemSprite(ItemType.DivingBell), DIVING_BELL_POSITION, DIVING_BELL_TAG);
+      CreateCraft(GetItemSprite(ItemType.PressureValve), PRESSURE_VALVE_POSITION, PRESSURE_VALVE_TAG);
+      CreateCraft(GetItemSprite(ItemType.PatchKit), PATCH_KIT_POSITION, PATCH_KIT_TAG, -430);
+      CreateCraft(GetItemSprite(ItemType.Engine), ENGINE_POSITION, ENGINE_TAG, -430);
+      CreateCraft(GetItemSprite(ItemType.PrecisionLens), PRECISION_LENS_POSITION, PRECISION_LENS_TAG, -430);
+      CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -430);
 
-      if (PatchKitCountText != null)
-         PatchKitCountText.transform.parent.gameObject.SetActive(false);
+      //if (PatchKitCountText != null)
+      //   PatchKitCountText.transform.parent.gameObject.SetActive(false);
 
       if (TickerSystem.Instance)
       {
@@ -351,7 +351,7 @@ public class InventoryManager : MonoBehaviour
       craftTransform.tag = craftTag;
 
       /* Places the new resource entry in a horizontal row inside the inventory    */
-      craftRectTransform.anchoredPosition = new Vector2(RESOURCE_SPACING * positionIndex, verticalIndex);
+      craftRectTransform.anchoredPosition = new Vector2(CRAFT_SPACING * positionIndex, verticalIndex);
 
       Transform visualGroup = craftTransform.Find("VisualGroup");
 
@@ -1156,32 +1156,19 @@ public class InventoryManager : MonoBehaviour
    public void ShowInventoryPanel()
    {
       panelManager.OpenPanel(InventoryPanel.gameObject);
+      CraftsPanel.gameObject.SetActive(false);
       ResourcePanel.gameObject.SetActive(true);
+
       if (tutorialFunction)
       {
          InventoryPanel.transform.Find("Arrow").gameObject.SetActive(true);
       }
+
       // Added for camera fix
       PopUpManager.Instance.DisablePlayerInput();
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
-   }
-
-   public void ShowResourcePanel()
-   {
-      if (CraftsPanel.gameObject.activeSelf)
-         CloseCraftsPanel();
-
-      ResourcePanel.gameObject.SetActive(true);
-   }
-   private void ShowResourceWindow()
-   {
-      ResourceWindow.gameObject.SetActive(true);
-   }
-   private void ShowCraftWindow()
-   {
-      CraftWindow.gameObject.SetActive(true);
    }
 
    public void CloseInventoryPanel()
@@ -1203,24 +1190,34 @@ public class InventoryManager : MonoBehaviour
          currentResource = null;
       }
 
-      if (ResourceWindow.gameObject.activeSelf)
-         CloseResourcePanel();
+      //if (ResourceWindow.gameObject.activeSelf)
+      //   CloseResourcePanel();
 
-      if (CraftWindow.gameObject.activeSelf)
-         CloseCraftsPanel();
+      //if (CraftWindow.gameObject.activeSelf)
+      //   CloseCraftsPanel();
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
    }
-   private void CloseResourcePanel()
+
+   public void ShowResourcePanel()
    {
-      ResourcePanel.gameObject.SetActive(false);
+      if (CraftsPanel.gameObject.activeSelf) 
+      { 
+         CloseCraftsPanel();
+         CloseCraftWindow();
+      }
+
+      ResourcePanel.gameObject.SetActive(true);
    }
 
    public void ShowCraftsPanel()
    {
-      if (ResourcePanel.gameObject.activeSelf)
+      if (ResourcePanel.gameObject.activeSelf) 
+      { 
          CloseResourcePanel();
+         CloseResourceWindow();
+      }
 
       CraftsPanel.gameObject.SetActive(true);
       if(tutorialFunction)
@@ -1231,6 +1228,23 @@ public class InventoryManager : MonoBehaviour
       }
    }
 
+   private void ShowResourceWindow()
+   {
+      panelManager.OpenPanel(ResourceWindow.gameObject);
+      //ResourceWindow.gameObject.SetActive(true);
+   }
+   private void ShowCraftWindow()
+   {
+      panelManager.OpenPanel(CraftWindow.gameObject);
+      //CraftWindow.gameObject.SetActive(true);
+   }
+
+   
+   private void CloseResourcePanel()
+   {
+      ResourcePanel.gameObject.SetActive(false);
+   }
+   
    private void CloseCraftsPanel()
    {
       CraftsPanel.gameObject.SetActive(false);
@@ -1239,6 +1253,15 @@ public class InventoryManager : MonoBehaviour
          InventoryPanel.transform.Find("Arrow3").gameObject.SetActive(false);
          tutorialFunction = false;
       }
+   }
+   public void CloseResourceWindow()
+   {
+      ResourceWindow.gameObject.SetActive(false);
+   }
+
+   public void CloseCraftWindow()
+   {
+      CraftWindow.gameObject.SetActive(false);
    }
 
    private void CheckUpgradeResources()
