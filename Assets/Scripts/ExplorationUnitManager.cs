@@ -46,12 +46,16 @@ public class ExplorationUnitManager : MonoBehaviour
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to on next turn
 
    // ID constants for the base menu buttons
-   const int EXPLORE_BUTTON    = 1;
-   const int INFO_BUTTON       = 2;
-   const int UPGRADE_BUTTON    = 3;
-   const int LEVEL2_PEARL_COST = 200; // Pearl cost to reach level 2
-   const int LEVEL3_PEARL_COST = 500; // Pearl cost to reach level 3
-   const int MAX_SHIP_LEVEL    = 3;   // The maximum level the exploration unit can reach
+   const int EXPLORE_BUTTON           = 1;
+   const int INFO_BUTTON              = 2;
+   const int UPGRADE_BUTTON           = 3;
+   const int LEVEL2_PEARL_COST        = 200;  // Pearl cost to reach level 2
+   const int LEVEL3_PEARL_COST        = 500;  // Pearl cost to reach level 3
+   const int MAX_SHIP_LEVEL           = 3;    // The maximum level the exploration unit can reach
+   const int FLOATING_STAT_DISTANCE   = 30;   // Distance the floating ship stat moves in decision results panel
+   const float POP_DURATION           = 0.4f; // Duration of the pop animation in decision results panel
+   const float FLOATING_STAT_DURATION = 2.0f; // Duration the floating ship stat lasts in results panel
+ 
 
    public  bool isExploring       = false; // Determines if exploration is currently ongoing
    private bool isWaiting         = false; // Triggered when an event causes user to lose an exploration turn
@@ -250,10 +254,12 @@ public class ExplorationUnitManager : MonoBehaviour
       foreach (Transform child in container)
       {
          NodeHover hover = child.GetComponent<NodeHover>();
-         if (hover != null) hover.isTierLocked = false;
+         if (hover != null) 
+            hover.isTierLocked = false;
          child.gameObject.SetActive(true);
          Button btn = child.GetComponent<Button>();
-         if (btn != null) btn.interactable = true;
+         if (btn != null) 
+            btn.interactable = true;
       }
 
       ExploreEvents currentEvent = eventController.currentEvent;
@@ -265,14 +271,16 @@ public class ExplorationUnitManager : MonoBehaviour
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
          button1.onClick.RemoveAllListeners();
-         if (actionA != null) button1.onClick.AddListener(actionA);
+         if (actionA != null) 
+            button1.onClick.AddListener(actionA);
 
          // Check if choice is locked by Lab upgrades
          bool isLockedA = (currentNode  != null && currentNode.type != MapNode.NodeType.Directional) && 
                            currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
 
          NodeHover hover1 = button1.GetComponent<NodeHover>();
-         if (hover1 != null) hover1.isTierLocked = isLockedA;
+         if (hover1 != null) 
+            hover1.isTierLocked = isLockedA;
          button1.interactable = interactableA && !isLockedA;
       }
       // Sets up choice 2 if it exists for current scenario
@@ -645,9 +653,9 @@ public class ExplorationUnitManager : MonoBehaviour
       deltaText.color = change > 0 ? Color.green : Color.red;
       deltaText.gameObject.SetActive(true);
       Vector3 startPos = deltaText.transform.localPosition;
-      Vector3 endPos   = startPos + (change > 0 ? new Vector3(0, 30, 0) : new Vector3(0, -30, 0));
+      Vector3 endPos   = startPos + (change > 0 ? new Vector3(0, FLOATING_STAT_DISTANCE, 0) : new Vector3(0, -FLOATING_STAT_DISTANCE, 0));
 
-      float duration = 2.0f; // How long the floating text animation lasts
+      float duration = FLOATING_STAT_DURATION; // How long the floating text animation lasts
       float elapsed  = 0.0f;
 
       // Run the floating stat animation
@@ -684,7 +692,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // Elastic pop animation for rewards icon entries
    private IEnumerator AnimatePop(Transform target)
    {
-      float duration     = 0.4f;
+      float duration     = POP_DURATION;
       float elapsed      = 0.0f;
       Vector3 startScale = Vector3.zero;
       Vector3 endScale   = Vector3.one;

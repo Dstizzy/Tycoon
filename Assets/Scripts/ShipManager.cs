@@ -3,13 +3,22 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections;
+using Unity.Plastic.Antlr3.Runtime.Tree;
 
 public class ShipManager : MonoBehaviour
 {
    // Symbolic Constants
-   public const int LAB_T1_HEALTH_BONUS    = 10; // Additional health from first Laboratory upgrade
-   public const int LAB_T1_FUEL_BONUS      = 2;  // Additional fuel from first laboratory upgrade
-   public const int LAB_T3_LOOT_MULTIPLIER = 2;  // Scalar applied to positive loot draws after third lab upgrade
+   public const int MAX_LEVEL              = 3;    // Maximum ship level to be reached
+   public const int NUM_OF_CRAFTS          = 7;    // Number of crafts that can be discovered
+   public const int LAB_T1_HEALTH_BONUS    = 10;   // Additional health from first Laboratory upgrade
+   public const int LAB_T1_FUEL_BONUS      = 2;    // Additional fuel from first laboratory upgrade
+   public const int LAB_T3_LOOT_MULTIPLIER = 2;    // Scalar applied to positive loot draws after third lab upgrade
+   public const int LEVEL_1_IN_DEPTH_2     = 30;   // Damage taken by level 1 ship in depth 2
+   public const int LEVEL_1_IN_DEPTH_3     = 60;   // Damage taken by level 1 ship in depth 3
+   public const int LEVEL_2_IN_DEPTH_3     = 40;   // Damage taken by level 2 ship in depth 3
+   public const float ITEM_DELAY           = 0.3f; // Duration of the delay between final reward panel entries
+   public const float POP_DURATION         = 0.5f; // Duration of the item pop animation in final rewards panel
+
 
    public PanelManager panelManager; // Reference to global UI panel controller
 
@@ -142,7 +151,7 @@ public class ShipManager : MonoBehaviour
    // Increments ship level and recalculates stat ceilings
    public void UpgradeShip()
    {
-      if (ShipLevel < 3)
+      if (ShipLevel < MAX_LEVEL)
       {
          ShipLevel += 1;
          UpdateStatsToLevel();
@@ -227,7 +236,7 @@ public class ShipManager : MonoBehaviour
 
       if (results.requiresLabTier)
       {
-         int roll = UnityEngine.Random.Range(0, 7);
+         int roll = UnityEngine.Random.Range(0, NUM_OF_CRAFTS);
          switch (roll)
          {
             case 0: foundPatchKits        += 1; break;
@@ -287,11 +296,11 @@ public class ShipManager : MonoBehaviour
    {
       int damage = 0; // Ship damage as a result of high depth
       if (ShipLevel == 1 && depthCheck == 2)
-         damage = 30;
+         damage = LEVEL_1_IN_DEPTH_2;
       else if (ShipLevel == 1 && depthCheck == 3)
-         damage = 60;
+         damage = LEVEL_1_IN_DEPTH_3;
       else if (ShipLevel == 2 && depthCheck == 3)
-         damage = 40;
+         damage = LEVEL_2_IN_DEPTH_3;
       return damage;
    }
 
@@ -457,7 +466,6 @@ public class ShipManager : MonoBehaviour
       int totalRewardCount = currentPearl + currentOre + currentPatchKit + currentHarpoon +
                              currentCrudeTool + currentPressureValve + currentDivingBell +
                              currentClockworkEngine + currentPrecisionLens;
-      float delayBetweenItems = 0.2f; // Time delay between reward types
 
       // Wait for previous panels to fully fade out
       yield return new WaitForSeconds(0.5f);
@@ -470,7 +478,7 @@ public class ShipManager : MonoBehaviour
          yield break;
       }
 
-      yield return new WaitForSeconds(0.3f); // Brief pause before rewards start popping in
+      yield return new WaitForSeconds(ITEM_DELAY); // Brief pause before rewards start popping in
 
       // Define data map for iterative reward processing
       var rewards = new (string Name, int Amount)[]
@@ -493,7 +501,7 @@ public class ShipManager : MonoBehaviour
          if (itemRow != null && itemRow.gameObject.activeSelf)
          {
             StartCoroutine(AnimatePop(itemRow));
-            yield return new WaitForSeconds(delayBetweenItems);
+            yield return new WaitForSeconds(ITEM_DELAY);
          }
       }
    }
@@ -524,15 +532,14 @@ public class ShipManager : MonoBehaviour
    // Elastic pop-in scale animation for UI elements
    private IEnumerator AnimatePop(Transform target)
    {
-      float duration = 0.5f; // Total duration of the animation
       float elapsed  = 0.0f; // Keeps track of time passed in animation
       Vector3 startScale = Vector3.zero; // The starting scale of the reward entry
       Vector3 endScale   = Vector3.one;  // The final scale of the reward entry
 
-      while (elapsed < duration)
+      while (elapsed < POP_DURATION)
       {
          elapsed += Time.deltaTime;
-         float percent = elapsed / duration;
+         float percent = elapsed / POP_DURATION;
          float curve = Mathf.Sin(percent * Mathf.PI * 1.2f) / 1.2f;
          target.localScale = Vector3.LerpUnclamped(startScale, endScale, percent + (1f - percent) * curve);
 
