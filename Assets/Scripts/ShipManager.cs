@@ -420,6 +420,8 @@ public class ShipManager : MonoBehaviour
    // Ends a successful exploration, shows total rewards and trasfers inventory to main game inventory
    public IEnumerator FinishExploration()
    {
+      Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
+      confirmRewards.interactable = false;
       explorationUnitManager.isExploring = false;
       ClosePanels();
       explorationUnitManager.CloseDecisionPanel();
@@ -435,12 +437,13 @@ public class ShipManager : MonoBehaviour
       // Run animation to show collected loot
       yield return StartCoroutine(ShowRewardsSequence());
       explorationUnitManager.SetDecisionInteractable(true);
+      confirmRewards.interactable = true;
 
       // Set up confirm button to finalize exploration
-      Button confirmRewards = finalRewardsPanel.Find("Confirm").GetComponent<Button>();
       confirmRewards.onClick.RemoveAllListeners();
       confirmRewards.onClick.AddListener(() =>
       {
+         noRewardsText.SetActive(false);
          CloseFinalRewardsPanel();
          AddRewards(); // Add loot to main inventory
          ResetShip();  // Prepare ship for new exploration
@@ -458,11 +461,14 @@ public class ShipManager : MonoBehaviour
 
       // Wait for previous panels to fully fade out
       yield return new WaitForSeconds(0.5f);
-      finalRewardsPanel.gameObject.SetActive(true);
+      panelManager.OpenPanel(finalRewardsPanel.gameObject);
 
       // If no rewards were found, show empty exploraion message
       if (totalRewardCount <= 0 && noRewardsText != null)
+      {
          noRewardsText.SetActive(true);
+         yield break;
+      }
 
       yield return new WaitForSeconds(0.3f); // Brief pause before rewards start popping in
 
