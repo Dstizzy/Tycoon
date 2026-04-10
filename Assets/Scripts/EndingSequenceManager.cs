@@ -1,24 +1,33 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Controls the ending scene flow for both success and failure routes.
-// All ending dialogue uses the same speaker + DialogueLine format as the
-// NPC encounter system so portraits, expressions and action lines remain consistent.
+// Controls the ending scene flow using the same click-to-advance dialogue style
+// as the NPC dialogue UI. The ending UI is generated entirely at runtime.
 public class EndingSequenceManager : MonoBehaviour
 {
    // ─────────────────────────────────────────────────────────────────────
    //  Data classes
    // ─────────────────────────────────────────────────────────────────────
 
+   public enum EndingActionType
+   {
+      None,
+      LaunchSubmarine,
+      FloatSubmarine,
+      StartFailureShake
+   }
+
    [Serializable]
    public class EndingDialogueEntry
    {
       public NPCEncounterSystem.NPCPersonality speaker;
       public NPCEncounterSystem.DialogueLine dialogue;
+      public EndingActionType actionType;
 
       public EndingDialogueEntry() { }
 
@@ -26,10 +35,12 @@ public class EndingSequenceManager : MonoBehaviour
          NPCEncounterSystem.NPCPersonality speaker,
          string text,
          NPCEncounterSystem.ExpressionType expression = NPCEncounterSystem.ExpressionType.Neutral,
-         bool isAction = false)
+         bool isAction = false,
+         EndingActionType actionType = EndingActionType.None)
       {
          this.speaker = speaker;
          dialogue = new NPCEncounterSystem.DialogueLine(text, expression, isAction);
+         this.actionType = actionType;
       }
    }
 
@@ -48,41 +59,82 @@ public class EndingSequenceManager : MonoBehaviour
 
 
    // ─────────────────────────────────────────────────────────────────────
+   //  Layout constants
+   // ─────────────────────────────────────────────────────────────────────
+
+   private const float DEFAULT_TEXT_SPEED = 0.03f;
+
+   private const float PANEL_WIDTH = 1200f;
+   private const float PANEL_HEIGHT = 360f;
+   private const float PORTRAIT_SIZE = 220f;
+   private const float PADDING = 24f;
+
+   private const float NAME_FONT_SIZE = 38f;
+   private const float DIALOGUE_FONT_SIZE = 30f;
+   private const float NAV_BUTTON_FONT_SIZE = 28f;
+
+   private const float RESULT_TITLE_WIDTH = 720f;
+   private const float RESULT_TITLE_HEIGHT = 180f;
+   private const float RESULT_TITLE_TOP_OFFSET = -36f;
+
+   private const float TRAVEL_LAYER_WIDTH = 2880f;
+   private const float TRAVEL_LAYER_HEIGHT = 1620f;
+   private const float TRAVEL_SUBMARINE_WIDTH = 720f;
+   private const float TRAVEL_SUBMARINE_HEIGHT = 360f;
+   private const float TRAVEL_SUBMARINE_START_Y = -380f;
+   private const float TRAVEL_SUBMARINE_TARGET_Y = 0f;
+
+
+   // ─────────────────────────────────────────────────────────────────────
    //  Inspector fields
    // ─────────────────────────────────────────────────────────────────────
 
    [Header("Scene")]
    [SerializeField] private string startSceneName = "StartScreenScene";
 
-   [Header("Roots")]
+   [Header("Optional Visual Roots")]
    [SerializeField] private GameObject successRoot;
    [SerializeField] private GameObject failureRoot;
-
-   [Header("UI")]
-   [SerializeField] private TextMeshProUGUI titleText;
-   [SerializeField] private TextMeshProUGUI bodyText;
-   [SerializeField] private TextMeshProUGUI speakerNameText;
-   [SerializeField] private Image portraitImage;
-   [SerializeField] private Image fadeImage;
 
    [Header("Speaker Profiles")]
    [SerializeField] private EndingSpeakerProfile[] speakerProfiles;
 
-   [Header("Success")]
+   [Header("Success Visuals")]
    [SerializeField] private Transform[] successBuildings;
-   [SerializeField] private RectTransform submarineTransform;
-   [SerializeField] private float successDuration = 5f;
+   [SerializeField] private Transform submarineTransform;
    [SerializeField] private float successBounceAmount = 12f;
    [SerializeField] private float successBounceSpeed = 2.5f;
-   [SerializeField] private float submarineRiseDistance = 260f;
-   [SerializeField] private float submarineRiseDuration = 3.5f;
-   [SerializeField] private float submarineFloatDuration = 2.5f;
-   [SerializeField] private float submarineFloatAmount = 18f;
-   [SerializeField] private float submarineFloatSpeed = 1.8f;
-   [SerializeField] private float successFinalHoldDuration = 1.8f;
-   [SerializeField] private float successLaunchHoldDuration = 1.5f;
-   [SerializeField] private float successPostLaunchHoldDuration = 1.5f;
 
+   [Header("Success Travel Overlay")]
+   [SerializeField] private Sprite successTravelBackgroundSprite;
+   [SerializeField] private Sprite successTravelSubmarineSprite;
+   [SerializeField] private float successTravelBackgroundScrollSpeed = 120f;
+   [SerializeField] private float successTravelSubmarineRiseDuration = 1.8f;
+   [SerializeField] private float successTravelSubmarineFloatAmount = 18f;
+   [SerializeField] private float successTravelSubmarineFloatSpeed = 1.4f;
+
+   [Header("Failure Visuals")]
+   [SerializeField] private Transform[] failureBuildings;
+   [SerializeField] private Transform cameraShakeTarget;
+   [SerializeField] private float failureBounceAmount = 12f;
+   [SerializeField] private float failureBounceSpeed = 6f;
+   [SerializeField] private float cameraShakeStrength = 16f;
+   [SerializeField] private int failureShakeStartLineIndex = 1;
+
+   [Header("Dialogue Settings")]
+   [SerializeField] private float textSpeed = DEFAULT_TEXT_SPEED;
+   [SerializeField] private bool useTypewriterEffect = true;
+   [SerializeField] private float fadeDuration = 1.5f;
+
+   [Header("Title Images")]
+   [SerializeField] private Sprite successTitleSprite;
+   [SerializeField] private Sprite failureTitleSprite;
+
+   [Header("Title Float Animation")]
+   [SerializeField] private float successTitleFloatAmount = 12f;
+   [SerializeField] private float successTitleFloatSpeed = 1f;
+
+   [Header("Success Dialogue")]
    [SerializeField]
    private EndingDialogueEntry[] successLines = new EndingDialogueEntry[]
    {
@@ -109,18 +161,27 @@ public class EndingSequenceManager : MonoBehaviour
       new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Seahorse, "That's our window.", NPCEncounterSystem.ExpressionType.Thinking),
       new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "Then what are we waiting for?!", NPCEncounterSystem.ExpressionType.Surprised),
       new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "Everybody cheer! Somebody wave! Somebody do something cinematic!", NPCEncounterSystem.ExpressionType.Special),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "The launch platform rattles with cheers, laughter, and far too many people talking at once.", NPCEncounterSystem.ExpressionType.Neutral, isAction: true)
+      new EndingDialogueEntry(
+         NPCEncounterSystem.NPCPersonality.Dolphin,
+         "The launch platform rattles with cheers, laughter, and far too many people talking at once.",
+         NPCEncounterSystem.ExpressionType.Neutral,
+         isAction: true,
+         actionType: EndingActionType.LaunchSubmarine)
    };
 
    [SerializeField]
    private EndingDialogueEntry[] successLaunchLines = new EndingDialogueEntry[]
-   {
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "Hey—!", NPCEncounterSystem.ExpressionType.Surprised),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "We're actually rising. We're actually rising!", NPCEncounterSystem.ExpressionType.Happy),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "The engines are stable!", NPCEncounterSystem.ExpressionType.Surprised),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "They're actually stable!", NPCEncounterSystem.ExpressionType.Special),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Seahorse, "Then stop sounding surprised and keep us moving.", NPCEncounterSystem.ExpressionType.Neutral)
-   };
+{
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "Hey—!", NPCEncounterSystem.ExpressionType.Surprised),
+   new EndingDialogueEntry(
+      NPCEncounterSystem.NPCPersonality.Dolphin,
+      "We're actually rising. We're actually rising!",
+      NPCEncounterSystem.ExpressionType.Happy,
+      actionType: EndingActionType.FloatSubmarine),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "The engines are stable!", NPCEncounterSystem.ExpressionType.Surprised),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "They're actually stable!", NPCEncounterSystem.ExpressionType.Special),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Seahorse, "Then stop sounding surprised and keep us moving.", NPCEncounterSystem.ExpressionType.Neutral)
+};
 
    [SerializeField]
    private EndingDialogueEntry[] successPostLaunchLines = new EndingDialogueEntry[]
@@ -132,46 +193,71 @@ public class EndingSequenceManager : MonoBehaviour
       new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "For once, this ridiculous plan actually worked.", NPCEncounterSystem.ExpressionType.Happy)
    };
 
-   [Header("Failure")]
-   [SerializeField] private Transform[] failureBuildings;
-   [SerializeField] private Transform cameraShakeTarget;
-   [SerializeField] private float failureDuration = 4.5f;
-   [SerializeField] private float failureBounceAmount = 12f;
-   [SerializeField] private float failureBounceSpeed = 6f;
-   [SerializeField] private float cameraShakeStrength = 16f;
-   [SerializeField] private int failureShakeStartLineIndex = 1;
-   [SerializeField] private float failureFinalHoldDuration = 1.1f;
-
+   [Header("Failure Dialogue")]
    [SerializeField]
    private EndingDialogueEntry[] failureLines = new EndingDialogueEntry[]
-   {
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "Wait. No. No no no—", NPCEncounterSystem.ExpressionType.Surprised),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "That sound is BAD! That's a very bad sound!", NPCEncounterSystem.ExpressionType.Surprised),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "Everybody run!", NPCEncounterSystem.ExpressionType.Special),
-      new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "The entire outpost lurches as the volcano finally erupts.", NPCEncounterSystem.ExpressionType.Angry, isAction: true)
-   };
+{
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "Wait. No. No no no—", NPCEncounterSystem.ExpressionType.Surprised),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Turtle, "That sound is BAD! That's a very bad sound!", NPCEncounterSystem.ExpressionType.Surprised,
+      actionType: EndingActionType.StartFailureShake),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "Everybody run!", NPCEncounterSystem.ExpressionType.Special),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Octopus, "What did you DO?! Why is everything shaking?!", NPCEncounterSystem.ExpressionType.Surprised),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.HermitCrab, "This is deeply, profoundly bad for business.", NPCEncounterSystem.ExpressionType.Angry),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Jellyfish, "...Too loud... too bright...", NPCEncounterSystem.ExpressionType.Angry),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Seahorse, "Move! If you freeze here, you die here!", NPCEncounterSystem.ExpressionType.Special),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "The entire outpost lurches as the volcano finally erupts.", NPCEncounterSystem.ExpressionType.Angry, isAction: true),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "If we ever got another chance...", NPCEncounterSystem.ExpressionType.Thinking),
+   new EndingDialogueEntry(NPCEncounterSystem.NPCPersonality.Dolphin, "I think... we could have done better.", NPCEncounterSystem.ExpressionType.Neutral)
+};
 
-   [Header("Timing")]
-   [SerializeField] private float lineInterval = 1.8f;
-   [SerializeField] private float fadeDuration = 1.5f;
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Runtime UI references
+   // ─────────────────────────────────────────────────────────────────────
+
+   private GameObject canvasObject;
+   private GameObject dialoguePanel;
+   private Image portraitImage;
+   private TextMeshProUGUI speakerNameText;
+   private TextMeshProUGUI bodyText;
+   private Image fadeImage;
+   private Button nextButton;
+   private Button closeButton;
+   private Image resultTitleImage;
+   private GameObject successTravelLayer;
+   private Image successTravelBackgroundImageA;
+   private Image successTravelBackgroundImageB;
+   private Image successTravelSubmarineImage;
+   private RectTransform successTravelBackgroundRectA;
+   private RectTransform successTravelBackgroundRectB;
+   private RectTransform successTravelSubmarineRect;
 
 
    // ─────────────────────────────────────────────────────────────────────
    //  Runtime state
    // ─────────────────────────────────────────────────────────────────────
 
-   private float activeSequenceDuration;
-   private bool hasStartedFailureShake;
-   private bool isDialoguePlaying;
-   private bool isCurrentDialogueSkippable;
-   private bool skipCurrentDialogueRequested;
+   private EndingDialogueEntry[] currentSequence;
+   private int currentLineIndex;
+   private bool isTyping;
+   private bool isEndingActive;
+   private bool isActionInProgress;
+   private string currentFormattedLine;
+   private Coroutine typingCoroutine;
+   private Coroutine successBuildingsCoroutine;
+   private Coroutine failureBuildingsCoroutine;
+   private Coroutine failureShakeCoroutine;
+   private Coroutine resultTitleFloatCoroutine;
+   private bool isUIGenerated; 
+   private Coroutine successTravelBackgroundCoroutine;
+   private Coroutine successTravelSubmarineFloatCoroutine;
 
 
    // ─────────────────────────────────────────────────────────────────────
    //  Unity lifecycle
    // ─────────────────────────────────────────────────────────────────────
 
-   // Initializes the ending UI before playback begins.
+   // Initializes the ending scene roots.
    private void Awake()
    {
       if (successRoot != null)
@@ -179,49 +265,283 @@ public class EndingSequenceManager : MonoBehaviour
 
       if (failureRoot != null)
          failureRoot.SetActive(false);
-
-      if (bodyText != null)
-         bodyText.text = string.Empty;
-
-      ClearSpeakerUI();
-
-      if (fadeImage != null)
-      {
-         Color currentColor = fadeImage.color;
-         currentColor.a = 1f;
-         fadeImage.color = currentColor;
-         fadeImage.gameObject.SetActive(true);
-      }
    }
 
-   // Checks for skip input while a skippable dialogue block is playing.
-   private void Update()
-   {
-      if (!isDialoguePlaying || !isCurrentDialogueSkippable)
-         return;
-
-      if (WasSkipPressed())
-         skipCurrentDialogueRequested = true;
-   }
-
-   // Starts the correct ending sequence as soon as the scene loads.
+   // Builds the runtime UI and starts the selected ending route.
    private void Start()
    {
-      StartCoroutine(PlayEndingSequence());
+      EnsureUIGenerated();
+      StartCoroutine(BeginEndingFlow());
    }
 
-
-   // ─────────────────────────────────────────────────────────────────────
-   //  Main sequence flow
-   // ─────────────────────────────────────────────────────────────────────
-
-   // Chooses the success or failure route, then fades out and returns to the start screen.
-   private IEnumerator PlayEndingSequence()
+   private void OnDestroy()
    {
-      bool isSuccess = GameEndingState.CurrentResult == GameEndingState.EndingResult.Success;
+      if (canvasObject != null)
+         Destroy(canvasObject);
+   }
 
-      if (titleText != null)
-         titleText.text = isSuccess ? "Escape Successful" : "Escape Failed";
+   // ─────────────────────────────────────────────────────────────────────
+   //  UI generation
+   // ─────────────────────────────────────────────────────────────────────
+
+   // Ensures the ending UI is created only once.
+   private void EnsureUIGenerated()
+   {
+      if (isUIGenerated)
+         return;
+
+      GenerateUI();
+   }
+
+   // Builds the full ending dialogue canvas at runtime.
+   private void GenerateUI()
+   {
+      canvasObject = new GameObject("EndingDialogueCanvas");
+
+      Canvas canvas = canvasObject.AddComponent<Canvas>();
+      canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+      canvas.sortingOrder = 999;
+
+      CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+      scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+      scaler.referenceResolution = new Vector2(1920, 1080);
+      scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+      scaler.matchWidthOrHeight = 0.5f;
+
+      canvasObject.AddComponent<GraphicRaycaster>();
+
+      // Fade image
+      GameObject fadeObject = CreatePanel("FadeImage", canvasObject.transform);
+      fadeImage = fadeObject.GetComponent<Image>();
+      fadeImage.color = new Color(0f, 0f, 0f, 1f);
+
+      RectTransform fadeRect = fadeObject.GetComponent<RectTransform>();
+      fadeRect.anchorMin = Vector2.zero;
+      fadeRect.anchorMax = Vector2.one;
+      fadeRect.offsetMin = Vector2.zero;
+      fadeRect.offsetMax = Vector2.zero;
+
+      GameObject resultTitleObject = CreateUIObject("ResultTitleImage", canvasObject.transform);
+      RectTransform resultTitleRect = resultTitleObject.GetComponent<RectTransform>();
+      resultTitleRect.anchorMin = new Vector2(0.5f, 1f);
+      resultTitleRect.anchorMax = new Vector2(0.5f, 1f);
+      resultTitleRect.pivot = new Vector2(0.5f, 1f);
+      resultTitleRect.sizeDelta = new Vector2(RESULT_TITLE_WIDTH, RESULT_TITLE_HEIGHT);
+      resultTitleRect.anchoredPosition = new Vector2(0f, RESULT_TITLE_TOP_OFFSET);
+
+      resultTitleImage = resultTitleObject.AddComponent<Image>();
+      resultTitleImage.preserveAspect = true;
+      resultTitleImage.color = Color.white;
+      resultTitleImage.gameObject.SetActive(false);
+
+      BuildSuccessTravelOverlay();
+
+      // Main panel
+      dialoguePanel = CreatePanel("EndingDialoguePanel", canvasObject.transform);
+      RectTransform panelRect = dialoguePanel.GetComponent<RectTransform>();
+      panelRect.anchorMin = new Vector2(0.5f, 0f);
+      panelRect.anchorMax = new Vector2(0.5f, 0f);
+      panelRect.pivot = new Vector2(0.5f, 0f);
+      panelRect.sizeDelta = new Vector2(PANEL_WIDTH, PANEL_HEIGHT);
+      panelRect.anchoredPosition = new Vector2(0f, 48f);
+      panelRect.localScale = Vector3.one;
+
+      Image panelBg = dialoguePanel.GetComponent<Image>();
+      panelBg.color = new Color(0.08f, 0.12f, 0.18f, 0.96f);
+
+      Outline outline = dialoguePanel.AddComponent<Outline>();
+      outline.effectColor = new Color(0.35f, 0.55f, 0.8f, 0.9f);
+      outline.effectDistance = new Vector2(2f, 2f);
+
+      // Portrait frame
+      GameObject portraitFrame = CreatePanel("PortraitFrame", dialoguePanel.transform);
+      RectTransform portraitFrameRect = portraitFrame.GetComponent<RectTransform>();
+      portraitFrameRect.anchorMin = new Vector2(0f, 0f);
+      portraitFrameRect.anchorMax = new Vector2(0f, 1f);
+      portraitFrameRect.offsetMin = new Vector2(PADDING, PADDING);
+      portraitFrameRect.offsetMax = new Vector2(PORTRAIT_SIZE + PADDING, -PADDING);
+
+      Image portraitFrameImage = portraitFrame.GetComponent<Image>();
+      portraitFrameImage.color = new Color(0.14f, 0.18f, 0.24f, 1f);
+
+      GameObject portraitObject = CreateUIObject("PortraitImage", portraitFrame.transform);
+      RectTransform portraitRect = portraitObject.GetComponent<RectTransform>();
+      portraitRect.anchorMin = new Vector2(0.5f, 0.5f);
+      portraitRect.anchorMax = new Vector2(0.5f, 0.5f);
+      portraitRect.pivot = new Vector2(0.5f, 0.5f);
+      portraitRect.sizeDelta = new Vector2(PORTRAIT_SIZE - 24f, PORTRAIT_SIZE - 24f);
+      portraitRect.anchoredPosition = Vector2.zero;
+
+      portraitImage = portraitObject.AddComponent<Image>();
+      portraitImage.preserveAspect = true;
+      portraitImage.color = new Color(1f, 1f, 1f, 0f);
+
+      // Speaker name
+      GameObject speakerObject = CreateUIObject("SpeakerNameText", dialoguePanel.transform);
+      RectTransform speakerRect = speakerObject.GetComponent<RectTransform>();
+      speakerRect.anchorMin = new Vector2(0f, 1f);
+      speakerRect.anchorMax = new Vector2(1f, 1f);
+      speakerRect.offsetMin = new Vector2(PORTRAIT_SIZE + PADDING * 2f, -88f);
+      speakerRect.offsetMax = new Vector2(-PADDING, -PADDING);
+
+      speakerNameText = speakerObject.AddComponent<TextMeshProUGUI>();
+      speakerNameText.fontSize = NAME_FONT_SIZE;
+      speakerNameText.fontStyle = FontStyles.Bold;
+      speakerNameText.color = new Color(0.95f, 0.85f, 0.55f, 1f);
+      speakerNameText.alignment = TextAlignmentOptions.TopLeft;
+
+      // Dialogue text
+      GameObject bodyObject = CreateUIObject("BodyText", dialoguePanel.transform);
+      RectTransform bodyRect = bodyObject.GetComponent<RectTransform>();
+      bodyRect.anchorMin = new Vector2(0f, 0f);
+      bodyRect.anchorMax = new Vector2(1f, 1f);
+      bodyRect.offsetMin = new Vector2(PORTRAIT_SIZE + PADDING * 2f, 96f);
+      bodyRect.offsetMax = new Vector2(-PADDING, -96f);
+
+      bodyText = bodyObject.AddComponent<TextMeshProUGUI>();
+      bodyText.fontSize = DIALOGUE_FONT_SIZE;
+      bodyText.color = Color.white;
+      bodyText.alignment = TextAlignmentOptions.TopLeft;
+      bodyText.enableWordWrapping = true;
+      bodyText.richText = true;
+
+      // Next button
+      nextButton = CreateButton("NextButton", dialoguePanel.transform, "Next >", out TextMeshProUGUI _);
+      RectTransform nextRect = nextButton.GetComponent<RectTransform>();
+      nextRect.anchorMin = new Vector2(1f, 0f);
+      nextRect.anchorMax = new Vector2(1f, 0f);
+      nextRect.pivot = new Vector2(1f, 0f);
+      nextRect.sizeDelta = new Vector2(180f, 64f);
+      nextRect.anchoredPosition = new Vector2(-PADDING, PADDING);
+      nextButton.onClick.AddListener(OnNextClicked);
+
+      // Close button
+      closeButton = CreateButton("CloseButton", dialoguePanel.transform, "Return", out TextMeshProUGUI _);
+      RectTransform closeRect = closeButton.GetComponent<RectTransform>();
+      closeRect.anchorMin = new Vector2(1f, 0f);
+      closeRect.anchorMax = new Vector2(1f, 0f);
+      closeRect.pivot = new Vector2(1f, 0f);
+      closeRect.sizeDelta = new Vector2(180f, 64f);
+      closeRect.anchoredPosition = new Vector2(-PADDING, PADDING);
+      closeButton.onClick.AddListener(OnCloseClicked);
+
+      closeButton.gameObject.SetActive(false);
+      dialoguePanel.SetActive(false);
+      isUIGenerated = true;
+   }
+
+   private GameObject CreatePanel(string name, Transform parent)
+   {
+      GameObject go = new GameObject(name);
+      go.transform.SetParent(parent, false);
+      go.AddComponent<RectTransform>().localScale = Vector3.one;
+      go.AddComponent<Image>();
+      return go;
+   }
+
+   private GameObject CreateUIObject(string objectName, Transform parent)
+   {
+      GameObject newObject = new GameObject(objectName);
+      newObject.transform.SetParent(parent, false);
+      newObject.AddComponent<RectTransform>();
+      return newObject;
+   }
+
+   private Button CreateButton(string objectName, Transform parent, string buttonText, out TextMeshProUGUI textComponent)
+   {
+      GameObject buttonObject = CreateUIObject(objectName, parent);
+
+      Image image = buttonObject.AddComponent<Image>();
+      image.color = new Color(0.2f, 0.3f, 0.4f, 0.96f);
+
+      Button button = buttonObject.AddComponent<Button>();
+      ColorBlock colors = button.colors;
+      colors.normalColor = new Color(0.2f, 0.3f, 0.4f, 0.96f);
+      colors.highlightedColor = new Color(0.32f, 0.46f, 0.62f, 1f);
+      colors.pressedColor = new Color(0.15f, 0.22f, 0.3f, 1f);
+      button.colors = colors;
+
+      GameObject textObject = CreateUIObject("Text", buttonObject.transform);
+      RectTransform textRect = textObject.GetComponent<RectTransform>();
+      textRect.anchorMin = Vector2.zero;
+      textRect.anchorMax = Vector2.one;
+      textRect.offsetMin = new Vector2(8f, 4f);
+      textRect.offsetMax = new Vector2(-8f, -4f);
+
+      textComponent = textObject.AddComponent<TextMeshProUGUI>();
+      textComponent.text = buttonText;
+      textComponent.fontSize = NAV_BUTTON_FONT_SIZE;
+      textComponent.fontStyle = FontStyles.Bold;
+      textComponent.color = Color.white;
+      textComponent.alignment = TextAlignmentOptions.Center;
+
+      return button;
+   }
+
+   private void BuildSuccessTravelOverlay()
+   {
+      successTravelLayer = CreateUIObject("SuccessTravelLayer", canvasObject.transform);
+      RectTransform layerRect = successTravelLayer.GetComponent<RectTransform>();
+      layerRect.anchorMin = Vector2.zero;
+      layerRect.anchorMax = Vector2.one;
+      layerRect.offsetMin = Vector2.zero;
+      layerRect.offsetMax = Vector2.zero;
+
+      successTravelBackgroundImageA = CreateTravelImage("SuccessTravelBackgroundA", successTravelLayer.transform, out successTravelBackgroundRectA);
+      successTravelBackgroundRectA.anchorMin = new Vector2(0.5f, 0.5f);
+      successTravelBackgroundRectA.anchorMax = new Vector2(0.5f, 0.5f);
+      successTravelBackgroundRectA.pivot = new Vector2(0.5f, 0.5f);
+      successTravelBackgroundRectA.sizeDelta = new Vector2(TRAVEL_LAYER_WIDTH, TRAVEL_LAYER_HEIGHT);
+      successTravelBackgroundRectA.anchoredPosition = Vector2.zero;
+
+      successTravelBackgroundImageB = CreateTravelImage("SuccessTravelBackgroundB", successTravelLayer.transform, out successTravelBackgroundRectB);
+      successTravelBackgroundRectB.anchorMin = new Vector2(0.5f, 0.5f);
+      successTravelBackgroundRectB.anchorMax = new Vector2(0.5f, 0.5f);
+      successTravelBackgroundRectB.pivot = new Vector2(0.5f, 0.5f);
+      successTravelBackgroundRectB.sizeDelta = new Vector2(TRAVEL_LAYER_WIDTH, TRAVEL_LAYER_HEIGHT);
+      successTravelBackgroundRectB.anchoredPosition = new Vector2(-TRAVEL_LAYER_WIDTH, 0f);
+
+      successTravelSubmarineImage = CreateTravelImage("SuccessTravelSubmarine", successTravelLayer.transform, out successTravelSubmarineRect);
+      successTravelSubmarineRect.anchorMin = new Vector2(0.5f, 0.5f);
+      successTravelSubmarineRect.anchorMax = new Vector2(0.5f, 0.5f);
+      successTravelSubmarineRect.pivot = new Vector2(0.5f, 0.5f);
+      successTravelSubmarineRect.sizeDelta = new Vector2(TRAVEL_SUBMARINE_WIDTH, TRAVEL_SUBMARINE_HEIGHT);
+      successTravelSubmarineRect.anchoredPosition = new Vector2(0f, TRAVEL_SUBMARINE_START_Y);
+
+      successTravelLayer.SetActive(false);
+   }
+
+   private Image CreateTravelImage(string objectName, Transform parent, out RectTransform rectTransform)
+   {
+      GameObject imageObject = CreateUIObject(objectName, parent);
+      rectTransform = imageObject.GetComponent<RectTransform>();
+
+      Image image = imageObject.AddComponent<Image>();
+      image.preserveAspect = false;
+      image.color = Color.white;
+      return image;
+   }
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Main flow
+   // ─────────────────────────────────────────────────────────────────────
+
+   private IEnumerator BeginEndingFlow()
+   {
+      dialoguePanel.SetActive(true);
+      SetFadeImmediate(1f);
+
+      if (GameEndingState.CurrentResult == GameEndingState.EndingResult.None)
+      {
+         speakerNameText.text = string.Empty;
+         bodyText.text = "No ending state was set before loading this scene.";
+         nextButton.gameObject.SetActive(false);
+         closeButton.gameObject.SetActive(true);
+         yield return FadeTo(0f, fadeDuration);
+         yield break;
+      }
+
+      bool isSuccess = GameEndingState.CurrentResult == GameEndingState.EndingResult.Success;
 
       if (successRoot != null)
          successRoot.SetActive(isSuccess);
@@ -229,158 +549,231 @@ public class EndingSequenceManager : MonoBehaviour
       if (failureRoot != null)
          failureRoot.SetActive(!isSuccess);
 
-      yield return FadeTo(0f, fadeDuration);
+      isEndingActive = true;
 
       if (isSuccess)
-         yield return PlaySuccessSequence();
+      {
+         if (successBuildings != null && successBuildings.Length > 0)
+            successBuildingsCoroutine = StartCoroutine(AnimateBuildingsLoop(successBuildings, successBounceAmount, successBounceSpeed));
+
+         ResetSuccessTravelOverlay();
+         currentSequence = BuildSuccessSequence();
+      }
       else
-         yield return PlayFailureSequence();
+      {
+         if (failureBuildings != null && failureBuildings.Length > 0)
+            failureBuildingsCoroutine = StartCoroutine(AnimateBuildingsLoop(failureBuildings, failureBounceAmount, failureBounceSpeed));
 
-      yield return FadeTo(1f, fadeDuration);
+         currentSequence = failureLines;
+      }
 
-      CleanupPersistentObjects();
-      GameEndingState.Reset();
-      SceneManager.LoadScene(startSceneName);
+      Sprite resultSprite = isSuccess ? successTitleSprite : failureTitleSprite;
+
+      if (resultTitleImage != null)
+      {
+         resultTitleImage.sprite = resultSprite;
+         resultTitleImage.gameObject.SetActive(resultSprite != null);
+
+         if (resultTitleFloatCoroutine != null)
+            StopCoroutine(resultTitleFloatCoroutine);
+
+         if (isSuccess && resultSprite != null)
+            resultTitleFloatCoroutine = StartCoroutine(AnimateResultTitleFloatLoop());
+      }
+
+      currentLineIndex = 0;
+      closeButton.gameObject.SetActive(false);
+      nextButton.gameObject.SetActive(true);
+
+      yield return FadeTo(0f, fadeDuration);
+      ShowCurrentLine();
    }
 
-   // Success flow:
-   //   1. Skippable pre-launch dialogue
-   //   2. Mandatory submarine rise
-   //   3. Skippable launch dialogue
-   //   4. Mandatory floating
-   //   5. Skippable post-launch dialogue
-   private IEnumerator PlaySuccessSequence()
+   private EndingDialogueEntry[] BuildSuccessSequence()
    {
-      float introDuration = GetDialogueDuration(successLines, successFinalHoldDuration);
-      float launchDialogueDuration = GetDialogueDuration(successLaunchLines, successLaunchHoldDuration);
-      float postLaunchDuration = GetDialogueDuration(successPostLaunchLines, successPostLaunchHoldDuration);
-      float mandatoryDuration = submarineRiseDuration + submarineFloatDuration;
+      List<EndingDialogueEntry> sequence = new List<EndingDialogueEntry>();
 
-      activeSequenceDuration = Mathf.Max(
-         successDuration,
-         introDuration + launchDialogueDuration + postLaunchDuration + mandatoryDuration);
+      AddEntries(sequence, successLines);
+      AddEntries(sequence, successLaunchLines);
+      AddEntries(sequence, successPostLaunchLines);
 
-      if (successBuildings != null && successBuildings.Length > 0)
-      {
-         StartCoroutine(AnimateBuildings(
-            successBuildings,
-            activeSequenceDuration,
-            successBounceAmount,
-            successBounceSpeed));
-      }
-
-      yield return PlayDialogueEntries(successLines, successFinalHoldDuration, true);
-      yield return AnimateSubmarineRise();
-      yield return PlayDialogueEntries(successLaunchLines, successLaunchHoldDuration, true);
-      yield return AnimateSubmarineFloat();
-      yield return PlayDialogueEntries(successPostLaunchLines, successPostLaunchHoldDuration, true);
-
-      float consumedDuration = introDuration + launchDialogueDuration + postLaunchDuration + mandatoryDuration;
-      float remainingDuration = Mathf.Max(0f, activeSequenceDuration - consumedDuration);
-
-      if (remainingDuration > 0f)
-         yield return new WaitForSeconds(remainingDuration);
+      return sequence.ToArray();
    }
 
-   // Failure flow:
-   //   1. Dialogue
-   //   2. Building + camera shake
-   //   3. Fade out
-   private IEnumerator PlayFailureSequence()
-   {
-      float dialogueDuration = GetDialogueDuration(failureLines, failureFinalHoldDuration);
-      activeSequenceDuration = Mathf.Max(failureDuration, dialogueDuration);
-      hasStartedFailureShake = false;
-
-      if (failureBuildings != null && failureBuildings.Length > 0)
-      {
-         StartCoroutine(AnimateBuildings(
-            failureBuildings,
-            activeSequenceDuration,
-            failureBounceAmount,
-            failureBounceSpeed));
-      }
-
-      yield return PlayDialogueEntries(failureLines, failureFinalHoldDuration, false, HandleFailureLineStarted);
-
-      if (!hasStartedFailureShake && cameraShakeTarget != null)
-      {
-         hasStartedFailureShake = true;
-         StartCoroutine(ShakeTransform(cameraShakeTarget, activeSequenceDuration, cameraShakeStrength));
-      }
-
-      float remainingDuration = Mathf.Max(0f, activeSequenceDuration - dialogueDuration);
-      if (remainingDuration > 0f)
-         yield return new WaitForSeconds(remainingDuration);
-   }
-
-
-   // ─────────────────────────────────────────────────────────────────────
-   //  Dialogue helpers
-   // ─────────────────────────────────────────────────────────────────────
-
-   // Plays one dialogue block and optionally allows it to be skipped.
-   private IEnumerator PlayDialogueEntries(
-      EndingDialogueEntry[] entries,
-      float finalHoldDuration,
-      bool allowSkip,
-      Action<int> onLineStarted = null)
+   private void AddEntries(List<EndingDialogueEntry> target, EndingDialogueEntry[] entries)
    {
       if (entries == null || entries.Length == 0)
+         return;
+
+      foreach (EndingDialogueEntry entry in entries)
       {
-         if (finalHoldDuration > 0f)
-            yield return new WaitForSeconds(finalHoldDuration);
-         yield break;
+         if (entry != null)
+            target.Add(entry);
       }
-
-      isDialoguePlaying = true;
-      isCurrentDialogueSkippable = allowSkip;
-      skipCurrentDialogueRequested = false;
-
-      for (int index = 0; index < entries.Length; index++)
-      {
-         if (allowSkip && skipCurrentDialogueRequested)
-            break;
-
-         onLineStarted?.Invoke(index);
-         DisplayDialogueEntry(entries[index]);
-
-         bool isLastLine = index >= entries.Length - 1;
-         float waitDuration = isLastLine ? finalHoldDuration : lineInterval;
-
-         if (allowSkip)
-            yield return WaitForSecondsOrSkip(waitDuration);
-         else if (waitDuration > 0f)
-            yield return new WaitForSeconds(waitDuration);
-      }
-
-      isDialoguePlaying = false;
-      isCurrentDialogueSkippable = false;
-      skipCurrentDialogueRequested = false;
    }
 
-   // Displays one dialogue entry, including speaker name and portrait.
-   private void DisplayDialogueEntry(EndingDialogueEntry entry)
+   private void ResetSuccessTravelOverlay()
    {
-      if (entry == null || entry.dialogue == null)
-      {
-         if (bodyText != null)
-            bodyText.text = string.Empty;
+      if (successTravelLayer != null)
+         successTravelLayer.SetActive(false);
 
-         ClearSpeakerUI();
+      if (successTravelBackgroundImageA != null)
+         successTravelBackgroundImageA.sprite = successTravelBackgroundSprite;
+
+      if (successTravelBackgroundImageB != null)
+         successTravelBackgroundImageB.sprite = successTravelBackgroundSprite;
+
+      if (successTravelSubmarineImage != null)
+         successTravelSubmarineImage.sprite = successTravelSubmarineSprite;
+
+      if (successTravelBackgroundRectA != null)
+         successTravelBackgroundRectA.anchoredPosition = Vector2.zero;
+
+      if (successTravelBackgroundRectB != null)
+         successTravelBackgroundRectB.anchoredPosition = new Vector2(-TRAVEL_LAYER_WIDTH, 0f);
+
+      if (successTravelSubmarineRect != null)
+         successTravelSubmarineRect.anchoredPosition = new Vector2(0f, TRAVEL_SUBMARINE_START_Y);
+
+      if (successTravelBackgroundCoroutine != null)
+      {
+         StopCoroutine(successTravelBackgroundCoroutine);
+         successTravelBackgroundCoroutine = null;
+      }
+
+      if (successTravelSubmarineFloatCoroutine != null)
+      {
+         StopCoroutine(successTravelSubmarineFloatCoroutine);
+         successTravelSubmarineFloatCoroutine = null;
+      }
+
+      if (submarineTransform != null)
+         submarineTransform.gameObject.SetActive(true);
+   }
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Dialogue display
+   // ─────────────────────────────────────────────────────────────────────
+
+   private void ShowCurrentLine()
+   {
+      if (currentSequence == null || currentLineIndex >= currentSequence.Length)
+      {
+         CompleteSequence();
          return;
       }
 
-      NPCEncounterSystem.DialogueLine line = entry.dialogue;
-      string text = line.text ?? string.Empty;
+      EndingDialogueEntry currentEntry = currentSequence[currentLineIndex];
+      if (currentEntry == null || currentEntry.dialogue == null)
+      {
+         currentLineIndex++;
+         ShowCurrentLine();
+         return;
+      }
 
-      if (bodyText != null)
-         bodyText.text = line.isAction ? $"<i>{text}</i>" : text;
+      ApplySpeakerUI(currentEntry.speaker, currentEntry.dialogue.expression);
 
-      ApplySpeakerUI(entry.speaker, line.expression);
+      string text = currentEntry.dialogue.text ?? string.Empty;
+      currentFormattedLine = currentEntry.dialogue.isAction ? $"<i>{text}</i>" : text;
+
+      if (typingCoroutine != null)
+         StopCoroutine(typingCoroutine);
+
+      if (useTypewriterEffect)
+         typingCoroutine = StartCoroutine(TypeLine(text, currentEntry.dialogue.isAction));
+      else
+      {
+         bodyText.text = currentFormattedLine;
+         isTyping = false;
+         typingCoroutine = null;
+      }
+
+      HandleFailureLineStart();
    }
 
-   // Updates the portrait and speaker name using the ending speaker profile data.
+   private IEnumerator TypeLine(string rawText, bool isAction)
+   {
+      isTyping = true;
+      bodyText.text = string.Empty;
+
+      if (isAction)
+      {
+         for (int index = 0; index < rawText.Length; index++)
+         {
+            bodyText.text = $"<i>{rawText.Substring(0, index + 1)}</i>";
+            yield return new WaitForSeconds(textSpeed);
+         }
+      }
+      else
+      {
+         for (int index = 0; index < rawText.Length; index++)
+         {
+            bodyText.text = rawText.Substring(0, index + 1);
+            yield return new WaitForSeconds(textSpeed);
+         }
+      }
+
+      bodyText.text = currentFormattedLine;
+      isTyping = false;
+      typingCoroutine = null;
+   }
+
+   private void OnNextClicked()
+   {
+      if (isActionInProgress)
+         return;
+
+      if (isTyping)
+      {
+         if (typingCoroutine != null)
+         {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+         }
+
+         isTyping = false;
+         bodyText.text = currentFormattedLine;
+         return;
+      }
+
+      if (currentSequence == null || currentLineIndex >= currentSequence.Length)
+      {
+         CompleteSequence();
+         return;
+      }
+
+      EndingDialogueEntry currentEntry = currentSequence[currentLineIndex];
+      if (currentEntry != null && currentEntry.actionType != EndingActionType.None)
+      {
+         StartCoroutine(ExecuteEntryAction(currentEntry.actionType));
+         return;
+      }
+
+      AdvanceLine();
+   }
+
+   private void AdvanceLine()
+   {
+      currentLineIndex++;
+      ShowCurrentLine();
+   }
+
+   private void CompleteSequence()
+   {
+      nextButton.gameObject.SetActive(false);
+      closeButton.gameObject.SetActive(true);
+   }
+
+   private void OnCloseClicked()
+   {
+      StartCoroutine(CloseAndReturnToStartScene());
+   }
+
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Speaker UI helpers
+   // ─────────────────────────────────────────────────────────────────────
+
    private void ApplySpeakerUI(
       NPCEncounterSystem.NPCPersonality speaker,
       NPCEncounterSystem.ExpressionType expression)
@@ -407,72 +800,6 @@ public class EndingSequenceManager : MonoBehaviour
       portraitImage.color = portrait != null ? Color.white : new Color(1f, 1f, 1f, 0f);
    }
 
-   // Clears the current speaker name and portrait UI.
-   private void ClearSpeakerUI()
-   {
-      if (speakerNameText != null)
-         speakerNameText.text = string.Empty;
-
-      if (portraitImage != null)
-      {
-         portraitImage.sprite = null;
-         portraitImage.color = new Color(1f, 1f, 1f, 0f);
-      }
-   }
-
-   // Returns the total playback time of a dialogue block.
-   private float GetDialogueDuration(EndingDialogueEntry[] entries, float finalHoldDuration)
-   {
-      if (entries == null || entries.Length == 0)
-         return 0f;
-
-      return ((entries.Length - 1) * lineInterval) + finalHoldDuration;
-   }
-
-   // Detects skip input for skippable dialogue blocks.
-   private bool WasSkipPressed()
-   {
-      return Input.GetMouseButtonDown(0)
-         || Input.GetKeyDown(KeyCode.Space)
-         || Input.GetKeyDown(KeyCode.Return)
-         || Input.GetKeyDown(KeyCode.Escape);
-   }
-
-   // Waits for the given duration unless the current dialogue block is skipped.
-   private IEnumerator WaitForSecondsOrSkip(float duration)
-   {
-      if (duration <= 0f)
-         yield break;
-
-      float elapsed = 0f;
-
-      while (elapsed < duration)
-      {
-         if (skipCurrentDialogueRequested)
-            yield break;
-
-         elapsed += Time.deltaTime;
-         yield return null;
-      }
-   }
-
-   // Starts the failure shake once the sequence reaches the requested line index.
-   private void HandleFailureLineStarted(int lineIndex)
-   {
-      if (hasStartedFailureShake)
-         return;
-
-      if (cameraShakeTarget == null)
-         return;
-
-      if (lineIndex < Mathf.Max(0, failureShakeStartLineIndex))
-         return;
-
-      hasStartedFailureShake = true;
-      StartCoroutine(ShakeTransform(cameraShakeTarget, activeSequenceDuration, cameraShakeStrength));
-   }
-
-   // Returns the ending speaker profile for the requested personality.
    private EndingSpeakerProfile GetSpeakerProfile(NPCEncounterSystem.NPCPersonality speaker)
    {
       if (speakerProfiles == null)
@@ -487,7 +814,6 @@ public class EndingSequenceManager : MonoBehaviour
       return null;
    }
 
-   // Returns the correct portrait sprite for the requested expression.
    private Sprite GetPortraitForExpression(
       EndingSpeakerProfile profile,
       NPCEncounterSystem.ExpressionType expression)
@@ -503,13 +829,59 @@ public class EndingSequenceManager : MonoBehaviour
       };
    }
 
+   // ─────────────────────────────────────────────────────────────────────
+   //  Action helpers
+   // ─────────────────────────────────────────────────────────────────────
+
+   private IEnumerator ExecuteEntryAction(EndingActionType actionType)
+   {
+      isActionInProgress = true;
+      nextButton.interactable = false;
+
+      switch (actionType)
+      {
+         case EndingActionType.LaunchSubmarine:
+            yield return PlaySuccessTravelEntranceSequence();
+            break;
+
+         case EndingActionType.FloatSubmarine:
+            StartSuccessTravelFloating();
+            break;
+
+         case EndingActionType.StartFailureShake:
+            if (failureShakeCoroutine == null && cameraShakeTarget != null)
+               failureShakeCoroutine = StartCoroutine(ShakeTransformLoop(cameraShakeTarget, cameraShakeStrength));
+            break;
+      }
+
+      nextButton.interactable = true;
+      isActionInProgress = false;
+      AdvanceLine();
+   }
+
+   private void HandleFailureLineStart()
+   {
+      if (GameEndingState.CurrentResult != GameEndingState.EndingResult.Failure)
+         return;
+
+      if (failureShakeCoroutine != null)
+         return;
+
+      if (currentLineIndex < Mathf.Max(0, failureShakeStartLineIndex))
+         return;
+
+      if (cameraShakeTarget == null)
+         return;
+
+      failureShakeCoroutine = StartCoroutine(ShakeTransformLoop(cameraShakeTarget, cameraShakeStrength));
+   }
+
 
    // ─────────────────────────────────────────────────────────────────────
    //  Animation helpers
    // ─────────────────────────────────────────────────────────────────────
 
-   // Loops a bounce/rotation animation on the supplied transforms.
-   private IEnumerator AnimateBuildings(Transform[] targets, float duration, float amount, float speed)
+   private IEnumerator AnimateBuildingsLoop(Transform[] targets, float amount, float speed)
    {
       Vector3[] originalPositions = new Vector3[targets.Length];
       Vector3[] originalRotations = new Vector3[targets.Length];
@@ -525,7 +897,7 @@ public class EndingSequenceManager : MonoBehaviour
 
       float elapsed = 0f;
 
-      while (elapsed < duration)
+      while (isEndingActive)
       {
          elapsed += Time.deltaTime;
 
@@ -556,69 +928,37 @@ public class EndingSequenceManager : MonoBehaviour
       }
    }
 
-   // Raises the submarine upward with a slight side-to-side drift.
-   private IEnumerator AnimateSubmarineRise()
+   private IEnumerator AnimateResultTitleFloatLoop()
    {
-      if (submarineTransform == null)
+      if (resultTitleImage == null)
          yield break;
 
-      Vector2 startPosition = submarineTransform.anchoredPosition;
-      Vector2 endPosition = startPosition + Vector2.up * submarineRiseDistance;
-
+      RectTransform titleRect = resultTitleImage.rectTransform;
+      Vector2 basePosition = titleRect.anchoredPosition;
       float elapsed = 0f;
 
-      while (elapsed < submarineRiseDuration)
+      while (isEndingActive && resultTitleImage.gameObject.activeSelf)
       {
          elapsed += Time.deltaTime;
-         float t = Mathf.Clamp01(elapsed / submarineRiseDuration);
-         float easedT = Mathf.SmoothStep(0f, 1f, t);
 
-         Vector2 currentPosition = Vector2.Lerp(startPosition, endPosition, easedT);
-         currentPosition.x += Mathf.Sin(elapsed * 3f) * 10f;
-         submarineTransform.anchoredPosition = currentPosition;
+         float yOffset = Mathf.Sin(elapsed * successTitleFloatSpeed * Mathf.PI * 2f) * successTitleFloatAmount;
+         titleRect.anchoredPosition = basePosition + new Vector2(0f, yOffset);
 
          yield return null;
       }
 
-      submarineTransform.anchoredPosition = endPosition;
+      titleRect.anchoredPosition = basePosition;
    }
 
-   // Plays the floating motion after launch.
-   private IEnumerator AnimateSubmarineFloat()
-   {
-      if (submarineTransform == null)
-         yield break;
-
-      Vector2 basePosition = submarineTransform.anchoredPosition;
-      float elapsed = 0f;
-
-      while (elapsed < submarineFloatDuration)
-      {
-         elapsed += Time.deltaTime;
-
-         float yOffset = Mathf.Sin(elapsed * submarineFloatSpeed) * submarineFloatAmount;
-         float xOffset = Mathf.Sin(elapsed * submarineFloatSpeed * 0.55f) * (submarineFloatAmount * 0.35f);
-
-         submarineTransform.anchoredPosition = basePosition + new Vector2(xOffset, yOffset);
-         yield return null;
-      }
-
-      submarineTransform.anchoredPosition = basePosition;
-   }
-
-   // Shakes the supplied transform for the failure route.
-   private IEnumerator ShakeTransform(Transform target, float duration, float strength)
+private IEnumerator ShakeTransformLoop(Transform target, float strength)
    {
       if (target == null)
          yield break;
 
       Vector3 originalPosition = target.localPosition;
-      float elapsed = 0f;
 
-      while (elapsed < duration)
+      while (isEndingActive)
       {
-         elapsed += Time.deltaTime;
-
          float offsetX = UnityEngine.Random.Range(-strength, strength);
          float offsetY = UnityEngine.Random.Range(-strength, strength);
 
@@ -629,7 +969,139 @@ public class EndingSequenceManager : MonoBehaviour
       target.localPosition = originalPosition;
    }
 
-   // Fades the overlay image to the requested alpha.
+   private IEnumerator PlaySuccessTravelOverlaySequence()
+   {
+      if (successTravelLayer == null || successTravelSubmarineRect == null)
+         yield break;
+
+      successTravelLayer.SetActive(true);
+
+      if (submarineTransform != null)
+         submarineTransform.gameObject.SetActive(false);
+
+      successTravelSubmarineRect.anchoredPosition = new Vector2(0f, TRAVEL_SUBMARINE_START_Y);
+
+      float elapsed = 0f;
+
+      while (elapsed < successTravelSubmarineRiseDuration)
+      {
+         elapsed += Time.deltaTime;
+         float t = Mathf.Clamp01(elapsed / successTravelSubmarineRiseDuration);
+         float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+         float currentY = Mathf.Lerp(TRAVEL_SUBMARINE_START_Y, TRAVEL_SUBMARINE_TARGET_Y, easedT);
+         successTravelSubmarineRect.anchoredPosition = new Vector2(0f, currentY);
+
+         yield return null;
+      }
+
+      successTravelSubmarineRect.anchoredPosition = new Vector2(0f, TRAVEL_SUBMARINE_TARGET_Y);
+
+      if (successTravelBackgroundCoroutine == null)
+         successTravelBackgroundCoroutine = StartCoroutine(AnimateSuccessTravelBackgroundScrollLoop());
+
+      if (successTravelSubmarineFloatCoroutine == null)
+         successTravelSubmarineFloatCoroutine = StartCoroutine(AnimateSuccessTravelSubmarineFloatLoop());
+   }
+
+   private IEnumerator AnimateSuccessTravelBackgroundScrollLoop()
+   {
+      if (successTravelBackgroundRectA == null || successTravelBackgroundRectB == null)
+         yield break;
+
+      while (isEndingActive && successTravelLayer != null && successTravelLayer.activeSelf)
+      {
+         float delta = successTravelBackgroundScrollSpeed * Time.deltaTime;
+
+         successTravelBackgroundRectA.anchoredPosition += Vector2.right * delta;
+         successTravelBackgroundRectB.anchoredPosition += Vector2.right * delta;
+
+         if (successTravelBackgroundRectA.anchoredPosition.x >= TRAVEL_LAYER_WIDTH)
+            successTravelBackgroundRectA.anchoredPosition = new Vector2(successTravelBackgroundRectB.anchoredPosition.x - TRAVEL_LAYER_WIDTH, 0f);
+
+         if (successTravelBackgroundRectB.anchoredPosition.x >= TRAVEL_LAYER_WIDTH)
+            successTravelBackgroundRectB.anchoredPosition = new Vector2(successTravelBackgroundRectA.anchoredPosition.x - TRAVEL_LAYER_WIDTH, 0f);
+
+         yield return null;
+      }
+   }
+
+   private IEnumerator AnimateSuccessTravelSubmarineFloatLoop()
+   {
+      if (successTravelSubmarineRect == null)
+         yield break;
+
+      float elapsed = 0f;
+      Vector2 basePosition = new Vector2(0f, TRAVEL_SUBMARINE_TARGET_Y);
+
+      while (isEndingActive && successTravelLayer != null && successTravelLayer.activeSelf)
+      {
+         elapsed += Time.deltaTime;
+
+         float yOffset = Mathf.Sin(elapsed * successTravelSubmarineFloatSpeed) * successTravelSubmarineFloatAmount;
+         float xOffset = Mathf.Sin(elapsed * successTravelSubmarineFloatSpeed * 0.55f) * (successTravelSubmarineFloatAmount * 0.35f);
+
+         successTravelSubmarineRect.anchoredPosition = basePosition + new Vector2(xOffset, yOffset);
+         yield return null;
+      }
+
+      successTravelSubmarineRect.anchoredPosition = basePosition;
+   }
+
+   private IEnumerator PlaySuccessTravelEntranceSequence()
+   {
+      if (successTravelLayer == null || successTravelSubmarineRect == null)
+         yield break;
+
+      successTravelLayer.SetActive(true);
+
+      if (submarineTransform != null)
+         submarineTransform.gameObject.SetActive(false);
+
+      successTravelSubmarineRect.anchoredPosition = new Vector2(0f, TRAVEL_SUBMARINE_START_Y);
+
+      float elapsed = 0f;
+
+      while (elapsed < successTravelSubmarineRiseDuration)
+      {
+         elapsed += Time.deltaTime;
+         float t = Mathf.Clamp01(elapsed / successTravelSubmarineRiseDuration);
+         float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+         float currentY = Mathf.Lerp(TRAVEL_SUBMARINE_START_Y, TRAVEL_SUBMARINE_TARGET_Y, easedT);
+         successTravelSubmarineRect.anchoredPosition = new Vector2(0f, currentY);
+
+         yield return null;
+      }
+
+      successTravelSubmarineRect.anchoredPosition = new Vector2(0f, TRAVEL_SUBMARINE_TARGET_Y);
+   }
+
+   private void StartSuccessTravelFloating()
+   {
+      if (successTravelBackgroundCoroutine == null)
+         successTravelBackgroundCoroutine = StartCoroutine(AnimateSuccessTravelBackgroundScrollLoop());
+
+      if (successTravelSubmarineFloatCoroutine == null)
+         successTravelSubmarineFloatCoroutine = StartCoroutine(AnimateSuccessTravelSubmarineFloatLoop());
+   }
+
+   // ─────────────────────────────────────────────────────────────────────
+   //  Fade / cleanup
+   // ─────────────────────────────────────────────────────────────────────
+
+   private void SetFadeImmediate(float alpha)
+   {
+      if (fadeImage == null)
+         return;
+
+      fadeImage.gameObject.SetActive(true);
+
+      Color currentColor = fadeImage.color;
+      currentColor.a = alpha;
+      fadeImage.color = currentColor;
+   }
+
    private IEnumerator FadeTo(float targetAlpha, float duration)
    {
       if (fadeImage == null)
@@ -655,14 +1127,42 @@ public class EndingSequenceManager : MonoBehaviour
       Color endColor = fadeImage.color;
       endColor.a = targetAlpha;
       fadeImage.color = endColor;
+
+      if (targetAlpha <= 0f)
+         fadeImage.gameObject.SetActive(false);
    }
 
+   private IEnumerator CloseAndReturnToStartScene()
+   {
+      if (successTravelBackgroundCoroutine != null)
+      {
+         StopCoroutine(successTravelBackgroundCoroutine);
+         successTravelBackgroundCoroutine = null;
+      }
 
-   // ─────────────────────────────────────────────────────────────────────
-   //  Cleanup
-   // ─────────────────────────────────────────────────────────────────────
+      if (successTravelSubmarineFloatCoroutine != null)
+      {
+         StopCoroutine(successTravelSubmarineFloatCoroutine);
+         successTravelSubmarineFloatCoroutine = null;
+      }
 
-   // Destroys persistent singleton objects before returning to the start scene.
+      if (resultTitleFloatCoroutine != null)
+      {
+         StopCoroutine(resultTitleFloatCoroutine);
+         resultTitleFloatCoroutine = null;
+      }
+
+      nextButton.interactable = false;
+      closeButton.interactable = false;
+      isEndingActive = false;
+
+      yield return FadeTo(1f, fadeDuration);
+
+      CleanupPersistentObjects();
+      GameEndingState.Reset();
+      SceneManager.LoadScene(startSceneName);
+   }
+
    private void CleanupPersistentObjects()
    {
       if (NarrativeOverlayUI.Instance != null)
@@ -675,7 +1175,6 @@ public class EndingSequenceManager : MonoBehaviour
       DestroySingleton(LabManager.labManager);
    }
 
-   // Safely destroys a singleton object if it exists.
    private void DestroySingleton(MonoBehaviour currentSingleton)
    {
       if (currentSingleton != null)
