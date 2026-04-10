@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2c585cee0e53ba64dba80a7ed20919b5
+guid: d315d7645b8795b40ada9756415c83be
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5662290855432871155
-    second: pressure_valve_0
+      213: 5405715980779790427
+    second: industrial_gold_rush_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pressure_valve_0
+      name: industrial_gold_rush_0
       rect:
         serializedVersion: 2
-        x: 396
-        y: 131
-        width: 504
-        height: 526
+        x: 310
+        y: 95
+        width: 748
+        height: 572
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3fcd40d688f749e40800000000000000
-      internalID: 5662290855432871155
+      spriteID: b5028073b06f40b40800000000000000
+      internalID: 5405715980779790427
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8809c1ee2ff819a49ade39ac37a9bf35
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pressure_valve_0: 5662290855432871155
+      industrial_gold_rush_0: 5405715980779790427
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
