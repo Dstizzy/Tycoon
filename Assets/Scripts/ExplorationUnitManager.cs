@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
+   public LabManager   labManager;
    public PanelManager panelManager;
    [SerializeField] private EventDatabase     eventDatabase;   // Contains all potential node events
    [SerializeField] private EventUIController eventController; // Manages UI of current event
@@ -200,22 +201,6 @@ public class ExplorationUnitManager : MonoBehaviour
       }
    }
 
-   // Updates the cargo tab panel to show current ship inventory
-   private void SpawnRewardIcon(string itemName, int amount)
-   {
-      Transform slotTransform = inventoryIconContainer.Find(itemName);
-      if (slotTransform == null) return;
-
-      if(amount > 0)
-      {
-         slotTransform.gameObject.SetActive(true);
-         TextMeshProUGUI txt = slotTransform.Find("Count").GetComponent<TextMeshProUGUI>();
-         txt.text = $"x{amount}";
-      }
-      else
-         slotTransform.gameObject.SetActive(false);
-   }
-
    // Interrupts movement with warning panel if ship is moving into depth beyond current ship level
    private bool CheckForDepthIncrease(MapNode targetNode)
    {
@@ -240,7 +225,7 @@ public class ExplorationUnitManager : MonoBehaviour
          {
             nextTurnDestination = null;
             newDepthPanel.gameObject.SetActive(false);
-            shipManager.FinishExploration();
+            StartCoroutine(shipManager.FinishExploration());
          });
          // Option 2: Keep the ship on its exploration
          keepGoing.onClick.AddListener(() =>
@@ -462,7 +447,8 @@ public class ExplorationUnitManager : MonoBehaviour
          confirmEnd.onClick.RemoveAllListeners();
          confirmEnd.onClick.AddListener(() =>
          {
-            shipManager.FinishExploration();
+            labManager.ActivateTail();
+            StartCoroutine(shipManager.FinishExploration());
             panelManager.ClosePanel(decisionResultsPanel.gameObject);
          });
       }
@@ -755,6 +741,22 @@ public class ExplorationUnitManager : MonoBehaviour
          decisionPanel.gameObject.SetActive(true);
          SetDecisionInteractable(true);
       });
+   }
+
+   // Updates the cargo tab panel to show current ship inventory
+   private void SpawnRewardIcon(string itemName, int amount)
+   {
+      Transform slotTransform = inventoryIconContainer.Find(itemName);
+      if (slotTransform == null) return;
+
+      if (amount > 0)
+      {
+         slotTransform.gameObject.SetActive(true);
+         TextMeshProUGUI txt = slotTransform.Find("Count").GetComponent<TextMeshProUGUI>();
+         txt.text = $"x{amount}";
+      }
+      else
+         slotTransform.gameObject.SetActive(false);
    }
 
    // Controls if buttons on decision panel are interactable

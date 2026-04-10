@@ -25412,9 +25412,11 @@ MonoBehaviour:
   BuyPanel: {fileID: 1811045168}
   RecycleButton: {fileID: 143619364}
   flipTarget: {fileID: 0}
-  buyContainer: {fileID: 0}
+  worldEventSymbols: {fileID: 0}
   panelManager: {fileID: 48042074}
   currrentNewsTickerMessage: 
+  worldEventItem: {fileID: 0}
+  worldEventChange: {fileID: 0}
   marketShiftMax: 1.2
   marketShiftMin: 1.06
   isTier3BuffACtive: 0
@@ -54078,11 +54080,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 292a6c81c75df064d9105746c9e222bc, type: 2}
   middleEvents:
   - {fileID: 11400000, guid: 7d31d1d4e5e9f134bad3f18a15c9cfd9, type: 2}
-  - {fileID: 11400000, guid: 8e7ba51114e007b47af717cb0c56e768, type: 2}
+  - {fileID: 0}
   - {fileID: 11400000, guid: cd61067f57c8ec04da1bca0cb91b692a, type: 2}
   - {fileID: 11400000, guid: 00e311076e35e194c9fc57be928e6170, type: 2}
   - {fileID: 11400000, guid: b751bc3b8c918c84f840e2a026792a44, type: 2}
-  - {fileID: 11400000, guid: 05bb6b2931d8b6a4ba048df479220278, type: 2}
+  - {fileID: 0}
   - {fileID: 11400000, guid: 85d501494d616234ba90f92c13c02513, type: 2}
   - {fileID: 11400000, guid: d4458c4d107f64b4794e7d10a987fb44, type: 2}
   - {fileID: 11400000, guid: 88eeffb3ae2e46c47b55fe6554e67636, type: 2}
@@ -54115,6 +54117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationUnitManager
+  labManager: {fileID: 0}
   panelManager: {fileID: 48042074}
   eventDatabase: {fileID: 863821289}
   eventController: {fileID: 863821287}
