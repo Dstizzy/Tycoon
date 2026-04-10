@@ -56,11 +56,23 @@ public class HoverScript : MonoBehaviour
       if (mainCam == null)
          return;
 
-      Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
-      Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
+      // =========================================================
+      // THE FIX: Sync the visual outline to the PopUpManager's state
+      // If the PopUpManager has a menu open, lock the outline to that building!
+      // =========================================================
+      if (PopUpManager.buildingTransform != null)
+      {
+          currentHoverObject = PopUpManager.buildingTransform;
+      }
+      else
+      {
+          // Normal State: No menus are open, so shoot the raycast normally
+          Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
+          Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
 
-      raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero, Mathf.Infinity, Physics2D.AllLayers);
-      currentHoverObject = NormalizeHoverTarget(raycastHit2D.collider ? raycastHit2D.collider.transform : null);
+          raycastHit2D = Physics2D.Raycast(mouseWorldPos, Vector2.zero, Mathf.Infinity, Physics2D.AllLayers);
+          currentHoverObject = NormalizeHoverTarget(raycastHit2D.collider ? raycastHit2D.collider.transform : null);
+      }
 
       if (currentHoverObject != prevHoverObject)
       {

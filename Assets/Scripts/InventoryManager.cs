@@ -44,7 +44,6 @@ public class InventoryManager : MonoBehaviour
                     MIN_PRECISION_LENS_COUNT = 0,
                     MIN_MERCENARY_ENGINEER_COUNT = 0;
 
-
    public const int RESOURCE_SPACING = 35,
                     CRAFT_SPACING    = 33,
                     PEARL_POSITION   = 0,
@@ -180,15 +179,15 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 0;
-      oreCount           = 0;
-      crudeToolCount     = 0;
-      harpoonCount       = 0;
-      patchKitCount      = 0;
-      pressureValveCount = 0;
-      divingBellCount    = 0;
-      precisionLensCount = 0;
-      engineCount        = 0;
+      pearlCount         = 5000;
+      oreCount           = 5000;
+      crudeToolCount     = 1000;
+      harpoonCount       = 1000;
+      patchKitCount      = 1000;
+      pressureValveCount = 1000;
+      divingBellCount    = 1000;
+      precisionLensCount = 1000;
+      engineCount        = 1000;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */

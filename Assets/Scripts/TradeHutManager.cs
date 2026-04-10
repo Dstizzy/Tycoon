@@ -45,8 +45,7 @@ public class TradeHutManager : MonoBehaviour
 
    // Transforms
    private Transform currentBuyItem,    
-                     currentSellItem,
-                     currentMysteryBoxResult;
+                     currentSellItem;
 
    // Private variables
    private int crudeToolSellCount     = 0,
