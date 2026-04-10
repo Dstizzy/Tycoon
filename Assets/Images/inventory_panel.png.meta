@@ -103,10 +103,10 @@ TextureImporter:
       name: inventory_panel_0
       rect:
         serializedVersion: 2
-        x: 207
-        y: 22
-        width: 269
-        height: 311
+        x: 0
+        y: 0
+        width: 1023
+        height: 569
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -33,6 +33,9 @@ public class TickerSystem : MonoBehaviour {
          DontDestroyOnLoad(this.gameObject);
       }
 
+      wortldEventCanvasGroup.gameObject.SetActive(true);
+      resultCanvasGroup.gameObject.SetActive(true);
+
       // Ensure alpha is 0 when the game boots up
       if (wortldEventCanvasGroup != null) 
          wortldEventCanvasGroup.alpha = 0;

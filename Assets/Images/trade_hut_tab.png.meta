@@ -103,12 +103,12 @@ TextureImporter:
       name: trade_hut_tab_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 19
-        width: 833
-        height: 216
+        x: 148
+        y: 90
+        width: 389
+        height: 208
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 55b64a242f51f0c4c9679d03c9eb0308
     internalID: 0
     vertices: []
     indices: 

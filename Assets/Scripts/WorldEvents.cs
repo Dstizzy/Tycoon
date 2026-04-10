@@ -13,9 +13,9 @@ public class WorldEvents {
    public enum WorldEventTypes {
       CrudeToolEvent,
       HarpoonEvent,
+      DivingBellEvent,
       IndustrialGoldRushEvent,
       PressureValveEvent,
-      DivingBellEvent,
       DeepSeaWarEvent,
       PrecisionLensEvent,
       ClockworkEngineEvent,

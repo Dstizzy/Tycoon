@@ -1,4 +1,5 @@
 // libraries                                                                                     
+using Codice.CM.Common;
 using System;
 using System.ComponentModel;
 using TMPro;
@@ -542,7 +543,7 @@ public class LabManager : MonoBehaviour
       {
          initialTab.transform.Find("PanelFlask3").gameObject.SetActive(false);
          initialTab.transform.Find("PanelFlask4").gameObject.SetActive(true);
-         ActivateHead();
+         UnlockHead();
 
       }
       else
@@ -746,5 +747,12 @@ public class LabManager : MonoBehaviour
 
       if (!GameEndingState.HasEndingTriggered)
          GameEndingState.LoadSuccessEnding();
+   }
+
+   public void UnlockHead()
+   {
+      victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
+      victoryPanel.transform.Find("SubInfo/BuySect/HeadPart").gameObject.SetActive(true);
+      victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
    }
 }
