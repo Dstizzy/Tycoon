@@ -13608,51 +13608,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 262059263}
   m_CullTransparentMesh: 1
---- !u!1 &265417595
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 265417596}
-  - component: {fileID: 265417597}
-  m_Layer: 0
-  m_Name: NarrativeOverlayUI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &265417596
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 265417595}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 374.4196, y: 55.10043, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 421641952}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &265417597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 265417595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0148b1a7b650204dbf21bd3c80efe06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::NarrativeOverlayUI
-  textSpeed: 0.02
 --- !u!1 &265624217
 GameObject:
   m_ObjectHideFlags: 0
@@ -22799,41 +22754,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420713754}
   m_CullTransparentMesh: 1
---- !u!1 &421641951
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 421641952}
-  m_Layer: 0
-  m_Name: StoryTutorial
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &421641952
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 421641951}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.29895, y: -28.90155, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 265417596}
-  - {fileID: 462582161}
-  - {fileID: 1620126231}
-  - {fileID: 597801541}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &421876977
 GameObject:
   m_ObjectHideFlags: 0
@@ -24937,51 +24857,6 @@ RectTransform:
   m_AnchoredPosition: {x: 50.00001, y: 99.999954}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.9999999}
---- !u!1 &462582160
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 462582161}
-  - component: {fileID: 462582162}
-  m_Layer: 0
-  m_Name: NarrativeFlowManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &462582161
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 462582160}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 374.4196, y: 55.10043, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 421641952}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &462582162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 462582160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19b963c5d6898ef4993dc696568ac7e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::NarrativeFlowManager
-  narrativeTutorialManager: {fileID: 1620126232}
 --- !u!1 &469355080
 GameObject:
   m_ObjectHideFlags: 0
@@ -32258,50 +32133,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 596700632}
   m_CullTransparentMesh: 1
---- !u!1 &597801540
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 597801541}
-  - component: {fileID: 597801542}
-  m_Layer: 0
-  m_Name: BuildingTutorialGuideManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &597801541
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 597801540}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 421641952}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &597801542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 597801540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c8bf3c7d502bd49964917e5aaf2804, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::BuildingTutorialGuideManager
 --- !u!1 &598832434
 GameObject:
   m_ObjectHideFlags: 0
@@ -32489,7 +32320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &601538291
 Transform:
   m_ObjectHideFlags: 0
@@ -50717,7 +50548,8 @@ MonoBehaviour:
   enemyFunction: 0
   victoryFunction: 0
   oreUpgradeButton: 0
-  tutorialGoing: 1
+  isWalkthroughGoing: 0
+  tutorialSteps: []
   currentActivePart: {fileID: 0}
   currentActiveSection: {fileID: 0}
 --- !u!1 &978273051
@@ -90144,204 +89976,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616461872}
   m_CullTransparentMesh: 1
---- !u!1 &1620126230
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1620126231}
-  - component: {fileID: 1620126232}
-  m_Layer: 0
-  m_Name: NarrativeTutorialManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1620126231
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1620126230}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 374.4196, y: 55.10043, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 421641952}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1620126232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1620126230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4144f17c33745f4428551225776b4b3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Main::NarrativeTutorialManager
-  tutorialSteps:
-  - speaker: 5
-    note: Welcome
-    layoutMode: 0
-    lines:
-    - text: Hi. Welcome. Sorry, I should sound calmer than this.
-      expression: 1
-      isAction: 0
-    - text: A quick breath. A strained but professional smile.
-      expression: 5
-      isAction: 1
-    - text: I'm Dolphin. I keep this place running, or at least politely prevent
-        it from collapsing.
-      expression: 4
-      isAction: 0
-    - text: Here. Take a little emergency fund before we start.
-      expression: 1
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets: []
-    pearlRewardOnComplete: 20
-  - speaker: 5
-    note: Inventory
-    layoutMode: 0
-    lines:
-    - text: First, your bag.
-      expression: 0
-      isAction: 0
-    - text: "That\u2019s where you check what you're carrying."
-      expression: 4
-      isAction: 0
-    - text: If you're ever unsure what you have, open the inventory before improvising.
-        Please.
-      expression: 5
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets:
-    - {fileID: 626228640}
-    pearlRewardOnComplete: 0
-  - speaker: 5
-    note: Resources
-    layoutMode: 0
-    lines:
-    - text: Up there, you can read your current resources.
-      expression: 0
-      isAction: 0
-    - text: Pearls are the premium asset. Ore matters too, but pearls are what really
-        push things forward.
-      expression: 4
-      isAction: 0
-    - text: If something turns ore into pearls, it deserves your attention.
-      expression: 1
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets:
-    - {fileID: 1838237903}
-    - {fileID: 1554562917}
-    pearlRewardOnComplete: 0
-  - speaker: 5
-    note: Turn Counter
-    layoutMode: 0
-    lines:
-    - text: That counter tracks how far you've gone.
-      expression: 0
-      isAction: 0
-    - text: And how close everything is to becoming a very expensive volcanic cautionary
-        tale.
-      expression: 5
-      isAction: 0
-    - text: So yes, time matters.
-      expression: 4
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets:
-    - {fileID: 1431474490}
-    pearlRewardOnComplete: 0
-  - speaker: 5
-    note: Enemy Gauge
-    layoutMode: 1
-    lines:
-    - text: That gauge is bad news, in a nicely organized format.
-      expression: 0
-      isAction: 0
-    - text: It means a troublesome visitor is getting closer.
-      expression: 4
-      isAction: 0
-    - text: When that fills up, the day tends to become memorable in the wrong way.
-      expression: 5
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets:
-    - {fileID: 403346147}
-    pearlRewardOnComplete: 0
-  - speaker: 5
-    note: Next Day Button
-    layoutMode: 1
-    lines:
-    - text: And that button sends you into the next day.
-      expression: 0
-      isAction: 0
-    - text: "Useful, dangerous, unavoidable \u2014 just like scheduling."
-      expression: 5
-      isAction: 0
-    - text: Try not to press it before you're ready.
-      expression: 1
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets:
-    - {fileID: 1747037850}
-    pearlRewardOnComplete: 0
-  - speaker: 5
-    note: Buildings Overview
-    layoutMode: 0
-    lines:
-    - text: Now, the buildings.
-      expression: 0
-      isAction: 0
-    - text: These five keep the whole settlement moving.
-      expression: 1
-      isAction: 0
-    - text: Go in, look around, and say hello to the residents when you can.
-      expression: 4
-      isAction: 0
-    - text: They all have opinions. Some of them are even useful.
-      expression: 5
-      isAction: 0
-    highlightTargets:
-    - {fileID: 133929812}
-    - {fileID: 537004627}
-    - {fileID: 185442998}
-    - {fileID: 472332825}
-    - {fileID: 489582225}
-    uiHighlightTargets: []
-    pearlRewardOnComplete: 0
-  - speaker: 5
-    note: NPC Hint
-    layoutMode: 0
-    lines:
-    - text: One last thing.
-      expression: 4
-      isAction: 0
-    - text: If you spot someone out on the map and stop to talk, something unusual
-        might happen.
-      expression: 1
-      isAction: 0
-    - text: Could be helpful. Could be expensive. That's community life.
-      expression: 5
-      isAction: 0
-    - text: Anyway, I really do need to get back to work. Good luck.
-      expression: 1
-      isAction: 0
-    highlightTargets: []
-    uiHighlightTargets: []
-    pearlRewardOnComplete: 0
 --- !u!1 &1621919694
 GameObject:
   m_ObjectHideFlags: 0
@@ -117438,7 +117072,6 @@ SceneRoots:
   - {fileID: 1077060234}
   - {fileID: 1210336484}
   - {fileID: 562830176}
-  - {fileID: 421641952}
   - {fileID: 1346725804}
   - {fileID: 265731476}
   - {fileID: 251730723}
