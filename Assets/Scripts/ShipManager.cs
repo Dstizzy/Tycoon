@@ -46,7 +46,7 @@ public class ShipManager : MonoBehaviour
    [Header("Ship Level Settings")]
    public           int ShipLevel { get; private set; } = 1;    // Current level of the ship
    private readonly int[] maxHealthByLevel = { 0, 40, 60, 90 }; // Health ceiling for each level (index 0 is unused placeholder)
-   private readonly int[] maxFuelByLevel   = { 0, 6, 9, 12 };   // Fuel ceiling for each level (index 0 is unused placeholder)
+   private readonly int[] maxFuelByLevel   = { 0, 6, 10, 14 };  // Fuel ceiling for each level (index 0 is unused placeholder)
 
    // Permanent lab upgrade bonuses
    private int labBonusHealth    = 0;   // Total health gained from permanent lab upgrades

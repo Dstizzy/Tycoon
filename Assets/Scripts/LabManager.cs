@@ -56,6 +56,29 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject victoryPanel;
    private TickerSystem ticker;
 
+   [Header("Head Victory UI")]
+   [SerializeField] private TextMeshProUGUI headTextLabel;
+   [SerializeField] private Image headLineImage;
+   [SerializeField] private TextMeshProUGUI headInfoLabel;
+   [SerializeField] private GameObject headCompletedContainer;
+   [SerializeField] private Image headCheckMarkImage;
+
+   [Header("Tail Victory UI")]
+   [SerializeField] private TextMeshProUGUI tailTextImage;
+   [SerializeField] private Image tailLineImage;
+   [SerializeField] private TextMeshProUGUI tailInfoImage;
+   [SerializeField] private GameObject tailCompletedContainer;
+   [SerializeField] private Image tailCheckMarkImage;
+
+   [Header("Submarine Parts")]
+   [SerializeField] private GameObject submarineFull;
+   [SerializeField] private GameObject submarineSkelParent;
+   [SerializeField] private GameObject submarineBlackParent;
+   [SerializeField] private GameObject submarineSkelHead;
+   [SerializeField] private GameObject submarineSkelTail;
+   [SerializeField] private GameObject submarineBlackedOutHead;
+   [SerializeField] private GameObject submarineBlackedOutTail;
+
 
    // Public variables                                                                          
    public static int  currentCommerceTier { get; set; } = 0;
@@ -548,8 +571,7 @@ public class LabManager : MonoBehaviour
       {
          initialTab.transform.Find("PanelFlask3").gameObject.SetActive(false);
          initialTab.transform.Find("PanelFlask4").gameObject.SetActive(true);
-         UnlockHead();
-
+         ActivateHead();
       }
       else
          Debug.Log("There is no flask");
@@ -645,116 +667,86 @@ public class LabManager : MonoBehaviour
    //Shows the victory panel and sets up the buttons for the submarine assembly
    public void ShowVictoryPanel()
    {
-      bool isHeadReady,
-           isBodyReady;
+      if (victoryPanel == null) return;
+      panelManager.OpenPanel(victoryPanel.gameObject);
+      PopUpManager.Instance.EnablePlayerInput();
 
-      if (victoryPanel != null)
+      // Use the static bools directly for the visuals
+      if (submarineSkelParent != null)
       {
-         panelManager.OpenPanel(victoryPanel.gameObject);
-         PopUpManager.Instance.DisablePlayerInput();
+         // If headUnlocked is true, show the skeleton head
+         if (submarineSkelHead != null) submarineSkelHead.SetActive(LabManager.headUnlocked);
+         // If tailUnlocked is true, show the skeleton tail
+         if (submarineSkelTail != null) submarineSkelTail.SetActive(LabManager.tailUnlocked);
+      }
 
-         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
-         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
-                                               && InventoryManager.Instance.pressureValveCount >= 5
-                                               && InventoryManager.Instance.precisionLensCount >= 5;
+      // Update blacked out versions (Opposite of unlocked)
+      if (submarineBlackedOutHead != null) submarineBlackedOutHead.SetActive(!LabManager.headUnlocked);
+      if (submarineBlackedOutTail != null) submarineBlackedOutTail.SetActive(!LabManager.tailUnlocked);
 
-         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
-         if (skeleton != null)
-         {
-            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
-            skeleton.Find("SubmarineBody").gameObject.SetActive(isBodyReady);
-            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
-         }
-
-         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
-         if (qestionMark != null)
-         {
-            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
-               qestionMark.gameObject.SetActive(false);
-            else
-               qestionMark.gameObject.SetActive(true);
-         }
-
-         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
-         {
-            ActivateFinalForm();
-         }
+      // Check for win condition
+      if (LabManager.headUnlocked && LabManager.tailUnlocked)
+      {
+         ActivateFinalForm();
       }
    }
 
    // Activates the head of the submarine
    public void ActivateHead()
    {
-      var headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/HeadText").GetComponent<Image>();
-      var color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
+      LabManager.headUnlocked = true;
 
-      headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/Line").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
+      // 1. Fade the Head UI elements directly
+      if (headTextLabel != null) headTextLabel.color = new Color(1, 1, 1, 0.5f);
+      if (headLineImage != null) headLineImage.color = new Color(1, 1, 1, 0.5f);
+      if (headInfoLabel != null) headInfoLabel.color = new Color(1, 1, 1, 0.5f);
 
-      headTextImage = victoryPanel.transform.Find("SubInfo/HeadPart/HeadInfo").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
+      // 2. Show the completed checkmark
+      if (headCompletedContainer != null) headCompletedContainer.SetActive(true);
+      if (headCheckMarkImage != null) headCheckMarkImage.color = new Color(1, 1, 1, 0.5f);
 
-      victoryPanel.transform.Find("SubInfo/HeadPart/completed").gameObject.SetActive(true);
+      if (submarineBlackedOutHead != null) submarineBlackedOutHead.SetActive(false);
+      if (submarineSkelHead != null) submarineSkelHead.SetActive(true);
 
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
+      // 3. Check for win condition (If tail is already active)
+      if (LabManager.tailUnlocked)
       {
          ActivateFinalForm();
-      }
-      else
-      {
-         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineHead").gameObject.SetActive(false);
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
       }
    }
 
    // Activates the tail of the submarine
    public void ActivateTail()
    {
-      var headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/TailText").GetComponent<Image>();
-      var color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
+      LabManager.tailUnlocked = true;
 
-      headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/Line").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
+      // Fade the images (Directly, no searching!)
+      if (tailTextImage != null) tailTextImage.color = new Color(1, 1, 1, 0.5f);
+      if (tailLineImage != null) tailLineImage.color = new Color(1, 1, 1, 0.5f);
+      if (tailInfoImage != null) tailInfoImage.color = new Color(1, 1, 1, 0.5f);
 
-      headTextImage = victoryPanel.transform.Find("SubInfo/TailPart/TailInfo").GetComponent<Image>();
-      color = headTextImage.color;
-      color.a = .5f;
-      headTextImage.color = color;
+      // Show the checkmark
+      if (tailCompletedContainer != null) tailCompletedContainer.SetActive(true);
+      if (tailCheckMarkImage != null) tailCheckMarkImage.color = new Color(1, 1, 1, 0.5f);
 
-      victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
+      if (submarineBlackedOutTail != null) submarineBlackedOutTail.SetActive(false);
+      if (submarineSkelTail != null) submarineSkelTail.SetActive(true);
+
+      // Check for win condition
+      if (LabManager.headUnlocked)
       {
          ActivateFinalForm();
-      }
-      else
-      {
-         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineTail").gameObject.SetActive(false);   
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
       }
    }
 
    // Activates the final form of the submarine when all parts are active
    public void ActivateFinalForm()
    {
-      victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
-      victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
-   }
+      // 1. Turn off the "WIP" versions entirely
+      if (submarineBlackParent != null) submarineBlackParent.SetActive(false);
+      if (submarineSkelParent != null) submarineSkelParent.SetActive(false);
 
-   public void UnlockHead()
-   {
-      victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
-      victoryPanel.transform.Find("SubInfo/BuySect/HeadPart").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
+      // 2. Turn on the "Final" version
+      if (submarineFull != null) submarineFull.SetActive(true);
    }
 }

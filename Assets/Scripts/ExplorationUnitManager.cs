@@ -8,11 +8,11 @@ using JetBrains.Annotations;
 
 public class ExplorationUnitManager : MonoBehaviour
 {
-   public LabManager   labManager;
+   public LabManager labManager;
    public PanelManager panelManager;
-   [SerializeField] private EventDatabase     eventDatabase;   // Contains all potential node events
+   [SerializeField] private EventDatabase eventDatabase;   // Contains all potential node events
    [SerializeField] private EventUIController eventController; // Manages UI of current event
-   [SerializeField] private ShipManager       shipManager;     // Tracks the ship's stats and inventory
+   [SerializeField] private ShipManager shipManager;     // Tracks the ship's stats and inventory
 
    [SerializeField] private Transform explorePanel;         // Panel to start an expedition
    [SerializeField] private Transform upgradePanel;         // Panel to upgrade the exploration unit
@@ -35,8 +35,8 @@ public class ExplorationUnitManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI floatingResultsFuel;   // Fading floating text in decision results panel for fuel change
 
    [Header("Exploration Visuals")]
-   [SerializeField] private SpriteRenderer  buildingSpriteRenderer;
-   [SerializeField] private List<Sprite>    explorationLevelSprites;
+   [SerializeField] private SpriteRenderer buildingSpriteRenderer;
+   [SerializeField] private List<Sprite> explorationLevelSprites;
    [SerializeField] private TextMeshProUGUI explorationLevelText;
 
    [Header("Level UI")]
@@ -46,20 +46,20 @@ public class ExplorationUnitManager : MonoBehaviour
    private MapNode nextTurnDestination; // Map node ship is scheduled to move to on next turn
 
    // ID constants for the base menu buttons
-   const int EXPLORE_BUTTON           = 1;
-   const int INFO_BUTTON              = 2;
-   const int UPGRADE_BUTTON           = 3;
-   const int LEVEL2_PEARL_COST        = 200;  // Pearl cost to reach level 2
-   const int LEVEL3_PEARL_COST        = 500;  // Pearl cost to reach level 3
-   const int MAX_SHIP_LEVEL           = 3;    // The maximum level the exploration unit can reach
-   const int FLOATING_STAT_DISTANCE   = 30;   // Distance the floating ship stat moves in decision results panel
-   const float POP_DURATION           = 0.4f; // Duration of the pop animation in decision results panel
+   const int EXPLORE_BUTTON = 1;
+   const int INFO_BUTTON = 2;
+   const int UPGRADE_BUTTON = 3;
+   const int LEVEL2_PEARL_COST = 200;  // Pearl cost to reach level 2
+   const int LEVEL3_PEARL_COST = 500;  // Pearl cost to reach level 3
+   const int MAX_SHIP_LEVEL = 3;    // The maximum level the exploration unit can reach
+   const int FLOATING_STAT_DISTANCE = 30;   // Distance the floating ship stat moves in decision results panel
+   const float POP_DURATION = 0.4f; // Duration of the pop animation in decision results panel
    const float FLOATING_STAT_DURATION = 2.0f; // Duration the floating ship stat lasts in results panel
- 
 
-   public  bool isExploring       = false; // Determines if exploration is currently ongoing
-   private bool isWaiting         = false; // Triggered when an event causes user to lose an exploration turn
-   private int  lastProcessedTurn = 0;     // Tracks the last turn that has been processed
+
+   public bool isExploring = false; // Determines if exploration is currently ongoing
+   private bool isWaiting = false; // Triggered when an event causes user to lose an exploration turn
+   private int lastProcessedTurn = 0;     // Tracks the last turn that has been processed
 
    public static ExplorationUnitManager Instance { get; private set; }
 
@@ -176,7 +176,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public void ConfirmUpgrade()
    {
       int upgradeCost = GetUpgradeCost();
-      
+
       // Upgrade ship if is not at max level and if it can be afforded
       if (shipManager.ShipLevel < MAX_SHIP_LEVEL && InventoryManager.Instance.TrySpendPearl(upgradeCost))
       {
@@ -218,7 +218,7 @@ public class ExplorationUnitManager : MonoBehaviour
          if (depthWarningText != null)
             depthWarningText.text = $"Ship entering new depth.\nPressure will exceed hull rating.\nTaking {predictedDamage} health per turn";
 
-         Button sendHome  = newDepthPanel.Find("Return").GetComponent<Button>();
+         Button sendHome = newDepthPanel.Find("Return").GetComponent<Button>();
          Button keepGoing = newDepthPanel.Find("KeepGoing").GetComponent<Button>();
 
          sendHome.onClick.RemoveAllListeners();
@@ -254,11 +254,11 @@ public class ExplorationUnitManager : MonoBehaviour
       foreach (Transform child in container)
       {
          NodeHover hover = child.GetComponent<NodeHover>();
-         if (hover != null) 
+         if (hover != null)
             hover.isTierLocked = false;
          child.gameObject.SetActive(true);
          Button btn = child.GetComponent<Button>();
-         if (btn != null) 
+         if (btn != null)
             btn.interactable = true;
       }
 
@@ -271,15 +271,15 @@ public class ExplorationUnitManager : MonoBehaviour
          button1.gameObject.SetActive(true);
          button1.GetComponentInChildren<TextMeshProUGUI>().text = textA;
          button1.onClick.RemoveAllListeners();
-         if (actionA != null) 
+         if (actionA != null)
             button1.onClick.AddListener(actionA);
 
          // Check if choice is locked by Lab upgrades
-         bool isLockedA = (currentNode  != null && currentNode.type != MapNode.NodeType.Directional) && 
+         bool isLockedA = (currentNode != null && currentNode.type != MapNode.NodeType.Directional) &&
                            currentEvent != null && currentEvent.choiceA.requiresLabTier && !shipManager.isTier2Unlocked;
 
          NodeHover hover1 = button1.GetComponent<NodeHover>();
-         if (hover1 != null) 
+         if (hover1 != null)
             hover1.isTierLocked = isLockedA;
          button1.interactable = interactableA && !isLockedA;
       }
@@ -295,7 +295,7 @@ public class ExplorationUnitManager : MonoBehaviour
             if (actionB != null) button2.onClick.AddListener(actionB);
 
             // Check if choice is locked by Lab upgrades
-            bool isLockedB = (currentNode  != null && currentNode.type != MapNode.NodeType.Directional) && 
+            bool isLockedB = (currentNode != null && currentNode.type != MapNode.NodeType.Directional) &&
                               currentEvent != null && currentEvent.choiceB.requiresLabTier && !shipManager.isTier2Unlocked;
             NodeHover hover2 = button2.GetComponent<NodeHover>();
             if (hover2 != null)
@@ -339,13 +339,13 @@ public class ExplorationUnitManager : MonoBehaviour
       // Otherwise, move on to the next turn
       else
          if (currentNode != null)
-         {
-            nextTurnDestination = currentNode.nextNode;
-            if (!CheckForDepthIncrease(nextTurnDestination))
-               CloseDecisionPanel();
-         }
-         else
+      {
+         nextTurnDestination = currentNode.nextNode;
+         if (!CheckForDepthIncrease(nextTurnDestination))
             CloseDecisionPanel();
+      }
+      else
+         CloseDecisionPanel();
    }
 
    // Handles logic for new turn starting (movement, ship stat losses, event generation)
@@ -371,7 +371,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if (!isExploring) return;
 
       MapNode current = MapManager.Instance.currentNode;
-      if(current == null) return;
+      if (current == null) return;
 
       // Check for exploration end condition
       if (current.isFinalNode)
@@ -441,33 +441,88 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles the end-of-map sequence
    public void HandleFinalNode(MapNode current)
    {
+      /*  bool isWinner = false;
+
+        // Check if current final node is the winning final node
+        if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
+           isWinner = true;
+
+        if (isWinner)
+        {
+           decisionResults.text = "MISSION ACCOMPLISHED!\nYou have found the vessel piece.\nYou will now return.";
+           panelManager.OpenPanel(decisionResultsPanel.gameObject);
+           Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
+           confirmEnd.onClick.RemoveAllListeners();
+           confirmEnd.onClick.AddListener(() =>
+           {
+              labManager.ActivateTail();
+              StartCoroutine(shipManager.FinishExploration());
+              panelManager.ClosePanel(decisionResultsPanel.gameObject);
+           });
+        }
+        else
+        {
+           EventChoice consolationPrize = new EventChoice();
+           consolationPrize.pearlChange = 200;
+           consolationPrize.oreChange   = 200;
+           ProcessDecision(consolationPrize, null);
+
+           decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nPearl: +200\nOre: +200";
+        }
+      */
       bool isWinner = false;
 
       // Check if current final node is the winning final node
       if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
          isWinner = true;
 
+      // Open the panel first
+      panelManager.OpenPanel(decisionResultsPanel.gameObject);
+      Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
+      confirmEnd.onClick.RemoveAllListeners();
+
       if (isWinner)
       {
          decisionResults.text = "MISSION ACCOMPLISHED!\nYou have found the vessel piece.\nYou will now return.";
-         panelManager.OpenPanel(decisionResultsPanel.gameObject);
-         Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
-         confirmEnd.onClick.RemoveAllListeners();
+
          confirmEnd.onClick.AddListener(() =>
          {
-            labManager.ActivateTail();
+            // Reset local exploration state immediately
+            isExploring = false;
+            nextTurnDestination = null;
             StartCoroutine(shipManager.FinishExploration());
             panelManager.ClosePanel(decisionResultsPanel.gameObject);
+            if (LabManager.labManager != null)
+               LabManager.labManager.ActivateTail();
+
+            // Ensure the main UI is restored
+            if (MainUIManager.mainUI != null)
+               MainUIManager.mainUI.SetMainButtonsInteractable(true);
          });
       }
       else
       {
+         // For the dead end, we give rewards and THEN let them confirm exit
          EventChoice consolationPrize = new EventChoice();
          consolationPrize.pearlChange = 200;
-         consolationPrize.oreChange   = 200;
-         ProcessDecision(consolationPrize, null);
+         consolationPrize.oreChange = 200;
+
+         // We bypass ProcessDecision here to avoid the standard sequence conflict
+         shipManager.ApplyEventResult(consolationPrize);
 
          decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nPearl: +200\nOre: +200";
+
+         confirmEnd.onClick.AddListener(() =>
+         {
+            isExploring = false;
+            nextTurnDestination = null;
+
+            StartCoroutine(shipManager.FinishExploration());
+            panelManager.ClosePanel(decisionResultsPanel.gameObject);
+
+            if (MainUIManager.mainUI != null)
+               MainUIManager.mainUI.SetMainButtonsInteractable(true);
+         });
       }
    }
 

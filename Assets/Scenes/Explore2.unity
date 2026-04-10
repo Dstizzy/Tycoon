@@ -39109,6 +39109,23 @@ MonoBehaviour:
   productionTab: {fileID: 91669254}
   explorationTab: {fileID: 120211963}
   victoryPanel: {fileID: 1130683000}
+  headTextLabel: {fileID: 812773411}
+  headLineImage: {fileID: 1759396300}
+  headInfoLabel: {fileID: 1060999456}
+  headCompletedContainer: {fileID: 2118005736}
+  headCheckMarkImage: {fileID: 149554093}
+  tailTextImage: {fileID: 624725968}
+  tailLineImage: {fileID: 905476943}
+  tailInfoImage: {fileID: 1418661108}
+  tailCompletedContainer: {fileID: 1321855826}
+  tailCheckMarkImage: {fileID: 333477532}
+  submarineFull: {fileID: 1995647852}
+  submarineSkelParent: {fileID: 51135301}
+  submarineBlackParent: {fileID: 748891339}
+  submarineSkelHead: {fileID: 1829698139}
+  submarineSkelTail: {fileID: 695108431}
+  submarineBlackedOutHead: {fileID: 251710060}
+  submarineBlackedOutTail: {fileID: 1228684651}
   labTutorialFunction: 0
   victoryTutorialFunction: 0
 --- !u!1 &728558577
