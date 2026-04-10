@@ -42451,7 +42451,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 1
   m_Sprite: {fileID: 3887344174053154279, guid: 10b3f455b96bf46cabc92efae7dd30ea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -42608,7 +42608,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.3, y: 5.6}
+  m_AnchoredPosition: {x: -10.2, y: -0.7}
   m_SizeDelta: {x: 118.8, y: 86.31}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &765335988
@@ -115436,7 +115436,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 15.43
+  orthographic size: 19.63
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
