@@ -21,9 +21,10 @@ public class ShipManager : MonoBehaviour
 
 
    public PanelManager panelManager; // Reference to global UI panel controller
+   [SerializeField] private ExplorationUnitManager explorationUnitManager;
+
 
    [Header("UI References")]
-   [SerializeField] private ExplorationUnitManager explorationUnitManager;
    [SerializeField] private Transform fuelPanel;          // UI panel displayed when ship runs out of fuel
    [SerializeField] private Transform healthPanel;        // UI panel displayed when ship hull health reaches zero
    [SerializeField] private Transform confirmReturnPanel; // UI panel asking user to confirm request to end exloration
@@ -47,9 +48,11 @@ public class ShipManager : MonoBehaviour
    private readonly int[] maxFuelByLevel   = { 0, 6, 9, 12 };   // Fuel ceiling for each level (index 0 is unused placeholder)
 
    // Permanent lab upgrade bonuses
-   private int labBonusHealth    = 0; // Total health gained from permanent lab upgrades
-   private int labBonusFuel      = 0; // Total fuel gained from permanent fuel upgrades
-   private int labLootMultiplier = 1; // Multiplier applied to exedition rewards (default 1)
+   private int labBonusHealth    = 0;   // Total health gained from permanent lab upgrades
+   private int labBonusFuel      = 0;   // Total fuel gained from permanent fuel upgrades
+   private int labLootMultiplier = 1;   // Multiplier applied to exedition rewards (default 1)
+   public bool isTier2Unlocked = false; // Determines if second lab upgrade is unlocked and crafted items can be discovered
+
 
    [Header("Current Stats")]
    // The current stats of the ship
@@ -62,7 +65,6 @@ public class ShipManager : MonoBehaviour
    int currentDepth = 1; // The current depth zone the ship is in
 
    [Header("Ship Inventory - Crafts")]
-   public bool isTier2Unlocked = false; // Determines if second lab upgrade is unlocked and crafted items can be discovered
    // Current inventory of crafts
    int currentPatchKit;
    int currentHarpoon;
@@ -452,7 +454,6 @@ public class ShipManager : MonoBehaviour
       confirmRewards.onClick.RemoveAllListeners();
       confirmRewards.onClick.AddListener(() =>
       {
-         noRewardsText.SetActive(false);
          CloseFinalRewardsPanel();
          AddRewards(); // Add loot to main inventory
          ResetShip();  // Prepare ship for new exploration
@@ -577,6 +578,7 @@ public class ShipManager : MonoBehaviour
    // Closes the final rewards panel
    public void CloseFinalRewardsPanel()
    {
+      noRewardsText.SetActive(false);
       panelManager.ClosePanel(finalRewardsPanel.gameObject);
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
