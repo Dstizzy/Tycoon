@@ -108,11 +108,16 @@ public class LabManager : MonoBehaviour
          Debug.LogError("Inventory instance is not initialized");
       else
          inv    = InventoryManager.Instance;
-      
+
+      if (ShipManager.Instance == null)
+         Debug.LogError("Ship Manager instance is not initialized");
+      else
+         shipManager = ShipManager.Instance;
+
       if (TickerSystem.Instance == null)
          Debug.LogError("Ticker instance is not initialized");
       else
-          ticker = TickerSystem.Instance;
+         ticker = TickerSystem.Instance;
 
 
       /* Set the info panel to inactive if it exists                                           */
@@ -435,8 +440,8 @@ public class LabManager : MonoBehaviour
       /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
-         if (shipManager != null)
-            shipManager.ApplyLabShipBonus();
+         if (ShipManager.Instance != null)
+            ShipManager.Instance.ApplyLabShipBonus();
 
          ticker.ShowTicker("Exploration Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       } 
@@ -472,8 +477,8 @@ public class LabManager : MonoBehaviour
       {
          if (tabType == explorationTab) 
          { 
-            if (shipManager != null)
-               shipManager.UnlockTier2Choices();
+            if (ShipManager.Instance != null)
+               ShipManager.Instance.UnlockTier2Choices();
             else
                Debug.Log("There is no tab");
             ticker.ShowTicker("Exploration Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
@@ -514,8 +519,8 @@ public class LabManager : MonoBehaviour
       {
          HandleFlask();
 
-         if (shipManager != null)
-            shipManager.ApplyLabRewardBonus();
+         if (ShipManager.Instance != null)
+            ShipManager.Instance.ApplyLabRewardBonus();
 
          ticker.ShowTicker("Exploration Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       } 

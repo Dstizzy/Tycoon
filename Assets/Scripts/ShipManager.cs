@@ -19,6 +19,7 @@ public class ShipManager : MonoBehaviour
    public const float ITEM_DELAY           = 0.3f; // Duration of the delay between final reward panel entries
    public const float POP_DURATION         = 0.5f; // Duration of the item pop animation in final rewards panel
 
+   public static ShipManager Instance { get; private set; }
 
    public PanelManager panelManager; // Reference to global UI panel controller
    [SerializeField] private ExplorationUnitManager explorationUnitManager;
@@ -107,6 +108,13 @@ public class ShipManager : MonoBehaviour
 
    void Awake()
    {
+      if (Instance != null && Instance != this)
+      {
+         Destroy(this.gameObject);
+         return;
+      }
+      Instance = this;
+
       // Initialize ship's base stats and ensure ship has full health and fuel
       UpdateStatsToLevel();
       currentHealth = maxHealth;
