@@ -31,7 +31,7 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
-    healthDamage: -5
+    healthDamage: 5
   choiceB:
     buttonText: Ignore
     resultText: 

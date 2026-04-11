@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour {
 
       // LabManager Statics
       LabManager.headUnlocked        = false;
-      LabManager.bodyUnlocked        = false;
       LabManager.tailUnlocked        = false;
       LabManager.currentCommerceTier = 0;
 

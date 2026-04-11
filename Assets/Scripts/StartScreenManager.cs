@@ -3,11 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenuManager : MonoBehaviour
+public class StartScreenManager : MonoBehaviour
 {
    // Must assign these slots in the Inspector.
    public Animator FadePanelAnimator;
    public float FadeDuration = 0.5f;
+
+   public static StartScreenManager Instance { get; private set; }
+
+   private void Awake()
+   {
+      if (Instance != null && Instance != this)
+      {
+         Destroy(this.gameObject);
+      }
+      else
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+   }
 
    // Called by the START button.
    public void OnStartButtonClick()
@@ -26,6 +41,11 @@ public class MainMenuManager : MonoBehaviour
    public void OnSettingsButtonClick()
    {
       Debug.Log("Settings button clicked!");
+   }
+
+   public void OpenScene(string sceneName)
+   {
+      StartCoroutine(FadeAndLoadScene(sceneName));
    }
 
    // Coroutine to execute fade-out and load the scene.

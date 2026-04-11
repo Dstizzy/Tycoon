@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 96737f4d7ea240f4595a46f27c2cfa43
+guid: 676a881c3c26d714f84576aa74ac9048
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2013349837863421701
-    second: Gemini_Generated_Image_vaq0zevaq0zevaq0_0
+      213: 3248319677423664638
+    second: ExploreInventoryFrame_0
+  - first:
+      213: -1506464454228375859
+    second: ExploreInventoryFrame_1
+  - first:
+      213: -8629363381479147105
+    second: ExploreInventoryFrame_2
+  - first:
+      213: -8356161446331224378
+    second: ExploreInventoryFrame_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_vaq0zevaq0zevaq0_0
+      name: ExploreInventoryFrame_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 8
         y: 0
-        width: 1378
-        height: 1533
+        width: 770
+        height: 1286
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 97, y: 95, z: 107, w: 114}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efdbfb94989541d20800000000000000
+      internalID: 3248319677423664638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExploreInventoryFrame_1
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1283
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bf87f895df42f04e0800000000000000
-      internalID: -2013349837863421701
+      spriteID: dc607fa7f86f71be0800000000000000
+      internalID: -1506464454228375859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExploreInventoryFrame_2
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 26
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f99fb2199b75e3880800000000000000
+      internalID: -8629363381479147105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExploreInventoryFrame_3
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 0
+        width: 33
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ceec99ff63f80c80800000000000000
+      internalID: -8356161446331224378
       vertices: []
       indices: 
       edges: []
@@ -125,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6a828f9b9dc4e264b88c605804c2eede
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_vaq0zevaq0zevaq0_0: -2013349837863421701
+      ExploreInventoryFrame_0: 3248319677423664638
+      ExploreInventoryFrame_1: -1506464454228375859
+      ExploreInventoryFrame_2: -8629363381479147105
+      ExploreInventoryFrame_3: -8356161446331224378
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
