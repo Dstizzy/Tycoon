@@ -106,30 +106,32 @@ public class NPCEncounterSystem : MonoBehaviour
         }
     }
 
-    // The result the player receives after choosing an option.
-    // pearlChange: positive = gain, negative = loss
-    // oreCost:     ore spent (always >= 0)
-    [System.Serializable]
-    public class EncounterOutcome
-    {
-        public DialogueLine[] resultDialogues;
-        public int pearlChange;
-        public int oreCost;
-        public bool isPositive;
+   // The result the player receives after choosing an option.
+   // pearlChange: positive = gain, negative = loss
+   // oreCost:     ore spent (always >= 0)
+   [System.Serializable]
+   public class EncounterOutcome
+   {
+      public DialogueLine[] resultDialogues;
+      public int pearlChange;
+      public int oreCost;
+      public bool isPositive;
+      public bool keepNpcAfterClose;
 
-        public EncounterOutcome() { }
+      public EncounterOutcome() { }
 
-        // Convenience constructor for single-line error/fallback outcomes
-        public EncounterOutcome(string singleLine, ExpressionType expr, int pearl, bool positive)
-        {
-            resultDialogues = new DialogueLine[] { new DialogueLine(singleLine, expr) };
-            pearlChange = pearl;
-            isPositive = positive;
-        }
-    }
+      // Convenience constructor for single-line error/fallback outcomes
+      public EncounterOutcome(string singleLine, ExpressionType expr, int pearl, bool positive)
+      {
+         resultDialogues = new DialogueLine[] { new DialogueLine(singleLine, expr) };
+         pearlChange = pearl;
+         isPositive = positive;
+         keepNpcAfterClose = false;
+      }
+   }
 
-    // A complete encounter: opening dialogue lines followed by player choices
-    [System.Serializable]
+   // A complete encounter: opening dialogue lines followed by player choices
+   [System.Serializable]
     public class EncounterScenario
     {
         public DialogueLine[] openingDialogues;
@@ -149,28 +151,29 @@ public class NPCEncounterSystem : MonoBehaviour
     }
 
 
-    // ─────────────────────────────────────────────────────────────────────
-    //  Inspector fields
-    // ─────────────────────────────────────────────────────────────────────
+   // ─────────────────────────────────────────────────────────────────────
+   //  Inspector fields
+   // ─────────────────────────────────────────────────────────────────────
 
-    [Header("NPC Profiles (6 Characters)")]
-    [SerializeField] private NPCProfile[] npcProfiles = new NPCProfile[6];
+   [Header("NPC Profiles (6 Characters)")]
+   [SerializeField] private NPCProfile[] npcProfiles = new NPCProfile[6];
 
-    [Header("Spawn Settings")]
-    [SerializeField] private Transform[] buildingLocations;   // 5 building transforms
-    [SerializeField] private GameObject npcPrefab;            // Prefab with SpriteRenderer + Collider2D
-    [SerializeField] private Vector3 spawnOffset = new Vector3(2f, 1f, 0f);
-    [SerializeField, Range(0, 100)] private int spawnChancePerTurn = DEFAULT_SPAWN_CHANCE;
+   [Header("Spawn Settings")]
+   [SerializeField] private Transform[] buildingLocations;   // 5 building transforms
+   [SerializeField] private GameObject npcPrefab;            // Prefab with SpriteRenderer + Collider2D
+   [SerializeField] private Vector3 spawnOffset = new Vector3(2f, 1f, 0f);
+   [SerializeField] private Vector3 npcWorldScale = new Vector3(4.5f, 4.5f, 1f);
+   [SerializeField, Range(0, 100)] private int spawnChancePerTurn = DEFAULT_SPAWN_CHANCE;
 
-    [Header("UI References")]
-    [SerializeField] private NPCDialogueUI dialogueUI;
+   [Header("UI References")]
+   [SerializeField] private NPCDialogueUI dialogueUI;
 
 
-    // ─────────────────────────────────────────────────────────────────────
-    //  Runtime state
-    // ─────────────────────────────────────────────────────────────────────
+   // ─────────────────────────────────────────────────────────────────────
+   //  Runtime state
+   // ─────────────────────────────────────────────────────────────────────
 
-    private GameObject currentNPCObject;
+   private GameObject currentNPCObject;
     private NPCProfile currentNPC;
     private EncounterScenario currentScenario;
     private bool hasActiveNPC = false;
@@ -1765,11 +1768,11 @@ public class NPCEncounterSystem : MonoBehaviour
         if (sr != null && currentNPC.mapSprite != null)
             sr.sprite = currentNPC.mapSprite;
 
-        // Scale up so the NPC is easily visible on the map
-        currentNPCObject.transform.localScale = new Vector3(4.5f, 4.5f, 1f);
+      // Scale up so the NPC is easily visible on the map
+      currentNPCObject.transform.localScale = npcWorldScale;
 
-        // Ensure there is a collider for click detection
-        if (currentNPCObject.GetComponent<Collider2D>() == null)
+      // Ensure there is a collider for click detection
+      if (currentNPCObject.GetComponent<Collider2D>() == null)
         {
             BoxCollider2D box = currentNPCObject.AddComponent<BoxCollider2D>();
             box.size = new Vector2(1f, 1f);
@@ -1835,7 +1838,8 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("You don't have enough pearls...", ExpressionType.Neutral)
                 },
                pearlChange = 0,
-               isPositive = false
+               isPositive = false,
+               keepNpcAfterClose = true
             };
          }
 
@@ -1848,7 +1852,8 @@ public class NPCEncounterSystem : MonoBehaviour
                         new DialogueLine("You don't have enough ore...", ExpressionType.Neutral)
                 },
                pearlChange = 0,
-               isPositive = false
+               isPositive = false,
+               keepNpcAfterClose = true
             };
          }
       }
@@ -1937,9 +1942,10 @@ public class NPCEncounterSystem : MonoBehaviour
    }
 
    // Called by the dialogue UI when the conversation ends
-   public void OnDialogueEnded()
+   public void OnDialogueEnded(bool shouldDespawnNpc = true)
     {
-        DespawnNPC();
+      if (shouldDespawnNpc)
+         DespawnNPC();
     }
 
     // Returns the correct portrait sprite for a given expression type.

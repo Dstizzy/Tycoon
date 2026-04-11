@@ -52,6 +52,7 @@ public class TurnManager : MonoBehaviour
    [Header("Enemy Settings")]
    [SerializeField] private GameObject enemyPanel;      // The enemy panel UI element.
    [SerializeField] private GameObject heatProgressBar; // The heat level progress bar UI element.
+   private bool hasShownFirstEnemyAttackTutorial;  // Flag to track if the first enemy attack tutorial has been shown
 
 
    // public propertries
@@ -174,6 +175,9 @@ public class TurnManager : MonoBehaviour
    // Ends the game when the maximum number of turns is reached.
    void EndGame()
    {
+      if (GameEndingState.HasEndingTriggered)
+         return;
+
       _isGameActive = false;
       Debug.Log("Game over! Reached max turn(" + maxTurns + ").");
 
@@ -186,6 +190,8 @@ public class TurnManager : MonoBehaviour
       {
          endTurnButton.interactable = false;
       }
+
+      GameEndingState.LoadFailureEnding();
    }
 
    // Handles the jamming logic for the Ore Refinery at the start of each turn
@@ -224,7 +230,10 @@ public class TurnManager : MonoBehaviour
       oreManager.IsBlocked = true;
       PopUpManager.IsOreRefineryBlocked = true;
       oreManager.ActivateJamSymbol();
+      oreManager.ActivateJamButton();
       jamTurnCounter = MANUALRESETWAIT;
+
+      oreManager.TryShowFirstJamTutorial();
    }
 
    // Handles enemy attack logic based on the current heat level
@@ -281,54 +290,66 @@ public class TurnManager : MonoBehaviour
          StartCoroutine(cameraShake.Shake(0.5f, 0.2f));
 
          uiFade.Appear(1.0f);
-         enemyPanel.SetActive(true);
 
-         if (InventoryManager.Instance.harpoonCount >= harpoonAmount)
-         {
-            decisionEnemyPanel = enemyPanel.transform.Find("OptionalEnemyPanel").gameObject;
-            decisionEnemyPanel.SetActive(true);
+         if (TryShowFirstEnemyAttackTutorial(harpoonAmount))
+            return;
 
-            Button yesBtn = decisionEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>();
-            yesBtn.onClick.RemoveAllListeners();
-            yesBtn.onClick.AddListener(() =>
-            {
-               InventoryManager.Instance.TryUseHarpoon(harpoonAmount);
+         ShowEnemyEncounterPanel(harpoonAmount);
 
-               heatLevel = 0;
-               DeactivateHeatNodes();
-
-               decisionEnemyPanel.SetActive(false);
-               enemyPanel.SetActive(false);
-               PopUpManager.Instance.EnablePlayerInput();
-            });
-
-            Button noBtn = decisionEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>();
-            noBtn.onClick.RemoveAllListeners();
-            noBtn.onClick.AddListener(() =>
-            {
-               decisionEnemyPanel.SetActive(false);
-               enemyPanel.SetActive(false);
-               PopUpManager.Instance.EnablePlayerInput();
-               ApplyKrakenPenalty();
-            });
-         }
-         else
-         {
-            decisionEnemyPanel = enemyPanel.transform.Find("ForcedEnemyPanel").gameObject;
-            decisionEnemyPanel.SetActive(true);
-            Button forcedBtn = decisionEnemyPanel.transform.Find("Button").GetComponent<Button>();
-            forcedBtn.onClick.RemoveAllListeners();
-            forcedBtn.onClick.AddListener(() =>
-            {
-               decisionEnemyPanel.SetActive(false);
-               enemyPanel.SetActive(false);
-               PopUpManager.Instance.EnablePlayerInput();
-               ApplyKrakenPenalty();
-            });
-         }
          StartCoroutine(cameraShake.Shake(0.5f, 0.2f));
-
          StartCoroutine(uiFlash.FlashRed(0.4f, 0.4f));
+      }
+   }
+
+   private void ShowEnemyEncounterPanel(int harpoonAmount)
+   {
+      GameObject decisionEnemyPanel;
+
+      enemyPanel.SetActive(true);
+
+      if (InventoryManager.Instance.harpoonCount >= harpoonAmount)
+      {
+         decisionEnemyPanel = enemyPanel.transform.Find("OptionalEnemyPanel").gameObject;
+         decisionEnemyPanel.SetActive(true);
+
+         Button yesBtn = decisionEnemyPanel.transform.Find("Buttons/OptionOneButton").GetComponent<Button>();
+         yesBtn.onClick.RemoveAllListeners();
+         yesBtn.onClick.AddListener(() =>
+         {
+            InventoryManager.Instance.TryUseHarpoon(harpoonAmount);
+
+            heatLevel = 0;
+            DeactivateHeatNodes();
+
+            decisionEnemyPanel.SetActive(false);
+            enemyPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+         });
+
+         Button noBtn = decisionEnemyPanel.transform.Find("Buttons/OptionTwoButton").GetComponent<Button>();
+         noBtn.onClick.RemoveAllListeners();
+         noBtn.onClick.AddListener(() =>
+         {
+            decisionEnemyPanel.SetActive(false);
+            enemyPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+            ApplyKrakenPenalty();
+         });
+      }
+      else
+      {
+         decisionEnemyPanel = enemyPanel.transform.Find("ForcedEnemyPanel").gameObject;
+         decisionEnemyPanel.SetActive(true);
+
+         Button forcedBtn = decisionEnemyPanel.transform.Find("Button").GetComponent<Button>();
+         forcedBtn.onClick.RemoveAllListeners();
+         forcedBtn.onClick.AddListener(() =>
+         {
+            decisionEnemyPanel.SetActive(false);
+            enemyPanel.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
+            ApplyKrakenPenalty();
+         });
       }
    }
 
@@ -456,5 +477,47 @@ public class TurnManager : MonoBehaviour
             oreManager.ActivateUnjamButton();
          }
       }
+   }
+
+   private bool TryShowFirstEnemyAttackTutorial(int harpoonAmount)
+   {
+      if (hasShownFirstEnemyAttackTutorial)
+         return false;
+
+      if (!TutorialFlowSettings.NarrativeTutorialEnabled)
+         return false;
+
+      if (NarrativeOverlayUI.Instance == null || NPCEncounterSystem.Instance == null)
+         return false;
+
+      NPCEncounterSystem.NPCProfile dolphinProfile =
+         NPCEncounterSystem.Instance.GetProfileByPersonality(NPCEncounterSystem.NPCPersonality.Dolphin);
+
+      if (dolphinProfile == null)
+         return false;
+
+      hasShownFirstEnemyAttackTutorial = true;
+
+      NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
+      NarrativeOverlayUI.Instance.PlaySequence(
+         dolphinProfile,
+         new NPCEncounterSystem.DialogueLine[]
+         {
+            new NPCEncounterSystem.DialogueLine("Right. That's an attack alert.", NPCEncounterSystem.ExpressionType.Surprised),
+            new NPCEncounterSystem.DialogueLine("If you have a harpoon ready, this is where you spend it to stop the hit before it lands.", NPCEncounterSystem.ExpressionType.Thinking),
+            new NPCEncounterSystem.DialogueLine($"This one costs {harpoonAmount} harpoon{(harpoonAmount > 1 ? "s" : string.Empty)}.", NPCEncounterSystem.ExpressionType.Neutral),
+            new NPCEncounterSystem.DialogueLine("And yes, it gets more expensive later. The farther we go, the worse these things get.", NPCEncounterSystem.ExpressionType.Special),
+            new NPCEncounterSystem.DialogueLine("So if you can block the early ones cleanly, do it. Future Dolphin would appreciate the favor.", NPCEncounterSystem.ExpressionType.Happy)
+         },
+         NarrativeOverlayUI.DialogueLayoutMode.StoryBottom,
+         false,
+         () =>
+         {
+            NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
+            ShowEnemyEncounterPanel(harpoonAmount);
+
+         });
+
+      return true;
    }
 }

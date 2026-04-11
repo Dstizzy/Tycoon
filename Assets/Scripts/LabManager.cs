@@ -523,7 +523,7 @@ public class LabManager : MonoBehaviour
          // Raises sell items base price by 1.2 
          AdjustSellItemsBaseValue(1.2f);
 
-         ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         ticker.ShowTicker("Commerce Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       // Unlock tier 3 itme (Artifact); Crafting results in two items being made               
       else if (tabType == productionTab)
@@ -546,13 +546,28 @@ public class LabManager : MonoBehaviour
             ShipManager.Instance.ApplyLabRewardBonus();
 
          ticker.ShowTicker("Exploration Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
-      } 
+      }
       else
       {
          Debug.Log("There is no tab");
+         return;
       }
+
+      TryTriggerDirectSuccessEnding();
    }
 
+   //Added for Ending trigger
+   private void TryTriggerDirectSuccessEnding()
+   {
+      if (GameEndingState.HasEndingTriggered)
+         return;
+
+      Transform finalFlask = initialTab != null ? initialTab.transform.Find("PanelFlask4") : null;
+      if (finalFlask == null || !finalFlask.gameObject.activeSelf)
+         return;
+
+      GameEndingState.LoadSuccessEnding();
+   }
 
    // Handles evolution of flask
    public void HandleFlask()

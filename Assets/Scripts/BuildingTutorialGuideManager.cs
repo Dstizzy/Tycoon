@@ -5,10 +5,14 @@ using UnityEngine;
 // This guide only runs when the narrative tutorial toggle is enabled.
 public class BuildingTutorialGuideManager : MonoBehaviour
 {
+   // Singleton instance for easy access from building panels.
    public static BuildingTutorialGuideManager Instance { get; private set; }
 
+   // Keeps track of which building tags have already shown their guide.
+   // Prevents the same explanation from repeating every time the panel is opened.
    private readonly HashSet<string> explainedBuildings = new HashSet<string>();
 
+   // Enforces a simple singleton so only one guide manager exists at runtime.
    private void Awake()
    {
       if (Instance != null && Instance != this)
@@ -20,6 +24,13 @@ public class BuildingTutorialGuideManager : MonoBehaviour
       Instance = this;
    }
 
+   // Tries to show a one-time guide for the given building.
+   // The guide is skipped if:
+   // - tutorial mode is disabled
+   // - the main narrative tutorial is still running
+   // - the building tag is invalid
+   // - the guide was already shown once
+   // - the overlay UI is unavailable or currently busy
    public void TryShowBuildingGuide(string buildingTag)
    {
       if (TutorialFlowSettings.NarrativeTutorialEnabled == false)
@@ -44,8 +55,10 @@ public class BuildingTutorialGuideManager : MonoBehaviour
       if (speakerProfile == null || guideLines == null || guideLines.Length == 0)
          return;
 
+      // Mark before playback so repeated requests during the same moment do not duplicate the guide.
       explainedBuildings.Add(buildingTag);
 
+      // Temporarily block gameplay while the guide dialogue is on screen.
       NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
       NarrativeOverlayUI.Instance.PlaySequence(
          speakerProfile,
@@ -55,6 +68,8 @@ public class BuildingTutorialGuideManager : MonoBehaviour
          () => NarrativeOverlayUI.Instance.SetGameplayBlocked(false));
    }
 
+   // Returns the NPC profile that should speak for a given building.
+   // Each building is mapped to the character most closely associated with it.
    private NPCEncounterSystem.NPCProfile GetSpeakerProfile(string buildingTag)
    {
       if (NPCEncounterSystem.Instance == null)
@@ -71,11 +86,15 @@ public class BuildingTutorialGuideManager : MonoBehaviour
       };
    }
 
+   // Returns the UI layout to use for the guide.
+   // All current building guides use the bottom story layout for consistency.
    private NarrativeOverlayUI.DialogueLayoutMode GetLayoutMode(string buildingTag)
    {
       return NarrativeOverlayUI.DialogueLayoutMode.StoryBottom;
    }
 
+   // Returns the full guide dialogue set for the requested building.
+   // Each block is intentionally themed to the assigned speaker's personality.
    private NPCEncounterSystem.DialogueLine[] GetGuideLines(string buildingTag)
    {
       return buildingTag switch
@@ -126,6 +145,7 @@ public class BuildingTutorialGuideManager : MonoBehaviour
          new NPCEncounterSystem.DialogueLine("Come back anytime. Craftsmanship this good deserves repeat visits.", NPCEncounterSystem.ExpressionType.Special)
          },
 
+         // Unknown building tags have no guide.
          _ => null
       };
    }
