@@ -49,4 +49,4 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
-    healthDamage: -20
+    healthDamage: 20

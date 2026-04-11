@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a66f7a49e9ce4d44d99ef1df969aa5f6
+guid: f33d591a70ca67d4d86d52dcdded42cc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1257055984575981483
-    second: Gemini_Generated_Image_k8zl6lk8zl6lk8zl_0
+      213: 4700141321165658037
+    second: ExploreHealthBar_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_k8zl6lk8zl6lk8zl_0
+      name: ExploreHealthBar_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1344
-        height: 768
+        x: 44
+        y: 98
+        width: 538
+        height: 120
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ba72e6ff1c5f17110800000000000000
-      internalID: 1257055984575981483
+      spriteID: 5b7d63211a14a3140800000000000000
+      internalID: 4700141321165658037
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_k8zl6lk8zl6lk8zl_0: 1257055984575981483
+      ExploreHealthBar_0: 4700141321165658037
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -56,12 +56,38 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject victoryPanel;
    private TickerSystem ticker;
 
+   [Header("Head Victory UI")]
+   [SerializeField] private TextMeshProUGUI headTextLabel;
+   [SerializeField] private Image headLineImage;
+   [SerializeField] private TextMeshProUGUI headInfoLabel;
+   [SerializeField] private GameObject headCompletedContainer;
+   [SerializeField] private Image headCheckMarkImage;
+
+   [Header("Tail Victory UI")]
+   [SerializeField] private TextMeshProUGUI tailTextImage;
+   [SerializeField] private Image tailLineImage;
+   [SerializeField] private TextMeshProUGUI tailInfoImage;
+   [SerializeField] private GameObject tailCompletedContainer;
+   [SerializeField] private Image tailCheckMarkImage;
+
+   [Header("Submarine Parts")]
+   [SerializeField] private GameObject submarineFull;
+   [SerializeField] private GameObject submarineSkelParent;
+   [SerializeField] private GameObject submarineBlackParent;
+   [SerializeField] private GameObject submarineSkelBody;
+   [SerializeField] private GameObject submarineSkelHead;
+   [SerializeField] private GameObject submarineSkelTail;
+   [SerializeField] private GameObject submarineBlackedOutHead;
+   [SerializeField] private GameObject submarineBlackedOutTail;
+
 
    // Public variables                                                                          
    public static int  currentCommerceTier { get; set; } = 0;
    public static bool headUnlocked            = false;
-   public static bool bodyUnlocked            = false;
    public static bool tailUnlocked            = false;
+   private       bool commerceFinished        = false;
+   private       bool productionFinished      = false;
+   private       bool explorationFinished     = false;
    public        bool labTutorialFunction     = false;
    public        bool victoryTutorialFunction = false;
 
@@ -108,11 +134,16 @@ public class LabManager : MonoBehaviour
          Debug.LogError("Inventory instance is not initialized");
       else
          inv    = InventoryManager.Instance;
-      
+
+      if (ShipManager.Instance == null)
+         Debug.LogError("Ship Manager instance is not initialized");
+      else
+         shipManager = ShipManager.Instance;
+
       if (TickerSystem.Instance == null)
          Debug.LogError("Ticker instance is not initialized");
       else
-          ticker = TickerSystem.Instance;
+         ticker = TickerSystem.Instance;
 
 
       /* Set the info panel to inactive if it exists                                           */
@@ -428,15 +459,14 @@ public class LabManager : MonoBehaviour
          {
             OreRefinery_Manager.Instance.ReduceJamming(5);
          }
-         bodyUnlocked = true;
 
          ticker.ShowTicker("Product Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
-         if (shipManager != null)
-            shipManager.ApplyLabShipBonus();
+         if (ShipManager.Instance != null)
+            ShipManager.Instance.ApplyLabShipBonus();
 
          ticker.ShowTicker("Exploration Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       } 
@@ -472,8 +502,8 @@ public class LabManager : MonoBehaviour
       {
          if (tabType == explorationTab) 
          { 
-            if (shipManager != null)
-               shipManager.UnlockTier2Choices();
+            if (ShipManager.Instance != null)
+               ShipManager.Instance.UnlockTier2Choices();
             else
                Debug.Log("There is no tab");
             ticker.ShowTicker("Exploration Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
@@ -487,58 +517,34 @@ public class LabManager : MonoBehaviour
    {
       if (tabType == commerceTab)
       {
-         HandleFlask();
-
-         // Removes the negative world events
+         commerceFinished = true;
          tradeHutManager.isTier3BuffACtive = true;
-
-         // Raises sell items base price by 1.2 
-         AdjustSellItemsBaseValue(1.2f);
-
-         ticker.ShowTicker("Commerce Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         ticker.ShowTicker("Commerce Branch Maxed!", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
       }
-      // Unlock tier 3 itme (Artifact); Crafting results in two items being made               
       else if (tabType == productionTab)
       {
-         HandleFlask();
-
-         Debug.Log("Unlock Faster Crafting and Tier 3 Blueprints");
-         if (ForgeManager.Instance != null)
-         {
-            ForgeManager.Instance.UnlockReduceCraftingTime();
-         }
-         ticker.ShowTicker("Product Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         productionFinished = true;
+         ForgeManager.Instance?.UnlockReduceCraftingTime();
+         ticker.ShowTicker("Production Branch Maxed!", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
       }
-      /* Double exploration rewards                                                            */
       else if (tabType == explorationTab)
       {
-         HandleFlask();
-
-         if (shipManager != null)
-            shipManager.ApplyLabRewardBonus();
-
-         ticker.ShowTicker("Exploration Branch Tier 3 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
-      }
-      else
-      {
-         Debug.Log("There is no tab");
-         return;
+         explorationFinished = true;
+         ShipManager.Instance?.ApplyLabRewardBonus();
+         ticker.ShowTicker("Exploration Tech Maxed!", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
       }
 
-      TryTriggerDirectSuccessEnding();
+      // Check if this was the final branch needed for the Head
+      CheckTechTreeCompletion();
    }
 
-   //Added for Ending trigger
-   private void TryTriggerDirectSuccessEnding()
+   private void CheckTechTreeCompletion()
    {
-      if (GameEndingState.HasEndingTriggered)
-         return;
-
-      Transform finalFlask = initialTab != null ? initialTab.transform.Find("PanelFlask4") : null;
-      if (finalFlask == null || !finalFlask.gameObject.activeSelf)
-         return;
-
-      GameEndingState.LoadSuccessEnding();
+      // If all three branches are done, we progress the flask to the final stage
+      if (commerceFinished && productionFinished && explorationFinished)
+      {
+         HandleFlask();
+      }
    }
 
    // Handles evolution of flask
@@ -558,8 +564,12 @@ public class LabManager : MonoBehaviour
       {
          initialTab.transform.Find("PanelFlask3").gameObject.SetActive(false);
          initialTab.transform.Find("PanelFlask4").gameObject.SetActive(true);
-         UnlockHead();
 
+         ticker.ShowTicker("TECH TREE COMPLETE: Submarine Head Constructed!", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         if (tailUnlocked)
+         {
+            ActivateFinalForm();
+         }
       }
       else
          Debug.Log("There is no flask");
@@ -655,61 +665,66 @@ public class LabManager : MonoBehaviour
    //Shows the victory panel and sets up the buttons for the submarine assembly
    public void ShowVictoryPanel()
    {
-      bool isHeadReady,
-           isBodyReady;
+      if (victoryPanel == null) return;
+      panelManager.OpenPanel(victoryPanel.gameObject);
+      PopUpManager.Instance.EnablePlayerInput();
 
-      if (victoryPanel != null)
+      if (submarineSkelHead != null) submarineSkelHead.SetActive(headUnlocked);
+      if (submarineSkelTail != null) submarineSkelTail.SetActive(tailUnlocked);
+
+      if (submarineBlackedOutHead != null) submarineBlackedOutHead.SetActive(!headUnlocked);
+      if (submarineBlackedOutTail != null) submarineBlackedOutTail.SetActive(!tailUnlocked);
+
+      UpdateVictoryUI();
+
+      if (headUnlocked && tailUnlocked)
       {
-         panelManager.OpenPanel(victoryPanel.gameObject);
-         PopUpManager.Instance.DisablePlayerInput();
-
-         isHeadReady = LabManager.headUnlocked && InventoryManager.Instance.pearlCount >= 10000;
-         isBodyReady = LabManager.bodyUnlocked && InventoryManager.Instance.engineCount >= 5
-                                               && InventoryManager.Instance.pressureValveCount >= 5
-                                               && InventoryManager.Instance.precisionLensCount >= 5;
-
-         Transform skeleton = victoryPanel.transform.Find("SubmarineSkel");
-         if (skeleton != null)
-         {
-            skeleton.Find("SubmarineHead").gameObject.SetActive(isHeadReady);
-            skeleton.Find("SubmarineTail").gameObject.SetActive(LabManager.tailUnlocked);
-         }
-
-         Transform qestionMark = victoryPanel.transform.Find("QuestionMark");
-         if (qestionMark != null)
-         {
-            if (isHeadReady || isBodyReady || LabManager.tailUnlocked)
-               qestionMark.gameObject.SetActive(false);
-            else
-               qestionMark.gameObject.SetActive(true);
-         }
-
-         if (isHeadReady && isBodyReady && LabManager.tailUnlocked)
-         {
-            ActivateFinalForm();
-         }
+         ActivateFinalForm();
       }
    }
 
    // Activates the head of the submarine
    public void ActivateHead()
    {
-      victoryPanel.transform.Find("SubInfo/HeadPart/completed").gameObject.SetActive(true);
+      headUnlocked = true;
+      if (headTextLabel != null) headTextLabel.color = new Color(1, 1, 1, 0.5f);
+      if (headLineImage != null) headLineImage.color = new Color(1, 1, 1, 0.5f);
+      if (headInfoLabel != null) headInfoLabel.color = new Color(1, 1, 1, 0.5f);
+      if (headCompletedContainer != null) headCompletedContainer.SetActive(true);
 
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineHead").gameObject.SetActive(false);
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.SetActive(true);
-      }
+      if (submarineBlackedOutHead != null) submarineBlackedOutHead.SetActive(false);
+      if (submarineSkelHead != null) submarineSkelHead.SetActive(true);
+
+      if (tailUnlocked) ActivateFinalForm();
+   }
+
+   private void UpdateVictoryUI()
+   {
+      // Head UI Feedback
+      float headAlpha = headUnlocked ? 0.5f : 1.0f;
+      if (headTextLabel != null) headTextLabel.color = new Color(1, 1, 1, headAlpha);
+      if (headCompletedContainer != null) headCompletedContainer.SetActive(headUnlocked);
+
+      // Tail UI Feedback
+      float tailAlpha = tailUnlocked ? 0.5f : 1.0f;
+      if (tailTextImage != null) tailTextImage.color = new Color(1, 1, 1, tailAlpha);
+      if (tailCompletedContainer != null) tailCompletedContainer.SetActive(tailUnlocked);
    }
 
    // Activates the tail of the submarine
    public void ActivateTail()
    {
+      tailUnlocked = true;
+      ticker.ShowTicker("EXPLORATION COMPLETE: Submarine Tail Acquired!", Color.cyan, TickerSystem.MessageTypes.ResultMessage);
+      if (tailTextImage != null) tailTextImage.color = new Color(1, 1, 1, 0.5f);
+      if (tailLineImage != null) tailLineImage.color = new Color(1, 1, 1, 0.5f);
+      if (tailInfoImage != null) tailInfoImage.color = new Color(1, 1, 1, 0.5f);
+      if (tailCompletedContainer != null) tailCompletedContainer.SetActive(true);
+
+      if (submarineBlackedOutTail != null) submarineBlackedOutTail.SetActive(false);
+      if (submarineSkelTail != null) submarineSkelTail.SetActive(true);
+
+      if (headUnlocked) ActivateFinalForm();
       victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
       if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
       {
@@ -725,11 +740,13 @@ public class LabManager : MonoBehaviour
    // Activates the final form of the submarine when all parts are active
    public void ActivateFinalForm()
    {
-      victoryPanel.transform.Find("SubmarineFull").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubmarineBlackedOut").gameObject.SetActive(false);
-      victoryPanel.transform.Find("SubmarineSkel").gameObject.SetActive(false);
+      if (submarineBlackParent != null) submarineBlackParent.SetActive(false);
+      if (submarineSkelParent != null) submarineSkelParent.SetActive(false);
+      if (submarineFull != null) submarineFull.SetActive(true);
 
+      // Trigger ending if all parts are present
       if (!GameEndingState.HasEndingTriggered)
+      {
          GameEndingState.LoadSuccessEnding();
    }
 
