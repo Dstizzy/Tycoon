@@ -9309,7 +9309,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Settings
+  m_text: Walkthrough
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
@@ -9336,8 +9336,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39
-  m_fontSizeBase: 39
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -27266,7 +27266,8 @@ MonoBehaviour:
   enemyFunction: 0
   victoryFunction: 0
   oreUpgradeButton: 0
-  tutorialGoing: 1
+  isWalkthroughGoing: 0
+  tutorialSteps: []
   currentActivePart: {fileID: 0}
   currentActiveSection: {fileID: 0}
 --- !u!1 &455152181
@@ -38967,6 +38968,7 @@ MonoBehaviour:
   - {fileID: 1102698752}
   npcPrefab: {fileID: 550084991}
   spawnOffset: {x: 6, y: -1, z: 0}
+  npcWorldScale: {x: 4.5, y: 4.5, z: 1}
   spawnChancePerTurn: 75
   dialogueUI: {fileID: 2091636200}
 --- !u!4 &682516351
