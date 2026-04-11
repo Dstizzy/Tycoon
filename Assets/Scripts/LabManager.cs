@@ -748,6 +748,7 @@ public class LabManager : MonoBehaviour
       if (!GameEndingState.HasEndingTriggered)
       {
          GameEndingState.LoadSuccessEnding();
+      }
    }
 
    public void UnlockHead()
