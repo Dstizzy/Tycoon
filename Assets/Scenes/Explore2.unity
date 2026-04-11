@@ -24158,6 +24158,7 @@ MonoBehaviour:
   - {fileID: 1981305717}
   npcPrefab: {fileID: 1667957176}
   spawnOffset: {x: -6, y: -1, z: 0}
+  npcWorldScale: {x: 4.5, y: 4.5, z: 1}
   spawnChancePerTurn: 100
   dialogueUI: {fileID: 1635329876}
 --- !u!4 &454735382
@@ -39122,6 +39123,7 @@ MonoBehaviour:
   submarineFull: {fileID: 1995647852}
   submarineSkelParent: {fileID: 51135301}
   submarineBlackParent: {fileID: 748891339}
+  submarineSkelBody: {fileID: 51135301}
   submarineSkelHead: {fileID: 1829698139}
   submarineSkelTail: {fileID: 695108431}
   submarineBlackedOutHead: {fileID: 251710060}
