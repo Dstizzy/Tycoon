@@ -39,14 +39,14 @@ public class ExplorationUnitManager : MonoBehaviour
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
-   const int LEVEL2_PEARL_COST = 200;
-   const int LEVEL3_PEARL_COST = 500;
    const int MAX_SHIP_LEVEL = 3;
+   public const int LEVEL2_PEARL_COST = 200;
+   public const int LEVEL3_PEARL_COST = 500;
    public bool isExploring = false; // Determines if exploration is currently ongoing
    private bool isWaiting = false;  // Triggered when an event causes user to lose an exploration turn
    private int lastProcessedTurn = 0;
 
-   public static ExplorationUnitManager Instance { get; private set; }
+   public static ExplorationUnitManager Instance { get; set; }
    private void Awake()
    {
       // Verify all panels are assigned and disable them at startup
@@ -66,7 +66,7 @@ public class ExplorationUnitManager : MonoBehaviour
       UpdateLevel();
       if (explorationLevelText != null && shipManager != null)
       {
-         explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+         explorationLevelText.text = "Level " + ShipManager.shipLevel.ToString();
       }
    }
 
@@ -161,16 +161,16 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       int upgradeCost = GetUpgradeCost();
 
-      if (shipManager.shipLevel < MAX_SHIP_LEVEL && InventoryManager.Instance.TrySpendPearl(upgradeCost))
+      if (ShipManager.shipLevel < MAX_SHIP_LEVEL && InventoryManager.Instance.TrySpendPearl(upgradeCost))
       {
          shipManager.UpgradeShip();
          UpdateExplorationSprites();
          UpdateLevel();
 
          if (explorationLevelText != null)
-            explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+            explorationLevelText.text = "Level " + ShipManager.shipLevel.ToString();
 
-         if (shipManager.shipLevel == MAX_SHIP_LEVEL)
+         if (ShipManager.shipLevel == MAX_SHIP_LEVEL)
          {
             if (InventoryManager.Instance.ExplorationUnitUpgradeIcon != null)
             {
@@ -182,10 +182,10 @@ public class ExplorationUnitManager : MonoBehaviour
             }
          }
 
-         Debug.Log($"Exploration Unit upgraded to level {shipManager.shipLevel}!");
+         Debug.Log($"Exploration Unit upgraded to level {ShipManager.shipLevel}!");
          if (TickerSystem.Instance != null)
          {
-            TickerSystem.Instance.ShowTicker($"Exploration Unit upgraded to level {shipManager.shipLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
+            TickerSystem.Instance.ShowTicker($"Exploration Unit upgraded to level {ShipManager.shipLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
          }
 
          CloseUpgradePanel();
@@ -201,7 +201,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private bool CheckForDepthIncrease(MapNode targetNode)
    {
       // If target depth is greater than current depth and ship level is lower whan target depth level
-      if (targetNode != null && targetNode.nodeDepth > shipManager.GetDepth() && shipManager.shipLevel < targetNode.nodeDepth)
+      if (targetNode != null && targetNode.nodeDepth > shipManager.GetDepth() && ShipManager.shipLevel < targetNode.nodeDepth)
       {
          newDepthPanel.gameObject.SetActive(true);
 
@@ -493,23 +493,23 @@ public class ExplorationUnitManager : MonoBehaviour
       TextMeshProUGUI oreCostText = oreCostTransform != null ? oreCostTransform.GetComponent<TextMeshProUGUI>() : null;
       TextMeshProUGUI expText = explanationTransform != null ? explanationTransform.GetComponent<TextMeshProUGUI>() : null;
 
-      if (shipManager.shipLevel == 1)
+      if (ShipManager.shipLevel == 1)
       {
          pearlUpgradeCost = LEVEL2_PEARL_COST;
          upgradeTitle = "REWARD: ";
          upgradeExplanation = "";
       }
-      else if (shipManager.shipLevel == 2)
+      else if (ShipManager.shipLevel == 2)
       {
          pearlUpgradeCost = LEVEL3_PEARL_COST;
          upgradeTitle = "REWARD:";
          upgradeExplanation = "";
       }
 
-      if (shipManager.shipLevel < MAX_SHIP_LEVEL)
+      if (ShipManager.shipLevel < MAX_SHIP_LEVEL)
       {
          if (title != null)
-            title.text = $"LEVEL {shipManager.shipLevel + 1} UPGRADE";
+            title.text = $"LEVEL {ShipManager.shipLevel + 1} UPGRADE";
          if (upgradeText != null)
             upgradeText.text = upgradeTitle;
 
@@ -710,19 +710,19 @@ public class ExplorationUnitManager : MonoBehaviour
       if (shipManager == null) return;
 
       // Calculate index based on current ship level (Level 1 = Index 0)
-      int index = shipManager.shipLevel - 1;
+      int index = ShipManager.shipLevel - 1;
 
       if (buildingSpriteRenderer != null && index >= 0 && index < explorationLevelSprites.Count)
       {
          buildingSpriteRenderer.sprite = explorationLevelSprites[index];
-         Debug.Log($"Exploration Visuals Updated to Level {shipManager.shipLevel}");
+         Debug.Log($"Exploration Visuals Updated to Level {ShipManager.shipLevel}");
       }
    }
 
    private int GetUpgradeCost()
    {
-      if (shipManager.shipLevel == 1) return LEVEL2_PEARL_COST;
-      if (shipManager.shipLevel == 2) return LEVEL3_PEARL_COST;
+      if (ShipManager.shipLevel == 1) return LEVEL2_PEARL_COST;
+      if (ShipManager.shipLevel == 2) return LEVEL3_PEARL_COST;
       return 0;
    }
 
@@ -730,7 +730,7 @@ public class ExplorationUnitManager : MonoBehaviour
    {
       if (explorationLevelText != null && shipManager != null)
       {
-         explorationLevelText.text = "Level " + shipManager.shipLevel.ToString();
+         explorationLevelText.text = "Level " + ShipManager.shipLevel.ToString();
       }
    }
 

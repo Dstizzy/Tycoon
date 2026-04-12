@@ -1614,6 +1614,7 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
    }
+   public static void ClearEvents() { HandleTutorial = null; }
 
    // Closes the panel corresponding to the button ID
    public void CloseTradeHutPanel(int buttonID)    

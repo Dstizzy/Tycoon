@@ -5,6 +5,7 @@ using System;
 
 public class ShipManager : MonoBehaviour
 {
+
    // Symbolic Constants
    public const int LAB_T1_HEALTH_BONUS = 10; // Health added to ship from tier 1 lab upgrade
    public const int LAB_T1_FUEL_BONUS = 2; // Fuel added to ship from tier 1 lab upgrade
@@ -25,7 +26,7 @@ public class ShipManager : MonoBehaviour
    [SerializeField] private TextMeshProUGUI exploreHealthText; 
 
    [Header("Ship Level Settings")]
-   public int shipLevel { get; private set; } = 1; // Current level of the ship
+   public static int shipLevel { get; private set; } = 1; // Current level of the ship
    private int[] maxHealthByLevel = { 0, 40, 60, 90 }; // Ship's health based on its current level
    private int[] maxFuelByLevel = { 0, 6, 9, 12 }; // Ship's fuel based on its current level
 
@@ -87,7 +88,6 @@ public class ShipManager : MonoBehaviour
       UpdateStatsToLevel();
       currentHealth = maxHealth;
       currentFuel = maxFuel;
-
    }
 
    private void Start()

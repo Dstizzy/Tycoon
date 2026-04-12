@@ -457,4 +457,6 @@ public class TurnManager : MonoBehaviour
          }
       }
    }
+
+   public static void ClearEvents() { OnTurnEnded = null; }
 }

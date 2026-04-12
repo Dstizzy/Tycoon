@@ -28,12 +28,12 @@ public class PopUpManager : MonoBehaviour
 
    public static event Action<string> OnHoverTagChanged;
 
-   public static PopUpManager Instance { get; private set; }
+   public static PopUpManager Instance { get; set; }
 
    // Added for CameraDragPan update(off when the pop up window is open)
    /* This flag is used by the Camera script to disable */
    /* panning and zooming while a window is open.       */
-   public bool IsWindowOpen { get; private set; } = false;
+   public bool IsWindowOpen { get; set; } = false;
 
    private void Awake()
    {
@@ -349,4 +349,6 @@ public class PopUpManager : MonoBehaviour
          buildingTransform = null;
       }
    }
+
+   public static void ClearEvents() { OnHoverTagChanged = null; }
 }

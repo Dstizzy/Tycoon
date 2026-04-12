@@ -16,9 +16,16 @@ public class GameManager : MonoBehaviour {
       TurnManager.heatLevel             = 0;
       TurnManager.enemyAttackPercentage = 0;
       TurnManager.userDefends           = false;
+      TurnManager.jammingChance         = 5;
+      TurnManager.isJamPrevented        = false;
+      TurnManager.MaintenanceCounter    = 5;
 
       // ForgeManager Statics
       ForgeManager.forgeLevel = 1;
+
+      // PopUpManager Statics
+      PopUpManager.buildingTransform    = null;
+      PopUpManager.IsOreRefineryBlocked = false;
 
       // LabManager Statics
       LabManager.headUnlocked        = false;
@@ -27,6 +34,12 @@ public class GameManager : MonoBehaviour {
       LabManager.currentCommerceTier = 0;
 
       Item.ResetPrices();
+
+      // CLEAR STATIC EVENTS (Requires the helper methods added to the scripts!)
+      TurnManager.ClearEvents();
+      TradeHutManager.ClearEvents();
+      ForgeManager.ClearEvents();
+      PopUpManager.ClearEvents();
 
       // =========================================================
       // STEP 2: DESTROY PERSISTENT MANAGERS
@@ -45,21 +58,29 @@ public class GameManager : MonoBehaviour {
          Destroy(LabManager.labManager.gameObject);
       if (TickerSystem.Instance != null) 
          Destroy(TickerSystem.Instance.gameObject);
-      // Add any other managers here (like OreRefinery_Manager, ShipManager, PopUpManager)
       if (OreRefinery_Manager.Instance != null) 
          Destroy(OreRefinery_Manager.Instance.gameObject);
-      if(ExplorationUnitManager.Instance != null)
+      if (ExplorationUnitManager.Instance != null)
          Destroy(ExplorationUnitManager.Instance.gameObject);
-
+      if (PopUpManager.Instance != null)
+         Destroy(PopUpManager.Instance.gameObject);
+      if (HoverScript.Instance != null)
+         Destroy(HoverScript.Instance.gameObject);
 
       // =========================================================
       // STEP 3: CLEAR THE SINGLETON REFERENCES
       // This ensures the new instances spawned in the reloaded 
       // scene can safely take over the 'Instance' variable.
       // =========================================================
-      TradeHutManager.Instance           = null;
-      //ForgeManager.Instance              = null;
-      TurnManager.Instance               = null;
-      LabManager.labManager              = null;
+      TradeHutManager.Instance        = null;
+      TurnManager.Instance            = null;
+      LabManager.labManager           = null;
+      InventoryManager.Instance       = null;
+      ForgeManager.Instance           = null; 
+      TickerSystem.Instance           = null;
+      OreRefinery_Manager.Instance    = null;
+      ExplorationUnitManager.Instance = null;
+      PopUpManager.Instance           = null;
+      HoverScript.Instance            = null;
    }
 }

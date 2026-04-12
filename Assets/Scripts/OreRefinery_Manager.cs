@@ -11,7 +11,7 @@ using static TickerSystem;
 public class OreRefinery_Manager : MonoBehaviour
 {
 
-   public static OreRefinery_Manager Instance { get; private set; }
+   public static OreRefinery_Manager Instance { get; set; }
 
    const int PATCH_BUTTON   = 1;
    const int INFO_BUTTON    = 2;

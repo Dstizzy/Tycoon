@@ -72,7 +72,7 @@ public class InventoryManager : MonoBehaviour
                        MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
 
    // Holds a reference to the singleton instance of this class.
-   public static InventoryManager Instance { get; private set; }
+   public static InventoryManager Instance { get; set; }
 
    private TickerSystem ticker;
 
@@ -1282,12 +1282,31 @@ public class InventoryManager : MonoBehaviour
       }
       else
       {
-         if (ForgeManager.forgeLevel == 2)
+         if (ForgeManager.forgeLevel == 2) 
+         {
             if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
                ForgeUpgradeIcon.gameObject.SetActive(true);
             else
                ForgeUpgradeIcon.gameObject.SetActive(false);
+         }
+      }
+
+      if(ShipManager.shipLevel == 1) 
+      {
+         if(pearlCount >= ExplorationUnitManager.LEVEL2_PEARL_COST)
+            ExplorationUnitUpgradeIcon.gameObject.SetActive(true);
+         else
+            ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+      }
+      else
+      {
+         if (ShipManager.shipLevel == 2) 
+         { 
+            if (pearlCount >= ExplorationUnitManager.LEVEL3_PEARL_COST)
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+            else
+               ForgeUpgradeIcon.gameObject.SetActive(false);
+         }
       }
    }
-
 }

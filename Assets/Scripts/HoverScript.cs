@@ -23,7 +23,7 @@ public class HoverScript : MonoBehaviour
    private Transform currentHoverObject;
    private bool isHoverEnabled = true;
 
-   public static HoverScript Instance { get; private set; }
+   public static HoverScript Instance { get; set; }
 
    private void Awake()
    {
