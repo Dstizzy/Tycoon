@@ -1291,7 +1291,7 @@ public class InventoryManager : MonoBehaviour
          }
       }
 
-      if(ShipManager.shipLevel == 1) 
+      if(ExplorationUnitManager.Instance.shipManager.ShipLevel == 1) 
       {
          if(pearlCount >= ExplorationUnitManager.LEVEL2_PEARL_COST)
             ExplorationUnitUpgradeIcon.gameObject.SetActive(true);
@@ -1300,7 +1300,7 @@ public class InventoryManager : MonoBehaviour
       }
       else
       {
-         if (ShipManager.shipLevel == 2) 
+         if (ExplorationUnitManager.Instance.shipManager.ShipLevel == 2) 
          { 
             if (pearlCount >= ExplorationUnitManager.LEVEL3_PEARL_COST)
                ForgeUpgradeIcon.gameObject.SetActive(true);
