@@ -30,7 +30,7 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.3
-    healthDamage: -15
+    healthDamage: 15
   choiceB:
     buttonText: Avoid the risk
     resultText: 

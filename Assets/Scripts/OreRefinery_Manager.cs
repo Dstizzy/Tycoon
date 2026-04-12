@@ -52,6 +52,9 @@ public class OreRefinery_Manager : MonoBehaviour
    public int NextUpgradeCostInPearls { get; private set; }
    public int NextUpgradeCostInOre { get; private set; }
 
+   private bool hasShownFirstJamTutorial;
+   private bool hasShownJamPanelTutorial;
+
    // Changes the tutorial state to allow the upgrade tutorial to show after the player has completed the Trade Hut tutorial
 
    private void Awake()
@@ -324,6 +327,7 @@ public class OreRefinery_Manager : MonoBehaviour
       waitBtn.onClick.AddListener(() => PayForUnjamming(3));
 
       PopUpManager.Instance.DisablePlayerInput();
+      TryShowFirstJamPanelTutorial();
    }
 
    public void PayForUnjamming(int paymentType)
@@ -502,5 +506,79 @@ public class OreRefinery_Manager : MonoBehaviour
          TurnManager.isJamPrevented = false;
          patchPanel.transform.Find("TurnText").gameObject.SetActive(false);
       }
+   }
+
+   public void TryShowFirstJamTutorial()
+   {
+      if (hasShownFirstJamTutorial)
+         return;
+
+      if (!TutorialFlowSettings.NarrativeTutorialEnabled)
+         return;
+
+      if (NarrativeOverlayUI.Instance == null || NPCEncounterSystem.Instance == null)
+         return;
+
+      NPCEncounterSystem.NPCProfile jellyfishProfile =
+         NPCEncounterSystem.Instance.GetProfileByPersonality(NPCEncounterSystem.NPCPersonality.Jellyfish);
+
+      if (jellyfishProfile == null)
+         return;
+
+      hasShownFirstJamTutorial = true;
+
+      NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
+      NarrativeOverlayUI.Instance.PlaySequence(
+         jellyfishProfile,
+         new NPCEncounterSystem.DialogueLine[]
+         {
+         new NPCEncounterSystem.DialogueLine("...Oh...", NPCEncounterSystem.ExpressionType.Surprised),
+         new NPCEncounterSystem.DialogueLine("...The refinery got stuck again...", NPCEncounterSystem.ExpressionType.Thinking),
+         new NPCEncounterSystem.DialogueLine("...On the ore refinery building... upper-left side... there should be a little gear...", NPCEncounterSystem.ExpressionType.Neutral),
+         new NPCEncounterSystem.DialogueLine("...Press that one first... it opens the fixing panel...", NPCEncounterSystem.ExpressionType.Happy),
+         new NPCEncounterSystem.DialogueLine("...I think... probably... yes...", NPCEncounterSystem.ExpressionType.Special)
+      },
+         NarrativeOverlayUI.DialogueLayoutMode.StoryBottom,
+         false,
+         () => NarrativeOverlayUI.Instance.SetGameplayBlocked(false));
+   }
+
+   private void TryShowFirstJamPanelTutorial()
+   {
+      if (hasShownJamPanelTutorial)
+         return;
+
+      if (!TutorialFlowSettings.NarrativeTutorialEnabled)
+         return;
+
+      if (NarrativeOverlayUI.Instance == null || NPCEncounterSystem.Instance == null)
+         return;
+
+      NPCEncounterSystem.NPCProfile jellyfishProfile =
+         NPCEncounterSystem.Instance.GetProfileByPersonality(NPCEncounterSystem.NPCPersonality.Jellyfish);
+
+      if (jellyfishProfile == null)
+         return;
+
+      hasShownJamPanelTutorial = true;
+
+      NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
+      NarrativeOverlayUI.Instance.PlaySequence(
+         jellyfishProfile,
+         new NPCEncounterSystem.DialogueLine[]
+         {
+            new NPCEncounterSystem.DialogueLine("...There...", NPCEncounterSystem.ExpressionType.Happy),
+            new NPCEncounterSystem.DialogueLine("...Patch kit fixes it right away... if you already have one...", NPCEncounterSystem.ExpressionType.Neutral),
+            new NPCEncounterSystem.DialogueLine("...Or pearls... thirty of them... which feels like a lot of pearls...", NPCEncounterSystem.ExpressionType.Thinking),
+            new NPCEncounterSystem.DialogueLine("...Or wait two turns for the manual reset... but then the refinery stays jammed the whole time...", NPCEncounterSystem.ExpressionType.Special),
+            new NPCEncounterSystem.DialogueLine("...None of these feel very comforting...", NPCEncounterSystem.ExpressionType.Neutral)
+         },
+         NarrativeOverlayUI.DialogueLayoutMode.StoryBottom,
+         false,
+         () =>
+         {
+            NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
+            PopUpManager.Instance.DisablePlayerInput();
+         });
    }
 }

@@ -31,7 +31,7 @@ MonoBehaviour:
     fuelChance: 0
     fuelGain: 0
     damageChance: 0.5
-    healthDamage: -10
+    healthDamage: 10
   choiceB:
     buttonText: Wait 1 turn to clear
     resultText: 

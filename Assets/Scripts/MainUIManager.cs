@@ -1,6 +1,7 @@
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -81,19 +82,17 @@ public class MainUIManager : MonoBehaviour
    public void ToggleMenu()
    {
       isVisible = !isVisible;
-      DropdownButtons[0].gameObject.SetActive(isVisible);
-      DropdownButtons[1].gameObject.SetActive(isVisible);
-      DropdownButtons[2].gameObject.SetActive(isVisible);
+      foreach(var btn in DropdownButtons)
+      {
+         if (btn != null)
+         {
+            btn.gameObject.SetActive(isVisible);
+            btn.onClick.RemoveAllListeners();
+         }
+      }
+      DropdownButtons[0].onClick.AddListener(() => GoToStartScreen());
+      DropdownButtons[1].onClick.AddListener(() => StartWalkthrough());
    }
-
-   /*public void ToggleTutorial()
-   {
-      if(tutorial.gameObject.activeSelf)
-         tutorial.gameObject.SetActive(false);
-      else 
-         tutorial.gameObject.SetActive(true);
-      //ChangeTutorial?.Invoke();
-   }*/
 
    // Changes the Pearl count text on the main UI
    public void ChangePearlCountText(int newPearlCount)
@@ -118,10 +117,15 @@ public class MainUIManager : MonoBehaviour
       if (SceneHistory.Instance != null) 
       {
          GameManager.RestartGame();
-         SceneHistory.Instance.LoadPreviousScene();
+         SceneHistory.Instance.LoadScene("StartScreen");
       }
       else
          Debug.LogError("SceneHistory is missing from the scene!");
+   }
+
+   public void StartWalkthrough()
+   {
+      SceneManager.LoadScene("WalkthroughScene");
    }
 
    public void SetMainButtonsInteractable(bool interactable)

@@ -11,6 +11,15 @@ public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
    [SerializeField] private GameObject InfoPopUp;
    [SerializeField] private UIFade uiFade;
 
+   public bool alwaysShow = true;
+   public bool isTierLocked = false;
+
+   private Button associatedButton;
+
+   private void Awake()
+   {
+      associatedButton = GetComponent<Button>();
+   }
 
    // Implements interface function for entering the game object with mouse                     
    void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -27,9 +36,20 @@ public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
    // Sets the info panel active upon hovering over this object                                 
    private void OnPointerEnter(PointerEventData EventData)
    {
+      bool shouldShow = false;
+
+      if (alwaysShow)
+         shouldShow = true;
+      else if (associatedButton != null && !associatedButton.interactable)
+         if(isTierLocked)
+            shouldShow = true;
+
       //yield return new WaitForSeconds(.3f);
-      InfoPopUp.SetActive(true);
-      uiFade.Appear(1f);
+      if (shouldShow)
+      {
+         InfoPopUp.SetActive(true);
+         uiFade.Appear(1f);
+      }
    }
 
    // Sets the info panel inactive upon exiting this object                                     

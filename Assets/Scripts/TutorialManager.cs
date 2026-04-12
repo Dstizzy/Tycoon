@@ -26,8 +26,22 @@ public class TutorialManager : MonoBehaviour
    public         bool enemyFunction         = false; // Checks if the enemy function has been explained
    public         bool victoryFunction       = false; // Checks if the victory function has been explained
    public         bool oreUpgradeButton      = false; // Flag to check if the ore refinery upgrade button has been clicked
-   public         bool tutorialGoing         = true;  // Flag to check if the tutorial is still going
+   public         bool isWalkthroughGoing    = false;  // Flag to check if the tutorial is still going
 
+
+   [System.Serializable]
+   public class TutorialStep
+   {
+      public NPCEncounterSystem.NPCPersonality speaker;
+      [TextArea] public string note;
+      public NarrativeOverlayUI.DialogueLayoutMode layoutMode = NarrativeOverlayUI.DialogueLayoutMode.StoryBottom;
+      public NPCEncounterSystem.DialogueLine[] lines;
+      public HighlightTarget[] highlightTargets;
+      public UIHighlightTarget[] uiHighlightTargets;
+      public int pearlRewardOnComplete;
+   }
+
+   [SerializeField] private TutorialStep[] tutorialSteps;
 
    public static TutorialManager Instance { get; private set; }
    
@@ -92,6 +106,11 @@ public class TutorialManager : MonoBehaviour
       }
    }
 
+
+   public void StartWalkthrough()
+   {
+      isWalkthroughGoing = true;
+   }
    // Method to manage the flow of the tutorial sections and their subsections
    private void GoThroughSection(GameObject tutorialSection, int sectionIndex)
    {
