@@ -18414,6 +18414,24 @@ MonoBehaviour:
   productionTab: {fileID: 1660849775}
   explorationTab: {fileID: 1745289579}
   victoryPanel: {fileID: 1320842705}
+  headTextLabel: {fileID: 0}
+  headLineImage: {fileID: 0}
+  headInfoLabel: {fileID: 0}
+  headCompletedContainer: {fileID: 0}
+  headCheckMarkImage: {fileID: 0}
+  tailTextImage: {fileID: 0}
+  tailLineImage: {fileID: 0}
+  tailInfoImage: {fileID: 0}
+  tailCompletedContainer: {fileID: 0}
+  tailCheckMarkImage: {fileID: 0}
+  submarineFull: {fileID: 0}
+  submarineSkelParent: {fileID: 0}
+  submarineBlackParent: {fileID: 0}
+  submarineSkelBody: {fileID: 0}
+  submarineSkelHead: {fileID: 0}
+  submarineSkelTail: {fileID: 0}
+  submarineBlackedOutHead: {fileID: 0}
+  submarineBlackedOutTail: {fileID: 0}
   labTutorialFunction: 0
   victoryTutorialFunction: 0
 --- !u!1 &273069171
@@ -19198,6 +19216,7 @@ MonoBehaviour:
   scenarioText: {fileID: 1689769876}
   choiceAText: {fileID: 541160377}
   choiceBText: {fileID: 1889828081}
+  currentEvent: {fileID: 0}
 --- !u!114 &290203788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19210,18 +19229,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813a809d09a21754e886fe488b07f341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipManager
+  panelManager: {fileID: 0}
   explorationUnitManager: {fileID: 290203790}
   fuelPanel: {fileID: 1714909010}
   healthPanel: {fileID: 945193461}
   confirmReturnPanel: {fileID: 638825087}
   finalRewardsPanel: {fileID: 687436932}
-  finalRewards: {fileID: 1569968598}
   decisionFuelText: {fileID: 729425255}
   decisionHealthText: {fileID: 2017117128}
   inventoryFuelText: {fileID: 239788650}
   inventoryHealthText: {fileID: 1117042967}
   exploreFuelText: {fileID: 1920380507}
   exploreHealthText: {fileID: 1633003774}
+  rewardsContainer: {fileID: 0}
+  noRewardsText: {fileID: 0}
   isTier2Unlocked: 0
 --- !u!114 &290203789
 MonoBehaviour:
@@ -19296,6 +19317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationUnitManager
+  labManager: {fileID: 0}
   panelManager: {fileID: 477945658}
   eventDatabase: {fileID: 290203789}
   eventController: {fileID: 290203787}
@@ -19308,8 +19330,13 @@ MonoBehaviour:
   newDepthPanel: {fileID: 277794105}
   inventoryPanel: {fileID: 404062336}
   decisionResults: {fileID: 2033736100}
-  shipInventory: {fileID: 1740627418}
   depthWarningText: {fileID: 1793203012}
+  inventoryIconContainer: {fileID: 0}
+  resultsIconContainer: {fileID: 0}
+  resultsHealthText: {fileID: 0}
+  resultsFuelText: {fileID: 0}
+  floatingResultsHealth: {fileID: 0}
+  floatingResultsFuel: {fileID: 0}
   buildingSpriteRenderer: {fileID: 28295536}
   explorationLevelSprites:
   - {fileID: -3306025559836093694, guid: 4c3f3567c672e498988bdd4f885a9791, type: 3}
@@ -20908,6 +20935,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 1054558826}
   uiFade: {fileID: 1054558829}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &327432019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25504,6 +25533,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 2132776307}
   uiFade: {fileID: 2132776310}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &423148213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27094,7 +27125,8 @@ MonoBehaviour:
   enemyFunction: 0
   victoryFunction: 0
   oreUpgradeButton: 0
-  tutorialGoing: 1
+  isWalkthroughGoing: 0
+  tutorialSteps: []
   currentActivePart: {fileID: 0}
   currentActiveSection: {fileID: 0}
 --- !u!1 &455152181
@@ -29376,6 +29408,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 541328054}
   uiFade: {fileID: 541328056}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &507436907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38431,6 +38465,7 @@ MonoBehaviour:
   - {fileID: 1102698752}
   npcPrefab: {fileID: 550084991}
   spawnOffset: {x: -6, y: -1, z: 0}
+  npcWorldScale: {x: 4.5, y: 4.5, z: 1}
   spawnChancePerTurn: 100
   dialogueUI: {fileID: 2091636200}
 --- !u!4 &682516351
@@ -43266,6 +43301,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 243531298}
   uiFade: {fileID: 243531301}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &778813073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44386,6 +44423,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 35230975}
   uiFade: {fileID: 35230978}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &800552275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51989,6 +52028,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 1900026127}
   uiFade: {fileID: 1900026130}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &886060076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55232,7 +55273,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -2.2516644, y: 1.361094}
+  m_Offset: {x: -2.5097466, y: 1.2178586}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -55242,7 +55283,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.3784213, y: 7.106538}
+  m_Size: {x: 4.862257, y: 6.820067}
   m_EdgeRadius: 0
 --- !u!1 &953137784
 GameObject:
@@ -57319,6 +57360,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1626722909}
   uiFade: {fileID: 21352109}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &1000382004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64696,6 +64739,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 447345661}
   uiFade: {fileID: 447345664}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &1161050794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87767,6 +87812,7 @@ MonoBehaviour:
   t3_bg_lvl3: {fileID: 2003078410}
   overclockToggles: []
   mercenaryToggles: []
+  gearHighLights: []
   tutorialFunction: 0
 --- !u!1 &1660849775
 GameObject:
@@ -93417,6 +93463,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 79623908}
   uiFade: {fileID: 79623911}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &1671229674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108377,6 +108425,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 907078750}
   uiFade: {fileID: 907078753}
+  alwaysShow: 1
+  isTierLocked: 0
 --- !u!114 &1981682041
 MonoBehaviour:
   m_ObjectHideFlags: 0
