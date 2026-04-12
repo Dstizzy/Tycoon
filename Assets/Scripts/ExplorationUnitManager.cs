@@ -65,6 +65,15 @@ public class ExplorationUnitManager : MonoBehaviour
 
    private void Awake()
    {
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
+
       // Verify all panels are assigned and disable them at startup
       if (infoPanel != null)
          infoPanel.gameObject.SetActive(false);
