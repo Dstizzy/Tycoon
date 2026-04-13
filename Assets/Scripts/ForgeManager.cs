@@ -530,33 +530,7 @@ public class ForgeManager : MonoBehaviour
 
       EventTrigger trigger = btnTransform.GetComponent<EventTrigger>();
       if (trigger == null) trigger = btnTransform.gameObject.AddComponent<EventTrigger>();
-
       trigger.triggers.Clear();
-
-      if (!isUnlocked)
-      {
-         string blueprintName = "";
-         if (requiredLevel == 2)
-         {
-            blueprintName = "Industrial Blueprint"; 
-         }
-         else if (requiredLevel == 3)
-         {
-            blueprintName = "Clockwork Blueprint"; 
-         }
-
-         EventTrigger.Entry enterEntry = new EventTrigger.Entry();
-         enterEntry.eventID = EventTriggerType.PointerEnter;
-         enterEntry.callback.AddListener((data) =>
-         {
-            if (ticker != null)
-            {
-               ticker.ShowTicker($"Needs to be unlocked by {blueprintName} in tradehut.", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
-            }
-         });
-
-         trigger.triggers.Add(enterEntry);
-      }
 
       btn.onClick.RemoveAllListeners();
       if (isUnlocked)
