@@ -11,7 +11,7 @@ using static TickerSystem;
 public class OreRefinery_Manager : MonoBehaviour
 {
 
-   public static OreRefinery_Manager Instance { get; private set; }
+   public static OreRefinery_Manager Instance { get; set; }
 
    const int PATCH_BUTTON   = 1;
    const int INFO_BUTTON    = 2;
@@ -386,9 +386,13 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void ProduceOres()
    {
-      int roll = UnityEngine.Random.Range(0, 100);
+      //int roll = UnityEngine.Random.Range(0, 100);
+      if(IsBlocked)
+         return;
+      else
+         InventoryManager.Instance.TryAddOre(CurrentOreProduction);
 
-      InventoryManager.Instance.TryAddOre(CurrentOreProduction);
+      return;
    }
 
    public void CloseJamPanel()

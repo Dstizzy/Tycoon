@@ -1,6 +1,7 @@
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -116,7 +117,7 @@ public class MainUIManager : MonoBehaviour
       if (SceneHistory.Instance != null) 
       {
          GameManager.RestartGame();
-         SceneHistory.Instance.LoadPreviousScene();
+         SceneHistory.Instance.LoadScene("StartScreen");
       }
       else
          Debug.LogError("SceneHistory is missing from the scene!");
@@ -124,7 +125,7 @@ public class MainUIManager : MonoBehaviour
 
    public void StartWalkthrough()
    {
-      StartScreenManager.Instance.OpenScene("WalkthroughScene");
+      SceneManager.LoadScene("WalkthroughScene");
    }
 
    public void SetMainButtonsInteractable(bool interactable)

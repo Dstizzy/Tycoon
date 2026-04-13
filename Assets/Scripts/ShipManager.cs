@@ -7,6 +7,7 @@ using Unity.Plastic.Antlr3.Runtime.Tree;
 
 public class ShipManager : MonoBehaviour
 {
+
    // Symbolic Constants
    public const int MAX_LEVEL              = 3;    // Maximum ship level to be reached
    public const int NUM_OF_CRAFTS          = 7;    // Number of crafts that can be discovered
@@ -478,6 +479,7 @@ public class ShipManager : MonoBehaviour
 
       // Wait for previous panels to fully fade out
       yield return new WaitForSeconds(0.5f);
+      PopUpManager.Instance.DisablePlayerInput();
       panelManager.OpenPanel(finalRewardsPanel.gameObject);
 
       // If no rewards were found, show empty exploraion message
@@ -590,5 +592,6 @@ public class ShipManager : MonoBehaviour
       panelManager.ClosePanel(finalRewardsPanel.gameObject);
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 }

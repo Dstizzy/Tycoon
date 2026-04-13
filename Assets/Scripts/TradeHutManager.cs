@@ -45,8 +45,7 @@ public class TradeHutManager : MonoBehaviour
 
    // Transforms
    private Transform currentBuyItem,    
-                     currentSellItem,
-                     currentMysteryBoxResult;
+                     currentSellItem;
 
    // Private variables
    private int crudeToolSellCount     = 0,
@@ -1615,6 +1614,7 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
    }
+   public static void ClearEvents() { HandleTutorial = null; }
 
    // Closes the panel corresponding to the button ID
    public void CloseTradeHutPanel(int buttonID)    

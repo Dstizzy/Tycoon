@@ -11,18 +11,6 @@ public class StartScreenManager : MonoBehaviour
 
    public static StartScreenManager Instance { get; private set; }
 
-   private void Awake()
-   {
-      if (Instance != null && Instance != this)
-      {
-         Destroy(this.gameObject);
-      }
-      else
-      {
-         Instance = this;
-         DontDestroyOnLoad(this.gameObject);
-      }
-   }
 
    // Called by the START button.
    public void OnStartButtonClick()
@@ -58,6 +46,6 @@ public class StartScreenManager : MonoBehaviour
       yield return new WaitForSeconds(FadeDuration);
 
       // 3. Load the scene.
-      SceneHistory.Instance.LoadScene(sceneName);
+      SceneManager.LoadScene(sceneName);
    }
 }

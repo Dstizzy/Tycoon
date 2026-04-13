@@ -16,7 +16,7 @@ public class TickerSystem : MonoBehaviour {
 
    private Coroutine activeRoutine;
 
-   public static TickerSystem Instance { get; private set; }
+   public static TickerSystem Instance { get; set; }
 
    public enum MessageTypes {
       WorldEvent,
