@@ -123,7 +123,7 @@ public class ForgeManager : MonoBehaviour
 
 
    public static event Action<int> HandleTutorial;
-   public static ForgeManager Instance { get; private set; }
+   public static ForgeManager Instance { get; set; }
 
    public static int forgeLevel = STARTING_LEVEL;
    public bool tutorialFunction = false; // Checks if the forge function has been explained in the tutorial
