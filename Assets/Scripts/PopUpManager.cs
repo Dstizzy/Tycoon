@@ -33,7 +33,11 @@ public class PopUpManager : MonoBehaviour
    // Added for CameraDragPan update(off when the pop up window is open)
    /* This flag is used by the Camera script to disable */
    /* panning and zooming while a window is open.       */
-   public bool IsWindowOpen { get; private set; } = false;
+   public bool IsWindowOpen => windowOpenCount > 0;
+
+   // Reference count for popup/input blocking.
+   // This prevents one popup from accidentally re-enabling input while another popup is still open.
+   private int windowOpenCount = 0;
 
    private void Awake()
    {
@@ -107,6 +111,10 @@ public class PopUpManager : MonoBehaviour
             if (prevHoverObject.tag == "Ore Refinery" && IsOreRefineryBlocked && OreRefinery_Manager.Instance.manualResetOption)
             {
                OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+               if (prevHoverObject.tag == "Ore Refinery" && IsOreRefineryBlocked && OreRefinery_Manager.Instance.manualResetOption)
+               {
+                  OreRefinery_Manager.Instance.DeactivateManualResetCounter();
+               }
             }
          }
          buildingTransform = null; // Clear the reference to the old building
@@ -280,16 +288,47 @@ public class PopUpManager : MonoBehaviour
 
    public void DisablePlayerInput()
    {
-      IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
-      playerActions.PlayerInput.Disable();
-      HoverScript.Instance.DisableHover();
+      //IsWindowOpen = true; // Added for Drag/Pan update; Find the function(s) that OPEN popups
+      //playerActions.PlayerInput.Disable();
+      //HoverScript.Instance.DisableHover();
+      windowOpenCount++;
+      Debug.Log($"[PopUpManager] DisablePlayerInput -> count = {windowOpenCount}");
+      ApplyInputState();
    }
    public void EnablePlayerInput()
    {
-      IsWindowOpen = false; // Added for Drag/Pan update; Find the function(s) that CLOSE popups
-      playerActions.PlayerInput.Enable();
-      HoverScript.Instance.EnableHover();
-      ClosePopUps();
+      //IsWindowOpen = false; // Added for Drag/Pan update; Find the function(s) that CLOSE popups
+      //playerActions.PlayerInput.Enable();
+      //HoverScript.Instance.EnableHover();
+      //ClosePopUps();
+      windowOpenCount = Mathf.Max(0, windowOpenCount - 1);
+      Debug.Log($"[PopUpManager] EnablePlayerInput -> count = {windowOpenCount}");
+      ApplyInputState();
+
+      // Only clean up hover popups when every blocking window has actually closed.
+      if (windowOpenCount == 0)
+         ClosePopUps();
+   }
+
+   private void ApplyInputState()
+   {
+      bool shouldBlockInput = windowOpenCount > 0;
+
+      if (playerActions != null)
+      {
+         if (shouldBlockInput)
+            playerActions.PlayerInput.Disable();
+         else
+            playerActions.PlayerInput.Enable();
+      }
+
+      if (HoverScript.Instance != null)
+      {
+         if (shouldBlockInput)
+            HoverScript.Instance.DisableHover();
+         else
+            HoverScript.Instance.EnableHover();
+      }
    }
 
    private void ClosePopUps()
