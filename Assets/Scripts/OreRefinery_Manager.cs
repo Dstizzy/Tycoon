@@ -386,9 +386,13 @@ public class OreRefinery_Manager : MonoBehaviour
 
    private void ProduceOres()
    {
-      int roll = UnityEngine.Random.Range(0, 100);
+      //int roll = UnityEngine.Random.Range(0, 100);
+      if(IsBlocked)
+         return;
+      else
+         InventoryManager.Instance.TryAddOre(CurrentOreProduction);
 
-      InventoryManager.Instance.TryAddOre(CurrentOreProduction);
+      return;
    }
 
    public void CloseJamPanel()
