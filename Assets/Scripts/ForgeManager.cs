@@ -365,24 +365,37 @@ public class ForgeManager : MonoBehaviour
       }
    }
 
-
    public void RequestForgePanel(int buttonID)
    {
       switch (buttonID)
       {
          case CRAFT_BUTTON:
             ShowCraftPanel();
-            craftPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
+            Button craftExitBtn = craftPanel.transform.Find("ExitButton").GetComponent<Button>();
+            craftExitBtn.onClick.RemoveAllListeners();
+            craftExitBtn.onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
             break;
+
          case INFO_BUTTON:
             ShowInfoPanel();
-            infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(INFO_BUTTON));
+            Button infoExitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
+            infoExitBtn.onClick.RemoveAllListeners();
+            infoExitBtn.onClick.AddListener(() => CloseForgePanel(INFO_BUTTON));
             break;
+
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
-            upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
+            Button yesBtn = upgradePanel.transform.Find("YesButton").GetComponent<Button>();
+            Button cancelBtn = upgradePanel.transform.Find("CancelButton").GetComponent<Button>();
+
+            // Always wipe the slate clean before adding a lambda listener!
+            yesBtn.onClick.RemoveAllListeners();
+            yesBtn.onClick.AddListener(() => UpgradeForge());
+
+            cancelBtn.onClick.RemoveAllListeners();
+            cancelBtn.onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
             break;
+
          default:
             Debug.Log("Building Panel: Unknown button ID.");
             break;
