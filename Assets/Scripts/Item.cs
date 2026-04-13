@@ -7,7 +7,7 @@ public class Item {
    /* Public static properties                                          */
    public static int base_crude_tool_value     = 30;
    public static int base_harpoon_value        = 60;
-   public static int base_diving_bell_value    = 180;
+   public static int base_diving_bell_value    = 120;
    public static int base_pressure_valve_value = 250;
    public static int base_precision_lens_value = 600;
    public static int base_engine_value         = 900;

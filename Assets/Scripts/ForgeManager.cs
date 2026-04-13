@@ -32,8 +32,8 @@ public class ForgeManager : MonoBehaviour
    const int PATCH_KIT_COST = 75;
    const int PRESSUREV_VALVE_COST = 50;
    const int DIVING_BELL_COST = 15;
-   const int ENGINE_COST = 250;
-   const int PRECISION_LENS_COST = 200;
+   const int ENGINE_COST = 125;
+   const int PRECISION_LENS_COST = 160;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
@@ -535,33 +535,7 @@ public class ForgeManager : MonoBehaviour
 
       EventTrigger trigger = btnTransform.GetComponent<EventTrigger>();
       if (trigger == null) trigger = btnTransform.gameObject.AddComponent<EventTrigger>();
-
       trigger.triggers.Clear();
-
-      if (!isUnlocked)
-      {
-         string blueprintName = "";
-         if (requiredLevel == 2)
-         {
-            blueprintName = "Industrial Blueprint"; 
-         }
-         else if (requiredLevel == 3)
-         {
-            blueprintName = "Clockwork Blueprint"; 
-         }
-
-         EventTrigger.Entry enterEntry = new EventTrigger.Entry();
-         enterEntry.eventID = EventTriggerType.PointerEnter;
-         enterEntry.callback.AddListener((data) =>
-         {
-            if (ticker != null)
-            {
-               ticker.ShowTicker($"Needs to be unlocked by {blueprintName} in tradehut.", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
-            }
-         });
-
-         trigger.triggers.Add(enterEntry);
-      }
 
       btn.onClick.RemoveAllListeners();
       if (isUnlocked)
@@ -1292,4 +1266,6 @@ public class ForgeManager : MonoBehaviour
       craftPanel.transform.Find("xButton3").gameObject.SetActive(false);
       craftPanel.transform.Find("xButton3").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
    }
+
+   public static void ClearEvents() { HandleTutorial = null; }
 }

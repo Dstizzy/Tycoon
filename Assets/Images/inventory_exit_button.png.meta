@@ -103,10 +103,10 @@ TextureImporter:
       name: inventory_exit_button_0
       rect:
         serializedVersion: 2
-        x: 258
-        y: 19
-        width: 518
-        height: 516
+        x: 206
+        y: 26
+        width: 275
+        height: 328
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

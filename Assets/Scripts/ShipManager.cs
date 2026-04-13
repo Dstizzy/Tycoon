@@ -7,6 +7,7 @@ using Unity.Plastic.Antlr3.Runtime.Tree;
 
 public class ShipManager : MonoBehaviour
 {
+
    // Symbolic Constants
    public const int MAX_LEVEL              = 3;    // Maximum ship level to be reached
    public const int NUM_OF_CRAFTS          = 7;    // Number of crafts that can be discovered

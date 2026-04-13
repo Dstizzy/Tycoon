@@ -12,7 +12,7 @@ public class ExplorationUnitManager : MonoBehaviour
    public PanelManager panelManager;
    [SerializeField] private EventDatabase eventDatabase;   // Contains all potential node events
    [SerializeField] private EventUIController eventController; // Manages UI of current event
-   [SerializeField] private ShipManager shipManager;     // Tracks the ship's stats and inventory
+   [SerializeField] public ShipManager shipManager;     // Tracks the ship's stats and inventory
 
    [SerializeField] private Transform explorePanel;         // Panel to start an expedition
    [SerializeField] private Transform upgradePanel;         // Panel to upgrade the exploration unit
@@ -49,8 +49,8 @@ public class ExplorationUnitManager : MonoBehaviour
    const int EXPLORE_BUTTON = 1;
    const int INFO_BUTTON = 2;
    const int UPGRADE_BUTTON = 3;
-   const int LEVEL2_PEARL_COST = 200;  // Pearl cost to reach level 2
-   const int LEVEL3_PEARL_COST = 500;  // Pearl cost to reach level 3
+   public const int LEVEL2_PEARL_COST = 200;  // Pearl cost to reach level 2
+   public const int LEVEL3_PEARL_COST = 500;  // Pearl cost to reach level 3
    const int MAX_SHIP_LEVEL = 3;    // The maximum level the exploration unit can reach
    const int FLOATING_STAT_DISTANCE = 30;   // Distance the floating ship stat moves in decision results panel
    const float POP_DURATION = 0.4f; // Duration of the pop animation in decision results panel
@@ -61,10 +61,19 @@ public class ExplorationUnitManager : MonoBehaviour
    private bool isWaiting = false; // Triggered when an event causes user to lose an exploration turn
    private int lastProcessedTurn = 0;     // Tracks the last turn that has been processed
 
-   public static ExplorationUnitManager Instance { get; private set; }
+   public static ExplorationUnitManager Instance { get; set; }
 
    private void Awake()
    {
+      if (Instance != null && Instance != this)
+         Destroy(this.gameObject);
+      else
+      {
+         Instance = this;
+         DontDestroyOnLoad(this.gameObject);
+      }
+
+
       // Verify all panels are assigned and disable them at startup
       if (infoPanel != null)
          infoPanel.gameObject.SetActive(false);

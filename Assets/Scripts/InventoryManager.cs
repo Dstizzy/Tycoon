@@ -44,7 +44,6 @@ public class InventoryManager : MonoBehaviour
                     MIN_PRECISION_LENS_COUNT = 0,
                     MIN_MERCENARY_ENGINEER_COUNT = 0;
 
-
    public const int RESOURCE_SPACING = 35,
                     CRAFT_SPACING    = 33,
                     PEARL_POSITION   = 0,
@@ -73,7 +72,7 @@ public class InventoryManager : MonoBehaviour
                        MERCENARY_ENGINEER_TAG = "Mercenary Engineer";
 
    // Holds a reference to the singleton instance of this class.
-   public static InventoryManager Instance { get; private set; }
+   public static InventoryManager Instance { get; set; }
 
    private TickerSystem ticker;
 
@@ -180,15 +179,15 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 5000;
-      oreCount           = 5000;
-      crudeToolCount     = 5000;
-      harpoonCount       = 5000;
-      patchKitCount      = 5000;
-      pressureValveCount = 5000;
-      divingBellCount    = 5000;
-      precisionLensCount = 5000;
-      engineCount        = 5000;
+      pearlCount         = 0;
+      oreCount           = 0;
+      crudeToolCount     = 0;
+      harpoonCount       = 0;
+      patchKitCount      = 0;
+      pressureValveCount = 0;
+      divingBellCount    = 0;
+      precisionLensCount = 0;
+      engineCount        = 0;
    }
 
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
@@ -1283,12 +1282,31 @@ public class InventoryManager : MonoBehaviour
       }
       else
       {
-         if (ForgeManager.forgeLevel == 2)
+         if (ForgeManager.forgeLevel == 2) 
+         {
             if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
                ForgeUpgradeIcon.gameObject.SetActive(true);
             else
                ForgeUpgradeIcon.gameObject.SetActive(false);
+         }
+      }
+
+      if(ExplorationUnitManager.Instance.shipManager.ShipLevel == 1) 
+      {
+         if(pearlCount >= ExplorationUnitManager.LEVEL2_PEARL_COST)
+            ExplorationUnitUpgradeIcon.gameObject.SetActive(true);
+         else
+            ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+      }
+      else
+      {
+         if (ExplorationUnitManager.Instance.shipManager.ShipLevel == 2) 
+         { 
+            if (pearlCount >= ExplorationUnitManager.LEVEL3_PEARL_COST)
+               ForgeUpgradeIcon.gameObject.SetActive(true);
+            else
+               ForgeUpgradeIcon.gameObject.SetActive(false);
+         }
       }
    }
-
 }
