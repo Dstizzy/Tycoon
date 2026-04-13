@@ -110,6 +110,7 @@ public class ForgeManager : MonoBehaviour
    [SerializeField] private List<Toggle> mercenaryToggles;
 
    [SerializeField] private List<UIHighlightTarget> gearHighLights;
+   [SerializeField] private TutorialManager tutorialManager;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -121,8 +122,8 @@ public class ForgeManager : MonoBehaviour
    private GameObject craftButtonObject;
 
 
-   public static event Action HandleTutorial;
-   public static ForgeManager Instance { get; set; }
+   public static event Action<int> HandleTutorial;
+   public static ForgeManager Instance { get; private set; }
 
    public static int forgeLevel = STARTING_LEVEL;
    public bool tutorialFunction = false; // Checks if the forge function has been explained in the tutorial
@@ -280,8 +281,9 @@ public class ForgeManager : MonoBehaviour
       // 3. Add the item
       if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
-         craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
-         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
+         HandleTutorial?.Invoke(1);
+         //craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
+         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
       }
 
       if((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
@@ -486,7 +488,10 @@ public class ForgeManager : MonoBehaviour
    {
       panelManager.OpenPanel(craftPanel.gameObject);
       if (tutorialFunction)
-         craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
+      {
+         HandleTutorial?.Invoke(1);
+      }
+         //craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -693,8 +698,7 @@ public class ForgeManager : MonoBehaviour
             targetContainer = tier1Container; 
             if (tutorialFunction)
             {
-               craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
-               craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
+               HandleTutorial?.Invoke(1);
             }
             break;
 
@@ -1066,10 +1070,11 @@ public class ForgeManager : MonoBehaviour
       }
       if (tutorialFunction)
       {
-         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
+         HandleTutorial?.Invoke(1);
+         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
          CloseCraftPanel();
          tutorialFunction = false;
-         HandleTutorial?.Invoke();
+         HandleTutorial?.Invoke(2);
       }
    }
    private int GetItemCost(Item.ItemType type)

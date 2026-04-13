@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 // Runs the optional narrative tutorial after the intro flow finishes.
 //
@@ -88,6 +89,100 @@ public class NarrativeTutorialManager : MonoBehaviour
       Debug.Log($"[NarrativeTutorialManager] Starting tutorial with {tutorialSteps.Length} steps.");
       StartCoroutine(RunTutorial(onTutorialFinished));
    }
+
+   /*public void BeginWalkthrough(Action onWalkthroughFinished)
+   {
+      if (tutorialSteps == null || tutorialSteps.Length == 0)
+      {
+         Debug.LogWarning("[NarrativeTutorialManager] No tutorial steps found. Completing immediately.");
+         onWalkthroughFinished?.Invoke();
+         return;
+      }
+
+      Debug.Log($"[NarrativeTutorialManager] Starting tutorial with {tutorialSteps.Length} steps.");
+      StartCoroutine(RunWalkthrough(onWalkthroughFinished));
+   }*/
+
+   /*public IEnumerator RunWalkthrough(Action onWalkthroughFinished)
+   {
+      isTutorialRunning = true;
+
+      for (int stepIndex = 0; stepIndex < tutorialSteps.Length; stepIndex++)
+      {
+         TutorialStep currentStep = tutorialSteps[stepIndex];
+         GameObject objectType = null;
+
+         switch(currentStep.lines[currentStep.lines.Length - 1].ToString())
+         {
+            case "Click the next day button to get 10 of those beautiful pieces of ore":
+               objectType = NextDayButton;
+               objectType.GetComponent<Button>().interactable = true;
+               break;
+            case "Hover over this building and click the craft button that pops up.":
+               objectType = ForgePanel;
+               break;
+            case "TradeHut":
+               objectType = TradeHutPanel;
+               break;
+            case "ExplorationUnit":
+               objectType = ExplorationUnitPanel;
+               break;
+            case "Lab":
+               objectType = LabPanel;
+               break;
+         }
+
+         if(objectType != null)
+            Debug.Log(objectType.ToString());
+
+         if (currentStep == null)
+         {
+            Debug.LogWarning($"[NarrativeTutorialManager] Step {stepIndex} is null. Skipping.");
+            continue;
+         }
+
+         Debug.Log($"[NarrativeTutorialManager] Playing tutorial step {stepIndex}: {currentStep.note}");
+
+         // Resolve the speaker portrait/profile from the NPC encounter database.
+         NPCEncounterSystem.NPCProfile speakerProfile = null;
+         if (NPCEncounterSystem.Instance != null)
+            speakerProfile = NPCEncounterSystem.Instance.GetProfileByPersonality(currentStep.speaker);
+
+         // Turn on any requested highlights before the dialogue starts.
+         ShowHighlights(currentStep.highlightTargets);
+         ShowUIHighlights(currentStep.uiHighlightTargets);
+
+         bool dialogueFinished = false;
+
+         // While tutorial dialogue is playing, gameplay input should remain blocked.
+         NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
+         NarrativeOverlayUI.Instance.PlayWalkthroughSequence(
+            speakerProfile,
+            currentStep.lines,
+            currentStep.layoutMode,
+            false,
+            objectType != null,
+            objectType,
+            () => dialogueFinished = true);
+
+         // Wait until the overlay reports that the dialogue has finished.
+         yield return new WaitUntil(() => dialogueFinished);
+
+         // Optional step reward.
+         if (currentStep.pearlRewardOnComplete > 0 && InventoryManager.Instance != null)
+            InventoryManager.Instance.TryAddPearl(currentStep.pearlRewardOnComplete);
+
+         // Clean up highlights before moving to the next tutorial step.
+         HideHighlights(currentStep.highlightTargets);
+         HideUIHighlights(currentStep.uiHighlightTargets);
+
+         NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
+      }
+
+      isTutorialRunning = false;
+      Debug.Log("[NarrativeTutorialManager] Tutorial finished.");
+      onWalkthroughFinished?.Invoke();
+   }*/
 
    // Main tutorial coroutine.
    //
