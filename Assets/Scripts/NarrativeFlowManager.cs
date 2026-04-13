@@ -12,7 +12,7 @@ using UnityEngine;
 //
 // This class does not implement tutorial content itself.
 // It only coordinates the startup flow and hands off to other systems.
-public class NarrativeFlowFlowManager : MonoBehaviour
+public class NarrativeFlowManager : MonoBehaviour
 {
    [Header("Dependencies")]
    [SerializeField] private NarrativeTutorialManager narrativeTutorialManager;

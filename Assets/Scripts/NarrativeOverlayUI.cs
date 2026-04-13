@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using static NPCEncounterSystem;
 
 // Creates and manages the full-screen overlay flow UI used for:
 // 1. Intro dialogue
@@ -455,6 +456,27 @@ public class NarrativeOverlayUI : MonoBehaviour
       ShowCurrentLine();
    }
 
+   public void PlayWalkthroughSequence(
+      NPCEncounterSystem.NPCProfile profile,
+      NPCEncounterSystem.DialogueLine[] dialogueLines,
+      DialogueLayoutMode layoutMode,
+      int lineIndex,
+      bool canSkip,
+      Action onComplete)
+   {
+      if (profile == null || dialogueLines == null || dialogueLines.Length == 0)
+         return;
+
+      currentProfile = profile;
+      currentLines = dialogueLines;
+      currentCompleteAction = onComplete;
+      isSequencePlaying = true;
+
+      ApplyDialogueLayout(layoutMode);
+
+      ShowWalkthroughLine(currentLineIndex);
+   }
+
    public void ShowTutorialToggle(Action<bool> onChoice)
    {
       currentToggleAction = onChoice;
@@ -506,6 +528,29 @@ public class NarrativeOverlayUI : MonoBehaviour
          return;
 
       CompleteCurrentSequence();
+   }
+
+   private void ShowWalkthroughLine(int currentLineIndex)
+   {
+
+      NPCEncounterSystem.DialogueLine currentLine = currentLines[currentLineIndex];
+
+      if (currentProfile != null && NPCEncounterSystem.Instance != null)
+      {
+         Sprite portrait = NPCEncounterSystem.Instance.GetPortraitForExpression(currentProfile, currentLine.expression);
+         portraitImage.sprite = portrait;
+         portraitImage.color = portrait != null ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
+         nameText.text = currentProfile.npcName;
+      }
+
+      currentFormattedLine = currentLine.isAction
+      ? $"<i>{currentLine.text}</i>"
+      : currentLine.text;
+
+      if (typingCoroutine != null)
+         StopCoroutine(typingCoroutine);
+
+      typingCoroutine = StartCoroutine(TypeLine(currentLine.text ?? string.Empty, currentLine.isAction));
    }
 
    private void ShowCurrentLine()

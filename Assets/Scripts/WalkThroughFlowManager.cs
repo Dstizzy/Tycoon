@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Entry point for the main-scene narrative onboarding flow.
 //
@@ -15,7 +16,7 @@ using UnityEngine;
 public class WalkThroughFlowManager : MonoBehaviour
 {
    [Header("Dependencies")]
-   [SerializeField] private NarrativeTutorialManager narrativeTutorialManager;
+   [SerializeField] private TutorialManager tutorialManager;
 
    // Runs automatically when the scene starts.
    // Handles intro dialogue, tutorial toggle, optional tutorial handoff, and cleanup.
@@ -23,50 +24,25 @@ public class WalkThroughFlowManager : MonoBehaviour
    {
       yield return null;
 
-      if (NarrativeOverlayUI.Instance == null)
-      {
-         Debug.LogError("[WalkThroughFlowManager] NarrativeOverlayUI instance is missing.");
-         yield break;
-      }
-
-      NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
+      //NarrativeOverlayUI.Instance.SetGameplayBlocked(true);
 
 
       NPCEncounterSystem.NPCProfile dolphinProfile = null;
       if (NPCEncounterSystem.Instance != null)
          dolphinProfile = NPCEncounterSystem.Instance.GetProfileByPersonality(NPCEncounterSystem.NPCPersonality.Dolphin);
 
-      bool introFinished = false;
-
-
-      yield return new WaitUntil(() => introFinished);
-
-      bool toggleAnswered = false;
-      bool playTutorial = TutorialFlowSettings.NarrativeTutorialEnabled;
-
-      // Ask the player whether they want the tutorial enabled.
-      NarrativeOverlayUI.Instance.ShowTutorialToggle(currentChoice =>
-      {
-         playTutorial = currentChoice;
-         toggleAnswered = true;
-      });
-
-      yield return new WaitUntil(() => toggleAnswered);
-
-      bool fadeFinished = false;
-      NarrativeOverlayUI.Instance.FadeTo(0f, 0.4f, () => fadeFinished = true);
-      yield return new WaitUntil(() => fadeFinished);
+      bool playTutorial = true;
 
       // Hand off to the main narrative tutorial if enabled.
       if (playTutorial)
       {
-         if (narrativeTutorialManager != null)
+         if (tutorialManager != null)
          {
             Debug.Log("[WalkThroughFlowManager] Starting narrative tutorial.");
 
-            bool tutorialFinished = false;
-            narrativeTutorialManager.BeginTutorial(() => tutorialFinished = true);
-            yield return new WaitUntil(() => tutorialFinished);
+            bool walkthroughFinished = false;
+            tutorialManager.BeginWalkthrough(() => walkthroughFinished = true);
+            yield return new WaitUntil(() => walkthroughFinished);
          }
          else
          {
@@ -77,5 +53,6 @@ public class WalkThroughFlowManager : MonoBehaviour
       // Final cleanup: hide overlay UI and restore gameplay input.
       NarrativeOverlayUI.Instance.HideAll();
       NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
+      SceneManager.LoadScene("MainScene");
    }
 }

@@ -145,7 +145,7 @@ public class TradeHutManager : MonoBehaviour
 
    private InventoryManager inv;
 
-   public static event Action HandleTutorial;
+   public static event Action<int> HandleTutorial;
 
    public static TradeHutManager Instance;
 
@@ -259,11 +259,7 @@ public class TradeHutManager : MonoBehaviour
 
    public void ChangeTutorialState(int tutorialType)
    {
-      if (tutorialType == FIRST_TUTORIAL)
-         tutorialFunctionOne = true;
-
-      if (tutorialType == SECOND_TUTORIAL)
-         tutorialFunctionTwo = true;
+      tutorialFunctionTwo = true;
    }
 
    public void CreateSellItem(Sprite itemSprite, int itemValue, float positionIndex, string itemTag, int verticalIndex = 0) 
@@ -417,10 +413,11 @@ public class TradeHutManager : MonoBehaviour
          currentSellItem = null;
       }
 
-      if(tutorialFunctionOne && itemTag == CRUDE_TOOL_TAG && SellPanel.Find("TutorialPart3").gameObject.activeSelf)
+      if(tutorialFunctionTwo && itemTag == CRUDE_TOOL_TAG)
       {
-         SellPanel.Find("TutorialPart3").gameObject.SetActive(false);
-         SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
+         HandleTutorial?.Invoke(1);
+         //SellPanel.Find("TutorialPart3").gameObject.SetActive(false);
+         //SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
       }
 
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
@@ -593,10 +590,11 @@ public class TradeHutManager : MonoBehaviour
                else 
                   crudeToolSellCount = MIN_SELL_ITEM_COUNT;
 
-               if(tutorialFunctionOne)
+               if(tutorialFunctionTwo)
                {
-                  SellPanel.Find("TutorialPart5").gameObject.SetActive(false);
-                  SellPanel.Find("TutorialPart6").gameObject.SetActive(true);
+                  HandleTutorial?.Invoke(1);
+                  //SellPanel.Find("TutorialPart5").gameObject.SetActive(false);
+                  //SellPanel.Find("TutorialPart6").gameObject.SetActive(true);
                }
             }
             break;
@@ -806,8 +804,9 @@ public class TradeHutManager : MonoBehaviour
    public void IncreaseSellItemCount(Transform item) 
    {
       AdjustSellQuantity(item, 1);
-      if(tutorialFunctionOne)
+      if(tutorialFunctionTwo)
       {
+         HandleTutorial?.Invoke(1);
          SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
          SellPanel.Find("TutorialPart5").gameObject.SetActive(true);
       }
@@ -1667,8 +1666,9 @@ public class TradeHutManager : MonoBehaviour
       else
          SellPanel.gameObject.SetActive(true);
 
-      /*if(tutorialFunctionTwo)
+      if(tutorialFunctionTwo)
       {
+         HandleTutorial?.Invoke(1);
          SellPanel.Find("Arrow").gameObject.SetActive(false);
          SellPanel.Find("Arrow2").gameObject.SetActive(false);
          SellPanel.Find("FirstText").gameObject.SetActive(false);
@@ -1676,7 +1676,7 @@ public class TradeHutManager : MonoBehaviour
          SellPanel.Find("Arrow3").gameObject.SetActive(true);
          SellPanel.Find("ThirdText").gameObject.SetActive(true);
          SellPanel.Find("FourthText").gameObject.SetActive(true);
-      }*/
+      }
 
       // Destroy the instantiated buy item/window instance if it exists
       if (currentBuyItem != null) 
@@ -1685,15 +1685,9 @@ public class TradeHutManager : MonoBehaviour
          currentBuyItem = null;
       }
 
-      if (tutorialFunctionOne)
-      {
-         if (BuyPanel.Find("TutorialPart2").gameObject.activeSelf)
-         {
-            BuyPanel.Find("TutorialPart2").gameObject.SetActive(false);
-            SellPanel.Find("TutorialPart3").gameObject.SetActive(true);
-         }
-         else
-            SellPanel.Find("TutorialPart1").gameObject.SetActive(true);
+      if (tutorialFunctionTwo)
+      {      
+         HandleTutorial?.Invoke(1);  
       }
    }
 
@@ -1705,12 +1699,6 @@ public class TradeHutManager : MonoBehaviour
          SellWindow.gameObject.SetActive(false);
 
          BuyPanel.gameObject.SetActive(true);
-      }
-
-      if (tutorialFunctionOne)
-      {
-         SellPanel.Find("TutorialPart1").gameObject.SetActive(false);
-         BuyPanel.Find("TutorialPart2").gameObject.SetActive(true);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
@@ -1735,19 +1723,11 @@ public class TradeHutManager : MonoBehaviour
 
    private void CloseTradePanel() 
    {
-      if(tutorialFunctionOne)
+      if(tutorialFunctionTwo)
       {
          SellPanel.Find("TutorialPart6").gameObject.SetActive(false);
-         tutorialFunctionOne = false;
-         HandleTutorial?.Invoke();
-      }
-
-      if(tutorialFunctionTwo && SellPanel.Find("Arrow4").gameObject.activeSelf)
-      {
-         BuyPanel.Find("Arrow4").gameObject.SetActive(false);
-         BuyPanel.Find("SixthText").gameObject.SetActive(false);
-         BuyPanel.Find("SeventhText").gameObject.SetActive(false);
-         HandleTutorial?.Invoke();
+         tutorialFunctionTwo = false;
+         HandleTutorial?.Invoke(2);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
