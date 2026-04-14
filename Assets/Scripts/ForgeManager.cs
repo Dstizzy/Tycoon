@@ -123,7 +123,7 @@ public class ForgeManager : MonoBehaviour
 
 
    public static event Action<int> HandleTutorial;
-   public static ForgeManager Instance { get; private set; }
+   public static ForgeManager Instance { get; set; }
 
    public static int forgeLevel = STARTING_LEVEL;
    public bool tutorialFunction = false; // Checks if the forge function has been explained in the tutorial
@@ -282,8 +282,8 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
          HandleTutorial?.Invoke(1);
-         //craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
-         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
+         craftPanel.transform.Find("Screen1").gameObject.SetActive(false);
+         craftPanel.transform.Find("Screen2").gameObject.SetActive(true);
       }
 
       if((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
@@ -477,8 +477,8 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction)
       {
          HandleTutorial?.Invoke(1);
+         craftPanel.transform.Find("Screen1").gameObject.SetActive(true);
       }
-         //craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -686,6 +686,9 @@ public class ForgeManager : MonoBehaviour
             if (tutorialFunction)
             {
                HandleTutorial?.Invoke(1);
+               craftPanel.transform.Find("Screen2").gameObject.SetActive(false);
+               craftPanel.transform.Find("Screen3").gameObject.SetActive(true);
+               craftPanel.transform.Find("Screen4").gameObject.SetActive(true);
             }
             break;
 
@@ -1058,7 +1061,8 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction)
       {
          HandleTutorial?.Invoke(1);
-         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
+         craftPanel.transform.Find("Screen3").gameObject.SetActive(false);
+         craftPanel.transform.Find("Screen4").gameObject.SetActive(false);
          CloseCraftPanel();
          tutorialFunction = false;
          HandleTutorial?.Invoke(2);
