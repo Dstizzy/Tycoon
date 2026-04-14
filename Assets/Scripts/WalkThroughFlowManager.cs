@@ -52,7 +52,7 @@ public class WalkThroughFlowManager : MonoBehaviour
 
       // Final cleanup: hide overlay UI and restore gameplay input.
       NarrativeOverlayUI.Instance.HideAll();
-      NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
+      TutorialManager.Instance.SetGameplayBlocked(false);
       SceneManager.LoadScene("MainScene");
    }
 }
