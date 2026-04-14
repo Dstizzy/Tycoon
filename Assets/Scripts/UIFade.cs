@@ -4,55 +4,47 @@ using System.Collections;
 public class UIFade : MonoBehaviour
 {
    private CanvasGroup canvasGroup;
-
-   private float elapsed = 0f;
+   private Coroutine currentFade;
 
    void Awake()
    {
-      // Get the Canvas Group component we added
       canvasGroup = GetComponent<CanvasGroup>();
    }
 
-   // Call this function to start the fade
    public void Appear(float duration)
    {
       gameObject.SetActive(true);
-      StartCoroutine(FadeIn(duration));
+
+      // Stop any fade-outs currently happening
+      if (currentFade != null) StopCoroutine(currentFade);
+      currentFade = StartCoroutine(FadeTo(1f, duration));
    }
 
-   public void Disappear(float duration) 
+   public void Disappear(float duration)
    {
-      StartCoroutine(FadeOut(duration));
-      gameObject.SetActive(false);
+      if (!gameObject.activeInHierarchy) return;
+
+      if (currentFade != null) StopCoroutine(currentFade);
+      currentFade = StartCoroutine(FadeTo(0f, duration));
    }
 
-   IEnumerator FadeIn(float duration)
+   IEnumerator FadeTo(float targetAlpha, float duration)
    {
-      elapsed = 0f;
+      float startAlpha = canvasGroup.alpha;
+      float elapsed = 0f;
 
       while (elapsed < duration)
       {
          elapsed += Time.deltaTime;
-         // Linearly move Alpha from 0 to 1 based on time
-         canvasGroup.alpha = Mathf.Clamp01(elapsed / duration);
+         canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / duration);
          yield return null;
       }
 
-      canvasGroup.alpha = 1f; // Ensure it ends perfectly visible
-   }
+      canvasGroup.alpha = targetAlpha;
 
-   IEnumerator FadeOut(float duration)
-   {
-      elapsed = 0f;
-
-      while (elapsed < duration)
+      if (targetAlpha == 0f)
       {
-         elapsed += Time.deltaTime;
-         // Linearly move Alpha from 0 to 1 based on time
-         canvasGroup.alpha = Mathf.Clamp01(elapsed / duration);
-         yield return null;
+         gameObject.SetActive(false);
       }
-
-      canvasGroup.alpha = 0f; // Ensure it ends perfectly invisible
    }
 }
