@@ -179,9 +179,9 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 0;
-      oreCount           = 0;
-      crudeToolCount     = 0;
+      pearlCount         = 5000;
+      oreCount           = 5000;
+      crudeToolCount     = 1;
       harpoonCount       = 0;
       patchKitCount      = 0;
       pressureValveCount = 0;
@@ -305,8 +305,11 @@ public class InventoryManager : MonoBehaviour
    {
       Transform craftsContainer = CraftsPanel.Find("CraftContainer").GetComponent<Transform>(),
                 craftTemplate = craftsContainer.Find("CraftTemplate").GetComponent<Transform>();
+      
       Button craftWindowButton;
-      int craftCount;
+      int    craftCount;
+
+      craftTemplate.gameObject.SetActive(false);
 
       switch (craftTag)
       {
@@ -765,18 +768,20 @@ public class InventoryManager : MonoBehaviour
          Debug.LogError("Harpoon count is at minimum!");
          ticker.ShowTicker($"Harpoon count is at minimum!", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
-      }
-      else
+      } 
+      else 
+      { 
          if (harpoonCount < harpoonAmount)
-      {
-         Debug.LogError("Not enough harpoons!");
-         ticker.ShowTicker($"Cannot use harpoons, only {harpoonCount} available!", Color.red, MessageTypes.ResultMessage);
-         return isSuccess;
-      }
-      else
-      {
-         harpoonCount -= harpoonAmount;
-         isSuccess = true;
+         {
+            Debug.LogError("Not enough harpoons!");
+            ticker.ShowTicker($"Cannot use harpoons, only {harpoonCount} available!", Color.red, MessageTypes.ResultMessage);
+            return isSuccess;
+         }
+         else
+         {
+            harpoonCount -= harpoonAmount;
+            isSuccess = true;
+         }
       }
 
       newHarpoonCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(HARPOON_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
@@ -788,6 +793,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddDivingBell(int divingBellAmount)
    {
+      TextMeshProUGUI newDivingBellCount;
       bool isSuccess = false;
 
       if (divingBellCount >= MAX_DIVING_BELL_COUNT)
@@ -801,6 +807,8 @@ public class InventoryManager : MonoBehaviour
 
       if (DivingBellCountText != null)
       {
+         newDivingBellCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+         newDivingBellCount.text  = " x" + divingBellCount.ToString();
          DivingBellCountText.text = " x" + divingBellCount.ToString();
       }
 
@@ -809,6 +817,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryUseDivingBell(int divingBellAmount)
    {
+      TextMeshProUGUI newDivingBellCount;
       bool isSuccess = false;
 
       if (divingBellCount <= MIN_DIVING_BELL_COUNT)
@@ -832,7 +841,12 @@ public class InventoryManager : MonoBehaviour
          }
       }
 
-      DivingBellCountText.text = " x" + divingBellCount.ToString();
+      if (DivingBellCountText != null)
+      {
+         newDivingBellCount       = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(DIVING_BELL_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+         newDivingBellCount.text  = " x" + divingBellCount.ToString();
+         DivingBellCountText.text = " x" + divingBellCount.ToString();
+      }
 
       return isSuccess;
    }
@@ -900,6 +914,7 @@ public class InventoryManager : MonoBehaviour
 
    public bool TryAddPrecisionLens(int precisionLensAmount)
    {
+      TextMeshProUGUI newPrecisionLensCount;
       bool isSuccess = false;
 
       if (precisionLensCount >= MAX_PRECISION_LENS_COUNT)
@@ -923,13 +938,19 @@ public class InventoryManager : MonoBehaviour
          }
       }
 
-      PrecisionLensCountText.text = " x" + precisionLensCount.ToString();
+      if (PrecisionLensCountText != null)
+      {
+         newPrecisionLensCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+         newPrecisionLensCount.text  = " x" + precisionLensCount.ToString();
+         PrecisionLensCountText.text = " x" + precisionLensCount.ToString();
+      }
 
       return isSuccess;
    }
 
    public bool TryUsePrecisionLens(int precisionLensAmount)
    {
+      TextMeshProUGUI newPrecisionLensCount;
       bool isSuccess = false;
 
       if (precisionLensCount <= MIN_PRECISION_LENS_COUNT)
@@ -953,7 +974,13 @@ public class InventoryManager : MonoBehaviour
          }
       }
 
-      PrecisionLensCountText.text = " x" + precisionLensCount.ToString();
+
+      if (PrecisionLensCountText != null)
+      {
+         newPrecisionLensCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+         newPrecisionLensCount.text  = " x" + precisionLensCount.ToString();
+         PrecisionLensCountText.text = " x" + precisionLensCount.ToString();
+      }
 
       return isSuccess;
    }
@@ -1268,7 +1295,7 @@ public class InventoryManager : MonoBehaviour
    private void CheckUpgradeResources()
    {
       if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls &&
-          OreRefinery_Manager.Instance.NextUpgradeCostInOre <= oreCount)
+          oreCount >= OreRefinery_Manager.Instance.NextUpgradeCostInOre)
          OreRefineryUpgradeIcon.gameObject.SetActive(true);
       else
          OreRefineryUpgradeIcon.gameObject.SetActive(false);
