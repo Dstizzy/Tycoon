@@ -420,21 +420,27 @@ public class TutorialManager : MonoBehaviour
       if(myPart.transform.Find("Turn") != null)
       {
          nextButton.gameObject.SetActive(false);
+         SetGameplayBlocked(false);
          ShowUIHighlights(currentStep.uiHighlightTargets);
+         forgeCanvas.transform.Find("turnScreens").gameObject.SetActive(true);
          turnButton.GetComponent<Button>().onClick.AddListener(() => HandleCustomClick());
       }
       else if(myPart.transform.Find("ForgeExample") != null)
       {
          ShowHighlights(currentStep.highlightTargets);
          forgeFunction = true;
+         turnButton.gameObject.SetActive(false);
          HandleForgeTutorial?.Invoke();
+         forgeCanvas.transform.Find("Screens").gameObject.SetActive(true);
          HideNextButton();
       }
       else if(myPart.transform.Find("TradeHutExample") != null)
       {
          ShowHighlights(currentStep.highlightTargets);
          tradeHutFunction = true;
+         turnButton.gameObject.SetActive(false);
          HandleTradeHutTutorial?.Invoke(1);
+         tradeHutCanvas.transform.Find("Screens").gameObject.SetActive(true);
          HideNextButton();
       }
       else
@@ -446,6 +452,7 @@ public class TutorialManager : MonoBehaviour
    public void HideNextButton()
    {
       nextButton.gameObject.SetActive(false);
+      SetGameplayBlocked(false);
    }
    public void HandleCustomClick()
    {
@@ -459,6 +466,7 @@ public class TutorialManager : MonoBehaviour
       HandleNextClicked();
       turnButton.GetComponent<Button>().onClick.RemoveListener(HandleCustomClick);
       HideUIHighlights(currentStep.uiHighlightTargets);
+      forgeCanvas.transform.Find("turnScreens").gameObject.SetActive(false);
    }
 
    public void HandleTurn()
@@ -501,17 +509,28 @@ public class TutorialManager : MonoBehaviour
    // Method to handle the next step in the tutorial when the required button is clicked
    public void HandleNextStep(int step)
    {
+      if(forgeFunction == true && step == 2)
+      {
+         turnButton.gameObject.SetActive(true);
+         forgeFunction = false;
+         forgeCanvas.transform.Find("Arrow3").gameObject.SetActive(false);
+         forgeCanvas.transform.Find("Screens").gameObject.SetActive(false);
+      }
+
       requiredButtonClicked = false;
+
+      if (tradeHutFunction == true && step == 2)
+      {
+         turnButton.gameObject.SetActive(true);
+         tradeHutFunction = false;
+         tradeHutCanvas.transform.Find("Arrow2").gameObject.SetActive(false);
+         tradeHutCanvas.transform.Find("Screens").gameObject.SetActive(false);
+         requiredButtonClicked = true;
+      }
 
       CompleteCurrentSequence();
       currentLineIndex = 0;
       HandleNextClicked();
-      /*if(step == 2)
-      {
-         isRequiredButtonClicked = true;
-         sectionIndex++;
-         GoThroughSection(tutorialSections[tutorialIndex], sectionIndex);
-      }*/
       ShowUIHighlights(currentStep.uiHighlightTargets);
 
    }
@@ -881,6 +900,7 @@ public class TutorialManager : MonoBehaviour
       {
          skipButton.gameObject.SetActive(canSkip);
          nextButton.gameObject.SetActive(true);
+         SetGameplayBlocked(true);
       }
 
       dialoguePanel.SetActive(true);

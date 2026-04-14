@@ -282,8 +282,8 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
          HandleTutorial?.Invoke(1);
-         //craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
-         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
+         craftPanel.transform.Find("Screen1").gameObject.SetActive(false);
+         craftPanel.transform.Find("Screen2").gameObject.SetActive(true);
       }
 
       if((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
@@ -490,8 +490,8 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction)
       {
          HandleTutorial?.Invoke(1);
+         craftPanel.transform.Find("Screen1").gameObject.SetActive(true);
       }
-         //craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -699,6 +699,9 @@ public class ForgeManager : MonoBehaviour
             if (tutorialFunction)
             {
                HandleTutorial?.Invoke(1);
+               craftPanel.transform.Find("Screen2").gameObject.SetActive(false);
+               craftPanel.transform.Find("Screen3").gameObject.SetActive(true);
+               craftPanel.transform.Find("Screen4").gameObject.SetActive(true);
             }
             break;
 
@@ -1071,7 +1074,8 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction)
       {
          HandleTutorial?.Invoke(1);
-         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
+         craftPanel.transform.Find("Screen3").gameObject.SetActive(false);
+         craftPanel.transform.Find("Screen4").gameObject.SetActive(false);
          CloseCraftPanel();
          tutorialFunction = false;
          HandleTutorial?.Invoke(2);
