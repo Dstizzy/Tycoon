@@ -410,10 +410,8 @@ public class TradeHutManager : MonoBehaviour
       if(tutorialFunctionTwo && itemTag == CRUDE_TOOL_TAG)
       {
          HandleTutorial?.Invoke(1);
-         TradePanels.transform.Find("Screen1").gameObject.SetActive(false);
-         TradePanels.transform.Find("Screen2").gameObject.SetActive(false);
-         TradePanels.transform.Find("Screen3").gameObject.SetActive(true);
-         TradePanels.transform.Find("Screen4").gameObject.SetActive(true);
+         //SellPanel.Find("TutorialPart3").gameObject.SetActive(false);
+         //SellPanel.Find("TutorialPart4").gameObject.SetActive(true);
       }
 
       Transform     sellItemTransform     = Instantiate(sellWindowTemplate, sellWindowContainer);
@@ -589,9 +587,8 @@ public class TradeHutManager : MonoBehaviour
                if(tutorialFunctionTwo)
                {
                   HandleTutorial?.Invoke(1);
-                  TradePanels.transform.Find("Screen5").gameObject.SetActive(false);
-                  TradePanels.transform.Find("Screen6").gameObject.SetActive(false);
-                  TradePanels.transform.Find("Screen7").gameObject.SetActive(true);
+                  //SellPanel.Find("TutorialPart5").gameObject.SetActive(false);
+                  //SellPanel.Find("TutorialPart6").gameObject.SetActive(true);
                }
             }
             break;
@@ -761,7 +758,7 @@ public class TradeHutManager : MonoBehaviour
 
             if (ticker == null)
                Debug.LogError("Ticker is null");
-            ticker.ShowTicker("Purchased Tier 2 Blueprint. Pressure Valve unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 2 Blueprint ÅEPressure Valve and Diving Bell unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Tier 3 Blueprint purchase flow
@@ -792,7 +789,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Chain").gameObject.SetActive(false);
            
-            ticker.ShowTicker("Purchased Tier 3 Blueprint ÅEngine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 3 Blueprint ÅEEngine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Mercenary Engineer purchase flow
@@ -836,10 +833,8 @@ public class TradeHutManager : MonoBehaviour
       if(tutorialFunctionTwo)
       {
          HandleTutorial?.Invoke(1);
-         TradePanels.transform.Find("Screen3").gameObject.SetActive(false);
-         TradePanels.transform.Find("Screen4").gameObject.SetActive(false);
-         TradePanels.transform.Find("Screen5").gameObject.SetActive(true);
-         TradePanels.transform.Find("Screen6").gameObject.SetActive(true);
+         SellPanel.Find("TutorialPart4").gameObject.SetActive(false);
+         SellPanel.Find("TutorialPart5").gameObject.SetActive(true);
       }
    }
 
@@ -1030,13 +1025,6 @@ public class TradeHutManager : MonoBehaviour
       precisionLensFluctuation = GetItemSellValueFluctuation(base_precision_lens_value);
       engineFluctuation        = GetItemSellValueFluctuation(base_engine_value);
 
-      crudeToolEvent =
-         (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
-         ? WorldEventTypes.IndustrialGoldRushEvent
-         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
-         ? WorldEventTypes.ScavengersHolidayEvent
-         : WorldEventTypes.CrudeToolEvent;
-
       harpoonEvent =
          (worldEvent == (int) WorldEventTypes.DeepSeaWarEvent) 
          ? WorldEventTypes.DeepSeaWarEvent
@@ -1045,6 +1033,13 @@ public class TradeHutManager : MonoBehaviour
          : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
          ? WorldEventTypes.ScavengersHolidayEvent
          : WorldEventTypes.HarpoonEvent;
+
+      crudeToolEvent =
+         (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
+         ? WorldEventTypes.IndustrialGoldRushEvent
+         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.CrudeToolEvent;
 
       divingBellEvent =
          (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent)
@@ -1057,6 +1052,7 @@ public class TradeHutManager : MonoBehaviour
          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
          ? WorldEventTypes.ScavengersHolidayEvent
          : WorldEventTypes.PressureValveEvent;
+
 
       precisionLensEvent =
          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
@@ -1085,13 +1081,13 @@ public class TradeHutManager : MonoBehaviour
          MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE, base_diving_bell_value,
          divingBellChance, divingBellFluctuation, TIER_ONE);
 
-       if (ForgeManager.Instance.hasTier2Blueprint) 
-       {
-           UpdateMarketPreviewUI(
-              ItemType.PressureValve, pressureValveEvent, PRESSURE_VALVE_TAG,
-              MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE, base_pressure_valve_value,
-              pressureValveChance, pressureValveFluctuation, TIER_TWO);
-       }
+      if (ForgeManager.Instance.hasTier2Blueprint) 
+      {
+          UpdateMarketPreviewUI(
+             ItemType.PressureValve, pressureValveEvent, PRESSURE_VALVE_TAG,
+             MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE, base_pressure_valve_value,
+             pressureValveChance, pressureValveFluctuation, TIER_TWO);
+      }
    
        if (ForgeManager.Instance.hasTier3Blueprint) 
        {
@@ -1305,7 +1301,7 @@ public class TradeHutManager : MonoBehaviour
          else
             finalWorldEvent = (int)(WorldEventTypes.IndustrialGoldRushEvent);
 
-      worldEvent = Rng.Next(worldEvent1, finalWorldEvent + 1);
+      worldEvent = (int)(WorldEventTypes.ClockworkEngineEvent);//Rng.Next(worldEvent1, finalWorldEvent + 1);
       WorldEventItemVisual(worldEvent);
 
       shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
@@ -1673,6 +1669,18 @@ public class TradeHutManager : MonoBehaviour
       else
          SellPanel.gameObject.SetActive(true);
 
+      if(tutorialFunctionTwo)
+      {
+         HandleTutorial?.Invoke(1);
+         SellPanel.Find("Arrow").gameObject.SetActive(false);
+         SellPanel.Find("Arrow2").gameObject.SetActive(false);
+         SellPanel.Find("FirstText").gameObject.SetActive(false);
+         SellPanel.Find("SecondText").gameObject.SetActive(false);
+         SellPanel.Find("Arrow3").gameObject.SetActive(true);
+         SellPanel.Find("ThirdText").gameObject.SetActive(true);
+         SellPanel.Find("FourthText").gameObject.SetActive(true);
+      }
+
       // Destroy the instantiated buy item/window instance if it exists
       if (currentBuyItem != null) 
       {
@@ -1682,9 +1690,7 @@ public class TradeHutManager : MonoBehaviour
 
       if (tutorialFunctionTwo)
       {      
-         HandleTutorial?.Invoke(1);
-         TradePanels.transform.Find("Screen1").gameObject.SetActive(true);
-         TradePanels.transform.Find("Screen2").gameObject.SetActive(true);
+         HandleTutorial?.Invoke(1);  
       }
    }
 
@@ -1722,9 +1728,9 @@ public class TradeHutManager : MonoBehaviour
    {
       if(tutorialFunctionTwo)
       {
+         SellPanel.Find("TutorialPart6").gameObject.SetActive(false);
          tutorialFunctionTwo = false;
          HandleTutorial?.Invoke(2);
-         TradePanels.transform.Find("Screen7").gameObject.SetActive(false);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
