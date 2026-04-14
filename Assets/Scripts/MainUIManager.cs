@@ -27,6 +27,8 @@ public class MainUIManager : MonoBehaviour
 
    public static MainUIManager mainUI;
 
+   public static MainUIManager Instance {get; private set; }
+
    // Singleton instance
    private void Awake()
    {

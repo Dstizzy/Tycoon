@@ -110,6 +110,7 @@ public class ForgeManager : MonoBehaviour
    [SerializeField] private List<Toggle> mercenaryToggles;
 
    [SerializeField] private List<UIHighlightTarget> gearHighLights;
+   [SerializeField] private TutorialManager tutorialManager;
 
    /* Private state variables */
    private Transform currentCraftWindow;
@@ -121,7 +122,7 @@ public class ForgeManager : MonoBehaviour
    private GameObject craftButtonObject;
 
 
-   public static event Action HandleTutorial;
+   public static event Action<int> HandleTutorial;
    public static ForgeManager Instance { get; set; }
 
    public static int forgeLevel = STARTING_LEVEL;
@@ -280,8 +281,9 @@ public class ForgeManager : MonoBehaviour
       // 3. Add the item
       if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
-         craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
-         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
+         HandleTutorial?.Invoke(1);
+         //craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(false);
+         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(true);
       }
 
       if((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
@@ -365,24 +367,37 @@ public class ForgeManager : MonoBehaviour
       }
    }
 
-
    public void RequestForgePanel(int buttonID)
    {
       switch (buttonID)
       {
          case CRAFT_BUTTON:
             ShowCraftPanel();
-            craftPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
+            Button craftExitBtn = craftPanel.transform.Find("ExitButton").GetComponent<Button>();
+            craftExitBtn.onClick.RemoveAllListeners();
+            craftExitBtn.onClick.AddListener(() => CloseForgePanel(CRAFT_BUTTON));
             break;
+
          case INFO_BUTTON:
             ShowInfoPanel();
-            infoPanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(INFO_BUTTON));
+            Button infoExitBtn = infoPanel.transform.Find("ExitButton").GetComponent<Button>();
+            infoExitBtn.onClick.RemoveAllListeners();
+            infoExitBtn.onClick.AddListener(() => CloseForgePanel(INFO_BUTTON));
             break;
+
          case UPGRADE_BUTTON:
             ShowUpgradePanel();
-            upgradePanel.transform.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => UpgradeForge());
-            upgradePanel.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
+            Button yesBtn = upgradePanel.transform.Find("YesButton").GetComponent<Button>();
+            Button cancelBtn = upgradePanel.transform.Find("CancelButton").GetComponent<Button>();
+
+            // Always wipe the slate clean before adding a lambda listener!
+            yesBtn.onClick.RemoveAllListeners();
+            yesBtn.onClick.AddListener(() => UpgradeForge());
+
+            cancelBtn.onClick.RemoveAllListeners();
+            cancelBtn.onClick.AddListener(() => CloseForgePanel(UPGRADE_BUTTON));
             break;
+
          default:
             Debug.Log("Building Panel: Unknown button ID.");
             break;
@@ -473,7 +488,10 @@ public class ForgeManager : MonoBehaviour
    {
       panelManager.OpenPanel(craftPanel.gameObject);
       if (tutorialFunction)
-         craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
+      {
+         HandleTutorial?.Invoke(1);
+      }
+         //craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(true);
 
       if (errorPanel != null)
          errorPanel.SetActive(false);
@@ -680,8 +698,7 @@ public class ForgeManager : MonoBehaviour
             targetContainer = tier1Container; 
             if (tutorialFunction)
             {
-               craftPanel.transform.Find("TutorialPart1").gameObject.SetActive(false);
-               craftPanel.transform.Find("TutorialPart2").gameObject.SetActive(true);
+               HandleTutorial?.Invoke(1);
             }
             break;
 
@@ -1053,10 +1070,11 @@ public class ForgeManager : MonoBehaviour
       }
       if (tutorialFunction)
       {
-         craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
+         HandleTutorial?.Invoke(1);
+         //craftPanel.transform.Find("TutorialPart3").gameObject.SetActive(false);
          CloseCraftPanel();
          tutorialFunction = false;
-         HandleTutorial?.Invoke();
+         HandleTutorial?.Invoke(2);
       }
    }
    private int GetItemCost(Item.ItemType type)
