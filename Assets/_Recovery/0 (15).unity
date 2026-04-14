@@ -5671,6 +5671,7 @@ MonoBehaviour:
   - {fileID: 1255439248}
   - {fileID: 1473395478}
   - {fileID: 1437997106}
+  tutorialManager: {fileID: 0}
   tutorialFunction: 0
 --- !u!1 &99371623
 GameObject:
@@ -28004,6 +28005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e9789ffd796e941aa59f9328c053e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  tutorialSteps: []
   tutorialSections:
   - {fileID: 1082665184}
   - {fileID: 1121643392}
@@ -28030,7 +28032,8 @@ MonoBehaviour:
   victoryFunction: 0
   oreUpgradeButton: 0
   isWalkthroughGoing: 0
-  tutorialSteps: []
+  isRequiredButtonClicked: 1
+  textSpeed: 0.02
   currentActivePart: {fileID: 0}
   currentActiveSection: {fileID: 0}
 --- !u!1 &455152181
@@ -101838,7 +101841,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1799655279
 RectTransform:
   m_ObjectHideFlags: 0
