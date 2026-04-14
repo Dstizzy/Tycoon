@@ -1030,6 +1030,13 @@ public class TradeHutManager : MonoBehaviour
       precisionLensFluctuation = GetItemSellValueFluctuation(base_precision_lens_value);
       engineFluctuation        = GetItemSellValueFluctuation(base_engine_value);
 
+      crudeToolEvent =
+         (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
+         ? WorldEventTypes.IndustrialGoldRushEvent
+         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
+         ? WorldEventTypes.ScavengersHolidayEvent
+         : WorldEventTypes.CrudeToolEvent;
+
       harpoonEvent =
          (worldEvent == (int) WorldEventTypes.DeepSeaWarEvent) 
          ? WorldEventTypes.DeepSeaWarEvent
@@ -1038,13 +1045,6 @@ public class TradeHutManager : MonoBehaviour
          : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
          ? WorldEventTypes.ScavengersHolidayEvent
          : WorldEventTypes.HarpoonEvent;
-
-      crudeToolEvent =
-         (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent) 
-         ? WorldEventTypes.IndustrialGoldRushEvent
-         : (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent)
-         ? WorldEventTypes.ScavengersHolidayEvent
-         : WorldEventTypes.CrudeToolEvent;
 
       divingBellEvent =
          (worldEvent == (int)WorldEventTypes.IndustrialGoldRushEvent)
@@ -1057,7 +1057,6 @@ public class TradeHutManager : MonoBehaviour
          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
          ? WorldEventTypes.ScavengersHolidayEvent
          : WorldEventTypes.PressureValveEvent;
-
 
       precisionLensEvent =
          (worldEvent == (int)WorldEventTypes.ScavengersHolidayEvent) 
@@ -1086,13 +1085,13 @@ public class TradeHutManager : MonoBehaviour
          MIN_DIVING_BELL_VALUE, MAX_DIVING_BELL_VALUE, base_diving_bell_value,
          divingBellChance, divingBellFluctuation, TIER_ONE);
 
-      if (ForgeManager.Instance.hasTier2Blueprint) 
-      {
-          UpdateMarketPreviewUI(
-             ItemType.PressureValve, pressureValveEvent, PRESSURE_VALVE_TAG,
-             MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE, base_pressure_valve_value,
-             pressureValveChance, pressureValveFluctuation, TIER_TWO);
-      }
+       if (ForgeManager.Instance.hasTier2Blueprint) 
+       {
+           UpdateMarketPreviewUI(
+              ItemType.PressureValve, pressureValveEvent, PRESSURE_VALVE_TAG,
+              MIN_PRESSURE_VALVE_VALUE, MAX_PRESSURE_VALVE_VALUE, base_pressure_valve_value,
+              pressureValveChance, pressureValveFluctuation, TIER_TWO);
+       }
    
        if (ForgeManager.Instance.hasTier3Blueprint) 
        {
