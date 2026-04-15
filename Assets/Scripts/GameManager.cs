@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour {
       LabManager.tailUnlocked        = false;
       LabManager.currentCommerceTier = 0;
 
-      Item.ResetPrices();
+      Item.ResetItems();
 
       // CLEAR STATIC EVENTS (Requires the helper methods added to the scripts!)
       TurnManager.ClearEvents();

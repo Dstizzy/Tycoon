@@ -32,8 +32,8 @@ public class ForgeManager : MonoBehaviour
    const int PATCH_KIT_COST = 75;
    const int PRESSUREV_VALVE_COST = 50;
    const int DIVING_BELL_COST = 15;
-   const int ENGINE_COST = 125;
-   const int PRECISION_LENS_COST = 160;
+   const int ENGINE_COST = 160;
+   const int PRECISION_LENS_COST = 125;
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;

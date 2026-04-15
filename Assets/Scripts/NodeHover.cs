@@ -1,65 +1,53 @@
-// Libraries                                                                                     
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
 public class NodeHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-   // Inspector Variables                                                                       
    [SerializeField] private GameObject InfoPopUp;
    [SerializeField] private UIFade uiFade;
+   [SerializeField] private Button associatedButton;
 
    public bool alwaysShow = true;
    public bool isTierLocked = false;
 
-   private Button associatedButton;
+   [Header("Hover Speeds")]
+   [SerializeField] private float fadeInSpeed = 0.15f;  
+   [SerializeField] private float fadeOutSpeed = 0.1f;  
 
    private void Awake()
    {
-      associatedButton = GetComponent<Button>();
+      if (associatedButton == null)
+         associatedButton = GetComponent<Button>();
    }
 
-   // Implements interface function for entering the game object with mouse                     
-   void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+   public void OnPointerEnter(PointerEventData eventData)
    {
-       OnPointerEnter(eventData);
-   }
+      if (associatedButton != null && associatedButton.interactable)
+      {
+         return;
+      }
 
-   // Implements interface fucntion for exiting the game object with mouse                      
-   void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
-   {
-       OnPointerExit(eventData);
-   }
-
-   // Sets the info panel active upon hovering over this object                                 
-   private void OnPointerEnter(PointerEventData EventData)
-   {
-      bool shouldShow = false;
-
-      if (alwaysShow)
-         shouldShow = true;
-      else if (associatedButton != null && !associatedButton.interactable)
-         if(isTierLocked)
-            shouldShow = true;
-
-      //yield return new WaitForSeconds(.3f);
-      if (shouldShow)
+      if (InfoPopUp != null)
       {
          InfoPopUp.SetActive(true);
-         uiFade.Appear(1f);
+         if (uiFade != null) uiFade.Appear(fadeInSpeed);
       }
    }
 
-   // Sets the info panel inactive upon exiting this object                                     
-   private void OnPointerExit(PointerEventData EventData)
+   public void OnPointerExit(PointerEventData eventData)
    {
-      uiFade.Disappear(.5f);
-      InfoPopUp.SetActive(false);
+      if (InfoPopUp != null && InfoPopUp.activeInHierarchy)
+      {
+         if (uiFade != null)
+         {
+            uiFade.Disappear(fadeOutSpeed);
+         }
+         else
+         {
+            InfoPopUp.SetActive(false);
+         }
+      }
    }
 }
-
-
-
-

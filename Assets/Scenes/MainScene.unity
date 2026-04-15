@@ -23855,8 +23855,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 1054558826}
   uiFade: {fileID: 1054558829}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &327432019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28692,8 +28695,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 2132776307}
   uiFade: {fileID: 2132776310}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &423148213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33501,8 +33507,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 541328054}
   uiFade: {fileID: 541328056}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &507436907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46300,8 +46309,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1949314823}
   uiFade: {fileID: 1949314826}
+  associatedButton: {fileID: 0}
   alwaysShow: 0
   isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &754238795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47785,8 +47797,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 243531298}
   uiFade: {fileID: 243531301}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &778813073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49479,8 +49494,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 35230975}
   uiFade: {fileID: 35230978}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &800552275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58631,8 +58649,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 1900026127}
   uiFade: {fileID: 1900026130}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &886060076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64670,8 +64691,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1626722909}
   uiFade: {fileID: 21352109}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &1000382004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70719,8 +70743,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1941119069}
   uiFade: {fileID: 1941119071}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &1117240987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73372,8 +73399,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 447345661}
   uiFade: {fileID: 447345664}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &1161050794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80102,7 +80132,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 160
+  m_text: 125
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
@@ -91059,8 +91089,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1949314823}
   uiFade: {fileID: 1949314826}
+  associatedButton: {fileID: 0}
   alwaysShow: 0
   isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &1472325849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93167,8 +93200,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 285467787}
   uiFade: {fileID: 285467788}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &1505695730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106713,8 +106749,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 79623908}
   uiFade: {fileID: 79623911}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &1671229674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125337,8 +125376,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 907078750}
   uiFade: {fileID: 907078753}
+  associatedButton: {fileID: 0}
   alwaysShow: 1
   isTierLocked: 0
+  fadeInSpeed: 0.3
+  fadeOutSpeed: 0.1
 --- !u!114 &1981682041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133320,7 +133362,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 125
+  m_text: 160
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}

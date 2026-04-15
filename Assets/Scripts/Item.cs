@@ -31,7 +31,7 @@ public class Item {
    public const int MIN_HARPOON_VALUE              = 0;
    public const int MAX_HARPOON_VALUE              = 250;
    public const int MIN_DIVING_BELL_VALUE          = 0;
-   public const int MAX_DIVING_BELL_VALUE          = 250;
+   public const int MAX_DIVING_BELL_VALUE          = 540;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
    public const int MAX_PRESSURE_VALVE_VALUE       = 540;
    public const int MIN_PRECISION_LENS_VALUE       = 0;
@@ -511,8 +511,61 @@ public class Item {
       base_engine_value         += (int) (base_engine_value * percent);
    }
 
+   public static void RevertItemToBaseSellValue(ItemType item) 
+   {
+      switch(item) 
+      { 
+         case ItemType.CrudeTool:
+            crudeToolSellValue = base_crude_tool_value;
+            OnItemValueChange?.Invoke(crudeToolSellValue, ItemType.CrudeTool);
+            break;
+         case ItemType.Harpoon:
+            harpoonSellValue = base_harpoon_value;
+            OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+            break;
+         case ItemType.DivingBell:
+            divingBellSellValue = base_diving_bell_value;
+            OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
+            break;
+
+         case ItemType.PressureValve:
+            pressureValveSellValue = base_pressure_valve_value;
+            OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
+            break;
+
+         case ItemType.PrecisionLens:
+            precisionLensSellValue = base_precision_lens_value;
+            OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
+            break;
+         case ItemType.Engine:
+            engineSellValue = base_engine_value;
+            OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+            break;
+      }
+
+      return;
+   }
+
+   // Instantly snaps all market values back to their base line and updates the UI
+   public static void RevertMarketToBase()
+   {
+      crudeToolSellValue     = base_crude_tool_value;
+      harpoonSellValue       = base_harpoon_value;
+      pressureValveSellValue = base_pressure_valve_value;
+      divingBellSellValue    = base_diving_bell_value;
+      precisionLensSellValue = base_precision_lens_value;
+      engineSellValue        = base_engine_value;
+
+      OnItemValueChange?.Invoke(crudeToolSellValue, ItemType.CrudeTool);
+      OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
+      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
+      OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
+      OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
+      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
+   }
+
    // Resets all static prices and events back to default for a new game
-   public static void ResetPrices() 
+   public static void ResetItems() 
    {
       // Reset Sell Values
       crudeToolSellValue     = base_crude_tool_value;
