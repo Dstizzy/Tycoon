@@ -1807,8 +1807,16 @@ public class NPCEncounterSystem : MonoBehaviour
     {
         if (!hasActiveNPC || currentNPC == null || currentScenario == null) return;
 
-        // Prevent opening dialogue if one is already active
-        if (NPCDialogueUI.Instance != null && NPCDialogueUI.Instance.IsDialogueActive()) return;
+      // Block NPC interaction while other popup-style UI is open
+      if (PopUpManager.Instance != null && PopUpManager.Instance.IsWindowOpen)
+         return;
+
+      // Block NPC interaction while narrative overlay/tutorial UI is active
+      if (NarrativeOverlayUI.Instance != null && NarrativeOverlayUI.Instance.IsBusy())
+         return;
+
+      // Prevent opening dialogue if one is already active
+      if (NPCDialogueUI.Instance != null && NPCDialogueUI.Instance.IsDialogueActive()) return;
 
         if (dialogueUI != null)
             dialogueUI.ShowDialogue(currentNPC, currentScenario);

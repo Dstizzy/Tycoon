@@ -210,7 +210,6 @@ public class ExplorationUnitManager : MonoBehaviour
             TickerSystem.Instance.ShowTicker($"Exploration Unit upgraded to level {shipManager.ShipLevel}!", Color.green, TickerSystem.MessageTypes.ResultMessage);
 
          CloseUpgradePanel();
-         PopUpManager.Instance.EnablePlayerInput();
       }
    }
 
@@ -221,6 +220,7 @@ public class ExplorationUnitManager : MonoBehaviour
       if (targetNode != null && targetNode.nodeDepth > shipManager.GetDepth() && shipManager.ShipLevel < targetNode.nodeDepth)
       {
          newDepthPanel.gameObject.SetActive(true);
+         PopUpManager.Instance.DisablePlayerInput();
 
          // Calculates how much damage it will take
          int predictedDamage = shipManager.GetDamage(targetNode.nodeDepth);
@@ -238,12 +238,14 @@ public class ExplorationUnitManager : MonoBehaviour
          {
             nextTurnDestination = null;
             newDepthPanel.gameObject.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
             StartCoroutine(shipManager.FinishExploration());
          });
          // Option 2: Keep the ship on its exploration
          keepGoing.onClick.AddListener(() =>
          {
             newDepthPanel.gameObject.SetActive(false);
+            PopUpManager.Instance.EnablePlayerInput();
             CloseDecisionPanel();
          });
          return true;
@@ -397,7 +399,6 @@ public class ExplorationUnitManager : MonoBehaviour
       inventoryButton.onClick.AddListener(() =>
       {
          ShowInventoryPanel();
-         decisionPanel.gameObject.SetActive(false);
       });
 
       // Set up return ship button on decision panel
@@ -487,6 +488,7 @@ public class ExplorationUnitManager : MonoBehaviour
 
       // Open the panel first
       panelManager.OpenPanel(decisionResultsPanel.gameObject);
+      PopUpManager.Instance.DisablePlayerInput();
       Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
       confirmEnd.onClick.RemoveAllListeners();
 
@@ -501,6 +503,8 @@ public class ExplorationUnitManager : MonoBehaviour
             nextTurnDestination = null;
             StartCoroutine(shipManager.FinishExploration());
             panelManager.ClosePanel(decisionResultsPanel.gameObject);
+            PopUpManager.Instance.EnablePlayerInput();
+            
             if (LabManager.labManager != null)
                LabManager.labManager.ActivateTail();
 
@@ -629,12 +633,15 @@ public class ExplorationUnitManager : MonoBehaviour
       panelManager.OpenPanel(decisionPanel.gameObject);
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(false);
+
+      PopUpManager.Instance.DisablePlayerInput();
    }
 
    // Prepares decision results panel and triggers stat and reward animations
    private void ShowResultsPanel(ShipManager.RoundResults results, MapNode currentNode, string resultMessage)
    {
       panelManager.OpenPanel(decisionResultsPanel.gameObject);
+      PopUpManager.Instance.DisablePlayerInput();
       SetDecisionInteractable(false);
       decisionResults.text = resultMessage;
 
@@ -774,8 +781,10 @@ public class ExplorationUnitManager : MonoBehaviour
    private IEnumerator ResultsDelay(MapNode currentNode)
    {
       panelManager.ClosePanel(decisionResultsPanel.gameObject);
+      PopUpManager.Instance.EnablePlayerInput();
       SetDecisionInteractable(true);
       yield return new WaitForSeconds(0.2f);
+
       if (currentNode != null)
       {
          nextTurnDestination = currentNode.nextNode;
@@ -790,6 +799,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private void ShowInventoryPanel()
    {
       inventoryPanel.gameObject.SetActive(true);
+      PopUpManager.Instance.DisablePlayerInput();
       SetDecisionInteractable(false);
 
       SpawnRewardIcon("Pearl",            shipManager.GetPearl());
@@ -808,6 +818,8 @@ public class ExplorationUnitManager : MonoBehaviour
       closeInventoryPanel.onClick.AddListener(() =>
       {
          inventoryPanel.gameObject.SetActive(false);
+         PopUpManager.Instance.EnablePlayerInput();
+         
          decisionPanel.gameObject.SetActive(true);
          SetDecisionInteractable(true);
       });
@@ -872,6 +884,8 @@ public class ExplorationUnitManager : MonoBehaviour
       panelManager.ClosePanel(decisionPanel.gameObject);
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
+
+      PopUpManager.Instance.EnablePlayerInput();
    }
 
    // Changes exploration building sprite based on current level
