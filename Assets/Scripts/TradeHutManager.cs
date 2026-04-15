@@ -1650,8 +1650,8 @@ public class TradeHutManager : MonoBehaviour
 
       ShowSellPanel();
 
-      //if (MainUIManager.mainUI != null)
-      //   MainUIManager.mainUI.SetMainButtonsInteractable(false);
+      if (MainUIManager.mainUI != null)
+         MainUIManager.mainUI.SetMainButtonsInteractable(false);
    }
 
    private void ShowInfoPanel() 
@@ -1711,13 +1711,11 @@ public class TradeHutManager : MonoBehaviour
    public void ShowBuyWindow() 
    {
       panelManager.OpenPanel(BuyWindow.gameObject);
-      //BuyWindow.gameObject.SetActive(true);
    }
 
    public void ShowSellWindow() 
    {
       panelManager.OpenPanel(SellWindow.gameObject);
-      //SellWindow.gameObject.SetActive(true);
    }
 
    private void CloseTradePanel() 
