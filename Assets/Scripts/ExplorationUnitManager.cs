@@ -451,35 +451,6 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles the end-of-map sequence
    public void HandleFinalNode(MapNode current)
    {
-      /*  bool isWinner = false;
-
-        // Check if current final node is the winning final node
-        if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
-           isWinner = true;
-
-        if (isWinner)
-        {
-           decisionResults.text = "MISSION ACCOMPLISHED!\nYou have found the vessel piece.\nYou will now return.";
-           panelManager.OpenPanel(decisionResultsPanel.gameObject);
-           Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
-           confirmEnd.onClick.RemoveAllListeners();
-           confirmEnd.onClick.AddListener(() =>
-           {
-              labManager.ActivateTail();
-              StartCoroutine(shipManager.FinishExploration());
-              panelManager.ClosePanel(decisionResultsPanel.gameObject);
-           });
-        }
-        else
-        {
-           EventChoice consolationPrize = new EventChoice();
-           consolationPrize.pearlChange = 200;
-           consolationPrize.oreChange   = 200;
-           ProcessDecision(consolationPrize, null);
-
-           decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nPearl: +200\nOre: +200";
-        }
-      */
       bool isWinner = false;
 
       // Check if current final node is the winning final node
