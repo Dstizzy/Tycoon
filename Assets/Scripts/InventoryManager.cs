@@ -184,7 +184,7 @@ public class InventoryManager : MonoBehaviour
       crudeToolCount     = 1;
       harpoonCount       = 0;
       patchKitCount      = 0;
-      pressureValveCount = 0;
+      pressureValveCount = 2;
       divingBellCount    = 0;
       precisionLensCount = 0;
       engineCount        = 0;
