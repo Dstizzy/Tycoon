@@ -125,7 +125,6 @@ public class TurnManager : MonoBehaviour
 
          if(isJamPrevented)
             HandlePreventativeMaintenance();
-         
 
          // Handle world event reset
          if (eventCountdown == 1) 

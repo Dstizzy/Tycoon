@@ -792,7 +792,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Chain").gameObject.SetActive(false);
            
-            ticker.ShowTicker("Purchased Tier 3 Blueprint ÅEngine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 3 Blueprint. ÅEngine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Mercenary Engineer purchase flow
@@ -1129,7 +1129,7 @@ public class TradeHutManager : MonoBehaviour
        int currentVal = GetItemValue(itemType),
            preview    = currentVal;
 
-      int marketTrendChance
+       int marketTrendChance
              = itemTier == TIER_ONE 
              ? TIER_ONE_CHANCE 
              : itemTier == TIER_TWO
@@ -1531,12 +1531,12 @@ public class TradeHutManager : MonoBehaviour
          case (int)WorldEventTypes.ClockworkEngineEvent:
          case (int)WorldEventTypes.PrecisionLensEvent:
          case (int)WorldEventTypes.ScavengersHolidayEvent:
-            return TIER_THREE_CHANCE; // 25
+            return TIER_THREE_CHANCE;
 
          // Tier 2 Events 
          case (int)WorldEventTypes.PressureValveEvent:
          case (int)WorldEventTypes.DeepSeaWarEvent: 
-            return TIER_TWO_CHANCE; // 35
+            return TIER_TWO_CHANCE;
 
          // Tier 1 Events & Base Defaults 
          case (int)WorldEventTypes.CrudeToolEvent:
@@ -1544,7 +1544,7 @@ public class TradeHutManager : MonoBehaviour
          case (int)WorldEventTypes.DivingBellEvent:
          case (int)WorldEventTypes.IndustrialGoldRushEvent:
          default:
-            return TIER_ONE_CHANCE; // 50
+            return TIER_ONE_CHANCE;
       }
    }
 
