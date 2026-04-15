@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: GasCloud
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: "The ship enters a gas cloud. The sensors are picking up mineral pockets,
+    but the static is messing with the ship\u2019s internal stabilizers."
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Full sweep for materials
+    resultText: Resources have been recovered, but did the hull take any damage?
     pearlChange: 0
     oreChange: 0
     healthChange: 0
@@ -23,19 +24,19 @@ MonoBehaviour:
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
-    minOre: 0
-    maxOre: 20
+    maxPearl: 0
+    minOre: 15
+    maxOre: 35
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    damageChance: 0.5
+    healthDamage: 10
   choiceB:
-    buttonText: 
-    resultText: 
-    pearlChange: 0
-    oreChange: 0
+    buttonText: Quickly pass through
+    resultText: No damage risked, but a small amount of resources were still gained.
+    pearlChange: 5
+    oreChange: 5
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: MineralSmoke
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: "A crack in the seafloor is spewing thick, black smoke filled with
+    mineral particles. It\u2019s hard to see, but the riches are undeniable."
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Reach into smoke.
+    resultText: Your resource gain is incredible! But did your hull take any heat
+      damage?
     pearlChange: 0
     oreChange: 0
     healthChange: 0
@@ -23,19 +25,19 @@ MonoBehaviour:
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
-    minOre: 0
-    maxOre: 20
+    maxPearl: 0
+    minOre: 35
+    maxOre: 70
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    damageChance: 0.5
+    healthDamage: 15
   choiceB:
-    buttonText: 
-    resultText: 
+    buttonText: Sift through edges
+    resultText: You avoided all risk, but still discovered light resources.
     pearlChange: 0
-    oreChange: 0
+    oreChange: 10
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

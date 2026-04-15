@@ -17,7 +17,7 @@ MonoBehaviour:
     buttonText: Open
     resultText: 'Barrel contains rewards:'
     pearlChange: 0
-    oreChange: 15
+    oreChange: 20
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

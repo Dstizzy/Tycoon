@@ -17,7 +17,7 @@ MonoBehaviour:
     buttonText: Pick the lock
     resultText: The lock caused a trap to fire, but loot has been retrieved.
     pearlChange: 10
-    oreChange: 0
+    oreChange: 15
     healthChange: -5
     fuelChange: 0
     waitTurn: 0
@@ -36,7 +36,7 @@ MonoBehaviour:
     resultText: The loot scatters, but some has been retrieved.
     pearlChange: 5
     oreChange: 0
-    healthChange: 0
+    healthChange: 10
     fuelChange: 0
     waitTurn: 0
     loseOre: 0

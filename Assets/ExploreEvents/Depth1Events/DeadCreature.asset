@@ -10,32 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: DeadCreature
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: Massive ribs of a long-dead leviathan arch over the seabed. Deep inside
+    the marrow, rare marrow-gems have formed, but the structure looks ready to collapse.
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Mine deep marrow
+    resultText: The gems were collected! But did you cause a cave-in?
     pearlChange: 0
     oreChange: 0
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
     loseOre: 0
-    minPearl: 0
-    maxPearl: 10
+    minPearl: 20
+    maxPearl: 40
     minOre: 0
-    maxOre: 20
+    maxOre: 0
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    damageChance: 0.5
+    healthDamage: 20
   choiceB:
-    buttonText: 
-    resultText: 
+    buttonText: Search nearby sand
+    resultText: You have found a fossilized bone!
     pearlChange: 0
-    oreChange: 0
+    oreChange: 20
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

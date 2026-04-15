@@ -10,32 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: BubbleChim
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: A volcanic vent is shooting hot, oxygen-rich bubbles toward the surface.
+    It looks dangerous, but the heat has crystallized the surrounding rock into rare
+    minerals.
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Ride the bubbles
+    resultText: Riding the bubbles to the next node saved you fuel! The heat may
+      have cost you hull health though.
     pearlChange: 0
     oreChange: 0
     healthChange: 0
-    fuelChange: 0
+    fuelChange: 1
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
+    maxPearl: 0
     minOre: 0
-    maxOre: 20
+    maxOre: 0
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
-    damageChance: 0
-    healthDamage: 0
+    damageChance: 0.3
+    healthDamage: 10
   choiceB:
-    buttonText: 
-    resultText: 
+    buttonText: Mine vent edges
+    resultText: Resources have been mined from the vent.
     pearlChange: 0
-    oreChange: 0
+    oreChange: 15
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
