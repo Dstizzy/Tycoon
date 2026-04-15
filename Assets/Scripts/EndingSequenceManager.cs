@@ -1158,6 +1158,8 @@ private IEnumerator ShakeTransformLoop(Transform target, float strength)
 
       yield return FadeTo(1f, fadeDuration);
 
+      ForgeManager.forgeLevel = 1;
+
       CleanupPersistentObjects();
       GameEndingState.Reset();
       SceneManager.LoadScene(startSceneName);
@@ -1173,6 +1175,12 @@ private IEnumerator ShakeTransformLoop(Transform target, float strength)
       DestroySingleton(InventoryManager.Instance);
       DestroySingleton(TradeHutManager.Instance);
       DestroySingleton(LabManager.labManager);
+      DestroySingleton(ForgeManager.Instance);
+      DestroySingleton(OreRefinery_Manager.Instance);
+      DestroySingleton(ExplorationUnitManager.Instance);
+      DestroySingleton(PopUpManager.Instance);
+      DestroySingleton(HoverScript.Instance);
+      DestroySingleton(TickerSystem.Instance);
    }
 
    private void DestroySingleton(MonoBehaviour currentSingleton)
