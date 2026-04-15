@@ -144,7 +144,7 @@ public class TurnManager : MonoBehaviour
          {
             newsTicker.gameObject.SetActive(true);
             tradeHutManager.WorldEventNewsTickerText();
-            newsTicker.ShowTicker(tradeHutManager.currrentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+            newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
 
             if(eventCountdown == 5) 
             {
