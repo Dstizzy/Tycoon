@@ -85,8 +85,8 @@ public class InventoryManager : MonoBehaviour
                                       CraftWindow;
 
    public Image ForgeUpgradeIcon,
-                 OreRefineryUpgradeIcon,
-                 ExplorationUnitUpgradeIcon;
+                OreRefineryUpgradeIcon,
+                ExplorationUnitUpgradeIcon;
 
    private TextMeshProUGUI PearlCountText,
                            CrystalCountText,
@@ -122,7 +122,6 @@ public class InventoryManager : MonoBehaviour
                      currentCraft;
 
    public bool tutorialFunction = false;
-   
 
    /* Delegate for when the pearl count changes. ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½   */
    public Action<int> OnPearlCountChanged;
@@ -179,11 +178,11 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 5000;
-      oreCount           = 5000;
-      crudeToolCount     = 1;
-      harpoonCount       = 0;
-      patchKitCount      = 0;
+      pearlCount         = 0;
+      oreCount           = 10;
+      crudeToolCount     = 0;
+      harpoonCount       = 1;
+      patchKitCount      = 1;
       pressureValveCount = 0;
       divingBellCount    = 0;
       precisionLensCount = 0;
@@ -1295,8 +1294,10 @@ public class InventoryManager : MonoBehaviour
    private void CheckUpgradeResources()
    {
       if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls &&
-          oreCount >= OreRefinery_Manager.Instance.NextUpgradeCostInOre)
-         OreRefineryUpgradeIcon.gameObject.SetActive(true);
+          oreCount >= OreRefinery_Manager.Instance.NextUpgradeCostInOre) 
+      { 
+         OreRefineryUpgradeIcon.gameObject.SetActive(OreRefinery_Manager.Instance.oreLevel != 3);
+      }
       else
          OreRefineryUpgradeIcon.gameObject.SetActive(false);
 

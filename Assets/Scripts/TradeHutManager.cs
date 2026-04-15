@@ -238,7 +238,7 @@ public class TradeHutManager : MonoBehaviour
       CreateBuyItem(GetItemSprite(ItemType.IndustrialBlueprint), GetItemPrice(ItemType.IndustrialBlueprint), 1.2f, INDUSTRIAL_BLUEPRINT_TAG);
       CreateBuyItem(GetItemSprite(ItemType.ClockworkBlueprint), GetItemPrice(ItemType.ClockworkBlueprint), 0.0f, CLOCKWORK_BLUEPRINT_TAG, -30);
       CreateBuyItem(GetItemSprite(ItemType.MercenaryEngineer), GetItemPrice(ItemType.MercenaryEngineer), 1.2f, MERCENARY_ENGINEER_TAG, -30);
-      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), .7f, INSURANCE_POLICY_TAG, -60);
+      CreateBuyItem(GetItemSprite(ItemType.InsurancePolicy), GetItemPrice(ItemType.InsurancePolicy), 0.0f, INSURANCE_POLICY_TAG, -60);
    }
 
    public void OnEnable()
@@ -1144,11 +1144,11 @@ public class TradeHutManager : MonoBehaviour
           switch(worldEvent) 
           { 
              case (int)WorldEventTypes.IndustrialGoldRushEvent:
-               preview = base_pressure_valve_value;
+               preview = currentVal * 2;
                 break;
 
              case (int)WorldEventTypes.DeepSeaWarEvent:
-                preview += (GetItemValue(itemType) * 3) - GetItemValue(itemType);
+                preview += (currentVal * 3) - currentVal;
                 break;
 
              case (int) WorldEventTypes.ScavengersHolidayEvent:
@@ -1254,7 +1254,7 @@ public class TradeHutManager : MonoBehaviour
            switch (worldEvent) 
            {
               case (int) WorldEventTypes.IndustrialGoldRushEvent:
-               increaseSellValueMethod(base_pressure_valve_value - GetItemValue(itemType));
+               increaseSellValueMethod((GetItemValue(itemType) * 2) - GetItemValue(itemType));
                  break;
 
               case (int) WorldEventTypes.DeepSeaWarEvent:
