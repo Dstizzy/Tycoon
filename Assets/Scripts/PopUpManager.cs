@@ -307,6 +307,14 @@ public class PopUpManager : MonoBehaviour
       }
    }
 
+   public void ForceResetInputBlock()
+   {
+      windowOpenCount = 0;
+      ApplyInputState();
+      ClosePopUps();
+      CheckHoverInstantly();
+   }
+
    private void ApplyInputState()
    {
       bool shouldBlockInput = windowOpenCount > 0;
