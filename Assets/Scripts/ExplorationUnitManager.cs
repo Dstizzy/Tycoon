@@ -128,9 +128,7 @@ public class ExplorationUnitManager : MonoBehaviour
                bool canExplore = !isExploring; //&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
-               {
                   exploreButton.onClick.AddListener(() => StartExploration());
-               }
             }
             // Setup exit button
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
@@ -145,6 +143,7 @@ public class ExplorationUnitManager : MonoBehaviour
             Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
             if (yesButton != null)
             {
+               yesButton.interactable = !isExploring;
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
             }
@@ -399,6 +398,7 @@ public class ExplorationUnitManager : MonoBehaviour
       inventoryButton.onClick.AddListener(() =>
       {
          ShowInventoryPanel();
+         decisionPanel.gameObject.SetActive(false);
       });
 
       // Set up return ship button on decision panel
