@@ -260,7 +260,7 @@ public class ForgeManager : MonoBehaviour
       // Refresh Visuals based on Staging List
       UpdateStagingUI();
 
-      if(stagingItems.Count > 0)
+      if (stagingItems.Count > 0)
          windowTransform.gameObject.SetActive(true);
    }
 
@@ -286,7 +286,7 @@ public class ForgeManager : MonoBehaviour
          craftPanel.transform.Find("Screen2").gameObject.SetActive(true);
       }
 
-      if((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
+      if ((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
          stagingItems.Add(itemType);
 
 
@@ -677,7 +677,6 @@ public class ForgeManager : MonoBehaviour
       tier1Panel.SetActive(false);
       tier2Panel.SetActive(false);
       tier3Panel.SetActive(false);
-      stagingItems.Clear();
    }
 
    public void OpenTierPanel(int tier)
@@ -695,7 +694,7 @@ public class ForgeManager : MonoBehaviour
       {
          case TIER_1:
             tier1Panel.SetActive(true);
-            targetContainer = tier1Container; 
+            targetContainer = tier1Container;
             if (tutorialFunction)
             {
                HandleTutorial?.Invoke(1);
@@ -707,12 +706,12 @@ public class ForgeManager : MonoBehaviour
 
          case TIER_2:
             tier2Panel.SetActive(true);
-            targetContainer = tier2Container; 
+            targetContainer = tier2Container;
             break;
 
          case TIER_3:
             tier3Panel.SetActive(true);
-            targetContainer = tier3Container; 
+            targetContainer = tier3Container;
             break;
       }
 
@@ -766,8 +765,8 @@ public class ForgeManager : MonoBehaviour
       // 2. Level 3 Bonus: Reduce turn cost by 1
       //if (forgeLevel >= 3)
       //{
-         //turns -= 1;
-     // }
+      //turns -= 1;
+      // }
 
       // 3. Allow minimum 1 turn
       if (turns < 1)
@@ -894,13 +893,13 @@ public class ForgeManager : MonoBehaviour
             craftSlot2.gameObject.SetActive(true);
             craftSlot2.sprite = Item.GetItemSprite(activeJobs[1].itemType);
          }
-         else if(forgeLevel >= 2 && activeJobs.Count == 1 && stagingItems.Count > 0)
+         else if (forgeLevel >= 2 && activeJobs.Count == 1 && stagingItems.Count > 0)
          {
             craftSlot2.gameObject.SetActive(true);
             craftSlot2.sprite = Item.GetItemSprite(stagingItems[0]);
             AddXButton(0, 2);
          }
-         else if(forgeLevel >= 2 && stagingItems.Count > 1)
+         else if (forgeLevel >= 2 && stagingItems.Count > 1)
          {
             craftSlot2.gameObject.SetActive(true);
             craftSlot2.sprite = Item.GetItemSprite(stagingItems[1]);
@@ -945,36 +944,60 @@ public class ForgeManager : MonoBehaviour
       }
 
       UIHighlightTarget gearWheel1 = craftPanel.transform.Find("GearWheel1").gameObject.GetComponent<UIHighlightTarget>();
-      switch(activeJobs.Count)
+      // Helper references to make the code cleaner
+      Transform gear1 = craftPanel.transform.Find("GearWheel1");
+      Transform gear2 = craftPanel.transform.Find("GearWheel2");
+      Transform gear3 = craftPanel.transform.Find("GearWheel3");
+
+      switch (activeJobs.Count)
       {
          case 0:
-            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(false);
-            craftPanel.transform.Find("GearWheel2").gameObject.SetActive(false);
-            craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
+            gear1.gameObject.SetActive(false);
+            gear2.gameObject.SetActive(false);
+            gear3.gameObject.SetActive(false);
+
             gearHighLights[0].HideHighlight();
             gearHighLights[1].HideHighlight();
             gearHighLights[2].HideHighlight();
             break;
+
          case 1:
-            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
-            craftPanel.transform.Find("GearWheel2").gameObject.SetActive(false);
-            craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
+            gear1.gameObject.SetActive(true);
+            // Grabs the text you just made and sets it to the remaining turns!
+            gear1.GetComponentInChildren<TextMeshProUGUI>().text = activeJobs[0].turnsRemaining.ToString();
+
+            gear2.gameObject.SetActive(false);
+            gear3.gameObject.SetActive(false);
+
             gearHighLights[0].ShowHighlight();
             gearHighLights[1].ShowHighlight();
             gearHighLights[2].ShowHighlight();
             break;
+
          case 2:
-            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
-            craftPanel.transform.Find("GearWheel2").gameObject.SetActive(true);
-            craftPanel.transform.Find("GearWheel3").gameObject.SetActive(false);
+            gear1.gameObject.SetActive(true);
+            gear1.GetComponentInChildren<TextMeshProUGUI>().text = activeJobs[0].turnsRemaining.ToString();
+
+            gear2.gameObject.SetActive(true);
+            gear2.GetComponentInChildren<TextMeshProUGUI>().text = activeJobs[1].turnsRemaining.ToString();
+
+            gear3.gameObject.SetActive(false);
+
             gearHighLights[0].ShowHighlight();
             gearHighLights[1].ShowHighlight();
             gearHighLights[2].HideHighlight();
             break;
+
          case 3:
-            craftPanel.transform.Find("GearWheel1").gameObject.SetActive(true);
-            craftPanel.transform.Find("GearWheel2").gameObject.SetActive(true);
-            craftPanel.transform.Find("GearWheel3").gameObject.SetActive(true);
+            gear1.gameObject.SetActive(true);
+            gear1.GetComponentInChildren<TextMeshProUGUI>().text = activeJobs[0].turnsRemaining.ToString();
+
+            gear2.gameObject.SetActive(true);
+            gear2.GetComponentInChildren<TextMeshProUGUI>().text = activeJobs[1].turnsRemaining.ToString();
+
+            gear3.gameObject.SetActive(true);
+            gear3.GetComponentInChildren<TextMeshProUGUI>().text = activeJobs[2].turnsRemaining.ToString();
+
             gearHighLights[0].ShowHighlight();
             gearHighLights[1].ShowHighlight();
             gearHighLights[2].ShowHighlight();
@@ -1002,7 +1025,7 @@ public class ForgeManager : MonoBehaviour
       foreach (Toggle t in mercenaryToggles) { if (t != null && t.isOn) useMercenary = true; }
 
       // Calculate Total Cost
-      for(int i = 0; i < stagingItems.Count; i++)
+      for (int i = 0; i < stagingItems.Count; i++)
          totalCost += GetItemCost(stagingItems[i]);
 
       // Check Affordability
@@ -1220,13 +1243,13 @@ public class ForgeManager : MonoBehaviour
    {
       bool hasMercenary = InventoryManager.Instance.mercenaryEngineerCount > 0;
 
-  
+
       foreach (Toggle toggle in overclockToggles)
       {
          if (toggle != null)
          {
             toggle.gameObject.SetActive(isOverclockUnlocked);
-            toggle.isOn = false; 
+            toggle.isOn = false;
          }
       }
 
@@ -1235,7 +1258,7 @@ public class ForgeManager : MonoBehaviour
          if (t != null)
          {
             t.gameObject.SetActive(hasMercenary);
-            t.isOn = false; 
+            t.isOn = false;
          }
       }
    }
