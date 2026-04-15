@@ -33,8 +33,8 @@ public class LabManager : MonoBehaviour
    public const int T2_COMM_PRESSURE_VALVE = 2;
    public const int T3_COMM_LENS = 1;
    public const int T1_PROD_PATCH_KIT = 1;
-   public const int T2_PROD_HARPOON = 2;
-   public const int T3_PROD_ENGINE = 1;
+   public const int T2_PROD_PRESSURE_VALVE = 2;
+   public const int T3_PROD_LENS = 1;
    public const int T1_EXPL_HARPOON = 1;
    public const int T2_EXPL_DIVING_BELL = 1;
    public const int T3_EXPL_DIVING_BELL = 2;
@@ -90,6 +90,7 @@ public class LabManager : MonoBehaviour
    private       bool explorationFinished     = false;
    public        bool labTutorialFunction     = false;
    public        bool victoryTutorialFunction = false;
+   private       bool techTreeCompleted;
 
    // Private instances
    TradeHutManager  tradeHutManager;
@@ -205,6 +206,12 @@ public class LabManager : MonoBehaviour
       {
          explorationTab.gameObject.SetActive(false);
       }
+
+      commerceFinished = false;
+      productionFinished = false;
+      explorationFinished = false;
+      headUnlocked = false;
+      tailUnlocked = false;
    }
 
    // Open up a lab panel upon clicking the corresponding button                                
@@ -328,15 +335,15 @@ public class LabManager : MonoBehaviour
                break;
             case TIER_TWO:
                pearlCost     = T2_PROD_PEARL;
-               itemCost      = T2_PROD_HARPOON;
-               requiredItem  = "Harpoon";
-               useItemMethod = inv.TryUseHarpoon;
+               itemCost      = T2_PROD_PRESSURE_VALVE;
+               requiredItem  = "Pressure Valve";
+               useItemMethod = inv.TryUsePressureValve;
                break;
             case TIER_THREE:
                pearlCost     = T3_PROD_PEARL;
-               itemCost      = T3_PROD_ENGINE;
-               requiredItem  = "Engine";
-               useItemMethod = inv.TryUseEngine;
+               itemCost      = T3_PROD_LENS;
+               requiredItem  = "Precision Lens";
+               useItemMethod = inv.TryUsePrecisionLens;
                break;
          }
       }
@@ -447,7 +454,6 @@ public class LabManager : MonoBehaviour
             item.Find("NextValue").GetComponent<TextMeshProUGUI>().gameObject.SetActive(true);
 
          ApplyDiscountToBuyItems(.2f);
-         headUnlocked = true;
 
          ticker.ShowTicker("Commerce Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
@@ -540,36 +546,46 @@ public class LabManager : MonoBehaviour
 
    private void CheckTechTreeCompletion()
    {
-      // If all three branches are done, we progress the flask to the final stage
-      if (commerceFinished && productionFinished && explorationFinished)
+      if (!commerceFinished || !productionFinished || !explorationFinished)
+         return;
+
+      Transform panelFlask1 = initialTab.transform.Find("PanelFlask1");
+      Transform panelFlask2 = initialTab.transform.Find("PanelFlask2");
+      Transform panelFlask3 = initialTab.transform.Find("PanelFlask3");
+      Transform panelFlask4 = initialTab.transform.Find("PanelFlask4");
+
+      if (panelFlask1 != null) panelFlask1.gameObject.SetActive(false);
+      if (panelFlask2 != null) panelFlask2.gameObject.SetActive(false);
+      if (panelFlask3 != null) panelFlask3.gameObject.SetActive(false);
+      if (panelFlask4 != null) panelFlask4.gameObject.SetActive(true);
+
+      if (!headUnlocked)
       {
-         HandleFlask();
+         ticker.ShowTicker("TECH TREE COMPLETE: Submarine Head Acquired!", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         ActivateHead();
       }
+
+      if (tailUnlocked && !GameEndingState.HasEndingTriggered)
+         ActivateFinalForm();
    }
 
    // Handles evolution of flask
    public void HandleFlask()
    {
-      if(initialTab.transform.Find("PanelFlask1").gameObject.activeSelf)
+      if (initialTab.transform.Find("PanelFlask1").gameObject.activeSelf)
       {
          initialTab.transform.Find("PanelFlask1").gameObject.SetActive(false);
          initialTab.transform.Find("PanelFlask2").gameObject.SetActive(true);
       }
-      else if(initialTab.transform.Find("PanelFlask2").gameObject.activeSelf)
+      else if (initialTab.transform.Find("PanelFlask2").gameObject.activeSelf)
       {
          initialTab.transform.Find("PanelFlask2").gameObject.SetActive(false);
          initialTab.transform.Find("PanelFlask3").gameObject.SetActive(true);
       }
-      else if(initialTab.transform.Find("PanelFlask3").gameObject.activeSelf)
+      else if (initialTab.transform.Find("PanelFlask3").gameObject.activeSelf)
       {
          initialTab.transform.Find("PanelFlask3").gameObject.SetActive(false);
          initialTab.transform.Find("PanelFlask4").gameObject.SetActive(true);
-
-         ticker.ShowTicker("TECH TREE COMPLETE: Submarine Head Constructed!", Color.green, TickerSystem.MessageTypes.ResultMessage);
-         if (tailUnlocked)
-         {
-            ActivateFinalForm();
-         }
       }
       else
          Debug.Log("There is no flask");
@@ -591,10 +607,13 @@ public class LabManager : MonoBehaviour
          currentColor.a = 1.0f;
          tab.transform.Find("costContainer/tierTwoCost").GetComponent<TextMeshProUGUI>().color = currentColor;
 
+         Transform tierTwoImages = tab.transform.Find("costContainer/tierTwoImages");
+         if (tierTwoImages != null)
+            tierTwoImages.gameObject.SetActive(true);
       }
-      // Get ride of the tier 3 lock and turn on buttons and text                              
       else
       {
+         // Get ride of the tier 3 lock and turn on buttons and text 
          if (tier != 3)
          {
             Debug.Log("Accessing wrong tier node");
@@ -602,14 +621,17 @@ public class LabManager : MonoBehaviour
          }
 
          currentColor = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color;
-         currentColor.a = 255;
+         currentColor.a = 1.0f;
          tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Image>().color = currentColor;
          tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>().interactable = true;
 
          currentColor = tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color;
-         currentColor.a = 255;
+         currentColor.a = 1.0f;
          tab.transform.Find("costContainer/tierThreeCost").GetComponent<TextMeshProUGUI>().color = currentColor;
 
+         Transform tierThreeImages = tab.transform.Find("costContainer/tierThreeImages");
+         if (tierThreeImages != null)
+            tierThreeImages.gameObject.SetActive(true);
       }
    }
 
@@ -667,7 +689,7 @@ public class LabManager : MonoBehaviour
    {
       if (victoryPanel == null) return;
       panelManager.OpenPanel(victoryPanel.gameObject);
-      PopUpManager.Instance.EnablePlayerInput();
+      PopUpManager.Instance.DisablePlayerInput();
 
       if (submarineSkelHead != null) submarineSkelHead.SetActive(headUnlocked);
       if (submarineSkelTail != null) submarineSkelTail.SetActive(tailUnlocked);
@@ -725,16 +747,6 @@ public class LabManager : MonoBehaviour
       if (submarineSkelTail != null) submarineSkelTail.SetActive(true);
 
       if (headUnlocked) ActivateFinalForm();
-      victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineTail").gameObject.SetActive(false);   
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
-      }
    }
 
    // Activates the final form of the submarine when all parts are active
@@ -755,16 +767,19 @@ public class LabManager : MonoBehaviour
    {
       victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubInfo/BuySect/HeadPart").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>().onClick.AddListener(() => 
+
+      Button headBuyButton = victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>();
+      headBuyButton.onClick.RemoveAllListeners();
+      headBuyButton.onClick.AddListener(() =>
       {
-         if(InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUseEngine(1))
+         if (InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUseEngine(1))
          {
             ActivateHead();
          }
          else
          {
             Debug.Log("Not enough resources to buy head");
-             ticker.ShowTicker("Not enough resources to buy head", Color.red, TickerSystem.MessageTypes.ResultMessage);
+            ticker.ShowTicker("Not enough resources to buy head", Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
       });
    }
@@ -773,7 +788,10 @@ public class LabManager : MonoBehaviour
    {
       victoryPanel.transform.Find("SubInfo/TailPart").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubInfo/BuySect/TailPart").gameObject.SetActive(true);
-      victoryPanel.transform.Find("SubInfo/BuySect/TailPart/TailBuyButton").GetComponent<Button>().onClick.AddListener(() =>
+      
+      Button tailBuyButton = victoryPanel.transform.Find("SubInfo/BuySect/TailPart/TailBuyButton").GetComponent<Button>();
+      tailBuyButton.onClick.RemoveAllListeners();
+      tailBuyButton.onClick.AddListener(() =>
       {
          if (InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUsePrecisionLens(1))
          {
