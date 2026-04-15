@@ -479,6 +479,7 @@ public class ShipManager : MonoBehaviour
 
       // Wait for previous panels to fully fade out
       yield return new WaitForSeconds(0.5f);
+      PopUpManager.Instance.DisablePlayerInput();
       panelManager.OpenPanel(finalRewardsPanel.gameObject);
 
       // If no rewards were found, show empty exploraion message
@@ -591,5 +592,6 @@ public class ShipManager : MonoBehaviour
       panelManager.ClosePanel(finalRewardsPanel.gameObject);
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
+      PopUpManager.Instance.EnablePlayerInput();
    }
 }
