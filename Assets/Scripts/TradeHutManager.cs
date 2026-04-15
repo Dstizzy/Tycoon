@@ -1144,11 +1144,11 @@ public class TradeHutManager : MonoBehaviour
           switch(worldEvent) 
           { 
              case (int)WorldEventTypes.IndustrialGoldRushEvent:
-               preview = base_pressure_valve_value;
+               preview = currentVal * 2;
                 break;
 
              case (int)WorldEventTypes.DeepSeaWarEvent:
-                preview += (GetItemValue(itemType) * 3) - GetItemValue(itemType);
+                preview += (currentVal * 3) - currentVal;
                 break;
 
              case (int) WorldEventTypes.ScavengersHolidayEvent:
@@ -1254,7 +1254,7 @@ public class TradeHutManager : MonoBehaviour
            switch (worldEvent) 
            {
               case (int) WorldEventTypes.IndustrialGoldRushEvent:
-               increaseSellValueMethod(base_pressure_valve_value - GetItemValue(itemType));
+               increaseSellValueMethod((GetItemValue(itemType) * 2) - GetItemValue(itemType));
                  break;
 
               case (int) WorldEventTypes.DeepSeaWarEvent:

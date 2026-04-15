@@ -5,9 +5,9 @@ using UnityEngine;
 public class Item {
 
    /* Public static properties                                          */
+   public static int base_diving_bell_value    = 25;
    public static int base_crude_tool_value     = 30;
    public static int base_harpoon_value        = 60;
-   public static int base_diving_bell_value    = 120;
    public static int base_pressure_valve_value = 250;
    public static int base_precision_lens_value = 600;
    public static int base_engine_value         = 900;
@@ -27,11 +27,11 @@ public class Item {
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
-   public const int MAX_CRUDE_TOOL_VALUE           = 250;
+   public const int MAX_CRUDE_TOOL_VALUE           = 150;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 250;
+   public const int MAX_HARPOON_VALUE              = 150;
    public const int MIN_DIVING_BELL_VALUE          = 0;
-   public const int MAX_DIVING_BELL_VALUE          = 540;
+   public const int MAX_DIVING_BELL_VALUE          = 150;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
    public const int MAX_PRESSURE_VALVE_VALUE       = 540;
    public const int MIN_PRECISION_LENS_VALUE       = 0;
