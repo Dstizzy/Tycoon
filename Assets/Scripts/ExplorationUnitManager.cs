@@ -581,14 +581,14 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (shipManager.ShipLevel == 1)
       {
-         pearlUpgradeCost   = LEVEL2_PEARL_COST;
-         upgradeTitle       = "REWARD: ";
+         pearlUpgradeCost = LEVEL2_PEARL_COST;
+         upgradeTitle = "REWARD:\n+20 health, +4 fuel";
          upgradeExplanation = "";
       }
       else if (shipManager.ShipLevel == 2)
       {
-         pearlUpgradeCost   = LEVEL3_PEARL_COST;
-         upgradeTitle       = "REWARD:";
+         pearlUpgradeCost = LEVEL3_PEARL_COST;
+         upgradeTitle = "REWARD:\n+30 health, +4 fuel";
          upgradeExplanation = "";
       }
 
