@@ -118,7 +118,9 @@ public class TurnManager : MonoBehaviour
       else
       {
          UpdateTurnUI();
-         HandleJamming();
+         if(currentTurn > 5)
+            HandleJamming();
+
          HandleEnemy();
 
          if(isJamPrevented)
