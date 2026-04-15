@@ -35,12 +35,7 @@ public class LabManager : MonoBehaviour
 
    public const int T1_PROD_PATCH_KIT = 1;
    public const int T2_PROD_PRESSURE_VALVE = 2;
-<<<<<<< HEAD
    public const int T3_PROD_LENS = 1;
-=======
-   public const int T3_PROD_LENS = 2;
-
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
    public const int T1_EXPL_HARPOON = 1;
    public const int T2_EXPL_DIVING_BELL = 1;
    public const int T3_EXPL_DIVING_BELL = 2;
@@ -87,8 +82,7 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject submarineBlackedOutTail;
 
 
-   // Public variables                                                                          
-<<<<<<< HEAD
+   // Public variables
    public static int  currentCommerceTier { get; set; } = 0;
    public static bool headUnlocked            = false;
    public static bool tailUnlocked            = false;
@@ -98,16 +92,6 @@ public class LabManager : MonoBehaviour
    public        bool labTutorialFunction     = false;
    public        bool victoryTutorialFunction = false;
    private       bool techTreeCompleted;
-=======
-   public static int currentCommerceTier { get; set; } = 0;
-   public static bool headUnlocked = false;
-   public static bool tailUnlocked = false;
-   private bool commerceFinished = false;
-   private bool productionFinished = false;
-   private bool explorationFinished = false;
-   public bool labTutorialFunction = false;
-   public bool victoryTutorialFunction = false;
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
 
    // Private instances
    TradeHutManager tradeHutManager;
@@ -354,18 +338,6 @@ public class LabManager : MonoBehaviour
                useItemMethod = inv.TryUsePatchKit;
                break;
             case TIER_TWO:
-<<<<<<< HEAD
-               pearlCost     = T2_PROD_PEARL;
-               itemCost      = T2_PROD_PRESSURE_VALVE;
-               requiredItem  = "Pressure Valve";
-               useItemMethod = inv.TryUsePressureValve;
-               break;
-            case TIER_THREE:
-               pearlCost     = T3_PROD_PEARL;
-               itemCost      = T3_PROD_LENS;
-               requiredItem  = "Precision Lens";
-               useItemMethod = inv.TryUsePrecisionLens;
-=======
                pearlCost = T2_PROD_PEARL;
                itemCost = T2_PROD_PRESSURE_VALVE;
                requiredItem = "Pressure Valve";
@@ -378,7 +350,6 @@ public class LabManager : MonoBehaviour
                requiredItem = "Precision Lens";
                // Requires Tier 3 Blueprint
                useItemMethod = ForgeManager.Instance.hasTier3Blueprint ? inv.TryUsePrecisionLens : null;
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
                break;
          }
       }
@@ -582,7 +553,6 @@ public class LabManager : MonoBehaviour
 
    private void CheckTechTreeCompletion()
    {
-<<<<<<< HEAD
       if (!commerceFinished || !productionFinished || !explorationFinished)
          return;
 
@@ -604,10 +574,6 @@ public class LabManager : MonoBehaviour
 
       if (tailUnlocked && !GameEndingState.HasEndingTriggered)
          ActivateFinalForm();
-=======
-      // If all three branches are done, we progress the flask to the final stage
-      HandleFlask();
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
    }
 
    // Handles evolution of flask
@@ -788,19 +754,6 @@ public class LabManager : MonoBehaviour
       if (submarineSkelTail != null) submarineSkelTail.SetActive(true);
 
       if (headUnlocked) ActivateFinalForm();
-<<<<<<< HEAD
-=======
-      victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
-      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
-      {
-         ActivateFinalForm();
-      }
-      else
-      {
-         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineTail").gameObject.SetActive(false);
-         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
-      }
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
    }
 
    // Activates the final form of the submarine when all parts are active
@@ -821,14 +774,10 @@ public class LabManager : MonoBehaviour
    {
       victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubInfo/BuySect/HeadPart").gameObject.SetActive(true);
-<<<<<<< HEAD
 
       Button headBuyButton = victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>();
       headBuyButton.onClick.RemoveAllListeners();
       headBuyButton.onClick.AddListener(() =>
-=======
-      victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>().onClick.AddListener(() =>
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
       {
          if (InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUseEngine(1))
          {

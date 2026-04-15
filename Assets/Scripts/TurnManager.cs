@@ -125,21 +125,14 @@ public class TurnManager : MonoBehaviour
          EndGame();
          return;
       }
-<<<<<<< HEAD
-      
-      UpdateTurnUI();
-      HandleJamming();
-      HandleEnemy();
-=======
       else
       {
          UpdateTurnUI();
-         if(currentTurn > 5)
+         if (currentTurn > 5)
             HandleJamming();
 
          HandleEnemy();
->>>>>>> 38891dee74e0db3894d4451884f311122f6180be
-
+      }
       if(isJamPrevented)
          HandlePreventativeMaintenance();
          
