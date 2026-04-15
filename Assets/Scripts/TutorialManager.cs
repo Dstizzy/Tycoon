@@ -427,10 +427,10 @@ public class TutorialManager : MonoBehaviour
       }
       else if(myPart.transform.Find("ForgeExample") != null)
       {
+         HandleForgeTutorial?.Invoke();
          ShowHighlights(currentStep.highlightTargets);
          forgeFunction = true;
          turnButton.gameObject.SetActive(false);
-         HandleForgeTutorial?.Invoke();
          forgeCanvas.transform.Find("Screens").gameObject.SetActive(true);
          HideNextButton();
       }
