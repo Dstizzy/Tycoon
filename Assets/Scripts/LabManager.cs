@@ -32,9 +32,15 @@ public class LabManager : MonoBehaviour
    public const int T1_COMM_CRUDE_TOOL = 1;
    public const int T2_COMM_PRESSURE_VALVE = 2;
    public const int T3_COMM_LENS = 1;
+
    public const int T1_PROD_PATCH_KIT = 1;
    public const int T2_PROD_PRESSURE_VALVE = 2;
+<<<<<<< HEAD
    public const int T3_PROD_LENS = 1;
+=======
+   public const int T3_PROD_LENS = 2;
+
+>>>>>>> 38891dee74e0db3894d4451884f311122f6180be
    public const int T1_EXPL_HARPOON = 1;
    public const int T2_EXPL_DIVING_BELL = 1;
    public const int T3_EXPL_DIVING_BELL = 2;
@@ -82,6 +88,7 @@ public class LabManager : MonoBehaviour
 
 
    // Public variables                                                                          
+<<<<<<< HEAD
    public static int  currentCommerceTier { get; set; } = 0;
    public static bool headUnlocked            = false;
    public static bool tailUnlocked            = false;
@@ -91,10 +98,20 @@ public class LabManager : MonoBehaviour
    public        bool labTutorialFunction     = false;
    public        bool victoryTutorialFunction = false;
    private       bool techTreeCompleted;
+=======
+   public static int currentCommerceTier { get; set; } = 0;
+   public static bool headUnlocked = false;
+   public static bool tailUnlocked = false;
+   private bool commerceFinished = false;
+   private bool productionFinished = false;
+   private bool explorationFinished = false;
+   public bool labTutorialFunction = false;
+   public bool victoryTutorialFunction = false;
+>>>>>>> 38891dee74e0db3894d4451884f311122f6180be
 
    // Private instances
-   TradeHutManager  tradeHutManager;
-   ShipManager      shipManager;
+   TradeHutManager tradeHutManager;
+   ShipManager shipManager;
    InventoryManager inv;
 
    public static LabManager labManager { get; set; }
@@ -130,11 +147,11 @@ public class LabManager : MonoBehaviour
          Debug.LogError("Trade Hut instance is not initialized");
       else
          tradeHutManager = TradeHutManager.Instance;
-      
+
       if (InventoryManager.Instance == null)
          Debug.LogError("Inventory instance is not initialized");
       else
-         inv    = InventoryManager.Instance;
+         inv = InventoryManager.Instance;
 
       if (ShipManager.Instance == null)
          Debug.LogError("Ship Manager instance is not initialized");
@@ -269,33 +286,34 @@ public class LabManager : MonoBehaviour
    // Show the corresponding path tab upon clicking the path button
    private void ShowPath(GameObject tab)
    {
-       initialTab.gameObject.SetActive(false);
-       tab.gameObject.SetActive(true);
+      initialTab.gameObject.SetActive(false);
+      tab.gameObject.SetActive(true);
 
       // Get the buttons
       Button backBtn = tab.transform.Find("backArrow").GetComponent<Button>();
       backBtn.onClick.RemoveAllListeners();
       backBtn.onClick.AddListener(() => BackToInitialTab(tab));
       Button t1Btn = tab.transform.Find("buttonContainer/tierOneButton").GetComponent<Button>();
-       Button t2Btn = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>();
-       Button t3Btn = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>();
-   
-       t1Btn.onClick.RemoveAllListeners();
-       t1Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
-   
-       t2Btn.onClick.RemoveAllListeners();
-       t2Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
-   
-       t3Btn.onClick.RemoveAllListeners();
-       t3Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
+      Button t2Btn = tab.transform.Find("buttonContainer/tierTwoButton").GetComponent<Button>();
+      Button t3Btn = tab.transform.Find("buttonContainer/tierThreeButton").GetComponent<Button>();
+
+      t1Btn.onClick.RemoveAllListeners();
+      t1Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_ONE));
+
+      t2Btn.onClick.RemoveAllListeners();
+      t2Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_TWO));
+
+      t3Btn.onClick.RemoveAllListeners();
+      t3Btn.onClick.AddListener(() => HandleInnovation(tab, TIER_THREE));
    }
 
+   // Handle the innovation purchase and unlocking of the next tier node upon clicking the buy button
    // Handle the innovation purchase and unlocking of the next tier node upon clicking the buy button
    private void HandleInnovation(GameObject tab, int tier)
    {
       string requiredItem = "";
-      int    pearlCost    = 0, 
-             itemCost     = 0;
+      int pearlCost = 0,
+             itemCost = 0;
 
       Func<int, bool> useItemMethod = null;
 
@@ -304,21 +322,23 @@ public class LabManager : MonoBehaviour
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost     = T1_COMM_PEARL;
-               itemCost      = T1_COMM_CRUDE_TOOL;
-               requiredItem  = "Crude Tool";
+               pearlCost = T1_COMM_PEARL;
+               itemCost = T1_COMM_CRUDE_TOOL;
+               requiredItem = "Crude Tool";
                useItemMethod = inv.TryUseCrudeTool;
                break;
             case TIER_TWO:
-               pearlCost     = T2_COMM_PEARL;
-               itemCost      = T2_COMM_PRESSURE_VALVE;
-               requiredItem  = "Pressure Valve";
+               pearlCost = T2_COMM_PEARL;
+               itemCost = T2_COMM_PRESSURE_VALVE;
+               requiredItem = "Pressure Valve";
+               // Requires Tier 2 Blueprint
                useItemMethod = ForgeManager.Instance.hasTier2Blueprint ? inv.TryUsePressureValve : null;
                break;
             case TIER_THREE:
-               pearlCost     = T3_COMM_PEARL;
-               itemCost      = T3_COMM_LENS;
-               requiredItem  = "Precision Lens";
+               pearlCost = T3_COMM_PEARL;
+               itemCost = T3_COMM_LENS;
+               requiredItem = "Precision Lens";
+               // Requires Tier 3 Blueprint
                useItemMethod = ForgeManager.Instance.hasTier3Blueprint ? inv.TryUsePrecisionLens : null;
                break;
          }
@@ -328,12 +348,13 @@ public class LabManager : MonoBehaviour
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost     = T1_PROD_PEARL;
-               itemCost      = T1_PROD_PATCH_KIT;
-               requiredItem  = "Patch Kit";
+               pearlCost = T1_PROD_PEARL;
+               itemCost = T1_PROD_PATCH_KIT;
+               requiredItem = "Patch Kit";
                useItemMethod = inv.TryUsePatchKit;
                break;
             case TIER_TWO:
+<<<<<<< HEAD
                pearlCost     = T2_PROD_PEARL;
                itemCost      = T2_PROD_PRESSURE_VALVE;
                requiredItem  = "Pressure Valve";
@@ -344,6 +365,20 @@ public class LabManager : MonoBehaviour
                itemCost      = T3_PROD_LENS;
                requiredItem  = "Precision Lens";
                useItemMethod = inv.TryUsePrecisionLens;
+=======
+               pearlCost = T2_PROD_PEARL;
+               itemCost = T2_PROD_PRESSURE_VALVE;
+               requiredItem = "Pressure Valve";
+               // Requires Tier 2 Blueprint
+               useItemMethod = ForgeManager.Instance.hasTier2Blueprint ? inv.TryUsePressureValve : null;
+               break;
+            case TIER_THREE:
+               pearlCost = T3_PROD_PEARL;
+               itemCost = T3_PROD_LENS;
+               requiredItem = "Precision Lens";
+               // Requires Tier 3 Blueprint
+               useItemMethod = ForgeManager.Instance.hasTier3Blueprint ? inv.TryUsePrecisionLens : null;
+>>>>>>> 38891dee74e0db3894d4451884f311122f6180be
                break;
          }
       }
@@ -352,26 +387,27 @@ public class LabManager : MonoBehaviour
          switch (tier)
          {
             case TIER_ONE:
-               pearlCost     = T1_EXPL_PEARL;
-               itemCost      = T1_EXPL_HARPOON;
-               requiredItem  = "Harpoon";
+               pearlCost = T1_EXPL_PEARL;
+               itemCost = T1_EXPL_HARPOON;
+               requiredItem = "Harpoon";
                useItemMethod = inv.TryUseHarpoon;
                break;
             case TIER_TWO:
-               pearlCost     = T2_EXPL_PEARL;
-               itemCost      = T2_EXPL_DIVING_BELL;
-               requiredItem  = "Diving Bell";
-               useItemMethod = inv.TryUseDivingBell;
+               pearlCost = T2_EXPL_PEARL;
+               itemCost = T2_EXPL_DIVING_BELL;
+               requiredItem = "Diving Bell";
+               // Requires Tier 2 Blueprint
+               useItemMethod = ForgeManager.Instance.hasTier2Blueprint ? inv.TryUseDivingBell : null;
                break;
             case TIER_THREE:
-               pearlCost     = T3_EXPL_PEARL;
-               itemCost      = T3_EXPL_DIVING_BELL;
-               requiredItem  = "Diving Bell";
-               useItemMethod = inv.TryUseDivingBell;
+               pearlCost = T3_EXPL_PEARL;
+               itemCost = T3_EXPL_DIVING_BELL;
+               requiredItem = "Diving Bell";
+               // Requires Tier 2 Blueprint
+               useItemMethod = ForgeManager.Instance.hasTier2Blueprint ? inv.TryUseDivingBell : null;
                break;
          }
       }
-
 
       // Attempt to unlock tiers with the corresponding cost
       if (PerformBuy(pearlCost, itemCost, requiredItem, useItemMethod))
@@ -412,27 +448,27 @@ public class LabManager : MonoBehaviour
    public bool PerformBuy(int pearlCost, int itemCost, string itemName, Func<int, bool> useItemMethod)
    {
       bool isSuccess = false;
-      
-      if(useItemMethod == null) 
+
+      if (useItemMethod == null)
       {
          Debug.LogError("Use item methods was not found.");
          ticker.ShowTicker($"{itemName}s have not been unlocked!", Color.red, TickerSystem.MessageTypes.ResultMessage);
 
-      } 
+      }
       else
       {
          // Link to inventory to spend the item
-         if(inv.pearlCount >= pearlCost)
+         if (inv.pearlCount >= pearlCost)
          {
-            if (useItemMethod(itemCost) && inv.TrySpendPearl(pearlCost)) 
+            if (useItemMethod(itemCost) && inv.TrySpendPearl(pearlCost))
                isSuccess = true;
-            else 
+            else
             {
                Debug.Log($"Not enough {itemName}s to spend!");
                ticker.ShowTicker($"Not enough {itemName}s to spend!", Color.red, TickerSystem.MessageTypes.ResultMessage);
             }
-         } 
-         else 
+         }
+         else
          {
             Debug.LogError("Not enough pearls to spend");
             ticker.ShowTicker("Not enough pearls to spend", Color.red, TickerSystem.MessageTypes.ResultMessage);
@@ -475,7 +511,7 @@ public class LabManager : MonoBehaviour
             ShipManager.Instance.ApplyLabShipBonus();
 
          ticker.ShowTicker("Exploration Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
-      } 
+      }
       else
       {
          Debug.Log("There is no tab");
@@ -486,7 +522,7 @@ public class LabManager : MonoBehaviour
    public void ImplementTierTwoInnovation(GameObject tabType)
    {
       // Grant action to gameple 50 gold for 60% chance to get 250 back                       
-      if (tabType == commerceTab) 
+      if (tabType == commerceTab)
       {
          tradeHutManager.RecycleButton.gameObject.SetActive(true);
          ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
@@ -504,16 +540,16 @@ public class LabManager : MonoBehaviour
          ticker.ShowTicker("Product Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
       /* Unlocks chance to find crafts on explorations                                         */
-      else 
+      else
       {
-         if (tabType == explorationTab) 
-         { 
+         if (tabType == explorationTab)
+         {
             if (ShipManager.Instance != null)
                ShipManager.Instance.UnlockTier2Choices();
             else
                Debug.Log("There is no tab");
             ticker.ShowTicker("Exploration Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
-          }
+         }
       }
 
    }
@@ -546,6 +582,7 @@ public class LabManager : MonoBehaviour
 
    private void CheckTechTreeCompletion()
    {
+<<<<<<< HEAD
       if (!commerceFinished || !productionFinished || !explorationFinished)
          return;
 
@@ -567,6 +604,10 @@ public class LabManager : MonoBehaviour
 
       if (tailUnlocked && !GameEndingState.HasEndingTriggered)
          ActivateFinalForm();
+=======
+      // If all three branches are done, we progress the flask to the final stage
+      HandleFlask();
+>>>>>>> 38891dee74e0db3894d4451884f311122f6180be
    }
 
    // Handles evolution of flask
@@ -669,7 +710,7 @@ public class LabManager : MonoBehaviour
       pathButtons.transform.Find("commercePath").GetComponent<Button>().onClick.RemoveAllListeners();
       pathButtons.transform.Find("productionPath").GetComponent<Button>().onClick.RemoveAllListeners();
       pathButtons.transform.Find("explorationPath").GetComponent<Button>().onClick.RemoveAllListeners();
-      
+
 
       if (MainUIManager.mainUI != null)
          MainUIManager.mainUI.SetMainButtonsInteractable(true);
@@ -747,6 +788,19 @@ public class LabManager : MonoBehaviour
       if (submarineSkelTail != null) submarineSkelTail.SetActive(true);
 
       if (headUnlocked) ActivateFinalForm();
+<<<<<<< HEAD
+=======
+      victoryPanel.transform.Find("SubInfo/TailPart/completed").gameObject.SetActive(true);
+      if (victoryPanel.transform.Find("SubmarineSkel/SubmarineHead").gameObject.activeSelf)
+      {
+         ActivateFinalForm();
+      }
+      else
+      {
+         victoryPanel.transform.Find("SubmarineBlackedOut/SubmarineTail").gameObject.SetActive(false);
+         victoryPanel.transform.Find("SubmarineSkel/SubmarineTail").gameObject.SetActive(true);
+      }
+>>>>>>> 38891dee74e0db3894d4451884f311122f6180be
    }
 
    // Activates the final form of the submarine when all parts are active
@@ -767,10 +821,14 @@ public class LabManager : MonoBehaviour
    {
       victoryPanel.transform.Find("SubInfo/HeadPart").gameObject.SetActive(false);
       victoryPanel.transform.Find("SubInfo/BuySect/HeadPart").gameObject.SetActive(true);
+<<<<<<< HEAD
 
       Button headBuyButton = victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>();
       headBuyButton.onClick.RemoveAllListeners();
       headBuyButton.onClick.AddListener(() =>
+=======
+      victoryPanel.transform.Find("SubInfo/BuySect/HeadPart/HeadBuyButton").GetComponent<Button>().onClick.AddListener(() =>
+>>>>>>> 38891dee74e0db3894d4451884f311122f6180be
       {
          if (InventoryManager.Instance.TrySpendPearl(1000) && InventoryManager.Instance.TryUseEngine(1))
          {

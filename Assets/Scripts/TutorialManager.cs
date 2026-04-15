@@ -427,15 +427,17 @@ public class TutorialManager : MonoBehaviour
       }
       else if(myPart.transform.Find("ForgeExample") != null)
       {
+         SetGameplayBlocked(false);
+         HandleForgeTutorial?.Invoke();
          ShowHighlights(currentStep.highlightTargets);
          forgeFunction = true;
          turnButton.gameObject.SetActive(false);
-         HandleForgeTutorial?.Invoke();
          forgeCanvas.transform.Find("Screens").gameObject.SetActive(true);
          HideNextButton();
       }
       else if(myPart.transform.Find("TradeHutExample") != null)
       {
+         SetGameplayBlocked(false);
          ShowHighlights(currentStep.highlightTargets);
          tradeHutFunction = true;
          turnButton.gameObject.SetActive(false);
