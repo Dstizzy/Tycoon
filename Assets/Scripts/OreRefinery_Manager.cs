@@ -37,9 +37,9 @@ public class OreRefinery_Manager : MonoBehaviour
 
    [Header("Upgrade Costs")]
    [SerializeField] private int level2PearlCost = 100;
-   [SerializeField] private int level2OreCost = 50;
+   [SerializeField] private int level2OreCost   = 50;
    [SerializeField] private int level3PearlCost = 300;
-   [SerializeField] private int level3OreCost = 100;
+   [SerializeField] private int level3OreCost   = 100;
 
    TickerSystem ticker;
 
@@ -353,7 +353,7 @@ public class OreRefinery_Manager : MonoBehaviour
       }
       else if (paymentType == 2) 
       {
-         if (InventoryManager.Instance.TrySpendPearl(30))
+         if (InventoryManager.Instance.TrySpendPearl(100))
          {
             IsBlocked = false;
             manualResetOption = false;

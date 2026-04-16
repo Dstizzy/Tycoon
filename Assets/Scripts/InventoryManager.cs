@@ -79,10 +79,10 @@ public class InventoryManager : MonoBehaviour
    // Inspector variables for UI elements.
    [SerializeField]
    private Transform InventoryPanel,
-                                      ResourcePanel,
-                                      ResourceWindow,
-                                      CraftsPanel,
-                                      CraftWindow;
+                     ResourcePanel,
+                     ResourceWindow,
+                     CraftsPanel,
+                     CraftWindow;
 
    public Image ForgeUpgradeIcon,
                 OreRefineryUpgradeIcon,
@@ -1293,47 +1293,40 @@ public class InventoryManager : MonoBehaviour
 
    private void CheckUpgradeResources()
    {
-      if (pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls &&
-          oreCount >= OreRefinery_Manager.Instance.NextUpgradeCostInOre) 
-      { 
-         OreRefineryUpgradeIcon.gameObject.SetActive(OreRefinery_Manager.Instance.oreLevel != 3);
-      }
-      else
+      if (OreRefinery_Manager.Instance.oreLevel >= 3)
          OreRefineryUpgradeIcon.gameObject.SetActive(false);
-
-      if (ForgeManager.forgeLevel == 1)
-      {
-         if (pearlCount >= ForgeManager.LEVEL_2_PEARL_COST)
-            ForgeUpgradeIcon.gameObject.SetActive(true);
-         else
-            ForgeUpgradeIcon.gameObject.SetActive(false);
-      }
       else
       {
-         if (ForgeManager.forgeLevel == 2) 
+         bool canAffordRefinery = pearlCount >= OreRefinery_Manager.Instance.NextUpgradeCostInPearls && 
+                                  oreCount >= OreRefinery_Manager.Instance.NextUpgradeCostInOre;
+         OreRefineryUpgradeIcon.gameObject.SetActive(canAffordRefinery);
+      }
+
+      if (ForgeManager.forgeLevel >= 3)
+         ForgeUpgradeIcon.gameObject.SetActive(false);
+      else 
+      { 
+         if (ForgeManager.forgeLevel == 1)
          {
-            if (pearlCount >= ForgeManager.LEVEL_3_PEARL_COST)
-               ForgeUpgradeIcon.gameObject.SetActive(true);
-            else
-               ForgeUpgradeIcon.gameObject.SetActive(false);
+            ForgeUpgradeIcon.gameObject.SetActive(pearlCount >= ForgeManager.LEVEL_2_PEARL_COST);
+         }
+         else 
+         {
+            if (ForgeManager.forgeLevel == 2) 
+               ForgeUpgradeIcon.gameObject.SetActive(pearlCount >= ForgeManager.LEVEL_3_PEARL_COST);
          }
       }
 
-      if(ExplorationUnitManager.Instance.shipManager.ShipLevel == 1) 
-      {
-         if(pearlCount >= ExplorationUnitManager.LEVEL2_PEARL_COST)
-            ExplorationUnitUpgradeIcon.gameObject.SetActive(true);
-         else
-            ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
-      }
-      else
-      {
-         if (ExplorationUnitManager.Instance.shipManager.ShipLevel == 2) 
+      if (ExplorationUnitManager.Instance.shipManager.ShipLevel >= 3)
+         ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
+      else 
+      { 
+         if (ExplorationUnitManager.Instance.shipManager.ShipLevel == 1) 
+            ExplorationUnitUpgradeIcon.gameObject.SetActive(pearlCount >= ExplorationUnitManager.LEVEL2_PEARL_COST);
+         else 
          { 
-            if (pearlCount >= ExplorationUnitManager.LEVEL3_PEARL_COST)
-               ForgeUpgradeIcon.gameObject.SetActive(true);
-            else
-               ForgeUpgradeIcon.gameObject.SetActive(false);
+            if (ExplorationUnitManager.Instance.shipManager.ShipLevel == 2) 
+               ExplorationUnitUpgradeIcon.gameObject.SetActive(pearlCount >= ExplorationUnitManager.LEVEL3_PEARL_COST);
          }
       }
    }
