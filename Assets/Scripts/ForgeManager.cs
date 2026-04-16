@@ -1019,11 +1019,11 @@ public class ForgeManager : MonoBehaviour
 
       if (stagingItems.Count == 0) return;
 
-      // Check if ANY Overclock toggle is currently checked
+      // Check if amy Overclock toggle is currently checked
       bool isOverclocked = false;
       foreach (Toggle t in overclockToggles) { if (t != null && t.isOn) isOverclocked = true; }
 
-      // Check if ANY Mercenary toggle is currently checked
+      // Check if any Mercenary toggle is currently checked
       bool useMercenary = false;
       foreach (Toggle t in mercenaryToggles) { if (t != null && t.isOn) useMercenary = true; }
 
@@ -1034,38 +1034,53 @@ public class ForgeManager : MonoBehaviour
       // Check Affordability
       if (InventoryManager.Instance.TrySpendOre(totalCost))
       {
-         // NEW: Deduct the mercenary from inventory if used
          if (useMercenary)
          {
             InventoryManager.Instance.TryUseMercenaryEngineer(1);
          }
 
          string successMessage = "Successfully Queued: ";
-         List<string> itemNames = new List<string>();
+
+         Dictionary<string, int> groupedItems = new Dictionary<string, int>();
 
          Debug.Log(stagingItems.Count);
+
          // Process Each Item
          for (int i = 0; i < stagingItems.Count; i++)
          {
             int amount = isOverclocked ? 2 : 1;
+            string itemName = stagingItems[i].ToString();
 
             if (useMercenary)
             {
-               CraftingJob instantJob = new CraftingJob { itemType = stagingItems[i], amount = amount, itemName = stagingItems[i].ToString() };
+               CraftingJob instantJob = new CraftingJob { itemType = stagingItems[i], amount = amount, itemName = itemName };
                DeliverItem(instantJob);
-
                Debug.Log($"[Instant Craft] {instantJob.itemName}");
-               itemNames.Add($"{amount}x {instantJob.itemName}");
             }
             else
             {
                int turns = GetTurnsNeeded(stagingItems[i]);
-               CraftingJob job = new CraftingJob { itemType = stagingItems[i], amount = amount, itemName = stagingItems[i].ToString(), turnsRemaining = turns };
-
+               CraftingJob job = new CraftingJob { itemType = stagingItems[i], amount = amount, itemName = itemName, turnsRemaining = turns };
                activeJobs.Add(job);
                Debug.Log($"[Queued] {job.itemName} - {turns} turns remaining.");
-               itemNames.Add($"{amount}x {job.itemName}");
             }
+
+            // Add the item to our grouping dictionary
+            if (groupedItems.ContainsKey(itemName))
+            {
+               groupedItems[itemName] += amount;
+            }
+            else
+            {
+               groupedItems.Add(itemName, amount);
+            }
+         }
+
+         // Build the final display string from the grouped items
+         List<string> itemNames = new List<string>();
+         foreach (var kvp in groupedItems)
+         {
+            itemNames.Add($"{kvp.Value}x {kvp.Key}");
          }
 
          if (useMercenary)
@@ -1080,13 +1095,10 @@ public class ForgeManager : MonoBehaviour
          ticker.ShowTicker(successMessage, Color.green, TickerSystem.MessageTypes.ResultMessage);
          UpdateStagingUI();
 
-         // Turn all toggles back off after crafting
          foreach (Toggle t in overclockToggles) { if (t != null) t.isOn = false; }
          foreach (Toggle t in mercenaryToggles) { if (t != null) t.isOn = false; }
 
          UpdateProgressVisuals();
-         // ... (rest of method stays the same)
-
 
          CloseAllTierPanels();
          if (currentCraftWindow != null) Destroy(currentCraftWindow.gameObject);
