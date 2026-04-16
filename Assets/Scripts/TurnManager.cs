@@ -17,7 +17,6 @@ public class TurnManager : MonoBehaviour
    const int STARTINGTURN = 1;
    const int ENDINGTURN = 80;
 
-
    // Variables
    public static System.Random random = new System.Random(); // Random number generator
    public static int randomNumber;                           // Random number for various calculations
@@ -143,6 +142,7 @@ public class TurnManager : MonoBehaviour
          tradeHutManager.ResetWorldEventShifts();
          tradeHutManager.WorldEventChance();
 
+         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(true);
          TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
       }
 
@@ -155,6 +155,8 @@ public class TurnManager : MonoBehaviour
          newsTicker.gameObject.SetActive(true);
          tradeHutManager.WorldEventNewsTickerText();
          newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+
+         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(false);
 
          if(eventCountdown == 5) 
          {

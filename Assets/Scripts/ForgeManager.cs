@@ -595,7 +595,7 @@ public class ForgeManager : MonoBehaviour
       {
          upgradeCost = 700;
          upgradeTitle = "REWARD: Unlock 3nd Crafting Slot";
-         upgradeExplanation = "This upgrade increases your simultaneous crafting capacity to 2";
+         upgradeExplanation = "This upgrade increases your simultaneous crafting capacity to 3";
       }
 
       if (forgeLevel < ENDING_LEVEL)
