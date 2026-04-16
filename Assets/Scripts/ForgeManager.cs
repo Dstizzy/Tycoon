@@ -1269,6 +1269,9 @@ public class ForgeManager : MonoBehaviour
       {
          case 1:
             craftPanel.transform.Find("xButton1").gameObject.SetActive(true);
+
+            craftPanel.transform.Find("xButton1").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
             craftPanel.transform.Find("xButton1").gameObject.GetComponent<Button>().onClick.AddListener(() =>
             {
                stagingItems.RemoveAt(index);
@@ -1276,8 +1279,12 @@ public class ForgeManager : MonoBehaviour
                UpdateStagingUI();
             });
             break;
+
          case 2:
             craftPanel.transform.Find("xButton2").gameObject.SetActive(true);
+
+            craftPanel.transform.Find("xButton2").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
             craftPanel.transform.Find("xButton2").gameObject.GetComponent<Button>().onClick.AddListener(() =>
             {
                stagingItems.RemoveAt(index);
@@ -1285,8 +1292,12 @@ public class ForgeManager : MonoBehaviour
                UpdateStagingUI();
             });
             break;
+
          case 3:
             craftPanel.transform.Find("xButton3").gameObject.SetActive(true);
+
+            craftPanel.transform.Find("xButton3").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
             craftPanel.transform.Find("xButton3").gameObject.GetComponent<Button>().onClick.AddListener(() =>
             {
                stagingItems.RemoveAt(index);
