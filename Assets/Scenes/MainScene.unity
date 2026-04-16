@@ -102967,8 +102967,8 @@ MonoBehaviour:
   - {fileID: 7530612607578742135, guid: b5fa7ba6a85924e65ad8a7b06131d803, type: 3}
   level2PearlCost: 100
   level2OreCost: 50
-  level3PearlCost: 100
-  level3OreCost: 50
+  level3PearlCost: 300
+  level3OreCost: 100
   oreLevel: 1
   IsBlocked: 0
   tutorialUpgrade: 0

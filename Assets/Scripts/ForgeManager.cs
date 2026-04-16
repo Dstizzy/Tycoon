@@ -624,6 +624,9 @@ public class ForgeManager : MonoBehaviour
 
          if (expText != null)
             expText.gameObject.SetActive(false); // Hide explanation if max level
+         
+         if (pearlCostText != null)
+            pearlCostText.gameObject.SetActive(false);
 
          Transform yesBtn = upgradePanel.Find("YesButton");
          if (yesBtn != null) yesBtn.gameObject.SetActive(false);
