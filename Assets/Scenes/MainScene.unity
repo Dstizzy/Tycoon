@@ -9229,8 +9229,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New ability unlock in Forge allows two crafted items for one, BUT it attracts
-    the monster
+  m_text: New ability unlock in Forge allows two of the same crafted items for one,
+    BUT it attracts the monster
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
