@@ -203,6 +203,8 @@ public class ExplorationUnitManager : MonoBehaviour
                InventoryManager.Instance.ExplorationUnitUpgradeIcon.gameObject.SetActive(false);
             else
                Debug.LogWarning("ExplorationUnitUpgradeIcon is not assigned in the InventoryManager!");
+
+
          }
 
          Debug.Log($"Exploration Unit upgraded to level {shipManager.ShipLevel}!");
@@ -618,6 +620,9 @@ public class ExplorationUnitManager : MonoBehaviour
 
          if (expText != null)
             expText.gameObject.SetActive(false); // Hide explanation if max level
+
+         if (pearlCostText != null)
+            pearlCostText.gameObject.SetActive(false);
 
          Transform yesBtn = upgradePanel.Find("YesButton");
          if (yesBtn != null) yesBtn.gameObject.SetActive(false);
