@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using UnityEngine.InputSystem;
 using TMPro;
 
 using UnityEngine;
@@ -71,10 +71,13 @@ public class TradeHutManager : MonoBehaviour
                precisionLensChance,
                engineChance,
 
-               worldEvent;
+               worldEvent,
+
+               mercenaryEngineerAvailable;
 
    public Image  worldEventChange;
    public Transform worldEventIcon;
+   public TextMeshProUGUI mercenaryEngineersAvailableText;
 
 
    private WorldEventTypes crudeToolEvent,
@@ -171,6 +174,8 @@ public class TradeHutManager : MonoBehaviour
 
       OnItemValueChange = ChangeItemValueText;
 
+      mercenaryEngineerAvailable = MAX_MERCENARY_ENGINEER_COUNT;
+
       if (Instance != null && Instance != this)
          Destroy(this.gameObject);
       else 
@@ -208,7 +213,6 @@ public class TradeHutManager : MonoBehaviour
          Debug.LogError("Buy Window is not assigned in the Inspector!");
       else
          BuyWindow.gameObject.SetActive(false);
-
    }
 
    private void Start()
@@ -359,6 +363,11 @@ public class TradeHutManager : MonoBehaviour
 
       infoText = tradeItemTransform.Find("ItemInfoCanvas").Find("ItemInfoPanel").Find("InfoText").GetComponent<TextMeshProUGUI>();
 
+      if(itemTag == MERCENARY_ENGINEER_TAG) 
+      {
+         mercenaryEngineersAvailableText.text = "Availability: " + mercenaryEngineerAvailable.ToString();
+         mercenaryEngineersAvailableText.gameObject.SetActive(true);
+      }
 
       switch (itemTag) 
       {
@@ -489,75 +498,73 @@ public class TradeHutManager : MonoBehaviour
          currentBuyItem = null;
       }
 
-      Transform     buyItemTransfrom              = Instantiate(buyWindowTemplate, buyWindowContainer);
-      RectTransform buyItemTransfromRectTransform = buyItemTransfrom.GetComponent<RectTransform>();
+      Transform     buyWindowItemTransfrom              = Instantiate(buyWindowTemplate, buyWindowContainer);
+      RectTransform buyItemTransfromRectTransform = buyWindowItemTransfrom.GetComponent<RectTransform>();
 
-      buyItemTransfrom.tag = itemTag;
+      buyWindowItemTransfrom.tag = itemTag;
 
       // Populate item properties
-      buyItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite        = itemSprite;
-      buyItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemTag;
-      buyItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite     = currencySprite;
+      buyWindowItemTransfrom.Find("ItemImage").GetComponent<Image>().sprite        = itemSprite;
+      buyWindowItemTransfrom.Find("ItemName").GetComponent<TextMeshProUGUI>().text = itemTag;
+      buyWindowItemTransfrom.Find("currencyIcon").GetComponent<Image>().sprite     = currencySprite;
 
       switch(itemTag) 
       {
          case RAW_ORE_CHUNK_TAG:
             rawOreExchange = 0;
-            buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = rawOreExchange.ToString();
+            buyWindowItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = rawOreExchange.ToString();
             break;
          case MERCENARY_ENGINEER_TAG:
             mercenaryEngineerBuyCount = 0;
-            buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = mercenaryEngineerBuyCount.ToString();
+            buyWindowItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = mercenaryEngineerBuyCount.ToString();
             break;
          default:
-            buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = 1.ToString();
+            buyWindowItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text = 1.ToString();
             break;
       }
 
       switch (itemTag) 
       {
          case INDUSTRIAL_BLUEPRINT_TAG:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.IndustrialBlueprint).ToString();
+            buyWindowItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.IndustrialBlueprint).ToString();
             break;
          case CLOCKWORK_BLUEPRINT_TAG:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.ClockworkBlueprint).ToString();
+            buyWindowItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.ClockworkBlueprint).ToString();
             break;
          case MERCENARY_ENGINEER_TAG:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+            buyWindowItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
             break;
          case RAW_ORE_CHUNK_TAG:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
+            buyWindowItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = "0";
             break;
          case INSURANCE_POLICY_TAG:
-            buyItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.InsurancePolicy).ToString();
+            buyWindowItemTransfrom.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = GetItemPrice(ItemType.InsurancePolicy).ToString();
             break;
          default:
             Debug.LogError("Unkown item: " + itemTag);
             break;
       }
 
-      buyItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(false);
-      buyItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(false);
+      buyWindowItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(false);
+      buyWindowItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(false);
 
       if (itemTag  == RAW_ORE_CHUNK_TAG || itemTag == MERCENARY_ENGINEER_TAG)
       {
-         buyItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(true);
-         buyItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(true);
-
-         buyItemTransfrom.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + itemCount.ToString();
+         buyWindowItemTransfrom.Find("QuantityButtons/IncreaseButton").gameObject.SetActive(true);
+         buyWindowItemTransfrom.Find("QuantityButtons/DecreaseButton").gameObject.SetActive(true);
 
          // Get references to the increase and decrease buttons
-         Button increaseButton = buyItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
-         Button decreaseButton = buyItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
+         Button increaseButton = buyWindowItemTransfrom.Find("QuantityButtons/IncreaseButton").GetComponent<Button>();
+         Button decreaseButton = buyWindowItemTransfrom.Find("QuantityButtons/DecreaseButton").GetComponent<Button>();
          
          // Dynamically add listeners to the buttons, which increases or decreases the buy item count
-         increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyItemTransfrom));
-         decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyItemTransfrom));
+         increaseButton.onClick.AddListener(() => IncreaseBuyItemsCount(buyWindowItemTransfrom));
+         decreaseButton.onClick.AddListener(() => DecreaseBuyItemsCount(buyWindowItemTransfrom));
       }
 
       // Store the reference to the newly created buy window instance
-      currentBuyItem = buyItemTransfrom;
-      buyItemTransfrom.gameObject.SetActive(true);
+      currentBuyItem = buyWindowItemTransfrom;
+      buyWindowItemTransfrom.gameObject.SetActive(true);
       ShowBuyWindow();
    }
 
@@ -792,7 +799,7 @@ public class TradeHutManager : MonoBehaviour
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("ItemShadow").gameObject.SetActive(false);
             SellItems.Find(item => item.CompareTag(ENGINE_TAG)).Find("Chain").gameObject.SetActive(false);
            
-            ticker.ShowTicker("Purchased Tier 3 Blueprint Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
+            ticker.ShowTicker("Purchased Tier 3 Blueprint. Engine and Precision Lens unlocked.", Color.green, MessageTypes.ResultMessage);
          }
 
          // Mercenary Engineer purchase flow
@@ -800,13 +807,19 @@ public class TradeHutManager : MonoBehaviour
              inv.TrySpendPearl(mercenaryEngineerBuyCount * GetItemPrice(ItemType.MercenaryEngineer)) &&
              inv.TryAddMercenaryEngineer(mercenaryEngineerBuyCount)) 
          {
-            if(inv.InventoryItems?.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)) == null)
+            mercenaryEngineerAvailable -= mercenaryEngineerBuyCount;
+            mercenaryEngineersAvailableText.text =  "Availability: " + mercenaryEngineerAvailable.ToString();
+
+            if (inv.InventoryItems?.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)) == null) 
                inv.CreateCraft(GetItemSprite(ItemType.MercenaryEngineer), MERCENARY_ENGINEER_POSITION, MERCENARY_ENGINEER_TAG, -450);
 
             ForgeManager.Instance.hasMercenaryEngineer = inv.mercenaryEngineerCount > 0 ? true: false;
 
-            if(inv.mercenaryEngineerCount == MAX_MERCENARY_ENGINEER_COUNT)
+            if(mercenaryEngineerAvailable == 0) 
+            { 
                BuyItems.Find(item => item.CompareTag(MERCENARY_ENGINEER_TAG)).gameObject.SetActive(false);
+               mercenaryEngineersAvailableText.gameObject.SetActive(false);
+            }
             ticker.ShowTicker("Purchased Mercenary Engineer.", Color.green, MessageTypes.ResultMessage);
          }
 
@@ -849,8 +862,19 @@ public class TradeHutManager : MonoBehaviour
       AdjustSellQuantity(item, -1);
    }
 
-   public void AdjustSellQuantity(Transform item, int quantityChange) 
+  public void AdjustSellQuantity(Transform item, int quantityChange) 
    {
+      int multiplier = 1;
+
+      // MODIFIER KEYS logic (Shift = 10x, Ctrl = 50x)
+      if (Keyboard.current != null)
+      {
+          if (Keyboard.current.ctrlKey.isPressed) multiplier = 50;
+          else if (Keyboard.current.shiftKey.isPressed) multiplier = 10;
+      }
+
+      int targetChange = quantityChange * multiplier;
+
       ItemType itemType = ItemType.CrudeTool;
       int      current  = 0;
       int      owned    = 0;
@@ -859,7 +883,7 @@ public class TradeHutManager : MonoBehaviour
       {
          case CRUDE_TOOL_TAG:
             current  = crudeToolSellCount;
-            owned    = inv. crudeToolCount;
+            owned    = inv.crudeToolCount;
             itemType = ItemType.CrudeTool;
             break;
          case HARPOON_TAG:
@@ -892,10 +916,13 @@ public class TradeHutManager : MonoBehaviour
             break;
       }
       
-      if (quantityChange > 0)
+      // Calculate additions/subtractions safely respecting bounds
+      if (targetChange > 0)
       {
-         if (current < MAX_SELL_ITEM_COUNT && current < owned)
-            current += 1;
+         int maxCanAdd = Mathf.Min(MAX_SELL_ITEM_COUNT - current, owned - current);
+
+         if (maxCanAdd > 0)
+            current += Mathf.Min(targetChange, maxCanAdd);
          else
          {
             if (owned > 0)
@@ -906,96 +933,125 @@ public class TradeHutManager : MonoBehaviour
       } 
       else 
       {
-         if (current > MIN_SELL_ITEM_COUNT) 
-            current -= 1;
-         else 
+         if (targetChange < 0) 
          {
-            if (owned > 0)
-               ticker.ShowTicker($"Nothing selected to remove. You own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
-            else
-               ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
+            int maxCanSub = current - MIN_SELL_ITEM_COUNT;
+            if (maxCanSub > 0)
+               current -= Mathf.Min(Mathf.Abs(targetChange), maxCanSub);
+            else 
+            {
+               if (owned > 0)
+                  ticker.ShowTicker($"Nothing selected to remove. You own {owned} {item.tag}{(owned == 1 ? "" : "s")}. Use the + button to select an amount.", Color.red, MessageTypes.ResultMessage);
+               else
+                  ticker.ShowTicker($"You have no {item.tag}s to sell. Craft {item.tag}s before selling.", Color.red, MessageTypes.ResultMessage);
+            }
          }
       }
 
       switch (item.tag)
       {
-         case CRUDE_TOOL_TAG:
-           crudeToolSellCount = current; 
-           break;
+         case CRUDE_TOOL_TAG: 
+            crudeToolSellCount = current; break;
          case HARPOON_TAG: 
-           harpoonSellCount = current; 
-           break;
+            harpoonSellCount = current; break;
          case DIVING_BELL_TAG: 
-           divingBellSellCount = current; 
-           break;
+            divingBellSellCount = current; break;
          case PRESSURE_VALVE_TAG: 
-           pressureValveSellCount = current; 
-           break;
+            pressureValveSellCount = current; break;
          case PRECISION_LENS_TAG: 
-           precisionLensSellCount = current; 
-           break;
+            precisionLensSellCount = current; break;
          case ENGINE_TAG: 
-           engineSellCount = current; 
-           break;
-         default:
-            Debug.LogError("Unkown item: " + item.tag);
-            break;
+            engineSellCount = current; break;
+         default: 
+            Debug.LogError("Unknown item tag: " + item.tag); break;
       }
        
-      item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text      = "   " + current.ToString();
+      item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + current.ToString();
       item.Find("currencyGained").GetComponent<TextMeshProUGUI>().text = (current * GetItemValue(itemType)).ToString();
 
       return;
    }
 
-   // Increments the count for the item being bought and updates the UI
    public void IncreaseBuyItemsCount(Transform item) 
    {
+      int amountToAdd = 1;
+
+      // MODIFIER KEYS logic (Shift = +10, Ctrl = +50)
+      if (Keyboard.current != null)
+      {
+          if (Keyboard.current.ctrlKey.isPressed) amountToAdd = 50;
+          else if (Keyboard.current.shiftKey.isPressed) amountToAdd = 10;
+      }
+
       switch (item.tag) 
       {
          case RAW_ORE_CHUNK_TAG:
-            if (rawOreExchange < MAX_BUY_ITEM_COUNT) 
+            int oreToAdd = Mathf.Min(amountToAdd, MAX_BUY_ITEM_COUNT - rawOreExchange);
+            if (oreToAdd > 0) 
             {
-               rawOreExchange += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rawOreExchange.ToString();
+               rawOreExchange += oreToAdd;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = rawOreExchange.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rawOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
             }
+            else 
+               ticker.ShowTicker($"Maximum limit of {MAX_BUY_ITEM_COUNT} reached.", Color.red, MessageTypes.ResultMessage);
             break;
+
          case MERCENARY_ENGINEER_TAG:
-            if (mercenaryEngineerBuyCount < MAX_MERCENARY_ENGINEER_COUNT) 
+            int engToAdd = Mathf.Min(amountToAdd, MAX_MERCENARY_ENGINEER_COUNT - mercenaryEngineerBuyCount);
+            if (engToAdd > 0) 
             {
-               mercenaryEngineerBuyCount += 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerBuyCount.ToString();
+               mercenaryEngineerBuyCount += engToAdd;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = mercenaryEngineerBuyCount.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (mercenaryEngineerBuyCount * GetItemPrice(ItemType.MercenaryEngineer)).ToString();
             }
+            else 
+               ticker.ShowTicker($"Maximum limit of {MAX_MERCENARY_ENGINEER_COUNT} reached.", Color.red, MessageTypes.ResultMessage);
             break;
-          default:
+
+         default:
             Debug.LogError("Unknown item tag: " + item.tag);
             break;
       }
    }
 
-   // Decrements the count for the item being bought and updates the UI
    public void DecreaseBuyItemsCount(Transform item) 
    {
+      int amountToSub = 1;
+
+      // MODIFIER KEYS logic (Shift = -10, Ctrl = -50)
+      if (Keyboard.current != null)
+      {
+          if (Keyboard.current.ctrlKey.isPressed) amountToSub = 50;
+          else if (Keyboard.current.shiftKey.isPressed) amountToSub = 10;
+      }
+
       switch (item.tag) 
       {
          case RAW_ORE_CHUNK_TAG:
-            if (rawOreExchange > MIN_BUY_ITEM_COUNT) 
+            int oreToSub = Mathf.Min(amountToSub, rawOreExchange - MIN_BUY_ITEM_COUNT);
+            if (oreToSub > 0) 
             {
-               rawOreExchange -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + rawOreExchange.ToString();
+               rawOreExchange -= oreToSub;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = rawOreExchange.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (rawOreExchange * GetItemPrice(ItemType.RawOreChunk)).ToString();
             }
+            else 
+               ticker.ShowTicker($"Minimum limit of {MIN_BUY_ITEM_COUNT} reached.", Color.red, MessageTypes.ResultMessage);
             break;
+
          case MERCENARY_ENGINEER_TAG:
-            if (mercenaryEngineerBuyCount > MIN_BUY_ITEM_COUNT) 
+            int engToSub = Mathf.Min(amountToSub, mercenaryEngineerBuyCount - MIN_BUY_ITEM_COUNT);
+            if (engToSub > 0) 
             {
-               mercenaryEngineerBuyCount -= 1;
-               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = "   " + mercenaryEngineerBuyCount.ToString();
+               mercenaryEngineerBuyCount -= engToSub;
+               item.Find("ItemCount").GetComponent<TextMeshProUGUI>().text     = mercenaryEngineerBuyCount.ToString();
                item.Find("currencySpent").GetComponent<TextMeshProUGUI>().text = (mercenaryEngineerBuyCount * GetItemPrice(ItemType.MercenaryEngineer)).ToString();
             }
+            else 
+               ticker.ShowTicker($"Minimum limit of {MIN_BUY_ITEM_COUNT} reached.", Color.red, MessageTypes.ResultMessage);
             break;
+
          default:
             Debug.LogError("Unknown item tag: " + item.tag);
             break;
@@ -1129,7 +1185,7 @@ public class TradeHutManager : MonoBehaviour
        int currentVal = GetItemValue(itemType),
            preview    = currentVal;
 
-      int marketTrendChance
+       int marketTrendChance
              = itemTier == TIER_ONE 
              ? TIER_ONE_CHANCE 
              : itemTier == TIER_TWO
@@ -1514,7 +1570,7 @@ public class TradeHutManager : MonoBehaviour
    public void InsurancePolicyCheck() 
    {
       int currentWorldEventMarketTrendChance = GetCurrentEventCrashThreshold();
-
+      
       if (isInsurancePolicyActive && (shiftDirection > currentWorldEventMarketTrendChance))
          InventoryManager.Instance.TryAddPearl(INSURANCE_POLICY_PAYOUT);
       
@@ -1531,12 +1587,12 @@ public class TradeHutManager : MonoBehaviour
          case (int)WorldEventTypes.ClockworkEngineEvent:
          case (int)WorldEventTypes.PrecisionLensEvent:
          case (int)WorldEventTypes.ScavengersHolidayEvent:
-            return TIER_THREE_CHANCE; // 25
+            return TIER_THREE_CHANCE;
 
          // Tier 2 Events 
          case (int)WorldEventTypes.PressureValveEvent:
          case (int)WorldEventTypes.DeepSeaWarEvent: 
-            return TIER_TWO_CHANCE; // 35
+            return TIER_TWO_CHANCE;
 
          // Tier 1 Events & Base Defaults 
          case (int)WorldEventTypes.CrudeToolEvent:
@@ -1544,7 +1600,7 @@ public class TradeHutManager : MonoBehaviour
          case (int)WorldEventTypes.DivingBellEvent:
          case (int)WorldEventTypes.IndustrialGoldRushEvent:
          default:
-            return TIER_ONE_CHANCE; // 50
+            return TIER_ONE_CHANCE;
       }
    }
 

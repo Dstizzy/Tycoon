@@ -20,7 +20,7 @@ public class Item {
    private static int engineSellValue        { get; set; } = base_engine_value;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
-   private static int insurancePolicyPrice   { get; set; } = 100;
+   private static int insurancePolicyPrice   { get; set; } = 200;
    private static int tier2BluePrintPrice    { get; set; } = 300;
    private static int tier3BluePrintPrice    { get; set; } = 500;
 
@@ -29,7 +29,7 @@ public class Item {
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
    public const int MAX_CRUDE_TOOL_VALUE           = 150;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 150;
+   public const int MAX_HARPOON_VALUE              = 200;
    public const int MIN_DIVING_BELL_VALUE          = 0;
    public const int MAX_DIVING_BELL_VALUE          = 150;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;

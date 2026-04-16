@@ -241,6 +241,7 @@ public class NarrativeTutorialManager : MonoBehaviour
          // Clean up highlights before moving to the next tutorial step.
          HideHighlights(currentStep.highlightTargets);
          HideUIHighlights(currentStep.uiHighlightTargets);
+         NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
       }
 
       isTutorialRunning = false;
