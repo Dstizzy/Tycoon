@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
+  m_Name: GiantHelmet
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: "A helmet the size of a house sits on the sand. It\u2019s made of
+    high-grade steel, but a colony of stinging anemones has claimed it as a home."
+  choiceA:
+    buttonText: Scape outside steel
+    resultText: The steel has been added to the cargo.
+    pearlChange: 0
+    oreChange: 15
+    healthChange: 0
+    fuelChange: 0
+    waitTurn: 0
+    loseOre: 0
+    minPearl: 0
+    maxPearl: 0
+    minOre: 0
+    maxOre: 0
+    requiresLabTier: 0
+    fuelChance: 0
+    fuelGain: 0
+    damageChance: 0
+    healthDamage: 0
+  choiceB:
+    buttonText: Carefully search inside
+    resultText: You found valuable resources inside, but may have taken damage
+    pearlChange: 0
+    oreChange: 0
+    healthChange: 0
+    fuelChange: 0
+    waitTurn: 0
+    loseOre: 0
+    minPearl: 10
+    maxPearl: 20
+    minOre: 0
+    maxOre: 0
+    requiresLabTier: 0
+    fuelChance: 0
+    fuelGain: 0
+    damageChance: 0.3
+    healthDamage: 10
