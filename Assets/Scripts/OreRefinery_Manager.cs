@@ -37,13 +37,13 @@ public class OreRefinery_Manager : MonoBehaviour
 
    [Header("Upgrade Costs")]
    [SerializeField] private int level2PearlCost = 100;
-   [SerializeField] private int level2OreCost = 50;
+   [SerializeField] private int level2OreCost   = 50;
    [SerializeField] private int level3PearlCost = 300;
-   [SerializeField] private int level3OreCost = 100;
+   [SerializeField] private int level3OreCost   = 100;
 
    TickerSystem ticker;
 
-   public int  oreLevel          = STARTING_LEVEL;
+   public int  oreLevel;
    public bool IsBlocked         = false;
    public bool tutorialUpgrade   = false;
    public bool manualResetOption = false;
@@ -75,8 +75,8 @@ public class OreRefinery_Manager : MonoBehaviour
          infoPanel.gameObject.SetActive(false);
       }
 
-        ticker = TickerSystem.Instance;
-        TurnManager.OnTurnEnded += ProduceOres;
+      ticker = TickerSystem.Instance;
+      TurnManager.OnTurnEnded += ProduceOres;
 
       CalculateRefineryValues();
 
@@ -274,6 +274,7 @@ public class OreRefinery_Manager : MonoBehaviour
             break;
          case 2:
             Debug.Log($"Ore Refinery Level 2: Produces 25 Ore per turn.");
+            Debug.Log("Level 3 Pearl cost: " + level3PearlCost.ToString());
             CurrentOreProduction = 25;
             NextUpgradeCostInPearls = level3PearlCost;
             NextUpgradeCostInOre = level3OreCost;
@@ -353,7 +354,7 @@ public class OreRefinery_Manager : MonoBehaviour
       }
       else if (paymentType == 2) 
       {
-         if (InventoryManager.Instance.TrySpendPearl(30))
+         if (InventoryManager.Instance.TrySpendPearl(100))
          {
             IsBlocked = false;
             manualResetOption = false;

@@ -1371,6 +1371,8 @@ public class TradeHutManager : MonoBehaviour
    {
       Image itemSprite = worldEventIcon.Find("WorldEventItem").GetComponent<Image>();
 
+      itemSprite.gameObject.SetActive(true);
+
       switch (worldEvent) 
       {
          // Tier 1
