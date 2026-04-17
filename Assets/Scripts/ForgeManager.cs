@@ -282,8 +282,11 @@ public class ForgeManager : MonoBehaviour
       if (tutorialFunction && itemType == Item.ItemType.CrudeTool)
       {
          HandleTutorial?.Invoke(1);
-         craftPanel.transform.Find("Screen1").gameObject.SetActive(false);
-         craftPanel.transform.Find("Screen2").gameObject.SetActive(true);
+         craftPanel.transform.Find("Screen2").gameObject.SetActive(false);
+         craftPanel.transform.Find("Circle2").gameObject.SetActive(false);
+         craftPanel.transform.Find("Circle3").gameObject.SetActive(true);
+         craftPanel.transform.Find("Screen3").gameObject.SetActive(true);
+         craftPanel.transform.Find("Screen4").gameObject.SetActive(true);
       }
 
       if ((activeJobs.Count + stagingItems.Count) < maxStagingSlots)
@@ -491,6 +494,7 @@ public class ForgeManager : MonoBehaviour
       {
          HandleTutorial?.Invoke(1);
          craftPanel.transform.Find("Screen1").gameObject.SetActive(true);
+         craftPanel.transform.Find("Circle1").gameObject.SetActive(true);
       }
 
       if (errorPanel != null)
@@ -701,9 +705,10 @@ public class ForgeManager : MonoBehaviour
             if (tutorialFunction)
             {
                HandleTutorial?.Invoke(1);
-               craftPanel.transform.Find("Screen2").gameObject.SetActive(false);
-               craftPanel.transform.Find("Screen3").gameObject.SetActive(true);
-               craftPanel.transform.Find("Screen4").gameObject.SetActive(true);
+               craftPanel.transform.Find("Screen1").gameObject.SetActive(false);
+               craftPanel.transform.Find("Circle1").gameObject.SetActive(false);
+               craftPanel.transform.Find("Circle2").gameObject.SetActive(true);
+               craftPanel.transform.Find("Screen2").gameObject.SetActive(true);
             }
             break;
 
@@ -778,7 +783,7 @@ public class ForgeManager : MonoBehaviour
       return turns;
    }
 
-   private void ProcessCraftingQueue()
+   public void ProcessCraftingQueue()
    {
       hasCraftedThisTurn = false;
       int jobCount;
@@ -946,7 +951,7 @@ public class ForgeManager : MonoBehaviour
          }
       }
 
-      UIHighlightTarget gearWheel1 = craftPanel.transform.Find("GearWheel1").gameObject.GetComponent<UIHighlightTarget>();
+      //UIHighlightTarget gearWheel1 = craftPanel.transform.Find("GearWheel1").gameObject.GetComponent<UIHighlightTarget>();
       // Helper references to make the code cleaner
       Transform gear1 = craftPanel.transform.Find("GearWheel1");
       Transform gear2 = craftPanel.transform.Find("GearWheel2");
@@ -1114,7 +1119,8 @@ public class ForgeManager : MonoBehaviour
          HandleTutorial?.Invoke(1);
          craftPanel.transform.Find("Screen3").gameObject.SetActive(false);
          craftPanel.transform.Find("Screen4").gameObject.SetActive(false);
-         CloseCraftPanel();
+         craftPanel.transform.Find("Circle3").gameObject.SetActive(false);
+         CloseAllTierPanels();
          tutorialFunction = false;
          HandleTutorial?.Invoke(2);
       }

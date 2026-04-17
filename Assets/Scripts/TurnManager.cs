@@ -1,6 +1,7 @@
 ﻿//using Codice.Client.Common.GameUI;
 using JetBrains.Annotations;
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TMPro;
@@ -40,6 +41,7 @@ public class TurnManager : MonoBehaviour
    [Header("Turn Setting")]
    public int currentTurn = STARTINGTURN;   // The current turn number, starting from 1.
    public int maxTurns = ENDINGTURN;     // The maximum number of turns before the game ends.
+   public TextMeshProUGUI walkthroughTurnText;
    public TextMeshProUGUI turnText;                        // The UI text element to display the current turn.
    public int eventCountdown = 1;              // Turn countdown until next world event
 
@@ -91,8 +93,7 @@ public class TurnManager : MonoBehaviour
       tradeHutManager.WorldEventChance();
    }
 
-   // Advances the game to the next turn and updates the UI,
-   public async void EndTurn()
+   public async void WalkthroughEndTurn()
    {
       if (isAdvancingTurn)
          return;
@@ -109,6 +110,47 @@ public class TurnManager : MonoBehaviour
       progressBar.SetActive(true);
       PopUpManager.Instance.DisablePlayerInput();
       await Task.Delay(1000);
+
+      progressBar.SetActive(false);
+      PopUpManager.Instance.EnablePlayerInput();
+      progressBar.transform.rotation = Quaternion.identity;
+      Debug.Log("### TurnManager Start() ###");
+
+      currentTurn++;
+
+      if (walkthroughTurnText != null)
+      {
+         walkthroughTurnText.text = currentTurn.ToString() + " / " + maxTurns.ToString();
+      }
+
+      InventoryManager.Instance.TryAddOre(10);
+      ForgeManager.Instance.ProcessCraftingQueue();
+
+      isAdvancingTurn = false;
+
+      if (endTurnButton != null)
+         endTurnButton.interactable = true;
+   }
+
+// Advances the game to the next turn and updates the UI,
+public async void EndTurn()
+   {
+      if (isAdvancingTurn)
+         return;
+      if (!_isGameActive)
+         return;
+      isAdvancingTurn = true;
+
+      if (PopUpManager.Instance != null)
+         PopUpManager.Instance.ForceResetInputBlock();
+
+      if (endTurnButton != null)
+         endTurnButton.interactable = false;
+
+      progressBar.SetActive(true);
+      PopUpManager.Instance.DisablePlayerInput();
+      await Task.Delay(1000);
+    
       progressBar.SetActive(false);
       PopUpManager.Instance.EnablePlayerInput();
       progressBar.transform.rotation = Quaternion.identity;

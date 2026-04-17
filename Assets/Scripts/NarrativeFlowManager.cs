@@ -17,6 +17,8 @@ public class NarrativeFlowManager : MonoBehaviour
    [Header("Dependencies")]
    [SerializeField] private NarrativeTutorialManager narrativeTutorialManager;
 
+   private static bool tutorialEnabled = true;
+
    // Intro dialogue played once at the start of the scene.
    private readonly NPCEncounterSystem.DialogueLine[] introLines =
    {
@@ -28,10 +30,34 @@ public class NarrativeFlowManager : MonoBehaviour
       new NPCEncounterSystem.DialogueLine("I'll walk you through the basics if you want.", NPCEncounterSystem.ExpressionType.Happy),
    };
 
+   public void OnEnable()
+   {
+      WalkThroughFlowManager.disableTutorial += DisableTutorial;
+   }
+
+   public void OnDisable()
+   {
+      WalkThroughFlowManager.disableTutorial -= DisableTutorial;
+   }
+
+   public void Start()
+   {
+      if(tutorialEnabled)
+         StartCoroutine(StartTutorial());
+   }
+
+   public void DisableTutorial()
+   {
+      tutorialEnabled = false;
+      NarrativeOverlayUI.Instance.SetFadeImmediate(0f);
+   }
+
    // Runs automatically when the scene starts.
    // Handles intro dialogue, tutorial toggle, optional tutorial handoff, and cleanup.
-   private IEnumerator Start()
+   private IEnumerator StartTutorial()
    {
+      if(tutorialEnabled)
+      {
       yield return null;
 
       if (NarrativeOverlayUI.Instance == null)
@@ -96,5 +122,7 @@ public class NarrativeFlowManager : MonoBehaviour
       // Final cleanup: hide overlay UI and restore gameplay input.
       NarrativeOverlayUI.Instance.HideAll();
       NarrativeOverlayUI.Instance.SetGameplayBlocked(false);
+      tutorialEnabled = false;
+   }
    }
 }

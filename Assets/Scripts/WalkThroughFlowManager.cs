@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +22,9 @@ public class WalkThroughFlowManager : MonoBehaviour
 
    // Runs automatically when the scene starts.
    // Handles intro dialogue, tutorial toggle, optional tutorial handoff, and cleanup.
+
+   public static Action disableTutorial;
+
    private IEnumerator Start()
    {
       yield return null;
@@ -41,8 +46,10 @@ public class WalkThroughFlowManager : MonoBehaviour
             Debug.Log("[WalkThroughFlowManager] Starting narrative tutorial.");
 
             bool walkthroughFinished = false;
+            InventoryManager.Instance.ChangeToWalkthrough();
             tutorialManager.BeginWalkthrough(() => walkthroughFinished = true);
             yield return new WaitUntil(() => walkthroughFinished);
+            InventoryManager.Instance.ChangeToNormal();
          }
          else
          {
@@ -54,5 +61,14 @@ public class WalkThroughFlowManager : MonoBehaviour
       NarrativeOverlayUI.Instance.HideAll();
       TutorialManager.Instance.SetGameplayBlocked(false);
       SceneManager.LoadScene("MainScene");
+      disableTutorial?.Invoke();
+      //FadeScene();
+   }
+
+   public async void FadeScene()
+   {
+      NarrativeOverlayUI.Instance.FadeTo(0f, 0.4f);
+      await Task.Delay(500);
+      //NarrativeOverlayUI.Instance.SetFadeImmediate
    }
 }
