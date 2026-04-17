@@ -283,7 +283,7 @@ public class Item {
          Debug.LogError("Crude Tool Sell Value is already at maximum!");
          return;
       }
-
+      
       // 2. Check if the *new* value would exceed the maximum.
       // We use Math.Max to see what the new value will be if clamped, and compare it.
       if (pressureValveSellValue + amount > MAX_PRESSURE_VALVE_VALUE) 
@@ -291,10 +291,10 @@ public class Item {
          Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_PRESSURE_VALVE_VALUE}.");
          return;
       }
-
+      
       // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
       pressureValveSellValue += amount;
-
+      
       OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
 
       return;

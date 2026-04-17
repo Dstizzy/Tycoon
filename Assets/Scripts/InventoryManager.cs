@@ -924,9 +924,16 @@ public class InventoryManager : MonoBehaviour
       return isSuccess;
    }
 
-   public bool TryAddPatchKit(int patchKitAmount)
+  public bool TryAddPatchKit(int patchKitAmount)
    {
       bool isSuccess = false;
+
+      if (!ForgeManager.Instance.hasTier2Blueprint)
+      {
+         Debug.LogError("Tier 2 Blueprint required!");
+         ticker.ShowTicker("Tier 2 Blueprint required for Patch Kits!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
 
       if (patchKitCount >= MAX_PATCH_KIT_COUNT)
       {
@@ -959,6 +966,13 @@ public class InventoryManager : MonoBehaviour
    {
       bool isSuccess = false;
 
+      if (!ForgeManager.Instance.hasTier2Blueprint)
+      {
+         Debug.LogError("Tier 2 Blueprint required!");
+         ticker.ShowTicker("Tier 2 Blueprint required to use Patch Kits!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+
       if (patchKitCount <= MIN_PATCH_KIT_COUNT)
       {
          Debug.LogError("Patch Kit count is at minimum!");
@@ -985,10 +999,97 @@ public class InventoryManager : MonoBehaviour
       return isSuccess;
    }
 
+   public bool TryAddPressureValve(int pressureValveAmount)
+   {
+      TextMeshProUGUI pressureValveValue;
+      bool isSuccess = false;
+
+      if (!ForgeManager.Instance.hasTier2Blueprint)
+      {
+         Debug.LogError("Tier 2 Blueprint required!");
+         ticker.ShowTicker("Tier 2 Blueprint required for Pressure Valves!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+
+      if (pressureValveCount >= MAX_PRESSURE_VALVE_COUNT)
+      {
+         Debug.LogError("Pressure valve count is at minimum!");
+         ticker.ShowTicker($"Pressure valve count is at maximum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else
+      {
+         if ((pressureValveCount + pressureValveAmount) > MAX_PRESSURE_VALVE_COUNT)
+         {
+            Debug.LogError("Pressure valve count is at maximum!");
+            ticker.ShowTicker($"Cannot add pressure valves - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
+            return isSuccess;
+         }
+         else
+         {
+            isSuccess = true;
+            pressureValveCount += pressureValveAmount;
+         }
+      }
+
+      pressureValveValue = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      pressureValveValue.text = " x" + pressureValveCount.ToString();
+      PressureValveCountText.text = " x" + pressureValveCount.ToString();
+
+      return isSuccess;
+   }
+
+   public bool TryUsePressureValve(int pressureValveAmount)
+   {
+      TextMeshProUGUI pressureValveValue;
+      bool isSuccess = false;
+
+      if (!ForgeManager.Instance.hasTier2Blueprint)
+      {
+         Debug.LogError("Tier 2 Blueprint required!");
+         ticker.ShowTicker("Tier 2 Blueprint required to use Pressure Valves!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+
+      if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT)
+      {
+         Debug.LogError("Pressure valve count is at minimum!");
+         ticker.ShowTicker($"Pressure valve count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+      else
+      {
+         if (pressureValveCount < pressureValveAmount)
+         {
+            Debug.LogError("Not enough pressure valves!");
+            ticker.ShowTicker($"Cannot use pressure valves, only {pressureValveCount} available!", Color.red, MessageTypes.ResultMessage);
+            return isSuccess;
+         }
+         else
+         {
+            isSuccess = true;
+            pressureValveCount -= pressureValveAmount;
+         }
+      }
+
+      pressureValveValue = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
+      pressureValveValue.text = " x" + pressureValveCount.ToString();
+      PressureValveCountText.text = " x" + pressureValveCount.ToString();
+
+      return isSuccess;
+   }
+
    public bool TryAddPrecisionLens(int precisionLensAmount)
    {
       TextMeshProUGUI newPrecisionLensCount;
       bool isSuccess = false;
+
+      if (!ForgeManager.Instance.hasTier3Blueprint)
+      {
+         Debug.LogError("Tier 3 Blueprint required!");
+         ticker.ShowTicker("Tier 3 Blueprint required for Precision Lenses!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
 
       if (precisionLensCount >= MAX_PRECISION_LENS_COUNT)
       {
@@ -1026,9 +1127,16 @@ public class InventoryManager : MonoBehaviour
       TextMeshProUGUI newPrecisionLensCount;
       bool isSuccess = false;
 
+      if (!ForgeManager.Instance.hasTier3Blueprint)
+      {
+         Debug.LogError("Tier 3 Blueprint required!");
+         ticker.ShowTicker("Tier 3 Blueprint required to use Precision Lenses!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
+
       if (precisionLensCount <= MIN_PRECISION_LENS_COUNT)
       {
-         Debug.LogError("Precision Lensl count is at minimum!");
+         Debug.LogError("Precision Lens count is at minimum!");
          ticker.ShowTicker($"Precision Lens count is at minimum!", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
@@ -1047,7 +1155,6 @@ public class InventoryManager : MonoBehaviour
          }
       }
 
-
       if (PrecisionLensCountText != null)
       {
          newPrecisionLensCount = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRECISION_LENS_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
@@ -1058,76 +1165,17 @@ public class InventoryManager : MonoBehaviour
       return isSuccess;
    }
 
-   public bool TryAddPressureValve(int pressureValveAmount)
-   {
-      TextMeshProUGUI pressureValveValue;
-      bool isSuccess = false;
-
-      if (pressureValveCount >= MAX_PRESSURE_VALVE_COUNT)
-      {
-         Debug.LogError("Pressure valve count is at minimum!");
-         ticker.ShowTicker($"Pressure valve count is at maximum!", Color.red, MessageTypes.ResultMessage);
-         return isSuccess;
-      }
-      else
-      {
-         if ((pressureValveCount + pressureValveAmount) > MAX_PRESSURE_VALVE_COUNT)
-         {
-            Debug.LogError("Pressure valve count is at maximum!");
-            ticker.ShowTicker($"Cannot add pressure valves - would exceed maximum!", Color.red, MessageTypes.ResultMessage);
-            return isSuccess;
-         }
-         else
-         {
-            isSuccess = true;
-            pressureValveCount += pressureValveAmount;
-         }
-      }
-
-      pressureValveValue = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      pressureValveValue.text = " x" + pressureValveCount.ToString();
-      PressureValveCountText.text = " x" + pressureValveCount.ToString();
-
-      return isSuccess;
-   }
-
-   public bool TryUsePressureValve(int pressureValveAmount)
-   {
-      TextMeshProUGUI pressureValveValue;
-      bool isSuccess = false;
-
-      if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT)
-      {
-         Debug.LogError("Pressure valve count is at minimum!");
-         ticker.ShowTicker($"Pressure valve count is at minimum!", Color.red, MessageTypes.ResultMessage);
-         return isSuccess;
-      }
-      else
-      {
-         if (pressureValveCount < pressureValveAmount)
-         {
-            Debug.LogError("Not enough pressure valves!");
-            ticker.ShowTicker($"Cannot use pressure valves, only {pressureValveCount} available!", Color.red, MessageTypes.ResultMessage);
-            return isSuccess;
-         }
-         else
-         {
-            isSuccess = true;
-            pressureValveCount -= pressureValveAmount;
-         }
-      }
-
-      pressureValveValue = TradeHutManager.Instance.SellItems.Find(item => item.CompareTag(PRESSURE_VALVE_TAG)).Find("ItemCount").GetComponent<TextMeshProUGUI>();
-      pressureValveValue.text = " x" + pressureValveCount.ToString();
-      PressureValveCountText.text = " x" + pressureValveCount.ToString();
-
-      return isSuccess;
-   }
-
    public bool TryAddEngine(int engineAmount)
    {
       TextMeshProUGUI engineValue;
       bool isSuccess = false;
+
+      if (!ForgeManager.Instance.hasTier3Blueprint)
+      {
+         Debug.LogError("Tier 3 Blueprint required!");
+         ticker.ShowTicker("Tier 3 Blueprint required for Engines!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
 
       if (engineCount >= MAX_ENGINE_COUNT)
       {
@@ -1161,6 +1209,13 @@ public class InventoryManager : MonoBehaviour
    {
       TextMeshProUGUI engineValue;
       bool isSuccess = false;
+
+      if (!ForgeManager.Instance.hasTier3Blueprint)
+      {
+         Debug.LogError("Tier 3 Blueprint required!");
+         ticker.ShowTicker("Tier 3 Blueprint required to use Engines!", Color.red, MessageTypes.ResultMessage);
+         return isSuccess;
+      }
 
       if (engineCount <= MIN_ENGINE_COUNT)
       {
