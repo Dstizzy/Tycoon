@@ -18,7 +18,7 @@ MonoBehaviour:
     buttonText: Insert 10 ore
     resultText: The machine has produced fuel!
     pearlChange: 0
-    oreChange: 10
+    oreChange: -10
     healthChange: 0
     fuelChange: 1
     waitTurn: 0

@@ -124,11 +124,17 @@ public class ExplorationUnitManager : MonoBehaviour
             if (exploreButton != null)
             {
                exploreButton.onClick.RemoveAllListeners();
-               //             bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
-               bool canExplore = !isExploring; //&& hasDivingBell;
-               exploreButton.interactable = canExplore;
-               if (canExplore)
-                  exploreButton.onClick.AddListener(() => StartExploration());
+               bool hasDivingBell = InventoryManager.Instance.divingBellCount > 0;
+               exploreButton.onClick.AddListener(() => 
+               {
+                 
+                  if (isExploring)
+                     TickerSystem.Instance.ShowTicker("Exploration already ongoing!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+                  else if (!hasDivingBell)
+                     TickerSystem.Instance.ShowTicker("Exploration requires a Diving Bell.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+                  else
+                     StartExploration(); 
+               });
             }
             // Setup exit button
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
@@ -158,6 +164,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // Starts exploration, gets the starting node, and queues the first move
    public void StartExploration()
    {
+      InventoryManager.Instance.TryUseDivingBell(1);
       isExploring = true;
       SetDecisionInteractable(true);
       lastProcessedTurn = TurnManager.Instance.currentTurn;
