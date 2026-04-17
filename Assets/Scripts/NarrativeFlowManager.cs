@@ -26,6 +26,8 @@ public class NarrativeFlowManager : MonoBehaviour
       new NPCEncounterSystem.DialogueLine("The line crackles softly.", NPCEncounterSystem.ExpressionType.Special, isAction: true),
       new NPCEncounterSystem.DialogueLine("Right. Good. We finally got through.", NPCEncounterSystem.ExpressionType.Thinking),
       new NPCEncounterSystem.DialogueLine("I'm Dolphin, your on-site coordinator.", NPCEncounterSystem.ExpressionType.Happy),
+      new NPCEncounterSystem.DialogueLine("We have a serious problem. The volcano is close to blowing, and when it does, this whole place goes with it.", NPCEncounterSystem.ExpressionType.Special),
+      new NPCEncounterSystem.DialogueLine("That gives us 80 days to finish the submarine and get everyone out before this turns into a cautionary tale.", NPCEncounterSystem.ExpressionType.Thinking),
       new NPCEncounterSystem.DialogueLine("Things are already... a little behind schedule.", NPCEncounterSystem.ExpressionType.Special),
       new NPCEncounterSystem.DialogueLine("I'll walk you through the basics if you want.", NPCEncounterSystem.ExpressionType.Happy),
    };
