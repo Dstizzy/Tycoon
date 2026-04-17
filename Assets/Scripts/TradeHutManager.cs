@@ -1532,6 +1532,7 @@ public class TradeHutManager : MonoBehaviour
           // Undo Scavenger Holiday event shift
           case (int)WorldEventTypes.ScavengersHolidayEvent:
              RevertMarketToBase();
+             ExplorationUnitManager.Instance.explorationCost = 1;
    
              // Flag the reset for Scavenger Holiday Event
              lastResetTurn[ItemType.CrudeTool]     = true;

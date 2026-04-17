@@ -61,6 +61,7 @@ public class ExplorationUnitManager : MonoBehaviour
    private bool isWaiting = false; // Triggered when an event causes user to lose an exploration turn
    private int lastProcessedTurn = 0;     // Tracks the last turn that has been processed
 
+   public int explorationCost = 1;
    public static ExplorationUnitManager Instance { get; set; }
 
    private void Awake()
@@ -164,7 +165,7 @@ public class ExplorationUnitManager : MonoBehaviour
    // Starts exploration, gets the starting node, and queues the first move
    public void StartExploration()
    {
-      InventoryManager.Instance.TryUseDivingBell(1);
+      InventoryManager.Instance.TryUseDivingBell(explorationCost);
       isExploring = true;
       SetDecisionInteractable(true);
       lastProcessedTurn = TurnManager.Instance.currentTurn;

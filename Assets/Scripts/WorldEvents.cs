@@ -287,7 +287,7 @@ public class WorldEvents {
       switch (worldEvent) 
       {
          case WorldEventTypes.ScavengersHolidayEvent:
-
+            ExplorationUnitManager.Instance.explorationCost = 0;
             break;
          case WorldEventTypes.DeepSeaWarEvent:
             TurnManager.Instance.HandleHeat();
