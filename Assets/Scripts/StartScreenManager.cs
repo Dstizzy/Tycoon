@@ -11,7 +11,6 @@ public class StartScreenManager : MonoBehaviour
 
    public static StartScreenManager Instance { get; private set; }
 
-
    // Called by the START button.
    public void OnStartButtonClick()
    {
