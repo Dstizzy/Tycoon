@@ -27,7 +27,7 @@ MonoBehaviour:
     minPearl: 5
     maxPearl: 15
     minOre: 0
-    maxOre: 0
+    maxOre: 15
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0

@@ -10,32 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: SteamRelic
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: You find an old, brass machine still hissing at the bottom. It looks
+    like it could produce high-grade fuel if you feed it some ore.
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Insert 10 ore
+    resultText: The machine has produced fuel!
     pearlChange: 0
-    oreChange: 0
+    oreChange: 10
     healthChange: 0
-    fuelChange: 0
+    fuelChange: 1
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
+    maxPearl: 0
     minOre: 0
-    maxOre: 20
+    maxOre: 0
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
-    resultText: 
+    buttonText: Strip the brass
+    resultText: Brass has been stripped from the machine.
     pearlChange: 0
-    oreChange: 0
+    oreChange: 15
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

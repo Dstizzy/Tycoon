@@ -10,32 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: StoneDoor
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: A massive stone door is etched with gold. It requires a heavy impact
+    to break, which might strain your ship's hull.
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Ram the door
+    resultText: Ramming damaged the hull, but resources were behind the door.
     pearlChange: 0
-    oreChange: 0
-    healthChange: 0
+    oreChange: 30
+    healthChange: -10
     fuelChange: 0
     waitTurn: 0
     loseOre: 0
-    minPearl: 0
-    maxPearl: 10
+    minPearl: 10
+    maxPearl: 30
     minOre: 0
-    maxOre: 20
+    maxOre: 0
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
-    resultText: 
-    pearlChange: 0
-    oreChange: 0
+    buttonText: Check the cracks
+    resultText: Minor resources were found in the cracks of the door
+    pearlChange: 5
+    oreChange: 5
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

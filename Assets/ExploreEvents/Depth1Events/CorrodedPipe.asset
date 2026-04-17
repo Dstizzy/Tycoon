@@ -17,7 +17,7 @@ MonoBehaviour:
     buttonText: Weld ore on leak (-20 ore)
     resultText: The leak has been successfully sealed
     pearlChange: 0
-    oreChange: -20
+    oreChange: -10
     healthChange: 0
     fuelChange: 0
     waitTurn: 0

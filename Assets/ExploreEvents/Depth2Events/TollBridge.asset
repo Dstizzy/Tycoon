@@ -10,32 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: TollBridge
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: A massive stone bridge is guarded by a clockwork crab. It demands
+    a payment of metal to let you pass the shortcut.
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Pay 10 ore toll
+    resultText: The shortcut has saved you a ton of fuel!
     pearlChange: 0
-    oreChange: 0
+    oreChange: -10
     healthChange: 0
-    fuelChange: 0
+    fuelChange: 2
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
+    maxPearl: 0
     minOre: 0
-    maxOre: 20
+    maxOre: 0
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
-    resultText: 
-    pearlChange: 0
-    oreChange: 0
+    buttonText: Find another way
+    resultText: You have found another way through, and found some resources along
+      the way
+    pearlChange: 5
+    oreChange: 10
     healthChange: 0
     fuelChange: 0
     waitTurn: 0
