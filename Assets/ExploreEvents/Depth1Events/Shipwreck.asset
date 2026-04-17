@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33e5a28d680ff754583f39073a06e8a4, type: 3}
-  m_Name: SunkenShip2
-  m_EditorClassIdentifier: Assembly-CSharp::ExploreEvents
-  description: Your crew has noticed a sunken ship just off the path
+  m_Name: Shipwreck
+  m_EditorClassIdentifier: Main::ExploreEvents
+  description: A knight's transport ship lies split in two. Crates of iron claymores
+    and shields are scattered across the sand, but they are rusting quickly in the
+    saltwater.
   choiceA:
-    buttonText: Explore ship
-    resultText: 'You have returned with loot:'
+    buttonText: Salvage metal
+    resultText: Some of the metal has been salvaged
     pearlChange: 0
     oreChange: 0
     healthChange: 0
@@ -23,21 +25,21 @@ MonoBehaviour:
     waitTurn: 0
     loseOre: 0
     minPearl: 0
-    maxPearl: 10
-    minOre: 0
-    maxOre: 20
+    maxPearl: 0
+    minOre: 15
+    maxOre: 30
     requiresLabTier: 0
     fuelChance: 0
     fuelGain: 0
     damageChance: 0
     healthDamage: 0
   choiceB:
-    buttonText: 
-    resultText: 
+    buttonText: Search for fuel reserves
+    resultText: Fuel reserves have been discovered!
     pearlChange: 0
     oreChange: 0
     healthChange: 0
-    fuelChange: 0
+    fuelChange: 1
     waitTurn: 0
     loseOre: 0
     minPearl: 0

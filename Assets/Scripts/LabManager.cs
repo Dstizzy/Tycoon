@@ -294,6 +294,11 @@ public class LabManager : MonoBehaviour
    // Handle the innovation purchase and unlocking of the next tier node upon clicking the buy button
    private void HandleInnovation(GameObject tab, int tier)
    {
+      if (tab == explorationTab && ExplorationUnitManager.Instance.isExploring)
+      {
+         ticker.ShowTicker("Exploration Branch Tier cannot be purchased while a ship is deployed!", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         return; // Stop the entire process here
+      }
       string requiredItem = "";
       int pearlCost = 0,
              itemCost = 0;
@@ -478,9 +483,10 @@ public class LabManager : MonoBehaviour
       else if (tabType == explorationTab)
       {
          if (ShipManager.Instance != null)
+         {
             ShipManager.Instance.ApplyLabShipBonus();
-
-         ticker.ShowTicker("Exploration Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+            ticker.ShowTicker("Exploration Branch Tier 1 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
+         }
       }
       else
       {

@@ -128,9 +128,7 @@ public class ExplorationUnitManager : MonoBehaviour
                bool canExplore = !isExploring; //&& hasDivingBell;
                exploreButton.interactable = canExplore;
                if (canExplore)
-               {
                   exploreButton.onClick.AddListener(() => StartExploration());
-               }
             }
             // Setup exit button
             explorePanel.transform.Find("ExitButton").GetComponent<Button>().onClick.AddListener(() => CloseExplorationPanel());
@@ -184,6 +182,12 @@ public class ExplorationUnitManager : MonoBehaviour
    // Upgrades the ship if it is currently able to be upgraded
    public void ConfirmUpgrade()
    {
+      if(isExploring)
+      {
+         TickerSystem.Instance.ShowTicker("Cannot be upgraded while exploration is ongoing.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         return;
+      }
+
       int upgradeCost = GetUpgradeCost();
 
       // Upgrade ship if is not at max level and if it can be afforded
@@ -401,6 +405,7 @@ public class ExplorationUnitManager : MonoBehaviour
       inventoryButton.onClick.AddListener(() =>
       {
          ShowInventoryPanel();
+         decisionPanel.gameObject.SetActive(false);
       });
 
       // Set up return ship button on decision panel
@@ -453,35 +458,6 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles the end-of-map sequence
    public void HandleFinalNode(MapNode current)
    {
-      /*  bool isWinner = false;
-
-        // Check if current final node is the winning final node
-        if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
-           isWinner = true;
-
-        if (isWinner)
-        {
-           decisionResults.text = "MISSION ACCOMPLISHED!\nYou have found the vessel piece.\nYou will now return.";
-           panelManager.OpenPanel(decisionResultsPanel.gameObject);
-           Button confirmEnd = decisionResultsPanel.transform.Find("ConfirmButton").GetComponent<Button>();
-           confirmEnd.onClick.RemoveAllListeners();
-           confirmEnd.onClick.AddListener(() =>
-           {
-              labManager.ActivateTail();
-              StartCoroutine(shipManager.FinishExploration());
-              panelManager.ClosePanel(decisionResultsPanel.gameObject);
-           });
-        }
-        else
-        {
-           EventChoice consolationPrize = new EventChoice();
-           consolationPrize.pearlChange = 200;
-           consolationPrize.oreChange   = 200;
-           ProcessDecision(consolationPrize, null);
-
-           decisionResults.text = "DEAD END\n\nThe vessel piece is not here, but the chest is not empty!\nPearl: +200\nOre: +200";
-        }
-      */
       bool isWinner = false;
 
       // Check if current final node is the winning final node
@@ -583,14 +559,14 @@ public class ExplorationUnitManager : MonoBehaviour
 
       if (shipManager.ShipLevel == 1)
       {
-         pearlUpgradeCost   = LEVEL2_PEARL_COST;
-         upgradeTitle       = "REWARD: ";
+         pearlUpgradeCost = LEVEL2_PEARL_COST;
+         upgradeTitle = "REWARD:\n+20 health, +4 fuel";
          upgradeExplanation = "";
       }
       else if (shipManager.ShipLevel == 2)
       {
-         pearlUpgradeCost   = LEVEL3_PEARL_COST;
-         upgradeTitle       = "REWARD:";
+         pearlUpgradeCost = LEVEL3_PEARL_COST;
+         upgradeTitle = "REWARD:\n+30 health, +4 fuel";
          upgradeExplanation = "";
       }
 
