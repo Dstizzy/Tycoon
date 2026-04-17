@@ -143,7 +143,6 @@ public class ExplorationUnitManager : MonoBehaviour
             Button yesButton = upgradePanel.Find("YesButton").GetComponent<Button>();
             if (yesButton != null)
             {
-               yesButton.interactable = !isExploring;
                yesButton.onClick.RemoveAllListeners();
                yesButton.onClick.AddListener(() => ConfirmUpgrade());
             }
@@ -183,6 +182,12 @@ public class ExplorationUnitManager : MonoBehaviour
    // Upgrades the ship if it is currently able to be upgraded
    public void ConfirmUpgrade()
    {
+      if(isExploring)
+      {
+         TickerSystem.Instance.ShowTicker("Cannot be upgraded while exploration is ongoing.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+         return;
+      }
+
       int upgradeCost = GetUpgradeCost();
 
       // Upgrade ship if is not at max level and if it can be afforded
