@@ -191,7 +191,6 @@ public class TutorialManager : MonoBehaviour
       switch(sectionIndex)
       {
          case 1:
-            //ShowDialogue(onWalkthroughFinished);
             tutorialSection.transform.Find("FirstPart").gameObject.SetActive(true);
             DoAllChecks(tutorialSection.transform.Find("FirstPart").gameObject);
             break;
@@ -210,6 +209,7 @@ public class TutorialManager : MonoBehaviour
          case 3:
             if (tutorialSection.transform.Find("ThirdPart") != null)
             {
+               tutorialSection.transform.Find("FirstPart").gameObject.SetActive(false);
                tutorialSection.transform.Find("SecondPart").gameObject.SetActive(false);
                tutorialSection.transform.Find("ThirdPart").gameObject.SetActive(true);
                DoAllChecks(tutorialSection.transform.Find("ThirdPart").gameObject);
@@ -423,6 +423,8 @@ public class TutorialManager : MonoBehaviour
          SetGameplayBlocked(false);
          ShowUIHighlights(currentStep.uiHighlightTargets);
          forgeCanvas.transform.Find("turnScreens").gameObject.SetActive(true);
+         if(!turnButton.gameObject.activeSelf)
+            turnButton.gameObject.SetActive(true);
          turnButton.GetComponent<Button>().onClick.AddListener(() => HandleCustomClick());
       }
       else if(myPart.transform.Find("ForgeExample") != null)
@@ -458,9 +460,12 @@ public class TutorialManager : MonoBehaviour
    }
    public void HandleCustomClick()
    {
+      //InventoryManager.Instance.TryAddOre(10);
       requiredButtonClicked = true;
       sectionIndex += 1;
       isRequiredButtonClicked = true;
+      sectionIndex -= 1;
+      GoThroughSection(tutorialSections[tutorialIndex], sectionIndex);
 
       Debug.Log("Turn button clicked, proceeding to next part.");
       CompleteCurrentSequence();
@@ -513,7 +518,7 @@ public class TutorialManager : MonoBehaviour
    {
       if(forgeFunction == true && step == 2)
       {
-         turnButton.gameObject.SetActive(true);
+         nextButton.gameObject.SetActive(true);
          forgeFunction = false;
          forgeCanvas.transform.Find("Arrow3").gameObject.SetActive(false);
          forgeCanvas.transform.Find("Screens").gameObject.SetActive(false);

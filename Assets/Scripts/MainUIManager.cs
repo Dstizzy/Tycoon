@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 public class MainUIManager : MonoBehaviour
 {
@@ -125,8 +128,12 @@ public class MainUIManager : MonoBehaviour
          Debug.LogError("SceneHistory is missing from the scene!");
    }
 
-   public void StartWalkthrough()
+   public async void StartWalkthrough()
    {
+      NarrativeOverlayUI.Instance.FadeTo(1f, 0.4f);
+      await Task.Delay(500);
+      NarrativeOverlayUI.Instance.FadeTo(0f, 0.4f);
+      await Task.Delay(500);
       SceneManager.LoadScene("WalkthroughScene");
    }
 

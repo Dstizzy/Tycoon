@@ -117,6 +117,19 @@ public class InventoryManager : MonoBehaviour
    public int rawOreChunkCount { get; private set; }
    public int mercenaryEngineerCount { get; private set; }
 
+   public int tempPearlCount { get; private set; }
+   public int tempOreCount { get; private set; }
+
+   public int tempCrudeToolCount { get; private set; }
+   public int tempHarpoonCount { get; private set; }
+   public int tempPatchKitCount   { get; private set; }
+   public int tempPressureValveCount { get; private set; }
+   public int tempDivingBellCount { get; private set; }
+   public int tempEngineCount { get; private set; }
+   public int tempPrecisionLensCount { get; private set; }
+   public int tempRawOreChunkCount { get; private set; }
+   public int tempMercenaryEngineerCount { get; private set; }
+
    /* Private variables ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ ï¿½      */
    private Transform currentResource,
                      currentCraft;
@@ -134,24 +147,23 @@ public class InventoryManager : MonoBehaviour
 
    public List<Transform> InventoryItems { get; private set; }
 
-   // Toggles the tutorial state for the inventory, which can be used to show or hide tutorial elements based on the player's progress in the game
-   private void ChangeTutorialState()
-   {
-      tutorialFunction = true;
-   }
 
    /* Sets up the singleton instance and initializes the inventory panel state.    */
    private void Awake()
    {
       if (Instance != null && Instance != this)
-         Destroy(this.gameObject);
-      else
       {
-         Instance = this;
-         DontDestroyOnLoad(this.gameObject);
+         // If an instance already exists, tell it to update its UI for the new scene
+         Instance.RefreshUIReferences();
+         Destroy(this.gameObject);
+         return;
       }
 
-      InventoryItems = new();
+      Instance = this;
+      DontDestroyOnLoad(this.gameObject);
+
+      // Initial data setup...
+      InventoryItems = new List<Transform>();
 
       if (InventoryPanel == null)
          Debug.LogError("Inventory Panel is not assigned in the Inspector!");
@@ -189,6 +201,23 @@ public class InventoryManager : MonoBehaviour
       engineCount        = 0;
    }
 
+   public void RefreshUIReferences()
+   {
+      // Find the new PanelManager in the current scene
+      panelManager = FindFirstObjectByType<PanelManager>();
+
+      // You need to find the new UI root (the Inventory Canvas/Panel) 
+      // and re-assign the child references.
+      GameObject uiRoot = GameObject.Find("InventoryPanel"); // Make sure your object name matches
+      if (uiRoot != null)
+      {
+         InventoryPanel = uiRoot.transform;
+         ResourcePanel = InventoryPanel.Find("ResourcePanel");
+         CraftsPanel = InventoryPanel.Find("CraftsPanel");
+         // ... and so on for all Inspector variables
+      }
+   }
+
    /* Creates the display elements for Pearls and Crystals on the inventory panel. */
    private void Start()
    {
@@ -218,6 +247,51 @@ public class InventoryManager : MonoBehaviour
          Debug.LogError("No ticker");
    }
 
+   public void ChangeToWalkthrough()
+   {
+      tempPearlCount = pearlCount;
+      tempOreCount = oreCount;
+      tempCrudeToolCount = crudeToolCount;
+      tempHarpoonCount = harpoonCount;
+      tempPatchKitCount = patchKitCount;
+      tempPressureValveCount = pressureValveCount;
+      tempDivingBellCount = divingBellCount;
+      tempEngineCount = engineCount;
+      tempPrecisionLensCount = precisionLensCount;
+      tempRawOreChunkCount = rawOreChunkCount;
+      tempMercenaryEngineerCount = mercenaryEngineerCount;
+
+      pearlCount = 0;
+      oreCount = 0;
+      crudeToolCount = 0;
+      harpoonCount = 0;
+      patchKitCount = 0;
+      pressureValveCount = 0;
+      divingBellCount = 0;
+      engineCount = 0;
+      precisionLensCount = 0;
+      rawOreChunkCount = 0;
+      mercenaryEngineerCount = 0;
+
+      OnPearlCountChanged?.Invoke(pearlCount);
+      OnOreCountChanged?.Invoke(oreCount);
+
+   }
+
+   public void ChangeToNormal()
+   {
+      pearlCount = tempPearlCount;
+      oreCount = tempOreCount;
+      crudeToolCount = tempCrudeToolCount;
+      harpoonCount = tempHarpoonCount;
+      patchKitCount = tempPatchKitCount;
+      pressureValveCount = tempPressureValveCount;
+      divingBellCount = tempDivingBellCount;
+      engineCount = tempEngineCount;
+      precisionLensCount = tempPrecisionLensCount;
+      rawOreChunkCount = tempRawOreChunkCount;
+      mercenaryEngineerCount = tempMercenaryEngineerCount;
+   }
    /* Creates and positions a resource display element in the inventory panel. ï¿½   */
    public void CreateResource(Sprite resourceSprite, int positionIndex, string resourceTag)
    {
@@ -1293,6 +1367,12 @@ public class InventoryManager : MonoBehaviour
 
    private void CheckUpgradeResources()
    {
+      // Safety check: if the icons are destroyed/missing, don't try to access them
+      if (OreRefineryUpgradeIcon == null || ForgeUpgradeIcon == null || ExplorationUnitUpgradeIcon == null)
+      {
+         Debug.LogWarning("InventoryManager: Upgrade icons are missing. Need to re-link UI for this scene.");
+         return;
+      }
       if (OreRefinery_Manager.Instance.oreLevel >= 3)
          OreRefineryUpgradeIcon.gameObject.SetActive(false);
       else

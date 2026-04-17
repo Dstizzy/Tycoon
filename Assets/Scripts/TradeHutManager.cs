@@ -160,59 +160,33 @@ public class TradeHutManager : MonoBehaviour
       if (!isSelling) StartTransition(true);
    }*/
 
-   private void Awake() 
+   private void Awake()
    {
-      SellItems = new();
-      BuyItems  = new();
+      // 1. Initialize lists for this specific scene instance
+      SellItems = new List<Transform>();
+      BuyItems = new List<Transform>();
 
-      TradePanelScale = TradePanels.transform.localScale;
-      InfoPanelScale = InfoPanel.transform.localScale;
+      // 2. Assign the static Instance so other scripts can still find THIS scene's manager
+      Instance = this;
 
-      // Initialize lastResetTurn for every ItemType so lookups are safe
+      // 3. Cache initial scales (Ensure these are assigned in the Inspector!)
+      if (TradePanels != null) TradePanelScale = TradePanels.transform.localScale;
+      if (InfoPanel != null) InfoPanelScale = InfoPanel.transform.localScale;
+
+      // 4. Initialize logic
       foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
          lastResetTurn[itemType] = false;
 
       OnItemValueChange = ChangeItemValueText;
-
       mercenaryEngineerAvailable = MAX_MERCENARY_ENGINEER_COUNT;
 
-      if (Instance != null && Instance != this)
-         Destroy(this.gameObject);
-      else 
-      {
-         Instance = this;
-         DontDestroyOnLoad(this.gameObject);
-      }
-
-      if (TradePanels == null)
-         Debug.LogError("Trade Panel is not assigned in the Inspector!");
-      else
-         CloseTradePanel();
-
-      if (InfoPanel == null)
-         Debug.LogError("Info Panel is not assigned in the Inspector!");
-      else
-         CloseInfoPanel();
-
-      if (SellWindow == null)
-         Debug.LogError("Sell window is not assigned in the Inspector");
-      else
-         CloseSellWindow();
-
-      if (SellPanel == null)
-         Debug.LogError("Sell Panel is not assigned in the Inspector!");
-      else
-         CloseSellPanel();
-
-      if (BuyPanel == null)
-         Debug.LogError("Buy Panel is not assigned in the Inspector!");
-      else
-         CloseBuyPanel();
-
-      if (BuyWindow == null)
-         Debug.LogError("Buy Window is not assigned in the Inspector!");
-      else
-         BuyWindow.gameObject.SetActive(false);
+      // 5. Safety Checks & Initial State (Simplified)
+      if (TradePanels != null) CloseTradePanel();
+      if (InfoPanel != null) CloseInfoPanel();
+      if (SellWindow != null) CloseSellWindow();
+      if (SellPanel != null) CloseSellPanel();
+      if (BuyPanel != null) CloseBuyPanel();
+      if (BuyWindow != null) BuyWindow.gameObject.SetActive(false);
    }
 
    private void Start()
@@ -421,6 +395,8 @@ public class TradeHutManager : MonoBehaviour
          HandleTutorial?.Invoke(1);
          TradePanels.transform.Find("Screen1").gameObject.SetActive(false);
          TradePanels.transform.Find("Screen2").gameObject.SetActive(false);
+         TradePanels.transform.Find("Circle1").gameObject.SetActive(false);
+         TradePanels.transform.Find("Circle2").gameObject.SetActive(true);
          TradePanels.transform.Find("Screen3").gameObject.SetActive(true);
          TradePanels.transform.Find("Screen4").gameObject.SetActive(true);
       }
@@ -598,6 +574,8 @@ public class TradeHutManager : MonoBehaviour
                   HandleTutorial?.Invoke(1);
                   TradePanels.transform.Find("Screen5").gameObject.SetActive(false);
                   TradePanels.transform.Find("Screen6").gameObject.SetActive(false);
+                  TradePanels.transform.Find("Circle3").gameObject.SetActive(false);
+                  TradePanels.transform.Find("Circle4").gameObject.SetActive(true);
                   TradePanels.transform.Find("Screen7").gameObject.SetActive(true);
                }
             }
@@ -851,6 +829,8 @@ public class TradeHutManager : MonoBehaviour
          HandleTutorial?.Invoke(1);
          TradePanels.transform.Find("Screen3").gameObject.SetActive(false);
          TradePanels.transform.Find("Screen4").gameObject.SetActive(false);
+         TradePanels.transform.Find("Circle2").gameObject.SetActive(false);
+         TradePanels.transform.Find("Circle3").gameObject.SetActive(true);
          TradePanels.transform.Find("Screen5").gameObject.SetActive(true);
          TradePanels.transform.Find("Screen6").gameObject.SetActive(true);
       }
@@ -1745,6 +1725,7 @@ public class TradeHutManager : MonoBehaviour
          HandleTutorial?.Invoke(1);
          TradePanels.transform.Find("Screen1").gameObject.SetActive(true);
          TradePanels.transform.Find("Screen2").gameObject.SetActive(true);
+         TradePanels.transform.Find("Circle1").gameObject.SetActive(true);
       }
    }
 
@@ -1783,6 +1764,7 @@ public class TradeHutManager : MonoBehaviour
          tutorialFunctionTwo = false;
          HandleTutorial?.Invoke(2);
          TradePanels.transform.Find("Screen7").gameObject.SetActive(false);
+         TradePanels.transform.Find("Circle4").gameObject.SetActive(false);
       }
 
       // Destroy the instantiated sell item/window instance if it exists
