@@ -122,7 +122,7 @@ public class MainUIManager : MonoBehaviour
       if (SceneHistory.Instance != null) 
       {
          GameManager.RestartGame();
-         SceneHistory.Instance.LoadScene("StartScreen");
+         SceneHistory.Instance.LoadScene("StartScene");
       }
       else
          Debug.LogError("SceneHistory is missing from the scene!");

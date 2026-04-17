@@ -43905,8 +43905,8 @@ MonoBehaviour:
   - {fileID: 952983952}
   - {fileID: 1102698752}
   npcPrefab: {fileID: 550084991}
-  spawnOffset: {x: -6, y: -1, z: 0}
-  npcWorldScale: {x: 4.5, y: 4.5, z: 1}
+  spawnOffset: {x: 7, y: -3, z: 0}
+  npcWorldScale: {x: 3.5, y: 3.5, z: 1}
   spawnChancePerTurn: 100
   dialogueUI: {fileID: 2091636200}
 --- !u!4 &682516351
@@ -74535,7 +74535,7 @@ RectTransform:
   m_GameObject: {fileID: 1129299605}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.92222, y: 0.92222, z: 0.92222}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1846484012}
@@ -74543,7 +74543,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1505.9, y: 2369}
+  m_AnchoredPosition: {x: -1505.9, y: 2368.9}
   m_SizeDelta: {x: 329.6614, y: 138.2497}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1129299607
@@ -80766,7 +80766,7 @@ RectTransform:
   m_GameObject: {fileID: 1238857621}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.78806365, y: 0.79874355, z: 1.4860069}
+  m_LocalScale: {x: 0.62974066, y: 0.63827497, z: 1.1874661}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 886650032}
@@ -117751,7 +117751,7 @@ RectTransform:
   m_GameObject: {fileID: 1853012930}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.92929, y: 0.92929, z: 0.92929}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 189633447}
