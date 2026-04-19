@@ -30475,6 +30475,7 @@ MonoBehaviour:
   explorationLevelText: {fileID: 1074371999}
   levelCanvas: {fileID: 1014195220}
   isExploring: 0
+  explorationCost: 1
 --- !u!114 &558906173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58342,6 +58343,7 @@ MonoBehaviour:
   explorationCanvas: {fileID: 0}
   labCanvas: {fileID: 0}
   turnButton: {fileID: 509499488}
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   tutorialIndex: 0
   requiredButtonClicked: 1
   oreRefineryUpgrade: 0
@@ -86389,6 +86391,7 @@ MonoBehaviour:
   panelBackgroundSprite: {fileID: 0}
   buttonSprite: {fileID: 0}
   portraitFrameSprite: {fileID: 0}
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!4 &1555079469
 Transform:
   m_ObjectHideFlags: 0
@@ -106422,6 +106425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Main::NarrativeOverlayUI
   textSpeed: 0.02
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!1 &1970712519
 GameObject:
   m_ObjectHideFlags: 0

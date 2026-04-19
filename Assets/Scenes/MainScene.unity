@@ -21974,6 +21974,7 @@ MonoBehaviour:
   explorationLevelText: {fileID: 1747424629}
   levelCanvas: {fileID: 1137639510}
   isExploring: 0
+  explorationCost: 1
 --- !u!1 &291044056
 GameObject:
   m_ObjectHideFlags: 0
@@ -83186,6 +83187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Main::NarrativeOverlayUI
   textSpeed: 0.02
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!1 &1290882184
 GameObject:
   m_ObjectHideFlags: 0
@@ -131665,6 +131667,7 @@ MonoBehaviour:
   panelBackgroundSprite: {fileID: 0}
   buttonSprite: {fileID: 0}
   portraitFrameSprite: {fileID: 0}
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!4 &2091636201
 Transform:
   m_ObjectHideFlags: 0
