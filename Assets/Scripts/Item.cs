@@ -579,8 +579,8 @@ public class Item {
       rawOrePrice            = 1;
       mercenaryEngineerPrice = 100;
       insurancePolicyPrice   = 100;
-      tier2BluePrintPrice    = 500;
-      tier3BluePrintPrice    = 2000;
+      tier2BluePrintPrice    = 300;
+      tier3BluePrintPrice    = 500;
 
       // Clear the static action delegate to prevent memory leaks/missing references
       OnItemValueChange = null;
