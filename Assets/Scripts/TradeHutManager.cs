@@ -463,7 +463,6 @@ public class TradeHutManager : MonoBehaviour
    {
       Transform buyWindowContainer = BuyWindow.Find("BuyWindowContainer").GetComponent<Transform>(),
                 buyWindowTemplate  = buyWindowContainer.Find("BuyWindowTemplate").GetComponent<Transform>();
-      int       itemCount          = 0;
 
       buyWindowTemplate.gameObject.SetActive(false);
 
