@@ -83187,6 +83187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Main::NarrativeOverlayUI
   textSpeed: 0.02
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!1 &1290882184
 GameObject:
   m_ObjectHideFlags: 0
@@ -131666,6 +131667,7 @@ MonoBehaviour:
   panelBackgroundSprite: {fileID: 0}
   buttonSprite: {fileID: 0}
   portraitFrameSprite: {fileID: 0}
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!4 &2091636201
 Transform:
   m_ObjectHideFlags: 0

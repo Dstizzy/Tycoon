@@ -19436,6 +19436,24 @@ MonoBehaviour:
   productionTab: {fileID: 1660849775}
   explorationTab: {fileID: 1745289579}
   victoryPanel: {fileID: 1320842705}
+  headTextLabel: {fileID: 0}
+  headLineImage: {fileID: 0}
+  headInfoLabel: {fileID: 0}
+  headCompletedContainer: {fileID: 0}
+  headCheckMarkImage: {fileID: 0}
+  tailTextImage: {fileID: 0}
+  tailLineImage: {fileID: 0}
+  tailInfoImage: {fileID: 0}
+  tailCompletedContainer: {fileID: 0}
+  tailCheckMarkImage: {fileID: 0}
+  submarineFull: {fileID: 0}
+  submarineSkelParent: {fileID: 0}
+  submarineBlackParent: {fileID: 0}
+  submarineSkelBody: {fileID: 0}
+  submarineSkelHead: {fileID: 0}
+  submarineSkelTail: {fileID: 0}
+  submarineBlackedOutHead: {fileID: 0}
+  submarineBlackedOutTail: {fileID: 0}
   labTutorialFunction: 0
   victoryTutorialFunction: 0
 --- !u!1 &272661570
@@ -20356,6 +20374,7 @@ MonoBehaviour:
   scenarioText: {fileID: 1689769876}
   choiceAText: {fileID: 541160377}
   choiceBText: {fileID: 1889828081}
+  currentEvent: {fileID: 0}
 --- !u!114 &290203788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20368,18 +20387,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813a809d09a21754e886fe488b07f341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipManager
+  panelManager: {fileID: 0}
   explorationUnitManager: {fileID: 290203790}
   fuelPanel: {fileID: 1714909010}
   healthPanel: {fileID: 945193461}
   confirmReturnPanel: {fileID: 638825087}
   finalRewardsPanel: {fileID: 687436932}
-  finalRewards: {fileID: 1569968598}
   decisionFuelText: {fileID: 729425255}
   decisionHealthText: {fileID: 2017117128}
   inventoryFuelText: {fileID: 239788650}
   inventoryHealthText: {fileID: 1117042967}
   exploreFuelText: {fileID: 1920380507}
   exploreHealthText: {fileID: 1633003774}
+  rewardsContainer: {fileID: 0}
+  noRewardsText: {fileID: 0}
   isTier2Unlocked: 0
 --- !u!114 &290203789
 MonoBehaviour:
@@ -20454,6 +20475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379ecde3e6bec6c4ca84aab8d437d86a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationUnitManager
+  labManager: {fileID: 0}
   panelManager: {fileID: 477945658}
   eventDatabase: {fileID: 290203789}
   eventController: {fileID: 290203787}
@@ -20466,8 +20488,13 @@ MonoBehaviour:
   newDepthPanel: {fileID: 277794105}
   inventoryPanel: {fileID: 404062336}
   decisionResults: {fileID: 2033736100}
-  shipInventory: {fileID: 1740627418}
   depthWarningText: {fileID: 1793203012}
+  inventoryIconContainer: {fileID: 0}
+  resultsIconContainer: {fileID: 0}
+  resultsHealthText: {fileID: 0}
+  resultsFuelText: {fileID: 0}
+  floatingResultsHealth: {fileID: 0}
+  floatingResultsFuel: {fileID: 0}
   buildingSpriteRenderer: {fileID: 28295536}
   explorationLevelSprites:
   - {fileID: -3306025559836093694, guid: 4c3f3567c672e498988bdd4f885a9791, type: 3}
@@ -20476,6 +20503,7 @@ MonoBehaviour:
   explorationLevelText: {fileID: 0}
   levelCanvas: {fileID: 0}
   isExploring: 0
+  explorationCost: 1
 --- !u!1 &290990371
 GameObject:
   m_ObjectHideFlags: 0
@@ -21826,6 +21854,7 @@ MonoBehaviour:
   newsTicker: {fileID: 1267237419}
   currentTurn: 1
   maxTurns: 80
+  walkthroughTurnText: {fileID: 0}
   turnText: {fileID: 106892144}
   eventCountdown: 1
   endTurnButton: {fileID: 1229296624}
@@ -22343,6 +22372,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 1054558826}
   uiFade: {fileID: 1054558829}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &327432019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26970,6 +27004,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 2132776307}
   uiFade: {fileID: 2132776310}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &423148213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28531,6 +28570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e9789ffd796e941aa59f9328c053e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  tutorialSteps: []
   tutorialSections:
   - {fileID: 1082665184}
   - {fileID: 1121643392}
@@ -28545,6 +28585,7 @@ MonoBehaviour:
   explorationCanvas: {fileID: 721189057}
   labCanvas: {fileID: 1515892656}
   turnButton: {fileID: 1229296622}
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   tutorialIndex: 0
   requiredButtonClicked: 1
   oreRefineryUpgrade: 0
@@ -28556,7 +28597,9 @@ MonoBehaviour:
   enemyFunction: 0
   victoryFunction: 0
   oreUpgradeButton: 0
-  tutorialGoing: 1
+  isWalkthroughGoing: 0
+  isRequiredButtonClicked: 1
+  textSpeed: 0.02
   currentActivePart: {fileID: 0}
   currentActiveSection: {fileID: 0}
 --- !u!1 &455152181
@@ -31066,6 +31109,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 541328054}
   uiFade: {fileID: 541328056}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &507436907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38818,7 +38866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Main::NPCEncounterSystem
   npcProfiles:
-  - npcName: Turtle
+  - npcName: Dr Geery
     mapSprite: {fileID: 782658614328064399, guid: 35a8e5528fc0f4c4eb3738ee193de610, type: 3}
     portraitNeutral: {fileID: 3372163708100500339, guid: b06914586e992694d883b849914e9f0d, type: 3}
     portraitHappy: {fileID: 7452553694456794006, guid: 1c58a36efee3176448b3678f0875bcde, type: 3}
@@ -38827,7 +38875,7 @@ MonoBehaviour:
     portraitThinking: {fileID: -805898777882341353, guid: f830270a94d98d94a908d0dfce3e4db6, type: 3}
     portraitSpecial: {fileID: 8672844814758428274, guid: 73cc877f97108a143914e985ceee37b8, type: 3}
     personality: 1
-  - npcName: Dolphin
+  - npcName: Steaman
     mapSprite: {fileID: -6651275923687695697, guid: e13769cbe0598444cb52549c756c22c5, type: 3}
     portraitNeutral: {fileID: -8962057739743450010, guid: 5cfa55d5c1b1468478177df45032254c, type: 3}
     portraitHappy: {fileID: -1966799400110674875, guid: a679d4171bf4b394c907a6f22f484ab9, type: 3}
@@ -38836,7 +38884,7 @@ MonoBehaviour:
     portraitThinking: {fileID: 4603623452549890782, guid: 6329bd8048b64124e80835c568fcae89, type: 3}
     portraitSpecial: {fileID: -7289468891832992917, guid: a5227920052eb134cbbdd8265ea002cb, type: 3}
     personality: 5
-  - npcName: Hermit Crab
+  - npcName: Tae
     mapSprite: {fileID: -1837977739437569628, guid: 6ab65e4dc7955e04192b8d6e3ca15075, type: 3}
     portraitNeutral: {fileID: 6868515254476828458, guid: 01eab021c2eba974699de2b2612872fb, type: 3}
     portraitHappy: {fileID: 4307551667246177738, guid: 3fab7503f1e4eec4db1566ac1df883df, type: 3}
@@ -38845,7 +38893,7 @@ MonoBehaviour:
     portraitThinking: {fileID: 8925186792330620185, guid: bb93fd9038f5eea4aa8484940d01835d, type: 3}
     portraitSpecial: {fileID: 4462517661071776530, guid: 20cc83d83faa0894292e9a5a573b0a01, type: 3}
     personality: 0
-  - npcName: Octopus
+  - npcName: Dr Sparky
     mapSprite: {fileID: 8284476028815981848, guid: 97c4c6a2d5ecece469f0cfbb6c4c8e4a, type: 3}
     portraitNeutral: {fileID: -6778682614318153468, guid: b1f2fb52e10813a4cb4a77b496e832eb, type: 3}
     portraitHappy: {fileID: 9136027461913705462, guid: 591cd97483a475a489c8956a7d869141, type: 3}
@@ -38854,7 +38902,7 @@ MonoBehaviour:
     portraitThinking: {fileID: 2017867309405498147, guid: 59fdbbae25ccca144a9d36755a63e563, type: 3}
     portraitSpecial: {fileID: -4645333102645837292, guid: 5f64780594a3c6346a8b9fb732383814, type: 3}
     personality: 4
-  - npcName: Seahorse
+  - npcName: Dr Howl
     mapSprite: {fileID: -911679278628731330, guid: 8d9f61f3bf2f4054da7468cdc7f844c1, type: 3}
     portraitNeutral: {fileID: 3703413424670628121, guid: 0ac6f544c00757248a3084991928ca9c, type: 3}
     portraitHappy: {fileID: 2708647107661023640, guid: 8f8d99ee206cd064fa9807f3116dab13, type: 3}
@@ -38863,7 +38911,7 @@ MonoBehaviour:
     portraitThinking: {fileID: -4150031568274993782, guid: 52237059030f0ca49a6ffbb58a78331a, type: 3}
     portraitSpecial: {fileID: 8065383599630413124, guid: f06d62734bcf57443bb93401aa42b131, type: 3}
     personality: 3
-  - npcName: Jellyfish
+  - npcName: Plane
     mapSprite: {fileID: 7094631866586404236, guid: bff0ddc7b52a53e449dff9fafc60079c, type: 3}
     portraitNeutral: {fileID: 5850989717090400245, guid: dd61552aa6c4f8145a3cdcd0b6888b88, type: 3}
     portraitHappy: {fileID: 7334374430161226435, guid: 7cbb84558f84e0e44ae4cab867c17ea5, type: 3}
@@ -43820,6 +43868,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 243531298}
   uiFade: {fileID: 243531301}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &778813073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44833,6 +44886,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 35230975}
   uiFade: {fileID: 35230978}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &800552275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53200,6 +53258,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 1900026127}
   uiFade: {fileID: 1900026130}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &886060076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65544,6 +65607,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 447345661}
   uiFade: {fileID: 447345664}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &1161050794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72063,6 +72131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Main::NarrativeOverlayUI
   textSpeed: 0.02
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!1 &1290882184
 GameObject:
   m_ObjectHideFlags: 0
@@ -89754,6 +89823,8 @@ MonoBehaviour:
   - {fileID: 1404194278}
   - {fileID: 1718098619}
   - {fileID: 500490384}
+  gearHighLights: []
+  tutorialManager: {fileID: 0}
   tutorialFunction: 0
 --- !u!1 &1660432074
 GameObject:
@@ -95606,6 +95677,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 79623908}
   uiFade: {fileID: 79623911}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &1671229674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95914,6 +95990,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Main::NodeHover
   InfoPopUp: {fileID: 1595537942}
   uiFade: {fileID: 1595537946}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &1673445072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111572,6 +111653,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NodeHover
   InfoPopUp: {fileID: 907078750}
   uiFade: {fileID: 907078753}
+  associatedButton: {fileID: 0}
+  alwaysShow: 1
+  isTierLocked: 0
+  fadeInSpeed: 0.15
+  fadeOutSpeed: 0.1
 --- !u!114 &1981682041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112946,6 +113032,7 @@ MonoBehaviour:
   textSpeed: 0.03
   useTypewriterEffect: 1
   fadeDuration: 1.5
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   successTitleSprite: {fileID: -7420351126499833781, guid: c630fdc7fa57ab04082db4a651c8527a, type: 3}
   failureTitleSprite: {fileID: -872175198899888836, guid: a3c9d611858a38544bf719d69db8670d, type: 3}
   successTitleFloatAmount: 10
@@ -113689,6 +113776,7 @@ MonoBehaviour:
   textSpeed: 0.03
   useTypewriterEffect: 1
   fadeDuration: 1.5
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   successTitleSprite: {fileID: -7420351126499833781, guid: c630fdc7fa57ab04082db4a651c8527a, type: 3}
   failureTitleSprite: {fileID: -872175198899888836, guid: a3c9d611858a38544bf719d69db8670d, type: 3}
   successTitleFloatAmount: 12
@@ -116783,6 +116871,7 @@ MonoBehaviour:
   panelBackgroundSprite: {fileID: 0}
   buttonSprite: {fileID: 0}
   portraitFrameSprite: {fileID: 0}
+  chubbyFont: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
 --- !u!4 &2091636201
 Transform:
   m_ObjectHideFlags: 0
@@ -118993,9 +119082,12 @@ MonoBehaviour:
   BuyPanel: {fileID: 984686158}
   RecycleButton: {fileID: 1353724859}
   flipTarget: {fileID: 0}
-  buyContainer: {fileID: 0}
+  worldEventSymbols: {fileID: 0}
   panelManager: {fileID: 477945658}
-  currrentNewsTickerMessage: 
+  currentNewsTickerMessage: 
+  worldEventChange: {fileID: 0}
+  worldEventIcon: {fileID: 0}
+  mercenaryEngineersAvailableText: {fileID: 0}
   marketShiftMax: 1.2
   marketShiftMin: 1.06
   isTier3BuffACtive: 0

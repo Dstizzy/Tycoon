@@ -59,6 +59,9 @@ public class NarrativeOverlayUI : MonoBehaviour
    private Action currentCompleteAction;
    private Action<bool> currentToggleAction;
 
+   [Header("Custom Fonts")]
+   [SerializeField] private TMP_FontAsset chubbyFont;
+
    private bool isSequencePlaying;
 
    private void Awake()
@@ -167,6 +170,8 @@ public class NarrativeOverlayUI : MonoBehaviour
       nameRect.offsetMax = new Vector2(-PADDING, -PADDING);
 
       nameText = nameObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         nameText.font = chubbyFont;
       nameText.fontSize = 38f;
       nameText.fontStyle = FontStyles.Bold;
       nameText.color = new Color(0.95f, 0.85f, 0.55f, 1f);
@@ -180,6 +185,8 @@ public class NarrativeOverlayUI : MonoBehaviour
       dialogueRect.offsetMax = new Vector2(-PADDING, -96f);
 
       dialogueText = dialogueObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         dialogueText.font = chubbyFont;
       dialogueText.fontSize = 30f;
       dialogueText.color = Color.white;
       dialogueText.alignment = TextAlignmentOptions.TopLeft;
@@ -232,6 +239,8 @@ public class NarrativeOverlayUI : MonoBehaviour
       titleRect.offsetMax = new Vector2(-PADDING, -PADDING);
 
       toggleTitleText = titleObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         toggleTitleText.font = chubbyFont;
       toggleTitleText.fontSize = 44f;
       toggleTitleText.fontStyle = FontStyles.Bold;
       toggleTitleText.color = new Color(0.95f, 0.85f, 0.55f, 1f);
@@ -245,6 +254,8 @@ public class NarrativeOverlayUI : MonoBehaviour
       bodyRect.offsetMax = new Vector2(-PADDING, -120f);
 
       toggleBodyText = bodyObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         toggleBodyText.font = chubbyFont;
       toggleBodyText.fontSize = 28f;
       toggleBodyText.color = Color.white;
       toggleBodyText.alignment = TextAlignmentOptions.Midline;
@@ -300,6 +311,8 @@ public class NarrativeOverlayUI : MonoBehaviour
       textRect.offsetMax = new Vector2(-8f, -4f);
 
       textComponent = textObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         textComponent.font = chubbyFont;
       textComponent.text = buttonText;
       textComponent.fontSize = 28f;
       textComponent.fontStyle = FontStyles.Bold;
