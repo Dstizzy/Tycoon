@@ -30965,6 +30965,7 @@ MonoBehaviour:
   explorationCanvas: {fileID: 721189057}
   labCanvas: {fileID: 1515892656}
   turnButton: {fileID: 1229296622}
+  chubbyFont: {fileID: 0}
   tutorialIndex: 0
   requiredButtonClicked: 1
   oreRefineryUpgrade: 0
@@ -73356,7 +73357,7 @@ MonoBehaviour:
     - text: A quick breath. A strained but professional smile.
       expression: 5
       isAction: 1
-    - text: I'm Dolphin. I keep this place running, or at least politely prevent
+    - text: I'm Steaman. I keep this place running, or at least politely prevent
         it from collapsing.
       expression: 4
       isAction: 0
@@ -92769,7 +92770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9061668537908628842, guid: aff3a4c5b414bf94a98cb9c9838d84a7, type: 3}
       propertyPath: m_SortingOrder
-      value: 20
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

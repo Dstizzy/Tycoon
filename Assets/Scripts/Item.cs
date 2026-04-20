@@ -20,7 +20,7 @@ public class Item {
    private static int engineSellValue        { get; set; } = base_engine_value;
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
-   private static int insurancePolicyPrice   { get; set; } = 200;
+   private static int insurancePolicyPrice   { get; set; } = 100;
    private static int tier2BluePrintPrice    { get; set; } = 300;
    private static int tier3BluePrintPrice    { get; set; } = 500;
 
@@ -178,320 +178,132 @@ public class Item {
         return ItemSprites.itemSprites.GetSprite(itemType);
     }
 
+// ==========================================
+   // CRUDE TOOL
+   // ==========================================
    public static void TryIncreaseCrudeToolSellValue(int amount) 
    {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (crudeToolSellValue >= MAX_CRUDE_TOOL_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at maximum!");
-         return;
-      }
-
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (crudeToolSellValue + amount > MAX_CRUDE_TOOL_VALUE) 
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_CRUDE_TOOL_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      crudeToolSellValue += amount;
-
+      if (crudeToolSellValue >= MAX_CRUDE_TOOL_VALUE) return;
+      
+      crudeToolSellValue = Mathf.Min(crudeToolSellValue + amount, MAX_CRUDE_TOOL_VALUE);
       OnItemValueChange?.Invoke(crudeToolSellValue, ItemType.CrudeTool);
-
-      return;
    }
 
    public static void TryDecreaseCrudeToolSellValue(int amount) 
    {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (crudeToolSellValue <= MIN_CRUDE_TOOL_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
-         return;
-      }
-
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (crudeToolSellValue - amount < MIN_CRUDE_TOOL_VALUE) 
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_CRUDE_TOOL_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      crudeToolSellValue -= amount;
+      if (crudeToolSellValue <= MIN_CRUDE_TOOL_VALUE) return;
+      
+      crudeToolSellValue = Mathf.Max(crudeToolSellValue - amount, MIN_CRUDE_TOOL_VALUE);
       OnItemValueChange?.Invoke(crudeToolSellValue, ItemType.CrudeTool);
-
-      return;
    }
 
    public static void TryIncreaseHarpoonSellValue(int amount) 
    {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (harpoonSellValue >= MAX_HARPOON_VALUE) 
-      {
-         Debug.LogError("Harpoon Sell Value is already at maximum!");
-         return;
-      }
-
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (harpoonSellValue + amount > MAX_HARPOON_VALUE) 
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_HARPOON_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      harpoonSellValue += amount;
-
+      if (harpoonSellValue >= MAX_HARPOON_VALUE) return;
+      
+      // Use Mathf.Min to safely add the amount, capping it perfectly at the Maximum!
+      harpoonSellValue = Mathf.Min(harpoonSellValue + amount, MAX_HARPOON_VALUE);
+   
       OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
-
-      return;
    }
 
    public static void TryDecreaseHarpoonSellValue(int amount) 
    {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (harpoonSellValue <= MIN_HARPOON_VALUE)
-      {
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
-         return;
-      }
-
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (harpoonSellValue - amount < MIN_HARPOON_VALUE) 
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_HARPOON_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      harpoonSellValue -= amount;
-
+      if (harpoonSellValue <= MIN_HARPOON_VALUE) return;
+   
+      // Use Mathf.Max to safely subtract, stopping perfectly at the Minimum!
+      harpoonSellValue = Mathf.Max(harpoonSellValue - amount, MIN_HARPOON_VALUE);
+   
       OnItemValueChange?.Invoke(harpoonSellValue, ItemType.Harpoon);
-
-      return;
    }
 
-   public static void TryIncreasePressureValveValue(int amount) 
-   {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (pressureValveSellValue >= MAX_PRESSURE_VALVE_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at maximum!");
-         return;
-      }
-      
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (pressureValveSellValue + amount > MAX_PRESSURE_VALVE_VALUE) 
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_PRESSURE_VALVE_VALUE}.");
-         return;
-      }
-      
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      pressureValveSellValue += amount;
-      
-      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
-
-      return;
-   }
-
-   public static void TryDecreasePressureValveValue(int amount) 
-   {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (pressureValveSellValue <= MIN_PRESSURE_VALVE_VALUE) 
-      { 
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
-         return;
-      }
-
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (pressureValveSellValue - amount < MIN_PRESSURE_VALVE_VALUE) 
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_PRESSURE_VALVE_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      pressureValveSellValue -= amount;
-
-      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
-
-      return;
-   }
-
-    // --- Diving Bell increase/decrease methods ---
+   // ==========================================
+   // DIVING BELL
+   // ==========================================
    public static void TryIncreaseDivingBellValue(int amount)
    {
-      if (divingBellSellValue >= MAX_DIVING_BELL_VALUE)
-      {
-         Debug.LogError("Diving Bell Sell Value is already at maximum!");
-         return;
-      }
+      if (divingBellSellValue >= MAX_DIVING_BELL_VALUE) return;
 
-      if (divingBellSellValue + amount > MAX_DIVING_BELL_VALUE)
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_DIVING_BELL_VALUE}.");
-         return;
-      }
-
-      divingBellSellValue += amount;
+      divingBellSellValue = Mathf.Min(divingBellSellValue + amount, MAX_DIVING_BELL_VALUE);
       OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
    }
 
    public static void TryDecreaseDivingBellValue(int amount)
    {
-      if (divingBellSellValue <= MIN_DIVING_BELL_VALUE)
-      {
-         Debug.LogError("Diving Bell Sell Value is already at minimum!");
-         return;
-      }
+      if (divingBellSellValue <= MIN_DIVING_BELL_VALUE) return;
 
-      if (divingBellSellValue - amount < MIN_DIVING_BELL_VALUE)
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_DIVING_BELL_VALUE}.");
-         return;
-      }
-
-      divingBellSellValue -= amount;
+      divingBellSellValue = Mathf.Max(divingBellSellValue - amount, MIN_DIVING_BELL_VALUE);
       OnItemValueChange?.Invoke(divingBellSellValue, ItemType.DivingBell);
    }
 
-   
+   // ==========================================
+   // PRESSURE VALVE
+   // ==========================================
+   public static void TryIncreasePressureValveValue(int amount) 
+   {
+      if (pressureValveSellValue >= MAX_PRESSURE_VALVE_VALUE) return;
+      
+      pressureValveSellValue = Mathf.Min(pressureValveSellValue + amount, MAX_PRESSURE_VALVE_VALUE);
+      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
+   }
 
+   public static void TryDecreasePressureValveValue(int amount) 
+   {
+      if (pressureValveSellValue <= MIN_PRESSURE_VALVE_VALUE) return;
+
+      pressureValveSellValue = Mathf.Max(pressureValveSellValue - amount, MIN_PRESSURE_VALVE_VALUE);
+      OnItemValueChange?.Invoke(pressureValveSellValue, ItemType.PressureValve);
+   }
+
+   // ==========================================
+   // PRECISION LENS
+   // ==========================================
    public static void TryIncreasePrecisionLensValue(int amount)
    {
-      if (precisionLensSellValue >= MAX_PRECISION_LENS_VALUE)
-      {
-         Debug.LogError("Precision Lens Sell Value is already at maximum!");
-         return;
-      }
+      if (precisionLensSellValue >= MAX_PRECISION_LENS_VALUE) return;
 
-      if (precisionLensSellValue + amount > MAX_PRECISION_LENS_VALUE)
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_PRECISION_LENS_VALUE}.");
-         return;
-      }
-
-      precisionLensSellValue += amount;
+      precisionLensSellValue = Mathf.Min(precisionLensSellValue + amount, MAX_PRECISION_LENS_VALUE);
       OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
    }
 
    public static void TryDecreasePrecisionLensValue(int amount)
    {
-      if (precisionLensSellValue <= MIN_PRECISION_LENS_VALUE)
-      {
-         Debug.LogError("Precision Lens Sell Value is already at minimum!");
-         return;
-      }
+      if (precisionLensSellValue <= MIN_PRECISION_LENS_VALUE) return;
 
-      if (precisionLensSellValue - amount < MIN_PRECISION_LENS_VALUE)
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_PRECISION_LENS_VALUE}.");
-         return;
-      }
-
-      precisionLensSellValue -= amount;
+      precisionLensSellValue = Mathf.Max(precisionLensSellValue - amount, MIN_PRECISION_LENS_VALUE);
       OnItemValueChange?.Invoke(precisionLensSellValue, ItemType.PrecisionLens);
    }
 
+   // ==========================================
+   // ENGINE
+   // ==========================================
    public static void TryIncreaseEngineSellValue(int amount) 
    {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if (engineSellValue >= MAX_ENGINE_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at maximum!");
-         return;
-      }
+      if (engineSellValue >= MAX_ENGINE_VALUE) return;
 
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (engineSellValue + amount > MAX_ENGINE_VALUE) 
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_ENGINE_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      engineSellValue += amount;
-
+      engineSellValue = Mathf.Min(engineSellValue + amount, MAX_ENGINE_VALUE);
       OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
-      return;
    }
 
    public static void TryDecreaseEngineSellValue(int amount) 
    {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (engineSellValue <= MIN_ENGINE_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
-         return;
-      }
+      if (engineSellValue <= MIN_ENGINE_VALUE) return;
 
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (engineSellValue - amount < MIN_ENGINE_VALUE) 
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_ENGINE_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      engineSellValue -= amount;
-
+      engineSellValue = Mathf.Max(engineSellValue - amount, MIN_ENGINE_VALUE);
       OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
-
-      return;
    }
+
    public static void TryIncreaseTier2BlueprintPrice(int amount) 
    {
-      // 1. Check if adding the amount would exceed the MAX_VALUE
-      if ( tier2BluePrintPrice >= MAX_ENGINE_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at maximum!");
-         return;
-      }
-
-      // 2. Check if the *new* value would exceed the maximum.
-      // We use Math.Max to see what the new value will be if clamped, and compare it.
-      if (engineSellValue + amount > MAX_ENGINE_VALUE) 
-      {
-         Debug.LogError($"Cannot increase by {amount}. Max value is {MAX_ENGINE_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the increase. The setter enforces the clamp just in case.
-      engineSellValue += amount;
-
-      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
-      return;
+      tier2BluePrintPrice += amount;
+      OnItemValueChange?.Invoke(tier2BluePrintPrice, ItemType.IndustrialBlueprint);
    }
 
    public static void TryDecreaseTier2BlueprintPrice(int amount) 
    {
-      // 1. Check if the value is already at the MIN_VALUE
-      if (engineSellValue <= MIN_ENGINE_VALUE) 
-      {
-         Debug.LogError("Crude Tool Sell Value is already at minimum!");
-         return;
-      }
-
-      // 2. Check if subtracting the amount would drop below the minimum.
-      if (engineSellValue - amount < MIN_ENGINE_VALUE) 
-      {
-         Debug.LogError($"Cannot decrease by {amount}. Min value is {MIN_ENGINE_VALUE}.");
-         return;
-      }
-
-      // 3. If checks pass, perform the decrease. The setter enforces the clamp just in case.
-      engineSellValue -= amount;
-
-      OnItemValueChange?.Invoke(engineSellValue, ItemType.Engine);
-
-      return;
+      // Prevent the blueprint from dropping below 0 (or some minimum)
+      tier2BluePrintPrice = Mathf.Max(tier2BluePrintPrice - amount, 0); 
+      OnItemValueChange?.Invoke(tier2BluePrintPrice, ItemType.IndustrialBlueprint);
    }
 
    public static void ApplyDiscountToBuyItems(float percent) 
@@ -567,7 +379,15 @@ public class Item {
    // Resets all static prices and events back to default for a new game
    public static void ResetItems() 
    {
-      // Reset Sell Values
+      // 1. Reset Base Values FIRST
+      base_diving_bell_value    = 25;
+      base_crude_tool_value     = 30;
+      base_harpoon_value        = 60;
+      base_pressure_valve_value = 250;
+      base_precision_lens_value = 600;
+      base_engine_value         = 900;
+      
+      // 2. THEN Reset Current Sell Values
       crudeToolSellValue     = base_crude_tool_value;
       harpoonSellValue       = base_harpoon_value;
       pressureValveSellValue = base_pressure_valve_value;
