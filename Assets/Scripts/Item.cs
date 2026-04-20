@@ -29,15 +29,15 @@ public class Item {
    public const int MIN_CRUDE_TOOL_VALUE           = 0;
    public const int MAX_CRUDE_TOOL_VALUE           = 150;
    public const int MIN_HARPOON_VALUE              = 0;
-   public const int MAX_HARPOON_VALUE              = 200;
+   public const int MAX_HARPOON_VALUE              = 300;
    public const int MIN_DIVING_BELL_VALUE          = 0;
-   public const int MAX_DIVING_BELL_VALUE          = 150;
+   public const int MAX_DIVING_BELL_VALUE          = 120;
    public const int MIN_PRESSURE_VALVE_VALUE       = 0;
-   public const int MAX_PRESSURE_VALVE_VALUE       = 540;
+   public const int MAX_PRESSURE_VALVE_VALUE       = 800;
    public const int MIN_PRECISION_LENS_VALUE       = 0;
-   public const int MAX_PRECISION_LENS_VALUE       = 1800;
+   public const int MAX_PRECISION_LENS_VALUE       = 3000;
    public const int MIN_ENGINE_VALUE               = 0;
-   public const int MAX_ENGINE_VALUE               = 2700;
+   public const int MAX_ENGINE_VALUE               = 5000;
 
    const string CRUDE_TOOL_DESCRIPTION           = 
       "A basic tool made from rudimentary materials. " +
@@ -70,7 +70,7 @@ public class Item {
    const string CLOCKWORK_BLUEPRINT_DESCRIPTION  =
       "Unlocks tier 3 recipes at the Forge.";
    const string INSURANCE_POLICY_DESCRIPTION =
-      "Pays a 500 pearl payout if the an item in the sell market crashes within the next 5 turns.";
+      "Pays a pearl payout if a market crash occurs within the next 5 turns. Active 1st 2 turns of every 5 turn cycle";
 
    public static Action<int, ItemType> OnItemValueChange;
 
@@ -381,11 +381,11 @@ public class Item {
    {
       // 1. Reset Base Values FIRST
       base_diving_bell_value    = 25;
-      base_crude_tool_value     = 30;
-      base_harpoon_value        = 60;
+      base_crude_tool_value     = 40;
+      base_harpoon_value        = 80;
       base_pressure_valve_value = 250;
-      base_precision_lens_value = 600;
-      base_engine_value         = 900;
+      base_precision_lens_value = 800;
+      base_engine_value         = 1200;
       
       // 2. THEN Reset Current Sell Values
       crudeToolSellValue     = base_crude_tool_value;
@@ -399,8 +399,8 @@ public class Item {
       rawOrePrice            = 1;
       mercenaryEngineerPrice = 100;
       insurancePolicyPrice   = 100;
-      tier2BluePrintPrice    = 300;
-      tier3BluePrintPrice    = 500;
+      tier2BluePrintPrice    = 150;
+      tier3BluePrintPrice    = 350;
 
       // Clear the static action delegate to prevent memory leaks/missing references
       OnItemValueChange = null;
