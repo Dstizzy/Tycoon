@@ -463,7 +463,6 @@ public class TradeHutManager : MonoBehaviour
    {
       Transform buyWindowContainer = BuyWindow.Find("BuyWindowContainer").GetComponent<Transform>(),
                 buyWindowTemplate  = buyWindowContainer.Find("BuyWindowTemplate").GetComponent<Transform>();
-      int       itemCount          = 0;
 
       buyWindowTemplate.gameObject.SetActive(false);
 
@@ -1532,6 +1531,7 @@ public class TradeHutManager : MonoBehaviour
           // Undo Scavenger Holiday event shift
           case (int)WorldEventTypes.ScavengersHolidayEvent:
              RevertMarketToBase();
+             ExplorationUnitManager.Instance.explorationCost = 1;
    
              // Flag the reset for Scavenger Holiday Event
              lastResetTurn[ItemType.CrudeTool]     = true;

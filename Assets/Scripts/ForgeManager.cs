@@ -790,7 +790,7 @@ public class ForgeManager : MonoBehaviour
 
       int maxParallelSlots = forgeLevel;
 
-      List<string> finishedItems = new List<string>();
+      Dictionary<string, int> finishedItemCounts = new Dictionary<string, int>();
 
       for (jobCount = activeJobs.Count - 1; jobCount >= 0; jobCount--)
       {
@@ -806,16 +806,30 @@ public class ForgeManager : MonoBehaviour
                activeJobs.RemoveAt(jobCount);
                Debug.Log($"Crafting Complete: {job.itemName}");
 
-               finishedItems.Add($"{job.amount}x {job.itemName}");
+               if (finishedItemCounts.ContainsKey(job.itemName))
+               {
+                  finishedItemCounts[job.itemName] += job.amount;
+               }
+               else
+               {
+                  finishedItemCounts.Add(job.itemName, job.amount);
+               }
             }
          }
       }
 
       UpdateStagingUI();
 
-      if (finishedItems.Count > 0)
+      if (finishedItemCounts.Count > 0)
       {
-         string finalMessage = "Crafting Complete: " + string.Join(", ", finishedItems);
+         // Convert the dictionary into a list of formatted strings
+         List<string> finishedItemsList = new List<string>();
+         foreach (var kvp in finishedItemCounts)
+         {
+            finishedItemsList.Add($"{kvp.Value}x {kvp.Key}");
+         }
+
+         string finalMessage = "Crafting Complete: " + string.Join(", ", finishedItemsList);
 
          if (ticker != null)
          {

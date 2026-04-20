@@ -133,97 +133,236 @@ public class TurnManager : MonoBehaviour
    }
 
 // Advances the game to the next turn and updates the UI,
-public async void EndTurn()
+//public async void EndTurn()
+//{
+//      if (isAdvancingTurn)
+//         return;
+//      if (!_isGameActive)
+//         return;
+//      isAdvancingTurn = true;
+
+//      if (PopUpManager.Instance != null)
+//         PopUpManager.Instance.ForceResetInputBlock();
+
+//      if (endTurnButton != null)
+//         endTurnButton.interactable = false;
+
+//      progressBar.SetActive(true);
+//      PopUpManager.Instance.DisablePlayerInput();
+//      await Task.Delay(1000);
+    
+//      progressBar.SetActive(false);
+//      PopUpManager.Instance.EnablePlayerInput();
+//      progressBar.transform.rotation = Quaternion.identity;
+//      Debug.Log("### TurnManager Start() ###");
+
+//      currentTurn++;
+//      eventCountdown++;
+
+//      // Check if the game should end                 
+//      if (currentTurn > maxTurns)
+//      {
+//         isAdvancingTurn = false;
+//         EndGame();
+//         return;
+//      }
+//      else
+//      {
+//         UpdateTurnUI();
+//         if (currentTurn > 5)
+//            HandleJamming();
+
+//         HandleEnemy();
+//      }
+//      if(isJamPrevented)
+//         HandlePreventativeMaintenance();
+         
+
+//      // Handle world event reset
+//      if (eventCountdown == 1) 
+//      {
+//         tradeHutManager.ResetWorldEventShifts();
+//         tradeHutManager.WorldEventChance();
+
+//         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(true);
+//         TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
+//      }
+
+//      // Apply the market shift
+//      tradeHutManager.MarketFluctuate();
+
+//      // Handle the News Ticker for World Events
+//      if (eventCountdown >= 3 && eventCountdown <= 5) 
+//      {
+//         newsTicker.gameObject.SetActive(true);
+//         tradeHutManager.WorldEventNewsTickerText();
+//         newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+
+//         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(false);
+
+//         if(eventCountdown == 5) 
+//         {
+//            TradeHutManager.Instance.InsurancePolicyCheck();
+//            TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
+//         }
+//      }
+
+//      // Predict the next turn
+//      tradeHutManager.CraftMarketForesight();
+
+//      // Reset countdown if we just finished the event turn
+//      if (eventCountdown == 5)
+//         eventCountdown = 0;
+
+//      OnTurnEnded?.Invoke();
+
+//      isAdvancingTurn = false;
+
+//      if (endTurnButton != null)
+//         endTurnButton.interactable = true;
+//   }
+
+   // Updates the turn text UI element to display the current
+   // turn and the maximum turn limit.        
+
+   // Advances the game to the next turn and updates the UI
+   public async void EndTurn()
    {
-      if (isAdvancingTurn)
+      // 1. Prevent overlapping turn advancements or running after game over
+      if (isAdvancingTurn || !_isGameActive)
          return;
-      if (!_isGameActive)
-         return;
+         
       isAdvancingTurn = true;
 
+      // 2. Lock UI and Input before the delay
       if (PopUpManager.Instance != null)
          PopUpManager.Instance.ForceResetInputBlock();
 
       if (endTurnButton != null)
          endTurnButton.interactable = false;
 
-      progressBar.SetActive(true);
-      PopUpManager.Instance.DisablePlayerInput();
+      if (progressBar != null)
+         progressBar.SetActive(true);
+         
+      if (PopUpManager.Instance != null)
+         PopUpManager.Instance.DisablePlayerInput();
+         
       await Task.Delay(1000);
-    
-      progressBar.SetActive(false);
-      PopUpManager.Instance.EnablePlayerInput();
-      progressBar.transform.rotation = Quaternion.identity;
-      Debug.Log("### TurnManager Start() ###");
-
-      currentTurn++;
-      eventCountdown++;
-
-      // Check if the game should end                 
-      if (currentTurn > maxTurns)
+      
+      // =========================================================
+      // 3. BULLETPROOF LOGIC BLOCK
+      // =========================================================
+      try 
       {
-         isAdvancingTurn = false;
-         EndGame();
-         return;
-      }
-      else
-      {
+         if (progressBar != null)
+         {
+            progressBar.SetActive(false);
+            progressBar.transform.rotation = Quaternion.identity;
+         }
+            
+         if (PopUpManager.Instance != null)
+            PopUpManager.Instance.EnablePlayerInput();
+            
+         Debug.Log("### TurnManager Start() ###");
+
+         currentTurn++;
+         eventCountdown++;
+
+         // Check if the game should end                 
+         if (currentTurn > maxTurns)
+         {
+            EndGame();
+            return; // Safely exits to the 'finally' block
+         }
+
+         // --- Standard Turn Logic ---
          UpdateTurnUI();
+         
          if (currentTurn > 5)
             HandleJamming();
 
          HandleEnemy();
-      }
-      if(isJamPrevented)
-         HandlePreventativeMaintenance();
-         
 
-      // Handle world event reset
-      if (eventCountdown == 1) 
-      {
-         tradeHutManager.ResetWorldEventShifts();
-         tradeHutManager.WorldEventChance();
+         if(isJamPrevented)
+            HandlePreventativeMaintenance();
 
-         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(true);
-         TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
-      }
-
-      // Apply the market shift
-      tradeHutManager.MarketFluctuate();
-
-      // Handle the News Ticker for World Events
-      if (eventCountdown >= 3 && eventCountdown <= 5) 
-      {
-         newsTicker.gameObject.SetActive(true);
-         tradeHutManager.WorldEventNewsTickerText();
-         newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
-
-         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(false);
-
-         if(eventCountdown == 5) 
+         // --- World Event Reset & Initialization ---
+         if (eventCountdown == 1) 
          {
-            TradeHutManager.Instance.InsurancePolicyCheck();
-            TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
+            tradeHutManager.ResetWorldEventShifts();
+            tradeHutManager.WorldEventChance();
+
+            // Safely find and activate the Insurance Policy
+            Transform insuranceUI = TradeHutManager.Instance?.BuyItems?.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG));
+            if (insuranceUI != null)
+               insuranceUI.gameObject.SetActive(true);
+
+            TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
          }
+
+         // Apply the market shift
+         tradeHutManager.MarketFluctuate();
+
+         // --- World Event News Ticker & Triggers ---
+         if (eventCountdown >= 3 && eventCountdown <= 5) 
+         {
+            // Safely show the ticker
+            if (newsTicker != null)
+            {
+               newsTicker.gameObject.SetActive(true);
+               tradeHutManager.WorldEventNewsTickerText();
+               newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
+            }
+            else
+            {
+               Debug.LogWarning("News Ticker is missing! Skipping Ticker UI update.");
+            }
+
+            // Safely hide the Insurance Policy
+            Transform insuranceUI = TradeHutManager.Instance?.BuyItems?.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG));
+            if (insuranceUI != null)
+               insuranceUI.gameObject.SetActive(false);
+
+            // Execute the climax of the event on Turn 5
+            if(eventCountdown == 5) 
+            {
+               TradeHutManager.Instance.InsurancePolicyCheck();
+               TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
+            }
+         }
+
+         // Predict the next turn
+         tradeHutManager.CraftMarketForesight();
+
+         // Reset countdown if we just finished the event turn
+         if (eventCountdown == 5)
+            eventCountdown = 0;
+
+         OnTurnEnded?.Invoke();
       }
+      catch (Exception e)
+      {
+         // If a random null error happens, log it so you can fix it, but DO NOT freeze the game!
+         Debug.LogError($"A fatal error occurred during EndTurn: {e.Message}\n{e.StackTrace}");
+      }
+      finally 
+      {
+         // =========================================================
+         // 4. GUARANTEED CLEANUP 
+         // (Runs even if an error crashes the try block above)
+         // =========================================================
+         isAdvancingTurn = false;
 
-      // Predict the next turn
-      tradeHutManager.CraftMarketForesight();
-
-      // Reset countdown if we just finished the event turn
-      if (eventCountdown == 5)
-         eventCountdown = 0;
-
-      OnTurnEnded?.Invoke();
-
-      isAdvancingTurn = false;
-
-      if (endTurnButton != null)
-         endTurnButton.interactable = true;
+         if (endTurnButton != null)
+            endTurnButton.interactable = true;
+            
+         if (progressBar != null)
+            progressBar.SetActive(false);
+            
+         if (PopUpManager.Instance != null)
+            PopUpManager.Instance.EnablePlayerInput();
+      }
    }
-
-   // Updates the turn text UI element to display the current
-   // turn and the maximum turn limit.        
    void UpdateTurnUI()
    {
       if (turnText != null)

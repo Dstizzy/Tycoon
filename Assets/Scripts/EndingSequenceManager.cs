@@ -126,6 +126,9 @@ public class EndingSequenceManager : MonoBehaviour
    [SerializeField] private bool useTypewriterEffect = true;
    [SerializeField] private float fadeDuration = 1.5f;
 
+   [Header("Custom Fonts")]
+   [SerializeField] private TMP_FontAsset chubbyFont;
+
    [Header("Title Images")]
    [SerializeField] private Sprite successTitleSprite;
    [SerializeField] private Sprite failureTitleSprite;
@@ -385,6 +388,8 @@ public class EndingSequenceManager : MonoBehaviour
       speakerRect.offsetMax = new Vector2(-PADDING, -PADDING);
 
       speakerNameText = speakerObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         speakerNameText.font = chubbyFont;
       speakerNameText.fontSize = NAME_FONT_SIZE;
       speakerNameText.fontStyle = FontStyles.Bold;
       speakerNameText.color = new Color(0.95f, 0.85f, 0.55f, 1f);
@@ -399,6 +404,8 @@ public class EndingSequenceManager : MonoBehaviour
       bodyRect.offsetMax = new Vector2(-PADDING, -96f);
 
       bodyText = bodyObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         bodyText.font = chubbyFont;
       bodyText.fontSize = DIALOGUE_FONT_SIZE;
       bodyText.color = Color.white;
       bodyText.alignment = TextAlignmentOptions.TopLeft;
@@ -469,6 +476,8 @@ public class EndingSequenceManager : MonoBehaviour
       textRect.offsetMax = new Vector2(-8f, -4f);
 
       textComponent = textObject.AddComponent<TextMeshProUGUI>();
+      if (chubbyFont != null)
+         textComponent.font = chubbyFont;
       textComponent.text = buttonText;
       textComponent.fontSize = NAV_BUTTON_FONT_SIZE;
       textComponent.fontStyle = FontStyles.Bold;
