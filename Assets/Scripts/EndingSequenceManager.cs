@@ -1167,6 +1167,8 @@ private IEnumerator ShakeTransformLoop(Transform target, float strength)
 
       yield return FadeTo(1f, fadeDuration);
 
+      GameManager.RestartGame();
+
       ForgeManager.forgeLevel = 1;
 
       CleanupPersistentObjects();
