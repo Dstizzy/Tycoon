@@ -98,11 +98,6 @@ public class TurnManager : MonoBehaviour
 
    public async void WalkthroughEndTurn()
    {
-      if(normalGame)
-      {
-         walkthroughGame = true;
-         normalGame = false;
-      }
       if (isAdvancingTurn)
          return;
       if (!_isGameActive)
@@ -247,14 +242,6 @@ public class TurnManager : MonoBehaviour
    // Advances the game to the next turn and updates the UI
    public async void EndTurn()
    {
-      if (walkthroughGame)
-      {
-         normalGame = true;
-         walkthroughGame = false;
-         currentTurn = tempTurn;
-         Debug.Log(tempTurn);
-         UpdateTurnUI();
-      }
       // 1. Prevent overlapping turn advancements or running after game over
       if (isAdvancingTurn || !_isGameActive)
          return;
