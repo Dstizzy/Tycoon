@@ -27,6 +27,7 @@ public class MainUIManager : MonoBehaviour
    private bool isVisible = false;
    private int displayedPearlCount = 0;
    private int displayedOreCount = 0;
+   public int currentTurn;
 
    public static MainUIManager mainUI;
 
@@ -130,6 +131,7 @@ public class MainUIManager : MonoBehaviour
 
    public async void StartWalkthrough()
    {
+      TurnManager.Instance.SetSavedTurn();
       NarrativeOverlayUI.Instance.FadeTo(1f, 0.4f);
       await Task.Delay(500);
       NarrativeOverlayUI.Instance.FadeTo(0f, 0.4f);

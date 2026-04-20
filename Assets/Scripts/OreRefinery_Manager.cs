@@ -18,10 +18,10 @@ public class OreRefinery_Manager : MonoBehaviour
    const int UPGRADE_BUTTON = 3;
    const int STARTING_LEVEL = 1;
    const int ENDING_LEVEL   = 3;
-   const int LEVEL_2_PEARL_COST = 100;
-   const int LEVEL_2_ORE_COST = 50;
-   const int LEVEL_3_PEARL_COST = 300;
-   const int LEVEL_3_ORE_COST = 100;
+   const int LEVEL_2_PEARL_COST = 75;
+   const int LEVEL_2_ORE_COST = 40;
+   const int LEVEL_3_PEARL_COST = 200;
+   const int LEVEL_3_ORE_COST = 80;
 
    public PanelManager panelManager;
    [SerializeField] private Transform patchPanel;

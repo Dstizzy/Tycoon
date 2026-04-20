@@ -115,6 +115,7 @@ public class BuildingTutorialGuideManager : MonoBehaviour
          new NPCEncounterSystem.DialogueLine("Research starts here, and every bit of progress opens the way to bigger systems, better options, and the really important projects.", NPCEncounterSystem.ExpressionType.Thinking),
          new NPCEncounterSystem.DialogueLine("If you want to unlock everything worth unlocking before the volcano gets too excited, you'll want to keep this place busy.", NPCEncounterSystem.ExpressionType.Happy),
          new NPCEncounterSystem.DialogueLine("And between you and me, a complete set of Lab progress helps turn 'escape plan' into 'actual submarine.' Pretty impressive, right?", NPCEncounterSystem.ExpressionType.Special),
+         new NPCEncounterSystem.DialogueLine("Also, see that submarine flask button in the middle? That's where you can check what the final submarine still needs.", NPCEncounterSystem.ExpressionType.Thinking),
          new NPCEncounterSystem.DialogueLine("Anyway, try not to look too amazed. I need some mystery to maintain my reputation.", NPCEncounterSystem.ExpressionType.Happy)
          },
 

@@ -1155,7 +1155,7 @@ public class TradeHutManager : MonoBehaviour
       return Mathf.RoundToInt(fluctuation);
    }
    
-   // Helper method to keep your UI updates clean and perfectly matched to the math
+// Helper method to keep your UI updates clean and perfectly matched to the math
    private void UpdateMarketPreviewUI(
       ItemType itemType, WorldEventTypes eventType, string itemTag,
       int minSellCost, int maxSellCost, int baseValue,
@@ -1164,32 +1164,29 @@ public class TradeHutManager : MonoBehaviour
        int currentVal = GetItemValue(itemType),
            preview    = currentVal;
 
-       int marketTrendChance
-             = itemTier == TIER_ONE 
-             ? TIER_ONE_CHANCE 
-             : itemTier == TIER_TWO
-             ? TIER_TWO_CHANCE
-             : itemTier == TIER_THREE
-             ? TIER_THREE_CHANCE
-             : TIER_ONE_CHANCE;
+       int marketTrendChance = 
+         itemTier == TIER_ONE 
+         ? TIER_ONE_CHANCE
+         : itemTier == TIER_TWO 
+         ? TIER_TWO_CHANCE 
+         : itemTier == TIER_THREE 
+         ? TIER_THREE_CHANCE 
+         : TIER_ONE_CHANCE;
 
-       // World event market preview
-       if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_PREVIEW_TURN)
+       // 1. SPIKE PREVIEW: If we are on Turn 4, predict the massive Event Spike happening next on Turn 5!
+       if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == 4)
        {
           switch(worldEvent) 
           { 
              case (int)WorldEventTypes.IndustrialGoldRushEvent:
-               preview = currentVal * 2;
+                preview = currentVal * 2;
                 break;
-
              case (int)WorldEventTypes.DeepSeaWarEvent:
                 preview += (currentVal * 3) - currentVal;
                 break;
-
              case (int) WorldEventTypes.ScavengersHolidayEvent:
                 preview -=  Mathf.RoundToInt(currentVal * .25f);
                 break;
-
              default:
                 if (shiftDirection <= marketTrendChance)
                    preview += currentVal;
@@ -1198,22 +1195,18 @@ public class TradeHutManager : MonoBehaviour
                 break;
           }
        }
-       else
+       // 2. RESET PREVIEW
+       else if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == 5) 
        {
-          // Market reset preview
-          if (worldEvent == (int) eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN) 
-          {
-            preview = baseValue;
-          }
-          // Standard Fluctuation Preview
-          else
-          { 
-             if (chance <= 30) 
-                preview += fluctuation;
-             else 
-               if (chance <= 60) 
-                  preview -= fluctuation;
-          }
+           preview = baseValue;
+       }
+       // 3. STANDARD PREVIEW: Normal daily fluctuations
+       else
+       { 
+          if (chance <= 30) 
+             preview += fluctuation;
+          else if (chance <= 60) 
+             preview -= fluctuation;
        }
    
        preview = Mathf.Clamp(preview, minSellCost, maxSellCost);
@@ -1268,39 +1261,31 @@ public class TradeHutManager : MonoBehaviour
        }
    }
    
-   // Aplies the market the shift
+   // Applies the market shift
    private void ApplyStoredShift(
       ItemType itemType, WorldEventTypes eventType,
       int change, int fluctuation, int itemTier,
       Action<int> increaseSellValueMethod, Action<int> decreaseSellValueMethod)
    {
-      int marketTrendChance
-             = itemTier == TIER_ONE
-             ? TIER_ONE_CHANCE
-             : itemTier == TIER_TWO
-             ? TIER_TWO_CHANCE
-             : itemTier == TIER_THREE
-             ? TIER_THREE_CHANCE
-             : TIER_ONE_CHANCE;
+      int marketTrendChance = itemTier == TIER_ONE ? TIER_ONE_CHANCE : 
+                              itemTier == TIER_TWO ? TIER_TWO_CHANCE : 
+                              itemTier == TIER_THREE ? TIER_THREE_CHANCE : TIER_ONE_CHANCE;
 
-      // Is it the active World Event turn?
-      if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == WORLD_EVENT_ACTIVE_TURN)
+      // APPLY SPIKE: Executes exactly on Turn 5
+      if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == 5)
        {
            switch (worldEvent) 
            {
               case (int) WorldEventTypes.IndustrialGoldRushEvent:
-               increaseSellValueMethod((GetItemValue(itemType) * 2) - GetItemValue(itemType));
+                 increaseSellValueMethod((GetItemValue(itemType) * 2) - GetItemValue(itemType));
                  break;
-
               case (int) WorldEventTypes.DeepSeaWarEvent:
-                 WorldEventSideEffect(eventType);
+                 // WorldEventSideEffect(eventType); <-- Ensure this exists or remove it!
                  increaseSellValueMethod((GetItemValue(itemType) * 3) - GetItemValue(itemType));
                  break;
-
               case (int) WorldEventTypes.ScavengersHolidayEvent:
                  decreaseSellValueMethod((int)(GetItemValue(itemType) * .25f));
                  break;
-
               default:
                  if (shiftDirection <= marketTrendChance) 
                     increaseSellValueMethod(GetItemValue(itemType));
@@ -1309,19 +1294,18 @@ public class TradeHutManager : MonoBehaviour
                  break;
            }
        }
-
-       // Is it a post-event Reset Turn? (Skip natural fluctuation)
        else 
        { 
-          if (lastResetTurn.ContainsKey(itemType) && lastResetTurn[itemType] && TurnManager.Instance.eventCountdown == WORLD_EVENT_RESET_TURN)
-              lastResetTurn[itemType] = false;
+          // SKIP FLUCTUATION: If we just reset the values on Turn 1, don't fluctuate them immediately
+          if (lastResetTurn.ContainsKey(itemType) && lastResetTurn[itemType] && TurnManager.Instance.eventCountdown == 1)
+              lastResetTurn[itemType] = false; 
+          // STANDARD FLUCTUATION: Apply to Turns 2, 3, and 4
           else
           {
               if (change <= 30) 
                  increaseSellValueMethod(fluctuation);
-              else 
-                 if (change <= 60) 
-                    decreaseSellValueMethod(fluctuation);
+              else if (change <= 60) 
+                 decreaseSellValueMethod(fluctuation);
           }
        }
    }
@@ -1342,8 +1326,9 @@ public class TradeHutManager : MonoBehaviour
 
       worldEvent = Rng.Next(worldEvent1, finalWorldEvent + 1);
       WorldEventItemVisual(worldEvent);
+     
 
-      shiftDirection = isTier3BuffACtive ?  50 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
+      shiftDirection = isTier3BuffACtive ? 1 : Rng.Next(MARKET_CHANCE_MIN, MARKET_CHANCE_MAX);
    }
 
    public void WorldEventItemVisual(int worldEvent) 
@@ -1396,7 +1381,16 @@ public class TradeHutManager : MonoBehaviour
       bool isWorldEventVisualAcive, 
       bool isWorldEventChangeVisualActive) 
    {
-      if(worldEvent == (int) WorldEventTypes.DeepSeaWarEvent || worldEvent == (int) WorldEventTypes.IndustrialGoldRushEvent)
+      int marketTrendChance =
+         worldEvent <= 3
+        ? TIER_ONE_CHANCE
+        : worldEvent <= 5
+        ? TIER_TWO_CHANCE
+        : worldEvent <= 8
+        ? TIER_THREE_CHANCE
+        : TIER_ONE_CHANCE;
+
+      if (worldEvent == (int) WorldEventTypes.DeepSeaWarEvent || worldEvent == (int) WorldEventTypes.IndustrialGoldRushEvent)
             worldEventChange.sprite = worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite;
       else 
       { 
@@ -1405,7 +1399,7 @@ public class TradeHutManager : MonoBehaviour
          else 
          { 
             worldEventChange.sprite = 
-               shiftDirection < 50 
+               shiftDirection < marketTrendChance
                ? worldEventSymbols.Find("increaseSymbol").GetComponent<Image>().sprite
                : worldEventSymbols.Find("decreaseSymbol").GetComponent<Image>().sprite;
          }
