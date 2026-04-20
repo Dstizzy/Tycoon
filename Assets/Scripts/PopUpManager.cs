@@ -315,6 +315,12 @@ public class PopUpManager : MonoBehaviour
       CheckHoverInstantly();
    }
 
+   private void Update()
+   {
+      if (Keyboard.current != null && Keyboard.current.f10Key.wasPressedThisFrame)
+         ForceResetInputBlock();
+   }
+
    private void ApplyInputState()
    {
       bool shouldBlockInput = windowOpenCount > 0;
