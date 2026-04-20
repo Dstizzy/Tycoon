@@ -26,7 +26,7 @@ public class LabManager : MonoBehaviour
    public const int T2_EXPL_PEARL = 500;
    public const int T3_COMM_PEARL = 800;
    public const int T3_PROD_PEARL = 1000;
-   public const int T3_EXPL_PEARL = 1200;
+   public const int T3_EXPL_PEARL = 900;
 
    public const int T1_COMM_CRUDE_TOOL = 1;
    public const int T2_COMM_PRESSURE_VALVE = 2;

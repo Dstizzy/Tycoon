@@ -782,7 +782,7 @@ public class InventoryManager : MonoBehaviour
          if (crudeToolCount < crudeToolAmount)
       {
          Debug.LogError("Not enough crude tools!");
-         ticker.ShowTicker($"Cannot use crude tools, only {crudeToolCount} avaliable!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Cannot use crude tools, only {crudeToolCount} avaliable! Craft Crude Tools in Forge (Tier 1).", Color.red, MessageTypes.ResultMessage);
 
          return isSuccess;
       }
@@ -839,7 +839,7 @@ public class InventoryManager : MonoBehaviour
       if (harpoonCount <= MIN_HARPOON_COUNT)
       {
          Debug.LogError("Harpoon count is at minimum!");
-         ticker.ShowTicker($"Harpoon count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Harpoon count is at minimum! Craft a harpoon in Forge (Tier 1).", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       } 
       else 
@@ -847,7 +847,7 @@ public class InventoryManager : MonoBehaviour
          if (harpoonCount < harpoonAmount)
          {
             Debug.LogError("Not enough harpoons!");
-            ticker.ShowTicker($"Cannot use harpoons, only {harpoonCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use harpoons, only {harpoonCount} available! Craft a harpoon in Forge (Tier 1).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
@@ -896,7 +896,7 @@ public class InventoryManager : MonoBehaviour
       if (divingBellCount <= MIN_DIVING_BELL_COUNT)
       {
          Debug.LogError("Diving Bell count is at minimum!");
-         ticker.ShowTicker($"Diving Bell count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Diving Bell count is at minimum! Craft a diving bell in Forge (Tier 1).", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
       else
@@ -904,7 +904,7 @@ public class InventoryManager : MonoBehaviour
          if (divingBellCount < divingBellAmount)
          {
             Debug.LogError("Not enough diving bells!");
-            ticker.ShowTicker($"Cannot use diving bells, only {divingBellCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use diving bells, only {divingBellCount} available! Craft a diving bell in Forge (Tier 1).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
@@ -976,7 +976,7 @@ public class InventoryManager : MonoBehaviour
       if (patchKitCount <= MIN_PATCH_KIT_COUNT)
       {
          Debug.LogError("Patch Kit count is at minimum!");
-         ticker.ShowTicker($"Patch Kit count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Patch Kit count is at minimum! Craft a patch kit in Forge (Tier 2).", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
       else
@@ -984,7 +984,7 @@ public class InventoryManager : MonoBehaviour
          if (patchKitCount < patchKitAmount)
          {
             Debug.LogError("Not enough Patch Kit!");
-            ticker.ShowTicker($"Cannot use patch kits, only {patchKitCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use patch kits, only {patchKitCount} available! Craft a pathc kit in Forge (Tier 2).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
@@ -1013,7 +1013,7 @@ public class InventoryManager : MonoBehaviour
 
       if (pressureValveCount >= MAX_PRESSURE_VALVE_COUNT)
       {
-         Debug.LogError("Pressure valve count is at minimum!");
+         Debug.LogError("Pressure valve count is at maximum!");
          ticker.ShowTicker($"Pressure valve count is at maximum!", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
@@ -1054,7 +1054,7 @@ public class InventoryManager : MonoBehaviour
       if (pressureValveAmount <= MIN_PRESSURE_VALVE_COUNT)
       {
          Debug.LogError("Pressure valve count is at minimum!");
-         ticker.ShowTicker($"Pressure valve count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Pressure valve count is at minimum! Craft a pressure valve in Forge (Tier 2).", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
       else
@@ -1062,7 +1062,7 @@ public class InventoryManager : MonoBehaviour
          if (pressureValveCount < pressureValveAmount)
          {
             Debug.LogError("Not enough pressure valves!");
-            ticker.ShowTicker($"Cannot use pressure valves, only {pressureValveCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use pressure valves, only {pressureValveCount} available! Craft a pressure valve in Forge (Tier 2).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
@@ -1093,7 +1093,7 @@ public class InventoryManager : MonoBehaviour
 
       if (precisionLensCount >= MAX_PRECISION_LENS_COUNT)
       {
-         Debug.LogError("Precision Lens count is at minimum!");
+         Debug.LogError("Precision Lens count is at maximum!");
          ticker.ShowTicker($"Precision Lens count is at maximum!", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
@@ -1137,7 +1137,7 @@ public class InventoryManager : MonoBehaviour
       if (precisionLensCount <= MIN_PRECISION_LENS_COUNT)
       {
          Debug.LogError("Precision Lens count is at minimum!");
-         ticker.ShowTicker($"Precision Lens count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Precision Lens count is at minimum! Craft a precision lens in Forge (Tier 3).", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
       else
@@ -1145,7 +1145,7 @@ public class InventoryManager : MonoBehaviour
          if (precisionLensCount < precisionLensAmount)
          {
             Debug.LogError("Not enough Precision Lens!");
-            ticker.ShowTicker($"Cannot use precision lenses, only {precisionLensCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use precision lenses, only {precisionLensCount} available! Craft a precision lens in Forge (Tier 3).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
@@ -1220,7 +1220,7 @@ public class InventoryManager : MonoBehaviour
       if (engineCount <= MIN_ENGINE_COUNT)
       {
          Debug.LogError("Engine count is at minimum!");
-         ticker.ShowTicker($"Engine count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Engine count is at minimum! Craft a clockwork engine in Forge (Tier 3).", Color.red, MessageTypes.ResultMessage);
          return isSuccess;
       }
       else
@@ -1228,7 +1228,7 @@ public class InventoryManager : MonoBehaviour
          if (engineCount < engineAmount)
          {
             Debug.LogError("Not enough engines!");
-            ticker.ShowTicker($"Cannot use engines, only {engineCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use engines, only {engineCount} available! Craft a clockwork engine in Forge (Tier 3).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
