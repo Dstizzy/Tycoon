@@ -6897,7 +6897,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1   /   80
+  m_text: 1   /   50
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
@@ -23351,7 +23351,7 @@ MonoBehaviour:
   uiFade: {fileID: 1486611384}
   newsTicker: {fileID: 1267237419}
   currentTurn: 1
-  maxTurns: 80
+  maxTurns: 50
   walkthroughTurnText: {fileID: 0}
   turnText: {fileID: 106892144}
   eventCountdown: 1
