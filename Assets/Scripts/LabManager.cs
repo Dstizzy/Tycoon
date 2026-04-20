@@ -889,9 +889,6 @@ public class LabManager : MonoBehaviour
             affordablePaths.Add("Exploration Tier 3");
       }
 
-      // ---------------------------------------------------------
-      // OUTPUT TO TICKER
-      // ---------------------------------------------------------
       if (affordablePaths.Count > 0)
       {
          string message = "Lab Research Available: " + string.Join(", ", affordablePaths);
