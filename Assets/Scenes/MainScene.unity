@@ -73484,6 +73484,44 @@ MonoBehaviour:
     note: NPC Hint
     layoutMode: 0
     lines:
+    - text: Do you see that building.
+      expression: 4
+      isAction: 0
+    - text: This is super important for saving our empire.
+      expression: 1
+      isAction: 0
+    - text: Be sure to explore the different paths and upgrades you can do.
+      expression: 5
+      isAction: 0
+    - text: But most importantly, click the SUBMARINE in the flask. You'll know once
+        you get in there.
+      expression: 1
+      isAction: 0
+    highlightTargets:
+    - {fileID: 949774656}
+    uiHighlightTargets: []
+    pearlRewardOnComplete: 0
+  - speaker: 5
+    note: NPC Hint
+    layoutMode: 0
+    lines:
+    - text: I also thought I should mention this one to you as well!
+      expression: 4
+      isAction: 0
+    - text: Please don't neglect this guy, or our empire is as good as gone.
+      expression: 5
+      isAction: 0
+    - text: Anyway, I really do need to get back to work. Good luck.
+      expression: 1
+      isAction: 0
+    highlightTargets:
+    - {fileID: 948295391}
+    uiHighlightTargets: []
+    pearlRewardOnComplete: 0
+  - speaker: 5
+    note: NPC Hint
+    layoutMode: 0
+    lines:
     - text: One last thing.
       expression: 4
       isAction: 0
@@ -78191,6 +78229,7 @@ MonoBehaviour:
   oreCountText: {fileID: 611894778}
   erroPanel: {fileID: 0}
   tutorial: {fileID: 565412330}
+  currentTurn: 0
 --- !u!1 &1178860887
 GameObject:
   m_ObjectHideFlags: 0
