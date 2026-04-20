@@ -30965,6 +30965,7 @@ MonoBehaviour:
   explorationCanvas: {fileID: 721189057}
   labCanvas: {fileID: 1515892656}
   turnButton: {fileID: 1229296622}
+  chubbyFont: {fileID: 0}
   tutorialIndex: 0
   requiredButtonClicked: 1
   oreRefineryUpgrade: 0
@@ -47797,7 +47798,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &745969559
 Transform:
   m_ObjectHideFlags: 0
