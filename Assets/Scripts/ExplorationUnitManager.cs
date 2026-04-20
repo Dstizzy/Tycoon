@@ -134,7 +134,7 @@ public class ExplorationUnitManager : MonoBehaviour
                   if (isExploring)
                      TickerSystem.Instance.ShowTicker("Exploration already ongoing!", Color.red, TickerSystem.MessageTypes.ResultMessage);
                   else if (!hasDivingBell)
-                     TickerSystem.Instance.ShowTicker("Exploration requires a Diving Bell.", Color.red, TickerSystem.MessageTypes.ResultMessage);
+                     TickerSystem.Instance.ShowTicker("Exploration requires a Diving Bell. Craft a diving bell in the Forge (Tier 1)", Color.red, TickerSystem.MessageTypes.ResultMessage);
                   else
                      StartExploration(); 
                });

@@ -6,11 +6,11 @@ public class Item {
 
    /* Public static properties                                          */
    public static int base_diving_bell_value    = 25;
-   public static int base_crude_tool_value     = 30;
-   public static int base_harpoon_value        = 60;
+   public static int base_crude_tool_value     = 40;
+   public static int base_harpoon_value        = 80;
    public static int base_pressure_valve_value = 250;
-   public static int base_precision_lens_value = 600;
-   public static int base_engine_value         = 900;
+   public static int base_precision_lens_value = 800;
+   public static int base_engine_value         = 1200;
 
    private static int crudeToolSellValue     { get; set; } = base_crude_tool_value;
    private static int harpoonSellValue       { get; set; } = base_harpoon_value;
@@ -21,8 +21,8 @@ public class Item {
    private static int rawOrePrice            { get; set; } = 1;
    private static int mercenaryEngineerPrice { get; set; } = 100;
    private static int insurancePolicyPrice   { get; set; } = 100;
-   private static int tier2BluePrintPrice    { get; set; } = 300;
-   private static int tier3BluePrintPrice    { get; set; } = 500;
+   private static int tier2BluePrintPrice    { get; set; } = 150;
+   private static int tier3BluePrintPrice    { get; set; } = 350;
 
    public static int tierOneIncreaseFactor { get; private set; } = 2;
 
