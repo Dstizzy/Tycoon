@@ -257,7 +257,7 @@ public class TradeHutManager : MonoBehaviour
       sellValueText      = tradeItemTransform.Find("ItemValue").GetComponent<TextMeshProUGUI>();
       sellValueText.text = itemValue.ToString();
 
-      tradeItemTransform.Find("ItemShadow").GetComponent<Image>().sprite        = itemSprite;
+      tradeItemTransform.Find("ItemShadow").GetComponent<Image>().sprite = itemSprite;
       tradeItemTransform.Find("ItemShadow").gameObject.SetActive(false);
       tradeItemTransform.Find("Chain").gameObject.SetActive(false);
 

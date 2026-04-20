@@ -103226,7 +103226,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1200\n   2"
+  m_text: "900\n   2"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
@@ -105641,10 +105641,10 @@ MonoBehaviour:
   - {fileID: -2472546952532732975, guid: 03cb00a3ccecb4b27b6c38f8b9e36a12, type: 3}
   - {fileID: -2320852388074000531, guid: a3e3b56104ac048d283468784e59ff59, type: 3}
   - {fileID: 7530612607578742135, guid: b5fa7ba6a85924e65ad8a7b06131d803, type: 3}
-  level2PearlCost: 100
-  level2OreCost: 50
-  level3PearlCost: 300
-  level3OreCost: 100
+  level2PearlCost: 75
+  level2OreCost: 40
+  level3PearlCost: 200
+  level3OreCost: 80
   oreLevel: 1
   IsBlocked: 0
   tutorialUpgrade: 0

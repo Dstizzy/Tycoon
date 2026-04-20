@@ -591,13 +591,13 @@ public class ForgeManager : MonoBehaviour
 
       if (forgeLevel == 1)
       {
-         upgradeCost = 300;
+         upgradeCost = LEVEL_2_PEARL_COST;
          upgradeTitle = "REWARD: Unlock 2nd Crafting Slot";
          upgradeExplanation = "This upgrade increases your simultaneous crafting capacity to 2";
       }
       else if (forgeLevel == 2)
       {
-         upgradeCost = 700;
+         upgradeCost = LEVEL_3_PEARL_COST;
          upgradeTitle = "REWARD: Unlock 3nd Crafting Slot";
          upgradeExplanation = "This upgrade increases your simultaneous crafting capacity to 3";
       }
