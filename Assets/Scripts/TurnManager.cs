@@ -352,6 +352,8 @@ public class TurnManager : MonoBehaviour
          if (eventCountdown == 5)
             eventCountdown = 0;
 
+         TradeHutManager.Instance.recycleCounter = 0;
+         TradeHutManager.Instance.RecycleButton.gameObject.SetActive(true);
          OnTurnEnded?.Invoke();
       }
       catch (Exception e)

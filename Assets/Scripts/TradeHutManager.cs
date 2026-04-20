@@ -90,7 +90,8 @@ public class TradeHutManager : MonoBehaviour
    // Public variables
    public float marketShiftMax = 1.2f,
                 marketShiftMin = 1.06f;
-   public int shiftDirection { get; private set; } 
+   public int shiftDirection { get; private set; }
+   public int recycleCounter = 0;
 
 
    // Constants
@@ -1040,10 +1041,16 @@ public class TradeHutManager : MonoBehaviour
    // Exchanges ores for pearls
    public void RecycleOre() 
    {
-      int pearlsReceived = Rng.Next(PEARL_REWARD_MINIMUM, PEARL_REWARD_MAXIMUM + 1);
+     int pearlsReceived = Rng.Next(PEARL_REWARD_MINIMUM, PEARL_REWARD_MAXIMUM + 1);
+     
+     if(inv.TrySpendOre(ORE_EXCHANGE_COST)) 
+     { 
+        inv.TryAddPearl(pearlsReceived);
+        recycleCounter += 1;
+     }
 
-      inv.TrySpendOre(ORE_EXCHANGE_COST);
-      inv.TryAddPearl(pearlsReceived);
+     if (recycleCounter == 3)
+        RecycleButton.gameObject.SetActive(false);
 
       return;
    }

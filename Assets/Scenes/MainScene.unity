@@ -6100,7 +6100,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Exchanges 10 ore for a random amount of pearls (10-40)
+  m_text: '3 times per day, you can exchanges 10 ore for a random amount of pearls
+    (10-40). '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
   m_sharedMaterial: {fileID: -3383242333693327004, guid: 5b214ad912be86240898f0c2d81510e7, type: 2}
@@ -113770,6 +113771,7 @@ MonoBehaviour:
   mercenaryEngineersAvailableText: {fileID: 673627839}
   marketShiftMax: 1.2
   marketShiftMin: 1.06
+  recycleCounter: 0
   isTier3BuffACtive: 0
   tutorialFunctionOne: 0
   tutorialFunctionTwo: 0
