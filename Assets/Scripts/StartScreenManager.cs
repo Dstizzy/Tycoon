@@ -14,6 +14,8 @@ public class StartScreenManager : MonoBehaviour
    // Called by the START button.
    public void OnStartButtonClick()
    {
+      GameManager.RestartGame();
+      NarrativeFlowManager.ResetIntroFlow();
       // Change "MainScene" to your actual game scene name. 
       StartCoroutine(FadeAndLoadScene("MainScene"));
    }
@@ -32,7 +34,13 @@ public class StartScreenManager : MonoBehaviour
 
    public void OpenScene(string sceneName)
    {
-      StartCoroutine(FadeAndLoadScene(sceneName));
+      if (sceneName == "MainScene")
+      {
+         GameManager.RestartGame();
+         NarrativeFlowManager.ResetIntroFlow();
+      }
+
+         StartCoroutine(FadeAndLoadScene(sceneName));
    }
 
    // Coroutine to execute fade-out and load the scene.

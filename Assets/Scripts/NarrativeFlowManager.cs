@@ -54,6 +54,11 @@ public class NarrativeFlowManager : MonoBehaviour
       NarrativeOverlayUI.Instance.SetFadeImmediate(0f);
    }
 
+   public static void ResetIntroFlow()
+   {
+      tutorialEnabled = true;
+   }
+
    // Runs automatically when the scene starts.
    // Handles intro dialogue, tutorial toggle, optional tutorial handoff, and cleanup.
    private IEnumerator StartTutorial()
