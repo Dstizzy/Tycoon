@@ -58,6 +58,7 @@ public class WalkThroughFlowManager : MonoBehaviour
       }
 
       // Final cleanup: hide overlay UI and restore gameplay input.
+      TurnManager.Instance.ResetToSavedTurn();
       NarrativeOverlayUI.Instance.HideAll();
       TutorialManager.Instance.SetGameplayBlocked(false);
       SceneManager.LoadScene("MainScene");

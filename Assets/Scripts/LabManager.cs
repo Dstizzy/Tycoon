@@ -1,10 +1,10 @@
 // libraries                                                                                     
 using System;
-
 using TMPro;
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 using static Item;
 
@@ -26,7 +26,7 @@ public class LabManager : MonoBehaviour
    public const int T2_EXPL_PEARL = 500;
    public const int T3_COMM_PEARL = 800;
    public const int T3_PROD_PEARL = 1000;
-   public const int T3_EXPL_PEARL = 1200;
+   public const int T3_EXPL_PEARL = 900;
 
    public const int T1_COMM_CRUDE_TOOL = 1;
    public const int T2_COMM_PRESSURE_VALVE = 2;
@@ -80,9 +80,14 @@ public class LabManager : MonoBehaviour
    [SerializeField] private GameObject submarineBlackedOutHead;
    [SerializeField] private GameObject submarineBlackedOutTail;
 
+   [Header("Lab Visuals")]
+   [SerializeField] private ParticleSystem labBubbles; 
+
 
    // Public variables
    public static int  currentCommerceTier { get; set; } = 0;
+   public static int currentProductionTier { get; set; } = 0;
+   public static int currentExplorationTier { get; set; } = 0;
    public static bool headUnlocked            = false;
    public static bool tailUnlocked            = false;
    private       bool commerceFinished        = false;
@@ -213,7 +218,10 @@ public class LabManager : MonoBehaviour
       headUnlocked = false;
       tailUnlocked = false;
    }
-
+   private void Update()
+   {
+      UpdateBubbleVisuals();
+   }
    // Open up a lab panel upon clicking the corresponding button                                
    public void RequestLabPanel(int buttonID)
    {
@@ -471,6 +479,7 @@ public class LabManager : MonoBehaviour
       // Permanently reduce gold spent on refinery upkeep by 50%                               
       else if (tabType == productionTab)
       {
+         currentProductionTier = TIER_ONE;
          Debug.Log("Reduce ore jamming percentage by 5%");
          if (OreRefinery_Manager.Instance != null)
          {
@@ -482,6 +491,7 @@ public class LabManager : MonoBehaviour
       /* Ships have health and fuel increased                                                    */
       else if (tabType == explorationTab)
       {
+         currentExplorationTier = TIER_ONE;
          if (ShipManager.Instance != null)
          {
             ShipManager.Instance.ApplyLabShipBonus();
@@ -508,6 +518,7 @@ public class LabManager : MonoBehaviour
       //    bonus item upon crafting a single item                                             
       else if (tabType == productionTab)
       {
+         currentProductionTier = TIER_TWO;
          Debug.Log("Unlock Overclock and Tier 2 Blueprints");
          if (ForgeManager.Instance != null)
          {
@@ -518,6 +529,7 @@ public class LabManager : MonoBehaviour
       /* Unlocks chance to find crafts on explorations                                         */
       else
       {
+         currentExplorationTier = TIER_TWO;
          if (tabType == explorationTab)
          {
             if (ShipManager.Instance != null)
@@ -541,12 +553,14 @@ public class LabManager : MonoBehaviour
       }
       else if (tabType == productionTab)
       {
+         currentProductionTier = TIER_THREE;
          productionFinished = true;
          ForgeManager.Instance?.UnlockReduceCraftingTime();
          ticker.ShowTicker("Production Branch Maxed!", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
       }
       else if (tabType == explorationTab)
       {
+         currentExplorationTier = TIER_THREE;
          explorationFinished = true;
          ShipManager.Instance?.ApplyLabRewardBonus();
          ticker.ShowTicker("Exploration Tech Maxed!", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
@@ -815,5 +829,105 @@ public class LabManager : MonoBehaviour
             ticker.ShowTicker("Not enough resources to buy tail", Color.red, TickerSystem.MessageTypes.ResultMessage);
          }
       });
+   }
+   public void CheckAffordableNodes()
+   {
+      if (InventoryManager.Instance == null || TickerSystem.Instance == null)
+      {
+         Debug.Log("Managers aren't ready yet!");
+         return;
+      }
+
+      List<string> affordablePaths = new List<string>();
+
+
+      if (currentCommerceTier == 0)
+      {
+         if (InventoryManager.Instance.pearlCount >= T1_COMM_PEARL && InventoryManager.Instance.crudeToolCount >= T1_COMM_CRUDE_TOOL)
+            affordablePaths.Add("Commerce Tier 1");
+      }
+      else if (currentCommerceTier == 1)
+      {
+         if (InventoryManager.Instance.pearlCount >= T2_COMM_PEARL && InventoryManager.Instance.pressureValveCount >= T2_COMM_PRESSURE_VALVE && ForgeManager.Instance.hasTier2Blueprint)
+            affordablePaths.Add("Commerce Tier 2");
+      }
+      else if (currentCommerceTier == 2)
+      {
+         if (InventoryManager.Instance.pearlCount >= T3_COMM_PEARL && InventoryManager.Instance.precisionLensCount >= T3_COMM_LENS && ForgeManager.Instance.hasTier3Blueprint)
+            affordablePaths.Add("Commerce Tier 3");
+      }
+
+      if (currentProductionTier == 0)
+      {
+         if (InventoryManager.Instance.pearlCount >= T1_PROD_PEARL && InventoryManager.Instance.patchKitCount >= T1_PROD_PATCH_KIT)
+            affordablePaths.Add("Production Tier 1");
+      }
+      else if (currentProductionTier == 1)
+      {
+         if (InventoryManager.Instance.pearlCount >= T2_PROD_PEARL && InventoryManager.Instance.pressureValveCount >= T2_PROD_PRESSURE_VALVE && ForgeManager.Instance.hasTier2Blueprint)
+            affordablePaths.Add("Production Tier 2");
+      }
+      else if (currentProductionTier == 2)
+      {
+         if (InventoryManager.Instance.pearlCount >= T3_PROD_PEARL && InventoryManager.Instance.precisionLensCount >= T3_PROD_LENS && ForgeManager.Instance.hasTier3Blueprint)
+            affordablePaths.Add("Production Tier 3");
+      }
+
+      if (currentExplorationTier == 0)
+      {
+         if (InventoryManager.Instance.pearlCount >= T1_EXPL_PEARL && InventoryManager.Instance.harpoonCount >= T1_EXPL_HARPOON)
+            affordablePaths.Add("Exploration Tier 1");
+      }
+      else if (currentExplorationTier == 1)
+      {
+         if (InventoryManager.Instance.pearlCount >= T2_EXPL_PEARL && InventoryManager.Instance.divingBellCount >= T2_EXPL_DIVING_BELL && ForgeManager.Instance.hasTier2Blueprint)
+            affordablePaths.Add("Exploration Tier 2");
+      }
+      else if (currentExplorationTier == 2)
+      {
+         if (InventoryManager.Instance.pearlCount >= T3_EXPL_PEARL && InventoryManager.Instance.divingBellCount >= T3_EXPL_DIVING_BELL && ForgeManager.Instance.hasTier2Blueprint)
+            affordablePaths.Add("Exploration Tier 3");
+      }
+
+      if (affordablePaths.Count > 0)
+      {
+         string message = "Lab Research Available: " + string.Join(", ", affordablePaths);
+         TickerSystem.Instance.ShowTicker(message, Color.cyan, TickerSystem.MessageTypes.ResultMessage);
+      }
+      else
+      {
+         Debug.Log("Hovered over Lab, but you don't have enough resources yet.");
+      }
+   }
+
+   public void UpdateBubbleVisuals()
+   {
+      if (InventoryManager.Instance == null || labBubbles == null || ForgeManager.Instance == null) return;
+
+      bool canAffordSomething = false;
+
+      // Check Commerce
+      if (currentCommerceTier == 0 && InventoryManager.Instance.pearlCount >= T1_COMM_PEARL && InventoryManager.Instance.crudeToolCount >= T1_COMM_CRUDE_TOOL) canAffordSomething = true;
+      if (currentCommerceTier == 1 && InventoryManager.Instance.pearlCount >= T2_COMM_PEARL && InventoryManager.Instance.pressureValveCount >= T2_COMM_PRESSURE_VALVE && ForgeManager.Instance.hasTier2Blueprint) canAffordSomething = true;
+      if (currentCommerceTier == 2 && InventoryManager.Instance.pearlCount >= T3_COMM_PEARL && InventoryManager.Instance.precisionLensCount >= T3_COMM_LENS && ForgeManager.Instance.hasTier3Blueprint) canAffordSomething = true;
+
+      // Check Production
+      if (currentProductionTier == 0 && InventoryManager.Instance.pearlCount >= T1_PROD_PEARL && InventoryManager.Instance.patchKitCount >= T1_PROD_PATCH_KIT) canAffordSomething = true;
+      if (currentProductionTier == 1 && InventoryManager.Instance.pearlCount >= T2_PROD_PEARL && InventoryManager.Instance.pressureValveCount >= T2_PROD_PRESSURE_VALVE && ForgeManager.Instance.hasTier2Blueprint) canAffordSomething = true;
+      if (currentProductionTier == 2 && InventoryManager.Instance.pearlCount >= T3_PROD_PEARL && InventoryManager.Instance.precisionLensCount >= T3_PROD_LENS && ForgeManager.Instance.hasTier3Blueprint) canAffordSomething = true;
+
+      // Check Exploration
+      if (currentExplorationTier == 0 && InventoryManager.Instance.pearlCount >= T1_EXPL_PEARL && InventoryManager.Instance.harpoonCount >= T1_EXPL_HARPOON) canAffordSomething = true;
+      if (currentExplorationTier == 1 && InventoryManager.Instance.pearlCount >= T2_EXPL_PEARL && InventoryManager.Instance.divingBellCount >= T2_EXPL_DIVING_BELL && ForgeManager.Instance.hasTier2Blueprint) canAffordSomething = true;
+      if (currentExplorationTier == 2 && InventoryManager.Instance.pearlCount >= T3_EXPL_PEARL && InventoryManager.Instance.divingBellCount >= T3_EXPL_DIVING_BELL && ForgeManager.Instance.hasTier2Blueprint) canAffordSomething = true;
+
+      if (canAffordSomething)
+      {
+         if (!labBubbles.isPlaying) labBubbles.Play();
+      }
+      else
+      {
+         if (labBubbles.isPlaying) labBubbles.Stop();
+      }
    }
 }

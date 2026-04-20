@@ -37,8 +37,8 @@ public class ForgeManager : MonoBehaviour
    const int TIER_1 = 1;
    const int TIER_2 = 2;
    const int TIER_3 = 3;
-   public const int LEVEL_2_PEARL_COST = 300;
-   public const int LEVEL_3_PEARL_COST = 700;
+   public const int LEVEL_2_PEARL_COST = 200;
+   public const int LEVEL_3_PEARL_COST = 500;
    const int ENDING_LEVEL = 3;
    private const int MIN_CRAFT_AMOUNT = 0;
    private const int MAX_CRAFT_AMOUNT = 99;

@@ -46,9 +46,12 @@ public class TurnManager : MonoBehaviour
    public int eventCountdown = 1;              // Turn countdown until next world event
 
    [Header("UI/Game Status")]
-   public Button endTurnButton;                   // The button to disable when the game ends.
-   private bool _isGameActive = true;           // Tracks if the game is currently in progress.
-   [SerializeField] private GameObject progressBar;     // Turn changing progress bar UI element.
+   public Button endTurnButton;                     // The button to disable when the game ends.
+   private bool _isGameActive   = true;             // Tracks if the game is currently in progress.
+   [SerializeField] private GameObject progressBar; // Turn changing progress bar UI element.
+   private bool walkthroughGame = false;            // Flag to indicate if the game is in walkthrough mode
+   private bool normalGame      = true;             // Flag to indicate if the game is in normal mode
+   private int tempTurn;                            // Temporary variable to store the turn number when switching between walkthrough and normal modes
 
    [Header("Enemy Settings")]
    [SerializeField] private GameObject enemyPanel;      // The enemy panel UI element.
@@ -95,6 +98,11 @@ public class TurnManager : MonoBehaviour
 
    public async void WalkthroughEndTurn()
    {
+      if(normalGame)
+      {
+         walkthroughGame = true;
+         normalGame = false;
+      }
       if (isAdvancingTurn)
          return;
       if (!_isGameActive)
@@ -132,95 +140,106 @@ public class TurnManager : MonoBehaviour
          endTurnButton.interactable = true;
    }
 
-// Advances the game to the next turn and updates the UI,
-//public async void EndTurn()
-//{
-//      if (isAdvancingTurn)
-//         return;
-//      if (!_isGameActive)
-//         return;
-//      isAdvancingTurn = true;
 
-//      if (PopUpManager.Instance != null)
-//         PopUpManager.Instance.ForceResetInputBlock();
+   public void SetSavedTurn()
+   {
+      tempTurn = currentTurn;
+   }
 
-//      if (endTurnButton != null)
-//         endTurnButton.interactable = false;
+   public void ResetToSavedTurn()
+   {
+      currentTurn = tempTurn;
+      UpdateTurnUI();
+   }
+   // Advances the game to the next turn and updates the UI,
+   //public async void EndTurn()
+   //{
+   //      if (isAdvancingTurn)
+   //         return;
+   //      if (!_isGameActive)
+   //         return;
+   //      isAdvancingTurn = true;
 
-//      progressBar.SetActive(true);
-//      PopUpManager.Instance.DisablePlayerInput();
-//      await Task.Delay(1000);
-    
-//      progressBar.SetActive(false);
-//      PopUpManager.Instance.EnablePlayerInput();
-//      progressBar.transform.rotation = Quaternion.identity;
-//      Debug.Log("### TurnManager Start() ###");
+   //      if (PopUpManager.Instance != null)
+   //         PopUpManager.Instance.ForceResetInputBlock();
 
-//      currentTurn++;
-//      eventCountdown++;
+   //      if (endTurnButton != null)
+   //         endTurnButton.interactable = false;
 
-//      // Check if the game should end                 
-//      if (currentTurn > maxTurns)
-//      {
-//         isAdvancingTurn = false;
-//         EndGame();
-//         return;
-//      }
-//      else
-//      {
-//         UpdateTurnUI();
-//         if (currentTurn > 5)
-//            HandleJamming();
+   //      progressBar.SetActive(true);
+   //      PopUpManager.Instance.DisablePlayerInput();
+   //      await Task.Delay(1000);
 
-//         HandleEnemy();
-//      }
-//      if(isJamPrevented)
-//         HandlePreventativeMaintenance();
-         
+   //      progressBar.SetActive(false);
+   //      PopUpManager.Instance.EnablePlayerInput();
+   //      progressBar.transform.rotation = Quaternion.identity;
+   //      Debug.Log("### TurnManager Start() ###");
 
-//      // Handle world event reset
-//      if (eventCountdown == 1) 
-//      {
-//         tradeHutManager.ResetWorldEventShifts();
-//         tradeHutManager.WorldEventChance();
+   //      currentTurn++;
+   //      eventCountdown++;
 
-//         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(true);
-//         TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
-//      }
+   //      // Check if the game should end                 
+   //      if (currentTurn > maxTurns)
+   //      {
+   //         isAdvancingTurn = false;
+   //         EndGame();
+   //         return;
+   //      }
+   //      else
+   //      {
+   //         UpdateTurnUI();
+   //         if (currentTurn > 5)
+   //            HandleJamming();
 
-//      // Apply the market shift
-//      tradeHutManager.MarketFluctuate();
+   //         HandleEnemy();
+   //      }
+   //      if(isJamPrevented)
+   //         HandlePreventativeMaintenance();
 
-//      // Handle the News Ticker for World Events
-//      if (eventCountdown >= 3 && eventCountdown <= 5) 
-//      {
-//         newsTicker.gameObject.SetActive(true);
-//         tradeHutManager.WorldEventNewsTickerText();
-//         newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
 
-//         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(false);
+   //      // Handle world event reset
+   //      if (eventCountdown == 1) 
+   //      {
+   //         tradeHutManager.ResetWorldEventShifts();
+   //         tradeHutManager.WorldEventChance();
 
-//         if(eventCountdown == 5) 
-//         {
-//            TradeHutManager.Instance.InsurancePolicyCheck();
-//            TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
-//         }
-//      }
+   //         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(true);
+   //         TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
+   //      }
 
-//      // Predict the next turn
-//      tradeHutManager.CraftMarketForesight();
+   //      // Apply the market shift
+   //      tradeHutManager.MarketFluctuate();
 
-//      // Reset countdown if we just finished the event turn
-//      if (eventCountdown == 5)
-//         eventCountdown = 0;
+   //      // Handle the News Ticker for World Events
+   //      if (eventCountdown >= 3 && eventCountdown <= 5) 
+   //      {
+   //         newsTicker.gameObject.SetActive(true);
+   //         tradeHutManager.WorldEventNewsTickerText();
+   //         newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
 
-//      OnTurnEnded?.Invoke();
+   //         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(false);
 
-//      isAdvancingTurn = false;
+   //         if(eventCountdown == 5) 
+   //         {
+   //            TradeHutManager.Instance.InsurancePolicyCheck();
+   //            TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
+   //         }
+   //      }
 
-//      if (endTurnButton != null)
-//         endTurnButton.interactable = true;
-//   }
+   //      // Predict the next turn
+   //      tradeHutManager.CraftMarketForesight();
+
+   //      // Reset countdown if we just finished the event turn
+   //      if (eventCountdown == 5)
+   //         eventCountdown = 0;
+
+   //      OnTurnEnded?.Invoke();
+
+   //      isAdvancingTurn = false;
+
+   //      if (endTurnButton != null)
+   //         endTurnButton.interactable = true;
+   //   }
 
    // Updates the turn text UI element to display the current
    // turn and the maximum turn limit.        
@@ -228,6 +247,14 @@ public class TurnManager : MonoBehaviour
    // Advances the game to the next turn and updates the UI
    public async void EndTurn()
    {
+      if (walkthroughGame)
+      {
+         normalGame = true;
+         walkthroughGame = false;
+         currentTurn = tempTurn;
+         Debug.Log(tempTurn);
+         UpdateTurnUI();
+      }
       // 1. Prevent overlapping turn advancements or running after game over
       if (isAdvancingTurn || !_isGameActive)
          return;
