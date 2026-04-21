@@ -190,12 +190,12 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 2000;
+      pearlCount         = 0;
       oreCount           = 10;
-      crudeToolCount     = 1;
-      harpoonCount       = 1;
+      crudeToolCount     = 0;
+      harpoonCount       = 0;
       patchKitCount      = 1;
-      pressureValveCount = 2;
+      pressureValveCount = 0;
       divingBellCount    = 0;
       precisionLensCount = 0;
       engineCount        = 0;
