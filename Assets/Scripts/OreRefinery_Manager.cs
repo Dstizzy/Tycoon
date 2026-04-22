@@ -279,15 +279,14 @@ public class OreRefinery_Manager : MonoBehaviour
          case 1:
             Debug.Log($"Ore Refinery Level 1: Produces 10 Ore per turn.");
             CurrentOreProduction = 10;
-            NextUpgradeCostInPearls = level2PearlCost;
-            NextUpgradeCostInOre = level2OreCost;
+            NextUpgradeCostInPearls = LEVEL_2_PEARL_COST; // Uses the constant
+            NextUpgradeCostInOre = LEVEL_2_ORE_COST;      // Uses the constant
             break;
          case 2:
             Debug.Log($"Ore Refinery Level 2: Produces 25 Ore per turn.");
-            Debug.Log("Level 3 Pearl cost: " + level3PearlCost.ToString());
             CurrentOreProduction = 25;
-            NextUpgradeCostInPearls = level3PearlCost;
-            NextUpgradeCostInOre = level3OreCost;
+            NextUpgradeCostInPearls = LEVEL_3_PEARL_COST; // Uses the constant
+            NextUpgradeCostInOre = LEVEL_3_ORE_COST;      // Uses the constant
             break;
          case 3:
             Debug.Log("Ore Refinery Level 3: Produces 60 Ore per turn. MAX LEVEL.");
@@ -296,7 +295,7 @@ public class OreRefinery_Manager : MonoBehaviour
             NextUpgradeCostInOre = 0;
             break;
          default:
-            Debug.Log("Unknown Ore Refinery Level.");
+            Debug.Log("Unkown Level: " + oreLevel.ToString());
             break;
       }
    }
@@ -447,6 +446,7 @@ public class OreRefinery_Manager : MonoBehaviour
          UpdateOreRefinerySprites();
          CalculateRefineryValues();
 
+
          oreRefineryLevelText.text = "Level " + oreLevel.ToString();
          Debug.Log($"Ore Refinery upgraded to level {oreLevel}!");
          ticker.ShowTicker($"Ore Refinery upgraded to level {oreLevel}!", Color.green, MessageTypes.ResultMessage);
@@ -456,6 +456,8 @@ public class OreRefinery_Manager : MonoBehaviour
             InventoryManager.Instance.OreRefineryUpgradeIcon.gameObject.SetActive(false);
          }
          CloseOreRefinoryPanel(UPGRADE_BUTTON);
+
+         InventoryManager.Instance.CheckUpgradeResources();
       }
       else
       {

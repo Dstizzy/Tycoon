@@ -510,6 +510,7 @@ public class LabManager : MonoBehaviour
       // Grant action to gameple 50 gold for 60% chance to get 250 back                       
       if (tabType == commerceTab)
       {
+         currentCommerceTier = TIER_TWO;
          tradeHutManager.RecycleButton.gameObject.SetActive(true);
          ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }
@@ -547,7 +548,8 @@ public class LabManager : MonoBehaviour
    {
       if (tabType == commerceTab)
       {
-         commerceFinished = true;
+         commerceFinished    = true;
+         currentCommerceTier = TIER_THREE;
          tradeHutManager.isTier3BuffACtive = true;
          ticker.ShowTicker("Commerce Branch Maxed!", Color.yellow, TickerSystem.MessageTypes.ResultMessage);
       }

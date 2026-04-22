@@ -146,100 +146,7 @@ public class TurnManager : MonoBehaviour
       currentTurn = tempTurn;
       UpdateTurnUI();
    }
-   // Advances the game to the next turn and updates the UI,
-   //public async void EndTurn()
-   //{
-   //      if (isAdvancingTurn)
-   //         return;
-   //      if (!_isGameActive)
-   //         return;
-   //      isAdvancingTurn = true;
-
-   //      if (PopUpManager.Instance != null)
-   //         PopUpManager.Instance.ForceResetInputBlock();
-
-   //      if (endTurnButton != null)
-   //         endTurnButton.interactable = false;
-
-   //      progressBar.SetActive(true);
-   //      PopUpManager.Instance.DisablePlayerInput();
-   //      await Task.Delay(1000);
-
-   //      progressBar.SetActive(false);
-   //      PopUpManager.Instance.EnablePlayerInput();
-   //      progressBar.transform.rotation = Quaternion.identity;
-   //      Debug.Log("### TurnManager Start() ###");
-
-   //      currentTurn++;
-   //      eventCountdown++;
-
-   //      // Check if the game should end                 
-   //      if (currentTurn > maxTurns)
-   //      {
-   //         isAdvancingTurn = false;
-   //         EndGame();
-   //         return;
-   //      }
-   //      else
-   //      {
-   //         UpdateTurnUI();
-   //         if (currentTurn > 5)
-   //            HandleJamming();
-
-   //         HandleEnemy();
-   //      }
-   //      if(isJamPrevented)
-   //         HandlePreventativeMaintenance();
-
-
-   //      // Handle world event reset
-   //      if (eventCountdown == 1) 
-   //      {
-   //         tradeHutManager.ResetWorldEventShifts();
-   //         tradeHutManager.WorldEventChance();
-
-   //         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(true);
-   //         TradeHutManager.Instance.DisplayWorldEventVisual(false, false);
-   //      }
-
-   //      // Apply the market shift
-   //      tradeHutManager.MarketFluctuate();
-
-   //      // Handle the News Ticker for World Events
-   //      if (eventCountdown >= 3 && eventCountdown <= 5) 
-   //      {
-   //         newsTicker.gameObject.SetActive(true);
-   //         tradeHutManager.WorldEventNewsTickerText();
-   //         newsTicker.ShowTicker(tradeHutManager.currentNewsTickerMessage, Color.black, MessageTypes.WorldEvent);
-
-   //         TradeHutManager.Instance.BuyItems.Find(item => item.CompareTag(TradeHutManager.INSURANCE_POLICY_TAG)).gameObject.SetActive(false);
-
-   //         if(eventCountdown == 5) 
-   //         {
-   //            TradeHutManager.Instance.InsurancePolicyCheck();
-   //            TradeHutManager.Instance.DisplayWorldEventVisual(true, true);
-   //         }
-   //      }
-
-   //      // Predict the next turn
-   //      tradeHutManager.CraftMarketForesight();
-
-   //      // Reset countdown if we just finished the event turn
-   //      if (eventCountdown == 5)
-   //         eventCountdown = 0;
-
-   //      OnTurnEnded?.Invoke();
-
-   //      isAdvancingTurn = false;
-
-   //      if (endTurnButton != null)
-   //         endTurnButton.interactable = true;
-   //   }
-
-   // Updates the turn text UI element to display the current
-   // turn and the maximum turn limit.        
-
-   // Advances the game to the next turn and updates the UI
+   
    public async void EndTurn()
    {
       // 1. Prevent overlapping turn advancements or running after game over
@@ -352,8 +259,11 @@ public class TurnManager : MonoBehaviour
          if (eventCountdown == 5)
             eventCountdown = 0;
 
-         TradeHutManager.Instance.recycleCounter = 0;
-         TradeHutManager.Instance.RecycleButton.gameObject.SetActive(true);
+         if(LabManager.currentCommerceTier == LabManager.TIER_TWO) 
+         { 
+            TradeHutManager.Instance.recycleCounter = 0;
+            TradeHutManager.Instance.RecycleButton.gameObject.SetActive(true);
+         }
          OnTurnEnded?.Invoke();
       }
       catch (Exception e)

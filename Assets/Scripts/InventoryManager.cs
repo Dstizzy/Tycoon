@@ -19,9 +19,8 @@ public class InventoryManager : MonoBehaviour
    public const int MIN_PEARL_COUNT = 0,
                     MIN_CRYSTAL_COUNT = 0,
                     MIN_ORE_COUNT = 0,
-                    MAX_PEARL_COUNT = 10000,
-                    MAX_CRYSTAL_COUNT = 10000,
-                    MAX_ORE_COUNT = 10000;
+                    MAX_PEARL_COUNT = 30000,
+                    MAX_ORE_COUNT = 30000;
 
 
    public const int MAX_CRUDE_TOOL_COUNT = 100,
@@ -190,12 +189,12 @@ public class InventoryManager : MonoBehaviour
       else
          CraftWindow.gameObject.SetActive(false);
 
-      pearlCount         = 0;
+      pearlCount         = 2000;
       oreCount           = 10;
-      crudeToolCount     = 0;
+      crudeToolCount     = 1;
       harpoonCount       = 0;
       patchKitCount      = 1;
-      pressureValveCount = 0;
+      pressureValveCount = 2;
       divingBellCount    = 0;
       precisionLensCount = 0;
       engineCount        = 0;
@@ -1420,7 +1419,7 @@ public class InventoryManager : MonoBehaviour
       CraftWindow.gameObject.SetActive(false);
    }
 
-   private void CheckUpgradeResources()
+   public void CheckUpgradeResources()
    {
       // Safety check: if the icons are destroyed/missing, don't try to access them
       if (OreRefineryUpgradeIcon == null || ForgeUpgradeIcon == null || ExplorationUnitUpgradeIcon == null)
