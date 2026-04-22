@@ -468,11 +468,11 @@ public class ExplorationUnitManager : MonoBehaviour
    // Handles the end-of-map sequence
    public void HandleFinalNode(MapNode current)
    {
-      bool isWinner = false;
+      bool isWinner = true;
 
       // Check if current final node is the winning final node
-      if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
-         isWinner = true;
+      //if (current.isLeftPath == MapManager.Instance.winningPathIsLeft)
+      //  isWinner = true;
 
       // Open the panel first
       panelManager.OpenPanel(decisionResultsPanel.gameObject);
