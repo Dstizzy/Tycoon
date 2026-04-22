@@ -42,6 +42,7 @@ public class TurnManager : MonoBehaviour
    public TextMeshProUGUI walkthroughTurnText;
    public TextMeshProUGUI turnText;                        // The UI text element to display the current turn.
    public int eventCountdown = 1;              // Turn countdown until next world event
+   public int tempTurn;
 
    [Header("UI/Game Status")]
    public Button endTurnButton;                     // The button to disable when the game ends.

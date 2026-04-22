@@ -1043,12 +1043,6 @@ public class TradeHutManager : MonoBehaviour
    // Exchanges ores for pearls
    public void RecycleOre() 
    {
-     if (recycleOpened)
-      {
-         RecycleButton.gameObject.SetActive(false);
-      }
-      else
-      {
          int pearlsReceived = Rng.Next(PEARL_REWARD_MINIMUM, PEARL_REWARD_MAXIMUM + 1);
 
          if (inv.TrySpendOre(ORE_EXCHANGE_COST))
@@ -1061,8 +1055,7 @@ public class TradeHutManager : MonoBehaviour
             RecycleButton.gameObject.SetActive(false);
 
          return;
-      }
-      }
+   }
    
    public void CraftMarketForesight() 
    {
