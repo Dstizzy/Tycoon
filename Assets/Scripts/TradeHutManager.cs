@@ -14,6 +14,8 @@ using static WorldEvents;
 
 public class TradeHutManager : MonoBehaviour 
 {
+
+   public bool recycleOpened = false;
    // Inspector variables
    [SerializeField] private Transform TradePanels;            
    [SerializeField] private Transform BuyWindow;    
@@ -1041,19 +1043,26 @@ public class TradeHutManager : MonoBehaviour
    // Exchanges ores for pearls
    public void RecycleOre() 
    {
-     int pearlsReceived = Rng.Next(PEARL_REWARD_MINIMUM, PEARL_REWARD_MAXIMUM + 1);
-     
-     if(inv.TrySpendOre(ORE_EXCHANGE_COST)) 
-     { 
-        inv.TryAddPearl(pearlsReceived);
-        recycleCounter += 1;
-     }
+     if (recycleOpened)
+      {
+         RecycleButton.gameObject.SetActive(false);
+      }
+      else
+      {
+         int pearlsReceived = Rng.Next(PEARL_REWARD_MINIMUM, PEARL_REWARD_MAXIMUM + 1);
 
-     if (recycleCounter == 3)
-        RecycleButton.gameObject.SetActive(false);
+         if (inv.TrySpendOre(ORE_EXCHANGE_COST))
+         {
+            inv.TryAddPearl(pearlsReceived);
+            recycleCounter += 1;
+         }
 
-      return;
-   }
+         if (recycleCounter == 3)
+            RecycleButton.gameObject.SetActive(false);
+
+         return;
+      }
+      }
    
    public void CraftMarketForesight() 
    {
