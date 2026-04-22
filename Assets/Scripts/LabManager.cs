@@ -511,6 +511,7 @@ public class LabManager : MonoBehaviour
       if (tabType == commerceTab)
       {
          currentCommerceTier = TIER_TWO;
+         tradeHutManager.recycleOpened = true;
          tradeHutManager.RecycleButton.gameObject.SetActive(true);
          ticker.ShowTicker("Commerce Branch Tier 2 unlocked", Color.green, TickerSystem.MessageTypes.ResultMessage);
       }

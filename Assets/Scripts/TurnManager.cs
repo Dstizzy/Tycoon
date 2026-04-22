@@ -1,11 +1,9 @@
 ﻿//using Codice.Client.Common.GameUI;
-using JetBrains.Annotations;
 using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using static TickerSystem;
@@ -49,9 +47,6 @@ public class TurnManager : MonoBehaviour
    public Button endTurnButton;                     // The button to disable when the game ends.
    private bool _isGameActive   = true;             // Tracks if the game is currently in progress.
    [SerializeField] private GameObject progressBar; // Turn changing progress bar UI element.
-   private bool walkthroughGame = false;            // Flag to indicate if the game is in walkthrough mode
-   private bool normalGame      = true;             // Flag to indicate if the game is in normal mode
-   private int tempTurn;                            // Temporary variable to store the turn number when switching between walkthrough and normal modes
 
    [Header("Enemy Settings")]
    [SerializeField] private GameObject enemyPanel;      // The enemy panel UI element.
@@ -72,20 +67,28 @@ public class TurnManager : MonoBehaviour
    // instance of TurnManager exists. 
    void Awake()
    {
+      endTurnButton.onClick.RemoveAllListeners();
+      if (SceneManager.GetActiveScene().name == "WalkthroughScene")
+         endTurnButton.onClick.AddListener(() => WalkthroughEndTurn());
+      else
+         endTurnButton.onClick.AddListener(() => EndTurn());
       if (Instance != null && Instance != this)
       {
+         // If a TurnManager already exists in the new scene, 
+         // destroy this new one so the old one keeps running.
          Destroy(gameObject);
       }
       else
       {
          Instance = this;
-         // (Optional) Uncomment this to make the manager persist across scenes
-         // DontDestroyOnLoad(gameObject); 
+
+         // This is the magic line. It moves the GameObject to a 
+         // special scene that isn't cleared during scene loads.
+         DontDestroyOnLoad(gameObject);
       }
 
       if (newsTicker == null)
          Debug.Log("Ticker is not assigned in the Inspector");
-
    }
 
    // Initializes the UI elements with the starting values when the game begins.                  
@@ -119,7 +122,6 @@ public class TurnManager : MonoBehaviour
       progressBar.transform.rotation = Quaternion.identity;
       Debug.Log("### TurnManager Start() ###");
 
-      currentTurn++;
 
       if (walkthroughTurnText != null)
       {

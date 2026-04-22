@@ -11136,7 +11136,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128968649}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -28869,22 +28869,10 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 509499490}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1184931318}
-        m_TargetAssemblyTypeName: TurnManager, Main
-        m_MethodName: WalkthroughEndTurn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &509499490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30092,6 +30080,7 @@ MonoBehaviour:
   oreCountText: {fileID: 113112803}
   erroPanel: {fileID: 0}
   tutorial: {fileID: 0}
+  currentTurn: 0
 --- !u!1 &552586558
 GameObject:
   m_ObjectHideFlags: 0
@@ -59897,7 +59886,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 993893004}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -66470,6 +66459,7 @@ MonoBehaviour:
   mercenaryEngineersAvailableText: {fileID: 1268051744}
   marketShiftMax: 1.2
   marketShiftMin: 1.06
+  recycleCounter: 0
   isTier3BuffACtive: 0
   tutorialFunctionOne: 0
   tutorialFunctionTwo: 0
@@ -87702,6 +87692,7 @@ MonoBehaviour:
   submarineSkelTail: {fileID: 1018334679}
   submarineBlackedOutHead: {fileID: 817652281}
   submarineBlackedOutTail: {fileID: 137270954}
+  labBubbles: {fileID: 0}
   labTutorialFunction: 0
   victoryTutorialFunction: 0
 --- !u!224 &1574076773

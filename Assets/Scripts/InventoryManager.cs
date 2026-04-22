@@ -19,8 +19,9 @@ public class InventoryManager : MonoBehaviour
    public const int MIN_PEARL_COUNT = 0,
                     MIN_CRYSTAL_COUNT = 0,
                     MIN_ORE_COUNT = 0,
-                    MAX_PEARL_COUNT = 30000,
-                    MAX_ORE_COUNT = 30000;
+                    MAX_PEARL_COUNT = 100000,
+                    MAX_CRYSTAL_COUNT = 10000,
+                    MAX_ORE_COUNT = 10000;
 
 
    public const int MAX_CRUDE_TOOL_COUNT = 100,
@@ -191,8 +192,8 @@ public class InventoryManager : MonoBehaviour
 
       pearlCount         = 2000;
       oreCount           = 10;
-      crudeToolCount     = 1;
-      harpoonCount       = 0;
+      crudeToolCount     = 0;
+      harpoonCount       = 1;
       patchKitCount      = 1;
       pressureValveCount = 2;
       divingBellCount    = 0;
