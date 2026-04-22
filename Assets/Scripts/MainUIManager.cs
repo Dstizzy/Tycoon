@@ -131,7 +131,6 @@ public class MainUIManager : MonoBehaviour
 
    public async void StartWalkthrough()
    {
-      TurnManager.Instance.SetSavedTurn();
       NarrativeOverlayUI.Instance.FadeTo(1f, 0.4f);
       await Task.Delay(500);
       NarrativeOverlayUI.Instance.FadeTo(0f, 0.4f);

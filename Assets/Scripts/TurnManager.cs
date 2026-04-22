@@ -119,7 +119,6 @@ public class TurnManager : MonoBehaviour
       progressBar.transform.rotation = Quaternion.identity;
       Debug.Log("### TurnManager Start() ###");
 
-      currentTurn++;
 
       if (walkthroughTurnText != null)
       {
@@ -135,17 +134,6 @@ public class TurnManager : MonoBehaviour
          endTurnButton.interactable = true;
    }
 
-
-   public void SetSavedTurn()
-   {
-      tempTurn = currentTurn;
-   }
-
-   public void ResetToSavedTurn()
-   {
-      currentTurn = tempTurn;
-      UpdateTurnUI();
-   }
    // Advances the game to the next turn and updates the UI,
    //public async void EndTurn()
    //{
