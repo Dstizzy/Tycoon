@@ -1276,11 +1276,16 @@ public class TradeHutManager : MonoBehaviour
       int change, int fluctuation, int itemTier,
       Action<int> increaseSellValueMethod, Action<int> decreaseSellValueMethod)
    {
-      int marketTrendChance = itemTier == TIER_ONE ? TIER_ONE_CHANCE : 
-                              itemTier == TIER_TWO ? TIER_TWO_CHANCE : 
-                              itemTier == TIER_THREE ? TIER_THREE_CHANCE : TIER_ONE_CHANCE;
+      int marketTrendChance = 
+         itemTier == TIER_ONE 
+         ? TIER_ONE_CHANCE 
+         : itemTier == TIER_TWO 
+         ? TIER_TWO_CHANCE 
+         : itemTier == TIER_THREE 
+         ? TIER_THREE_CHANCE 
+         : TIER_ONE_CHANCE;
 
-      // APPLY SPIKE: Executes exactly on Turn 5
+      // Apply market spike
       if (worldEvent == (int)eventType && TurnManager.Instance.eventCountdown == 5)
        {
            switch (worldEvent) 
@@ -1289,7 +1294,6 @@ public class TradeHutManager : MonoBehaviour
                  increaseSellValueMethod((GetItemValue(itemType) * 2) - GetItemValue(itemType));
                  break;
               case (int) WorldEventTypes.DeepSeaWarEvent:
-                 // WorldEventSideEffect(eventType); <-- Ensure this exists or remove it!
                  increaseSellValueMethod((GetItemValue(itemType) * 3) - GetItemValue(itemType));
                  break;
               case (int) WorldEventTypes.ScavengersHolidayEvent:
@@ -1305,9 +1309,10 @@ public class TradeHutManager : MonoBehaviour
        }
        else 
        { 
-          // SKIP FLUCTUATION: If we just reset the values on Turn 1, don't fluctuate them immediately
+          // If we just reset the values, don't fluctuate them immediately
           if (lastResetTurn.ContainsKey(itemType) && lastResetTurn[itemType] && TurnManager.Instance.eventCountdown == 1)
-              lastResetTurn[itemType] = false; 
+              lastResetTurn[itemType] = false;
+          
           // STANDARD FLUCTUATION: Apply to Turns 2, 3, and 4
           else
           {

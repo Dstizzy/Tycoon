@@ -52,7 +52,7 @@ public class Item {
       "An ancient artifact recovered from the depths. " +
       "Artifacts can be sold for a high price or used in special research.";
    const string RAW_ORE_CHUNK_DESCRIPTION        =
-      "Exchanges at the Trade Hut for pearls at a 1:1 ratio.";
+      "Exchanges pearls for ore at a 1:1 ratio (Shift + click to increase by 10).";
    const string PATCH_KIT_DESCRIPTION            =
      "A compact repair kit containing patches, resin and basic tools. " +
      "Used to repair equipment or as a component in crafting.";

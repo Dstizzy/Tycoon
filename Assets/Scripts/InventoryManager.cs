@@ -191,7 +191,7 @@ public class InventoryManager : MonoBehaviour
          CraftWindow.gameObject.SetActive(false);
 
       pearlCount         = 0;
-      oreCount           = 0;
+      oreCount           = 10;
       crudeToolCount     = 0;
       harpoonCount       = 1;
       patchKitCount      = 1;
@@ -653,7 +653,7 @@ public class InventoryManager : MonoBehaviour
 
       if (pearlCount <= MIN_PEARL_COUNT)
       {
-         ticker.ShowTicker("Pearl count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker("Pearl count is at minimum! Sell items in the Trade Hut.", Color.red, MessageTypes.ResultMessage);
          Debug.LogError("Pearl count is at minimum!");
       }
       else
@@ -661,7 +661,7 @@ public class InventoryManager : MonoBehaviour
          if (pearlCount < pearlAmount)
          {
             Debug.LogError("Not enough pearls to spend!");
-            ticker.ShowTicker($"Cannot spend pearls, only {pearlCount} available!", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot spend pearls, only {pearlCount} available! Sell items in the Trade Hut.", Color.red, MessageTypes.ResultMessage);
          }
          else
          {
@@ -683,7 +683,7 @@ public class InventoryManager : MonoBehaviour
 
       if (oreCount >= MAX_ORE_COUNT)
       {
-         Debug.LogError("Not enough ore to spend!");
+         Debug.LogError("Ore count is at maximum!");
          ticker.ShowTicker($"Ore count is at maximum!", Color.red, MessageTypes.ResultMessage);
       }
       else
