@@ -686,16 +686,18 @@ public class InventoryManager : MonoBehaviour
          Debug.LogError("Ore count is at maximum!");
          ticker.ShowTicker($"Ore count is at maximum!", Color.red, MessageTypes.ResultMessage);
       }
-      else
+      else 
+      {
          if ((oreCount + oreAmount) > MAX_ORE_COUNT)
-      {
-         Debug.LogError("Ore count is at maximum!");
-         ticker.ShowTicker($"Cannot add ore - would exceed the maximum!", Color.red, MessageTypes.ResultMessage);
-      }
-      else
-      {
-         oreCount += oreAmount;
-         isSuccess = true;
+         {
+            Debug.LogError("Ore count is at maximum!");
+            ticker.ShowTicker($"Cannot add ore - would exceed the maximum!", Color.red, MessageTypes.ResultMessage);
+         }
+         else
+         {
+            oreCount += oreAmount;
+            isSuccess = true;
+         }
       }
 
       CheckUpgradeResources();
@@ -713,7 +715,6 @@ public class InventoryManager : MonoBehaviour
       {
          Debug.LogError("Ore count is at minimum!");
          ticker.ShowTicker($"Ore count is at minimum!", Color.red, MessageTypes.ResultMessage);
-
       }
       else
       {
@@ -774,7 +775,7 @@ public class InventoryManager : MonoBehaviour
       if (crudeToolCount <= MIN_CRUDE_TOOL_COUNT)
       {
          Debug.LogError("Crude tool count is at minimum!");
-         ticker.ShowTicker($"Crude Tool count is at minimum!", Color.red, MessageTypes.ResultMessage);
+         ticker.ShowTicker($"Crude Tool count is at minimum! Craft Crude Tools in Forge (Tier 1).", Color.red, MessageTypes.ResultMessage);
 
          return isSuccess;
       }
@@ -984,7 +985,7 @@ public class InventoryManager : MonoBehaviour
          if (patchKitCount < patchKitAmount)
          {
             Debug.LogError("Not enough Patch Kit!");
-            ticker.ShowTicker($"Cannot use patch kits, only {patchKitCount} available! Craft a pathc kit in Forge (Tier 2).", Color.red, MessageTypes.ResultMessage);
+            ticker.ShowTicker($"Cannot use patch kits, only {patchKitCount} available! Craft a patch kit in Forge (Tier 2).", Color.red, MessageTypes.ResultMessage);
             return isSuccess;
          }
          else
